@@ -1,28 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Character/AuraEnemy.h"
+#include "Player/AuraPlayerState.h"
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 
-AAuraEnemy::AAuraEnemy()
+AAuraPlayerState::AAuraPlayerState()
 {
 	/* GAS */
 	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>(TEXT("Ability System Component"));
 	AbilitySystemComponent->SetIsReplicated(true);
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>(TEXT("Attribute Set"));
-}
-
-void AAuraEnemy::BeginPlay()
-{
-	Super::BeginPlay();
-
-	InitAbilityActorInfo();
-}
-
-void AAuraEnemy::InitAbilityActorInfo()
-{
-	AbilitySystemComponent->InitAbilityActorInfo(this, this);	
 }
