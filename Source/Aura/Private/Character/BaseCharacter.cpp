@@ -7,6 +7,12 @@ ABaseCharacter::ABaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
+	
+	/* Weapon Mesh */
+	WeaponSocketName = TEXT("WeaponHandSocket");
+	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon Mesh Component"));
+	WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	WeaponMeshComponent->SetupAttachment(GetMesh(), WeaponSocketName);
 }
 
 void ABaseCharacter::BeginPlay()

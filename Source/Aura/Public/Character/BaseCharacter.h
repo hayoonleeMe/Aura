@@ -17,4 +17,12 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	/*
+	 *	Weapon Mesh
+	 */
+	UPROPERTY(VisibleAnywhere, Category="Weapon Mesh")
+	TObjectPtr<USkeletalMeshComponent> WeaponMeshComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category="Weapon Mesh")
+	FName WeaponSocketName;
 };
