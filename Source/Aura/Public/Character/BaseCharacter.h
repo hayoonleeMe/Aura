@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
@@ -10,13 +11,18 @@ class UAttributeSet;
 class UAbilitySystemComponent;
 
 UCLASS(Abstract)
-class AURA_API ABaseCharacter : public ACharacter
+class AURA_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
 	ABaseCharacter();
 
+	/* Begin IAbilitySystemInterface */
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComponent; }
+	/* End IAbilitySystemInterface */
+	FORCEINLINE UAttributeSet* GetAttributeSet() const { return AttributeSet; }
+	
 protected:
 	virtual void BeginPlay() override;
 
