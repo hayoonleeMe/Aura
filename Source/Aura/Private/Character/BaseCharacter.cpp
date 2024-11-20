@@ -3,6 +3,8 @@
 
 #include "Character/BaseCharacter.h"
 
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
+
 ABaseCharacter::ABaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -19,4 +21,13 @@ void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ABaseCharacter::AddStartupAbilities() const
+{
+	if (HasAuthority())
+	{
+		UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
+		AuraASC->AddAbilities(StartupAbilities);
+	}
 }
