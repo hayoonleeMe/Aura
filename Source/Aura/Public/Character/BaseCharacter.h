@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
+class UAttributeSet;
+class UAbilitySystemComponent;
+
 UCLASS(Abstract)
 class AURA_API ABaseCharacter : public ACharacter
 {
@@ -25,4 +28,16 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Weapon Mesh")
 	FName WeaponSocketName;
+
+	/*
+	 *	GAS
+	 */
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY()
+	TObjectPtr<UAttributeSet> AttributeSet;
+
+	// ASC, AS를 초기화하는 함수
+	virtual void InitAbilityActorInfo() {}
 };
