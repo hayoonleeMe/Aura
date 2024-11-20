@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
+class UGameplayAbility;
 class UAttributeSet;
 class UAbilitySystemComponent;
 
@@ -46,4 +47,9 @@ protected:
 
 	// ASC, AS를 초기화하는 함수
 	virtual void InitAbilityActorInfo() {}
+
+	void AddStartupAbilities() const;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Ability")
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 };

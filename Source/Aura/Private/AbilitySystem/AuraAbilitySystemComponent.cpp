@@ -3,6 +3,22 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
+#include "AbilitySystem/Abilities/AuraGameplayAbility.h"
+
+void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities)
+{
+	ABILITYLIST_SCOPE_LOCK()
+	for (const TSubclassOf<UGameplayAbility>& AbilityClass : Abilities)
+	{
+		FGameplayAbilitySpec AbilitySpec(AbilityClass, 1);
+		if (const UAuraGameplayAbility* AuraGameplayAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
+		{
+			AbilitySpec.DynamicAbilityTags.AddTag(AuraGameplayAbility->InputTag);
+			GiveAbility(AbilitySpec);
+		}
+	}
+}
+
 void UAuraAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
 }
