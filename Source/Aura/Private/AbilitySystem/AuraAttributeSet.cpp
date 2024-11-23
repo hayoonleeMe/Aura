@@ -3,10 +3,38 @@
 
 #include "AbilitySystem/AuraAttributeSet.h"
 
+#include "AuraGameplayTags.h"
 #include "Net/UnrealNetwork.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
+	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
+
+	/* Primary Attributes */
+	TagToAttributeMap.Add(GameplayTags.Attributes_Primary_Strength, GetStrengthAttribute());
+	TagToAttributeMap.Add(GameplayTags.Attributes_Primary_Intelligence, GetIntelligenceAttribute());
+	TagToAttributeMap.Add(GameplayTags.Attributes_Primary_Resilience, GetResilienceAttribute());
+	TagToAttributeMap.Add(GameplayTags.Attributes_Primary_Vigor, GetVigorAttribute());
+	
+	/* Secondary Attributes */
+	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_Armor, GetArmorAttribute());
+	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_ArmorPenetration, GetArmorPenetrationAttribute());
+	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_BlockChance, GetBlockChanceAttribute());
+	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_CriticalHitChance, GetCriticalHitChanceAttribute());
+	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_CriticalHitDamage, GetCriticalHitDamageAttribute());
+	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_CriticalHitResistance, GetCriticalHitResistanceAttribute());
+	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_HealthRegeneration, GetHealthRegenerationAttribute());
+	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_ManaRegeneration, GetManaRegenerationAttribute());
+	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_MaxHealth, GetMaxHealthAttribute());
+	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_MaxMana, GetMaxManaAttribute());
+	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_FireResistance, GetFireResistanceAttribute());
+	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_LightningResistance, GetLightningResistanceAttribute());
+	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_ArcaneResistance, GetArcaneResistanceAttribute());
+	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_PhysicalResistance, GetPhysicalResistanceAttribute());
+	
+	/* Vital Attributes */
+	TagToAttributeMap.Add(GameplayTags.Attributes_Vital_Health, GetHealthAttribute());
+	TagToAttributeMap.Add(GameplayTags.Attributes_Vital_Mana, GetManaAttribute());
 }
 
 void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
