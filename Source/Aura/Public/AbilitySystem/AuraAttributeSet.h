@@ -157,4 +157,21 @@ public:
 	UFUNCTION()
 	void OnRep_PhysicalResistance(const FGameplayAttributeData& OldPhysicalResistance) const;
 
+	/*
+	 *	Vital Attributes
+	 */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Health, Category="Aura|Vital Attributes")
+	FGameplayAttributeData Health;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Health);
+
+	UFUNCTION()
+	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Mana, Category="Aura|Vital Attributes")
+	FGameplayAttributeData Mana;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Mana);
+
+	UFUNCTION()
+	void OnRep_Mana(const FGameplayAttributeData& OldMana) const;
+	
 };
