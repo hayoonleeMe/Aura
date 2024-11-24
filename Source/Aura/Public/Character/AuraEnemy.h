@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Character/BaseCharacter.h"
+#include "Interaction/CombatInterface.h"
 #include "AuraEnemy.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class AURA_API AAuraEnemy : public ABaseCharacter
+class AURA_API AAuraEnemy : public ABaseCharacter, public ICombatInterface
 {
 	GENERATED_BODY()
 
@@ -20,4 +21,15 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
+
+	/* Begin CombatInterface */
+	virtual int32 GetCharacterLevel_Implementation() override { return Level; }
+	/* End CombatInterface */
+	
+private:
+	/*
+	 *	Combat
+	 */
+	UPROPERTY(EditAnywhere, Category="Aura|Level")
+	int32 Level;
 };

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/BaseCharacter.h"
+#include "Interaction/CombatInterface.h"
 #include "AuraCharacter.generated.h"
 
 class UGameplayEffect;
@@ -11,13 +12,17 @@ class UGameplayEffect;
  * 
  */
 UCLASS()
-class AURA_API AAuraCharacter : public ABaseCharacter
+class AURA_API AAuraCharacter : public ABaseCharacter, public ICombatInterface
 {
 	GENERATED_BODY()
 
 public:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
+
+	/* Begin CombatInterface */
+	virtual int32 GetCharacterLevel_Implementation() override;
+	/* End CombatInterface */
 
 protected:
 	virtual void InitAbilityActorInfo() override;
