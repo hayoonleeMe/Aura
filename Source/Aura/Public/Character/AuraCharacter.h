@@ -6,6 +6,7 @@
 #include "Character/BaseCharacter.h"
 #include "AuraCharacter.generated.h"
 
+class UGameplayEffect;
 /**
  * 
  */
@@ -20,4 +21,13 @@ public:
 
 protected:
 	virtual void InitAbilityActorInfo() override;
+
+private:
+	/*
+	 *	Effects
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Effects")
+	TArray<TSubclassOf<UGameplayEffect>> DefaultEffects;
+
+	void InitializeAttributes();
 };

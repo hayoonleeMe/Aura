@@ -68,6 +68,28 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Mana, COND_None, REPNOTIFY_Always);
 }
 
+void UAuraAttributeSet::PrintDebug()
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetStrengthAttribute().GetName(), GetStrength());
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetIntelligenceAttribute().GetName(), GetIntelligence());
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetResilienceAttribute().GetName(), GetResilience());
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetVigorAttribute().GetName(), GetVigor());
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetArmorAttribute().GetName(), GetArmor());
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetArmorPenetrationAttribute().GetName(), GetArmorPenetration());
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetBlockChanceAttribute().GetName(), GetBlockChance());
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetCriticalHitChanceAttribute().GetName(), GetCriticalHitChance());
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetCriticalHitDamageAttribute().GetName(), GetCriticalHitDamage());
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetCriticalHitResistanceAttribute().GetName(), GetCriticalHitResistance());
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetHealthRegenerationAttribute().GetName(), GetHealthRegeneration());
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetManaRegenerationAttribute().GetName(), GetManaRegeneration());
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetMaxHealthAttribute().GetName(), GetMaxHealth());
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetMaxManaAttribute().GetName(), GetMaxMana());
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetFireResistanceAttribute().GetName(), GetFireResistance());
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetLightningResistanceAttribute().GetName(), GetLightningResistance());
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetArcaneResistanceAttribute().GetName(), GetArcaneResistance());
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetPhysicalResistanceAttribute().GetName(), GetPhysicalResistance());
+}
+
 void UAuraAttributeSet::OnRep_Strength(const FGameplayAttributeData& OldStrength) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Strength, OldStrength);

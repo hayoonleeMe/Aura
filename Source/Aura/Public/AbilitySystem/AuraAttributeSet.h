@@ -25,6 +25,7 @@ class AURA_API UAuraAttributeSet : public UAttributeSet
 public:
 	UAuraAttributeSet();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void PrintDebug() override;
 
 	// Tag와 Attribute Mapping
 	TMap<FGameplayTag, FGameplayAttribute> TagToAttributeMap;
