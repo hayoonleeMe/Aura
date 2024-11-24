@@ -12,6 +12,7 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 
 	// for server (PossessedBy is called on server)
 	InitAbilityActorInfo();
+	InitializeAttributes();
 }
 
 void AAuraCharacter::OnRep_PlayerState()
@@ -22,6 +23,13 @@ void AAuraCharacter::OnRep_PlayerState()
 	InitAbilityActorInfo();
 }
 
+int32 AAuraCharacter::GetCharacterLevel_Implementation()
+{
+	const AAuraPlayerState* AuraPS = GetPlayerState<AAuraPlayerState>();
+	check(AuraPS);
+	return AuraPS->GetCharacterLevel();
+}
+
 void AAuraCharacter::InitAbilityActorInfo()
 {
 	AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
@@ -30,4 +38,20 @@ void AAuraCharacter::InitAbilityActorInfo()
 	AttributeSet = AuraPS->GetAttributeSet();
 
 	AddStartupAbilities();
+}
+
+void AAuraCharacter::InitializeAttributes()
+{
+	check(GetAbilitySystemComponent());
+
+	for (const TSubclassOf<UGameplayEffect>& EffectClass : DefaultEffects)
+	{
+		if (EffectClass)
+		{
+			FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+			ContextHandle.AddSourceObject(this);
+			FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(EffectClass, 1.f, ContextHandle);
+			GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data);
+		}
+	}
 }
