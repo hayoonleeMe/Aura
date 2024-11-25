@@ -48,6 +48,11 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	float SquaredArriveAcceptanceRadius;
 
+	// InputPressed()의 경로 설정 로직을 InputDelay마다 수행하도록 구현  
+	FTimerHandle DelayTimer;
+	float InputDelay;
+	uint8 bProcessInput : 1;
+
 	/*
 	 * Effect
 	 */

@@ -16,6 +16,8 @@ UAuraAbility_ClickToMove::UAuraAbility_ClickToMove()
 	bShouldMove = true;
 	SquaredArriveAcceptanceRadius = 1600.f;
 	bShouldSpawnCursorEffect = true;
+	InputDelay = 0.03f;
+	bProcessInput = true;
 }
 
 void UAuraAbility_ClickToMove::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -28,53 +30,63 @@ void UAuraAbility_ClickToMove::ActivateAbility(const FGameplayAbilitySpecHandle 
 
 	bShouldMove = true;
 	bShouldSpawnCursorEffect = true;	// 처음 마우스 클릭하면 커서 효과 생성
+
+	GetWorld()->GetTimerManager().SetTimer(DelayTimer, FTimerDelegate::CreateLambda([this]()
+	{
+		bProcessInput = true;
+	}), InputDelay, true);
 }
 
 void UAuraAbility_ClickToMove::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                             const FGameplayAbilityActivationInfo ActivationInfo)
 {
-	UE_LOG(LogTemp, Warning, TEXT("UAuraAbility_ClickToMove::InputPressed Called"));
-
-	FHitResult CursorHit;
-	AuraPlayerController->GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
-	if (!CursorHit.bBlockingHit)
+	// InputDelay마다 수행
+	if (bProcessInput)
 	{
-		return;
-	}
-
-	// 경로 계산
-	if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(Character, Character->GetActorLocation(), CursorHit.ImpactPoint))
-	{
-		SplineComponent->SetSplineWorldPoints(NavPath->PathPoints);
-		if (NavPath->PathPoints.Num())
+		bProcessInput = false;
+		
+		FHitResult CursorHit;
+		AuraPlayerController->GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
+		if (!CursorHit.bBlockingHit)
 		{
-			Destination = NavPath->PathPoints.Last();
+			return;
 		}
-	}
 
-	// 장애물을 피한 NavPath를 따른 위치에 커서 효과 생성
-	if (CursorEffect && bShouldSpawnCursorEffect)
-	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(Character, CursorEffect, Destination);
-		bShouldSpawnCursorEffect = false;
-	}
-
-	// 목적지까지 이동하는 AbilityTask 생성 및 실행
-	if (!IsValid(AbilityTask_ClickToMove))
-	{
-		AbilityTask_ClickToMove = UAbilityTask_ClickToMove::CreateTask(this);
-		if (AbilityTask_ClickToMove)
+		// 경로 계산
+		if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(Character, Character->GetActorLocation(), CursorHit.ImpactPoint))
 		{
-			// 목적지에 도착하고 Key를 떼면 Ability 종료
-			AbilityTask_ClickToMove->OnArrived.BindLambda([this]()
+			SplineComponent->SetSplineWorldPoints(NavPath->PathPoints);
+			if (NavPath->PathPoints.Num())
 			{
-				if (!bShouldMove)
-				{
-					EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo,false, false);
-				}
-			});
-			AbilityTask_ClickToMove->ReadyForActivation();
+				Destination = NavPath->PathPoints.Last();
+			}
 		}
+
+		// 장애물을 피한 NavPath를 따른 위치에 커서 효과 생성
+		if (CursorEffect && bShouldSpawnCursorEffect)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(Character, CursorEffect, Destination);
+			bShouldSpawnCursorEffect = false;
+		}
+
+		// 목적지까지 이동하는 AbilityTask 생성 및 실행
+		if (!IsValid(AbilityTask_ClickToMove))
+		{
+			AbilityTask_ClickToMove = UAbilityTask_ClickToMove::CreateTask(this);
+			if (AbilityTask_ClickToMove)
+			{
+				// 목적지에 도착하고 Key를 떼면 Ability 종료
+				AbilityTask_ClickToMove->OnArrived.BindLambda([this]()
+				{
+					if (!bShouldMove)
+					{
+						DelayTimer.Invalidate();
+						EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo,false, false);
+					}
+				});
+				AbilityTask_ClickToMove->ReadyForActivation();
+			}
+		}	
 	}
 }
 
