@@ -4,7 +4,24 @@
 #include "Character/AuraCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Player/AuraPlayerState.h"
+
+AAuraCharacter::AAuraCharacter()
+{
+	/* Camera */
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm Component"));
+	SpringArmComponent->SetupAttachment(GetRootComponent());
+	SpringArmComponent->bDoCollisionTest = false;
+	SpringArmComponent->SetUsingAbsoluteRotation(true);
+	SpringArmComponent->SetWorldRotation(FRotator(-55.f, 0.f, 0.f));
+	SpringArmComponent->TargetArmLength = 800.f;
+	
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera Component"));
+	CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
+	CameraComponent->bUsePawnControlRotation = false;
+}
 
 void AAuraCharacter::PossessedBy(AController* NewController)
 {
