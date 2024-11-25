@@ -6,10 +6,13 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Components/SplineComponent.h"
 #include "Input/AuraInputComponent.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
+	/* Click To Move */
+	SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("Spline Component"));
 }
 
 void AAuraPlayerController::BeginPlay()

@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "AuraPlayerController.generated.h"
 
+class USplineComponent;
 class UAuraAbilitySystemComponent;
 class UInputMappingContext;
 class UAuraInputConfig;
@@ -20,6 +21,8 @@ class AURA_API AAuraPlayerController : public APlayerController
 
 public:
 	AAuraPlayerController();
+
+	FORCEINLINE USplineComponent* GetSplineComponent() const { return SplineComponent; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -46,4 +49,10 @@ private:
 	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
 	
 	UAuraAbilitySystemComponent* GetAuraAbilitySystemComponent();
+
+	/*
+	 *	Click To Move
+	 */
+	UPROPERTY()
+	TObjectPtr<USplineComponent> SplineComponent;
 };
