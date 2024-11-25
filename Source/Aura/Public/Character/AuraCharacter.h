@@ -7,6 +7,8 @@
 #include "Interaction/CombatInterface.h"
 #include "AuraCharacter.generated.h"
 
+class UCameraComponent;
+class USpringArmComponent;
 class UGameplayEffect;
 /**
  * 
@@ -17,6 +19,7 @@ class AURA_API AAuraCharacter : public ABaseCharacter, public ICombatInterface
 	GENERATED_BODY()
 
 public:
+	AAuraCharacter();
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 
@@ -35,4 +38,13 @@ private:
 	TArray<TSubclassOf<UGameplayEffect>> DefaultEffects;
 
 	void InitializeAttributes();
+
+	/*
+	 *	Camera
+	 */
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
+	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UCameraComponent> CameraComponent;	
 };
