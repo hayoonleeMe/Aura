@@ -29,6 +29,7 @@ public:
 
 protected:
 	virtual void InitAbilityActorInfo() override;
+	virtual void InitializeAttributes() override;
 
 private:
 	/*
@@ -37,7 +38,11 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Effects")
 	TArray<TSubclassOf<UGameplayEffect>> DefaultEffects;
 
-	void InitializeAttributes();
+	/*
+	 *	Abilities
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Ability")
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 
 	/*
 	 *	Camera

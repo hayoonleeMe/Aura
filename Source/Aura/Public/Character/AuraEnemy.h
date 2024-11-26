@@ -5,8 +5,10 @@
 #include "CoreMinimal.h"
 #include "Character/BaseCharacter.h"
 #include "Interaction/CombatInterface.h"
+#include "Types/EnemyClassType.h"
 #include "AuraEnemy.generated.h"
 
+class UEnemyClassConfig;
 /**
  * 
  */
@@ -21,6 +23,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
+	virtual void InitializeAttributes() override;
 
 	/* Begin CombatInterface */
 	virtual int32 GetCharacterLevel_Implementation() override { return Level; }
@@ -30,6 +33,12 @@ private:
 	/*
 	 *	Combat
 	 */
-	UPROPERTY(EditAnywhere, Category="Aura|Level")
+	UPROPERTY(EditAnywhere, Category="Aura|Combat")
 	int32 Level;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
+	EEnemyClassType EnemyClassType;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
+	TObjectPtr<UEnemyClassConfig> EnemyClassConfig;
 };

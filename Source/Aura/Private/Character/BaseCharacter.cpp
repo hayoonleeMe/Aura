@@ -23,11 +23,22 @@ void ABaseCharacter::BeginPlay()
 	
 }
 
-void ABaseCharacter::AddStartupAbilities() const
+void ABaseCharacter::ApplyEffectSpecToSelf(const TSubclassOf<UGameplayEffect>& EffectClass, float InLevel) const
+{
+	if (EffectClass)
+	{
+		FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+		ContextHandle.AddSourceObject(this);
+		const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(EffectClass, InLevel, ContextHandle);
+		GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data);
+	}
+}
+
+void ABaseCharacter::AddStartupAbilities(const TArray<TSubclassOf<UGameplayAbility>>& AbilityClasses) const
 {
 	if (HasAuthority())
 	{
 		UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
-		AuraASC->AddAbilities(StartupAbilities);
+		AuraASC->AddAbilities(AbilityClasses);
 	}
 }

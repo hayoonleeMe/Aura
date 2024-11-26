@@ -5,6 +5,7 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "Character/EnemyClassConfig.h"
 
 AAuraEnemy::AAuraEnemy()
 {
@@ -23,9 +24,36 @@ void AAuraEnemy::BeginPlay()
 	Super::BeginPlay();
 
 	InitAbilityActorInfo();
+	InitializeAttributes();
 }
 
 void AAuraEnemy::InitAbilityActorInfo()
 {
-	AbilitySystemComponent->InitAbilityActorInfo(this, this);	
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+	// EnemyClassConfig에 정의된 데이터에 따라, EnemyClassType에 맞는 GameplayAbility 추가 
+	if (HasAuthority())
+	{
+		check(EnemyClassConfig);
+		if (const FEnemyClassInfo* EnemyClassInfo = EnemyClassConfig->GetInfoByType(EnemyClassType))
+		{
+			AddStartupAbilities(EnemyClassInfo->StartupAbilities);
+		}
+		AddStartupAbilities(EnemyClassConfig->SharedAbilities);
+	}
+}
+
+void AAuraEnemy::InitializeAttributes()
+{
+	// EnemyClassConfig에 정의된 데이터에 따라, EnemyClassType에 맞는 GameplayEffect로 Attributes를 초기화
+	if (HasAuthority())
+	{
+		check(EnemyClassConfig);
+		if (const FEnemyClassInfo* EnemyClassInfo = EnemyClassConfig->GetInfoByType(EnemyClassType))
+		{
+			ApplyEffectSpecToSelf(EnemyClassInfo->PrimaryAttributes, Level);
+		}
+		ApplyEffectSpecToSelf(EnemyClassConfig->SecondaryAttributes, Level);
+		ApplyEffectSpecToSelf(EnemyClassConfig->VitalAttributes, Level);
+	}
 }

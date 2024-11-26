@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
+class UGameplayEffect;
 class UGameplayAbility;
 class UAttributeSet;
 class UAbilitySystemComponent;
@@ -48,8 +49,10 @@ protected:
 	// ASC, AS를 초기화하는 함수
 	virtual void InitAbilityActorInfo() {}
 
-	void AddStartupAbilities() const;
+	// Attributes를 초기화하는 함수
+	virtual void InitializeAttributes() {}
 
-	UPROPERTY(EditDefaultsOnly, Category="Aura|Ability")
-	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
+	void ApplyEffectSpecToSelf(const TSubclassOf<UGameplayEffect>& EffectClass, float InLevel = 1.f) const;
+
+	void AddStartupAbilities(const TArray<TSubclassOf<UGameplayAbility>>& AbilityClasses) const;
 };
