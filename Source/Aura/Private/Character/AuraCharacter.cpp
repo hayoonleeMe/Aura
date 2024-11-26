@@ -73,12 +73,6 @@ void AAuraCharacter::InitializeAttributes()
 
 	for (const TSubclassOf<UGameplayEffect>& EffectClass : DefaultEffects)
 	{
-		if (EffectClass)
-		{
-			FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
-			ContextHandle.AddSourceObject(this);
-			FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(EffectClass, 1.f, ContextHandle);
-			GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data);
-		}
+		ApplyEffectSpecToSelf(EffectClass);
 	}
 }
