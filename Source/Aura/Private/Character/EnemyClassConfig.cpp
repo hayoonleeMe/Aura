@@ -2,3 +2,12 @@
 
 
 #include "Character/EnemyClassConfig.h"
+
+const FEnemyClassInfo* UEnemyClassConfig::GetInfoByType(EEnemyClassType InType) const
+{
+	if (TypeToInfoMap.Contains(InType))
+	{
+		return &TypeToInfoMap[InType];
+	}
+	return nullptr;
+}

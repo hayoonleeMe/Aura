@@ -36,6 +36,8 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TMap<EEnemyClassType, FEnemyClassInfo> TypeToInfoMap;
 
+	const FEnemyClassInfo* GetInfoByType(EEnemyClassType InType) const;
+	
 	// Enemy의 Secondary Attributes 초기화 Gameplay Effect
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGameplayEffect> SecondaryAttributes;
