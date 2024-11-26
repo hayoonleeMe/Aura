@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Character/BaseCharacter.h"
 #include "Interaction/CombatInterface.h"
+#include "Types/EnemyClassType.h"
 #include "AuraEnemy.generated.h"
 
 /**
@@ -30,6 +31,9 @@ private:
 	/*
 	 *	Combat
 	 */
-	UPROPERTY(EditAnywhere, Category="Aura|Level")
+	UPROPERTY(EditAnywhere, Category="Aura|Combat")
 	int32 Level;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
+	EEnemyClassType EnemyClassType;
 };
