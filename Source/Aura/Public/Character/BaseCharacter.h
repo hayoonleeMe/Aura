@@ -48,8 +48,5 @@ protected:
 	// ASC, AS를 초기화하는 함수
 	virtual void InitAbilityActorInfo() {}
 
-	void AddStartupAbilities() const;
-
-	UPROPERTY(EditDefaultsOnly, Category="Aura|Ability")
-	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
+	void AddStartupAbilities(const TArray<TSubclassOf<UGameplayAbility>>& AbilityClasses) const;
 };

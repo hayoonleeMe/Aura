@@ -40,6 +40,12 @@ private:
 	void InitializeAttributes();
 
 	/*
+	 *	Abilities
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Ability")
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
+
+	/*
 	 *	Camera
 	 */
 	UPROPERTY(VisibleAnywhere)

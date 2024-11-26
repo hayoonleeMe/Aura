@@ -64,7 +64,7 @@ void AAuraCharacter::InitAbilityActorInfo()
 	AbilitySystemComponent->InitAbilityActorInfo(AuraPS, this);
 	AttributeSet = AuraPS->GetAttributeSet();
 
-	AddStartupAbilities();
+	AddStartupAbilities(StartupAbilities);
 }
 
 void AAuraCharacter::InitializeAttributes()
