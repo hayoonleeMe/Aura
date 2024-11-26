@@ -31,10 +31,10 @@ protected:
 	/*
 	 *	Weapon Mesh
 	 */
-	UPROPERTY(VisibleAnywhere, Category="Weapon Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USkeletalMeshComponent> WeaponMeshComponent;
 
-	UPROPERTY(EditDefaultsOnly, Category="Weapon Mesh")
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Weapon Mesh")
 	FName WeaponSocketName;
 
 	/*
