@@ -49,6 +49,9 @@ protected:
 	// ASC, AS를 초기화하는 함수
 	virtual void InitAbilityActorInfo() {}
 
+	// Attributes를 초기화하는 함수
+	virtual void InitializeAttributes() {}
+
 	void ApplyEffectSpecToSelf(const TSubclassOf<UGameplayEffect>& EffectClass, float InLevel = 1.f) const;
 
 	void AddStartupAbilities(const TArray<TSubclassOf<UGameplayAbility>>& AbilityClasses) const;
