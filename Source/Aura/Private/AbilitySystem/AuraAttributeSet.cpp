@@ -4,6 +4,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 
 #include "AuraGameplayTags.h"
+#include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
@@ -88,6 +89,28 @@ void UAuraAttributeSet::PrintDebug()
 	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetLightningResistanceAttribute().GetName(), GetLightningResistance());
 	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetArcaneResistanceAttribute().GetName(), GetArcaneResistance());
 	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetPhysicalResistanceAttribute().GetName(), GetPhysicalResistance());
+}
+
+void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
+{
+	Super::PostGameplayEffectExecute(Data);
+
+	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
+	{
+		HandleIncomingDamage();
+	}
+}
+
+void UAuraAttributeSet::HandleIncomingDamage()
+{
+	const float LocalIncomingDamage = GetIncomingDamage();
+	if (LocalIncomingDamage > 0.f)
+	{
+		const float NewHealth = FMath::Clamp(GetHealth() - LocalIncomingDamage, 0.f, GetMaxHealth());
+		SetHealth(NewHealth);
+
+		PrintDebug();
+	}
 }
 
 void UAuraAttributeSet::OnRep_Strength(const FGameplayAttributeData& OldStrength) const

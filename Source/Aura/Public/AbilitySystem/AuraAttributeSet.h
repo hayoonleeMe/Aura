@@ -26,6 +26,7 @@ public:
 	UAuraAttributeSet();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PrintDebug() override;
+	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
 	// Tag와 Attribute Mapping
 	TMap<FGameplayTag, FGameplayAttribute> TagToAttributeMap;
@@ -186,4 +187,6 @@ public:
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
 
+private:
+	void HandleIncomingDamage();
 };
