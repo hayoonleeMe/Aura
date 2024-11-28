@@ -71,6 +71,7 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 
 void UAuraAttributeSet::PrintDebug()
 {
+	UE_LOG(LogTemp, Warning, TEXT("=== OwningActor : %s ==="), *GetOwningActor()->GetName());
 	UE_LOG(LogTemp, Warning, TEXT("=== Primary Attributes ==="));
 	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetStrengthAttribute().GetName(), GetStrength());
 	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetIntelligenceAttribute().GetName(), GetIntelligence());
