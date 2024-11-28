@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
 
@@ -23,4 +24,7 @@ class AURA_API ICombatInterface
 public:
 	UFUNCTION(BlueprintNativeEvent)
 	int32 GetCharacterLevel();
+
+	UFUNCTION(BlueprintNativeEvent)
+	FGameplayTag GetRoleTag() const;
 };

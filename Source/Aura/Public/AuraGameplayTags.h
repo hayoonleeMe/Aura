@@ -64,6 +64,12 @@ struct FAuraGameplayTags
 	FGameplayTag Damage_Type_Physical;
 
 	TMap<FGameplayTag, FGameplayTag> DamageTypeToResistanceMap;
+
+	/*
+	 *	Role
+	 */
+	FGameplayTag Role_Player;
+	FGameplayTag Role_Enemy;
 	
 private:
 	static FAuraGameplayTags GameplayTags;

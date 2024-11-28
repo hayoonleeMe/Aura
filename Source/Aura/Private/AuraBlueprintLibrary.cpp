@@ -8,6 +8,7 @@
 #include "AuraGameplayTags.h"
 #include "GameplayEffectTypes.h"
 #include "Game/AuraGameModeBase.h"
+#include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Types/AuraAbilityTypes.h"
 
@@ -34,4 +35,15 @@ void UAuraBlueprintLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, Params.DamageTypeTag, Params.BaseDamage);
 	
 	Params.TargetAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data);
+}
+
+bool UAuraBlueprintLibrary::IsNotFriend(const AActor* Actor1, const AActor* Actor2)
+{
+	if (Actor1->Implements<UCombatInterface>() && Actor2->Implements<UCombatInterface>())
+	{
+		const FGameplayTag& RoleTag1 = ICombatInterface::Execute_GetRoleTag(Actor1);
+		const FGameplayTag& RoleTag2 = ICombatInterface::Execute_GetRoleTag(Actor2);
+		return !RoleTag1.MatchesTagExact(RoleTag2);
+	}
+	return true;
 }

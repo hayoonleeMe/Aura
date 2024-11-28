@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/Character.h"
+#include "Interaction/CombatInterface.h"
 #include "BaseCharacter.generated.h"
 
 class UGameplayEffect;
@@ -13,7 +15,7 @@ class UAttributeSet;
 class UAbilitySystemComponent;
 
 UCLASS(Abstract)
-class AURA_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface
+class AURA_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
 	GENERATED_BODY()
 
@@ -24,6 +26,10 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComponent; }
 	/* End IAbilitySystemInterface */
 	FORCEINLINE UAttributeSet* GetAttributeSet() const { return AttributeSet; }
+
+	/* Begin CombatInterface */
+	virtual FGameplayTag GetRoleTag_Implementation() const override { return RoleTag; }
+	/* End CombatInterface */
 	
 protected:
 	virtual void BeginPlay() override;
@@ -55,4 +61,10 @@ protected:
 	void ApplyEffectSpecToSelf(const TSubclassOf<UGameplayEffect>& EffectClass, float InLevel = 1.f) const;
 
 	void AddStartupAbilities(const TArray<TSubclassOf<UGameplayAbility>>& AbilityClasses) const;
+
+	/*
+	 *	Role
+	 */
+	UPROPERTY(EditAnywhere, Category="Aura|Role")
+	FGameplayTag RoleTag;
 };

@@ -26,4 +26,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static void ApplyDamageEffect(const FDamageEffectParams& Params);
+
+	// 데미지를 입히기 위해 서로 적인지를 판별하는 함수
+	UFUNCTION(BlueprintCallable)
+	static bool IsNotFriend(const AActor* Actor1, const AActor* Actor2);
 };
