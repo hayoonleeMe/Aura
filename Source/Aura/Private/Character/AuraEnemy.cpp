@@ -3,6 +3,7 @@
 
 #include "Character/AuraEnemy.h"
 
+#include "AuraBlueprintLibrary.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Character/EnemyClassConfig.h"
@@ -34,12 +35,14 @@ void AAuraEnemy::InitAbilityActorInfo()
 	// EnemyClassConfig에 정의된 데이터에 따라, EnemyClassType에 맞는 GameplayAbility 추가 
 	if (HasAuthority())
 	{
-		check(EnemyClassConfig);
-		if (const FEnemyClassInfo* EnemyClassInfo = EnemyClassConfig->GetInfoByType(EnemyClassType))
+		if (const UEnemyClassConfig* EnemyClassConfig = UAuraBlueprintLibrary::GetEnemyClassConfig(this))
 		{
-			AddStartupAbilities(EnemyClassInfo->StartupAbilities);
+			if (const FEnemyClassInfo* EnemyClassInfo = EnemyClassConfig->GetInfoByType(EnemyClassType))
+			{
+				AddStartupAbilities(EnemyClassInfo->StartupAbilities);
+			}
+			AddStartupAbilities(EnemyClassConfig->SharedAbilities);
 		}
-		AddStartupAbilities(EnemyClassConfig->SharedAbilities);
 	}
 }
 
@@ -48,12 +51,14 @@ void AAuraEnemy::InitializeAttributes()
 	// EnemyClassConfig에 정의된 데이터에 따라, EnemyClassType에 맞는 GameplayEffect로 Attributes를 초기화
 	if (HasAuthority())
 	{
-		check(EnemyClassConfig);
-		if (const FEnemyClassInfo* EnemyClassInfo = EnemyClassConfig->GetInfoByType(EnemyClassType))
+		if (const UEnemyClassConfig* EnemyClassConfig = UAuraBlueprintLibrary::GetEnemyClassConfig(this))
 		{
-			ApplyEffectSpecToSelf(EnemyClassInfo->PrimaryAttributes, Level);
+			if (const FEnemyClassInfo* EnemyClassInfo = EnemyClassConfig->GetInfoByType(EnemyClassType))
+			{
+				ApplyEffectSpecToSelf(EnemyClassInfo->PrimaryAttributes, Level);
+			}
+			ApplyEffectSpecToSelf(EnemyClassConfig->SecondaryAttributes, Level);
+			ApplyEffectSpecToSelf(EnemyClassConfig->VitalAttributes, Level);
 		}
-		ApplyEffectSpecToSelf(EnemyClassConfig->SecondaryAttributes, Level);
-		ApplyEffectSpecToSelf(EnemyClassConfig->VitalAttributes, Level);
 	}
 }
