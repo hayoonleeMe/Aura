@@ -38,7 +38,4 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
 	EEnemyClassType EnemyClassType;
-
-	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
-	TObjectPtr<UEnemyClassConfig> EnemyClassConfig;
 };

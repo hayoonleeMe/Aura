@@ -44,4 +44,17 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	/* Vital Attributes */
 	GameplayTags.Attributes_Vital_Health = Manager.AddNativeGameplayTag(TEXT("Attributes.Vital.Health"), TEXT("Amount of damage a player can take before death"));
 	GameplayTags.Attributes_Vital_Mana = Manager.AddNativeGameplayTag(TEXT("Attributes.Vital.Mana"), TEXT("Amount of energy a player can use to cast spells"));
+
+	/* Damage Types */
+	GameplayTags.Damage_Type_Fire = Manager.AddNativeGameplayTag(TEXT("Damage.Type.Fire"), TEXT("Fire Damage Type"));
+	GameplayTags.DamageTypeToResistanceMap.Add(GameplayTags.Damage_Type_Fire, GameplayTags.Attributes_Secondary_FireResistance);
+	
+	GameplayTags.Damage_Type_Lightning = Manager.AddNativeGameplayTag(TEXT("Damage.Type.Lightning"), TEXT("Lightning Damage Type"));
+	GameplayTags.DamageTypeToResistanceMap.Add(GameplayTags.Damage_Type_Lightning, GameplayTags.Attributes_Secondary_LightningResistance);
+	
+	GameplayTags.Damage_Type_Arcane = Manager.AddNativeGameplayTag(TEXT("Damage.Type.Arcane"), TEXT("Arcane Damage Type"));
+	GameplayTags.DamageTypeToResistanceMap.Add(GameplayTags.Damage_Type_Arcane, GameplayTags.Attributes_Secondary_ArcaneResistance);
+	
+	GameplayTags.Damage_Type_Physical = Manager.AddNativeGameplayTag(TEXT("Damage.Type.Physical"), TEXT("Physical Damage Type"));
+	GameplayTags.DamageTypeToResistanceMap.Add(GameplayTags.Damage_Type_Physical, GameplayTags.Attributes_Secondary_PhysicalResistance);
 }
