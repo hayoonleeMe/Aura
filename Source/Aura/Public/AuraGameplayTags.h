@@ -5,12 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 
-/*
+/**
  *	Singleton containing native gameplay tags
  */
 struct FAuraGameplayTags
 {
-public:
 	static FAuraGameplayTags& Get() { return GameplayTags; }
 	static void InitializeNativeGameplayTags();
 
@@ -55,6 +54,16 @@ public:
 	 */
 	FGameplayTag Attributes_Vital_Health;
 	FGameplayTag Attributes_Vital_Mana;
+
+	/*
+	 *	Damage Types
+	 */
+	FGameplayTag Damage_Type_Fire;
+	FGameplayTag Damage_Type_Lightning;
+	FGameplayTag Damage_Type_Arcane;
+	FGameplayTag Damage_Type_Physical;
+
+	TMap<FGameplayTag, FGameplayTag> DamageTypeToResistanceMap;
 	
 private:
 	static FAuraGameplayTags GameplayTags;
