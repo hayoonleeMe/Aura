@@ -71,10 +71,12 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 
 void UAuraAttributeSet::PrintDebug()
 {
+	UE_LOG(LogTemp, Warning, TEXT("=== Primary Attributes ==="));
 	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetStrengthAttribute().GetName(), GetStrength());
 	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetIntelligenceAttribute().GetName(), GetIntelligence());
 	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetResilienceAttribute().GetName(), GetResilience());
 	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetVigorAttribute().GetName(), GetVigor());
+	UE_LOG(LogTemp, Warning, TEXT("=== Secondary Attributes ==="));
 	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetArmorAttribute().GetName(), GetArmor());
 	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetArmorPenetrationAttribute().GetName(), GetArmorPenetration());
 	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetBlockChanceAttribute().GetName(), GetBlockChance());
@@ -89,6 +91,9 @@ void UAuraAttributeSet::PrintDebug()
 	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetLightningResistanceAttribute().GetName(), GetLightningResistance());
 	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetArcaneResistanceAttribute().GetName(), GetArcaneResistance());
 	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetPhysicalResistanceAttribute().GetName(), GetPhysicalResistance());
+	UE_LOG(LogTemp, Warning, TEXT("=== Vital Attributes ==="));
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetHealthAttribute().GetName(), GetHealth());
+	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetManaAttribute().GetName(), GetMana());
 }
 
 void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
