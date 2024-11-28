@@ -20,4 +20,7 @@ class AURA_API UAuraBlueprintLibrary : public UBlueprintFunctionLibrary
 public:
 	UFUNCTION(BlueprintCallable)
 	static UEnemyClassConfig* GetEnemyClassConfig(const UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable)
+	static UCurveTable* GetDamageCalculationCoefficients(const UObject* WorldContextObject);
 };

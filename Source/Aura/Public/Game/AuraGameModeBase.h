@@ -22,4 +22,8 @@ public:
 	 */
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
 	TObjectPtr<UEnemyClassConfig> EnemyClassConfig;
+
+	// Damage 계산식에 사용되는 계수 By Level
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
+	TObjectPtr<UCurveTable> DamageCalculationCoefficients;
 };

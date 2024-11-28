@@ -14,4 +14,9 @@ UEnemyClassConfig* UAuraBlueprintLibrary::GetEnemyClassConfig(const UObject* Wor
 	return IsValid(AuraGameModeBase) ? AuraGameModeBase->EnemyClassConfig : nullptr;
 }
 
+UCurveTable* UAuraBlueprintLibrary::GetDamageCalculationCoefficients(const UObject* WorldContextObject)
+{
+	const AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	return IsValid(AuraGameModeBase) ? AuraGameModeBase->DamageCalculationCoefficients : nullptr;
+}
 
