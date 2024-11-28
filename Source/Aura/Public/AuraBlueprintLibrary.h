@@ -23,4 +23,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static UCurveTable* GetDamageCalculationCoefficients(const UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable)
+	static void ApplyDamageEffect(const FDamageEffectParams& Params);
 };
