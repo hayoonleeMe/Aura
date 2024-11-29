@@ -9,6 +9,7 @@
 #include "Interaction/CombatInterface.h"
 #include "BaseCharacter.generated.h"
 
+class UMotionWarpingComponent;
 class UGameplayEffect;
 class UGameplayAbility;
 class UAttributeSet;
@@ -29,6 +30,7 @@ public:
 
 	/* Begin CombatInterface */
 	virtual FGameplayTag GetRoleTag_Implementation() const override { return RoleTag; }
+	virtual void SetFacingTarget_Implementation(const FVector& TargetLocation) override;
 	/* End CombatInterface */
 	
 protected:
@@ -67,4 +69,13 @@ protected:
 	 */
 	UPROPERTY(EditAnywhere, Category="Aura|Role")
 	FGameplayTag RoleTag;
+
+	/*
+	 *	Motion Warping
+	 */
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Motion Warping")
+	FName WarpTargetName;
 };

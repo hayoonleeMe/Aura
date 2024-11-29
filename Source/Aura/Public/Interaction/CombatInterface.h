@@ -27,4 +27,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	FGameplayTag GetRoleTag() const;
+
+	UFUNCTION(BlueprintNativeEvent)
+	void SetFacingTarget(const FVector& TargetLocation);
 };

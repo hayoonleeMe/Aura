@@ -3,6 +3,7 @@
 
 #include "Character/BaseCharacter.h"
 
+#include "MotionWarpingComponent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
@@ -22,6 +23,19 @@ ABaseCharacter::ABaseCharacter()
 	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon Mesh Component"));
 	WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	WeaponMeshComponent->SetupAttachment(GetMesh(), WeaponSocketName);
+
+	/* Motion Warping */
+	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("Motion Warping Component"));
+	WarpTargetName = TEXT("FacingTarget");
+}
+
+
+void ABaseCharacter::SetFacingTarget_Implementation(const FVector& TargetLocation)
+{
+	if (MotionWarpingComponent)
+	{
+		MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(WarpTargetName, TargetLocation);
+	}
 }
 
 void ABaseCharacter::BeginPlay()
