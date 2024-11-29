@@ -70,6 +70,11 @@ struct FAuraGameplayTags
 	 */
 	FGameplayTag Role_Player;
 	FGameplayTag Role_Enemy;
+
+	/*
+	 *	Event
+	 */
+	FGameplayTag Event_Montage_FireBolt;
 	
 private:
 	static FAuraGameplayTags GameplayTags;
