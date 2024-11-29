@@ -9,6 +9,9 @@
 
 AAuraPlayerState::AAuraPlayerState()
 {
+	// PlayerState의 기본 NetUpdateFrequency는 낮기 때문에 PlayerState에서 ASC와 AS를 가지기 위해선 높여줘야 한다.
+	NetUpdateFrequency = 100.f;
+	
 	/* GAS */
 	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>(TEXT("Ability System Component"));
 	AbilitySystemComponent->SetIsReplicated(true);
