@@ -75,6 +75,12 @@ struct FAuraGameplayTags
 	 *	Event
 	 */
 	FGameplayTag Event_Montage_FireBolt;
+
+	/*
+	 *	Abilities
+	 */
+	FGameplayTag Abilities_ClickToMove;
+	FGameplayTag Abilities_FireBolt;
 	
 private:
 	static FAuraGameplayTags GameplayTags;
