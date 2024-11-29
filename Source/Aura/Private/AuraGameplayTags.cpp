@@ -57,4 +57,11 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	
 	GameplayTags.Damage_Type_Physical = Manager.AddNativeGameplayTag(TEXT("Damage.Type.Physical"), TEXT("Physical Damage Type"));
 	GameplayTags.DamageTypeToResistanceMap.Add(GameplayTags.Damage_Type_Physical, GameplayTags.Attributes_Secondary_PhysicalResistance);
+
+	/* Role */
+	GameplayTags.Role_Player = Manager.AddNativeGameplayTag(TEXT("Role.Player"), TEXT("Player Role"));
+	GameplayTags.Role_Enemy = Manager.AddNativeGameplayTag(TEXT("Role.Enemy"), TEXT("Enemy Role"));
+
+	/* Event */
+	GameplayTags.Event_Montage_FireBolt = Manager.AddNativeGameplayTag(TEXT("Event.Montage.FireBolt"), TEXT("FireBolt Montage Event Tag"));
 }

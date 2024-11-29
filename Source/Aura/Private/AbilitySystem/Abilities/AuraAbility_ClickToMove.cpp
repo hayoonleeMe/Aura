@@ -81,7 +81,7 @@ void UAuraAbility_ClickToMove::InputPressed(const FGameplayAbilitySpecHandle Han
 					if (!bShouldMove)
 					{
 						DelayTimer.Invalidate();
-						EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo,false, false);
+						K2_EndAbility();
 					}
 				});
 				AbilityTask_ClickToMove->ReadyForActivation();

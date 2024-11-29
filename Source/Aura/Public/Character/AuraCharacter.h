@@ -14,7 +14,7 @@ class UGameplayEffect;
  * 
  */
 UCLASS()
-class AURA_API AAuraCharacter : public ABaseCharacter, public ICombatInterface
+class AURA_API AAuraCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 

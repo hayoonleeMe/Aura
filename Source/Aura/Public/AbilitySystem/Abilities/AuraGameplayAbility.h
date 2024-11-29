@@ -18,4 +18,8 @@ public:
 	// Ability를 활성화하는 Input Key를 나타내는 Tag
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
 	FGameplayTag InputTag;
+
+	// Ability를 실행하면 재생할 기본 AnimMontage
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Montage")
+	TObjectPtr<UAnimMontage> BaseMontage;
 };

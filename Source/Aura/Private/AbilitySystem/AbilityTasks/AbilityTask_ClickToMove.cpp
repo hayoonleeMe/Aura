@@ -26,8 +26,11 @@ void UAbilityTask_ClickToMove::TickTask(float DeltaTime)
 
 	if (OwningAbility && OwningAbility->MoveToDestination())
 	{
-		// 캐릭터가 목적지에 도착하면 Task 종료 및 델레게이트 실행 
+		// 캐릭터가 목적지에 도착하면 Task 종료 및 델레게이트 실행
+		if (ShouldBroadcastAbilityTaskDelegates())
+		{
+			OnArrived.Execute();
+		}
 		EndTask();
-		OnArrived.Execute();
 	}
 }

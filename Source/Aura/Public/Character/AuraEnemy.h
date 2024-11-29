@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Character/BaseCharacter.h"
-#include "Interaction/CombatInterface.h"
 #include "Types/EnemyClassType.h"
 #include "AuraEnemy.generated.h"
 
@@ -13,7 +12,7 @@ class UEnemyClassConfig;
  * 
  */
 UCLASS()
-class AURA_API AAuraEnemy : public ABaseCharacter, public ICombatInterface
+class AURA_API AAuraEnemy : public ABaseCharacter
 {
 	GENERATED_BODY()
 
