@@ -26,6 +26,9 @@ public:
 	int32 GetCharacterLevel();
 
 	UFUNCTION(BlueprintNativeEvent)
+	FVector GetCombatSocketLocation() const;
+
+	UFUNCTION(BlueprintNativeEvent)
 	FGameplayTag GetRoleTag() const;
 
 	UFUNCTION(BlueprintNativeEvent)

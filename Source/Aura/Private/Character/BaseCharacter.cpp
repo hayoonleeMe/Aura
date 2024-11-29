@@ -23,12 +23,21 @@ ABaseCharacter::ABaseCharacter()
 	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon Mesh Component"));
 	WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	WeaponMeshComponent->SetupAttachment(GetMesh(), WeaponSocketName);
+	CombatSocketName = TEXT("CombatSocket");
 
 	/* Motion Warping */
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("Motion Warping Component"));
 	WarpTargetName = TEXT("FacingTarget");
 }
 
+FVector ABaseCharacter::GetCombatSocketLocation_Implementation() const
+{
+	if (WeaponMeshComponent)
+	{
+		return WeaponMeshComponent->GetSocketLocation(CombatSocketName);
+	}
+	return FVector::ZeroVector;
+}
 
 void ABaseCharacter::SetFacingTarget_Implementation(const FVector& TargetLocation)
 {
