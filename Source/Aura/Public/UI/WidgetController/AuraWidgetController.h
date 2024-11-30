@@ -38,7 +38,7 @@ struct FWidgetControllerParams
  * Model(데이터가 저장된 클래스) 영역과 View(눈으로 볼 수 있는 영역, ie. widget) 영역 간의 데이터, 이벤트 전송을 위한 오브젝트
  * Widget이 WidgetController를 가지고(의존), WidgetController가 Model 영역의 클래스를 가진다(의존). => 단방향 의존 
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class AURA_API UAuraWidgetController : public UObject
 {
 	GENERATED_BODY()
