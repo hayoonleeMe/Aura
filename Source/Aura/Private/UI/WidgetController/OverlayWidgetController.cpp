@@ -8,7 +8,7 @@
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
-	const UAuraAttributeSet* AuraAS = GetCheckedAuraAttributeSet();
+	const UAuraAttributeSet* AuraAS = GetAuraAttributeSetChecked();
 	
 	OnHealthChangedDelegate.Broadcast(AuraAS->GetHealth());
 	OnMaxHealthChangedDelegate.Broadcast(AuraAS->GetMaxHealth());
@@ -18,8 +18,8 @@ void UOverlayWidgetController::BroadcastInitialValues()
 
 void UOverlayWidgetController::BindCallbacksToDependencies()
 {
-	const UAuraAttributeSet* AuraAS = GetCheckedAuraAttributeSet();
-	UAuraAbilitySystemComponent* AuraASC = GetCheckedAuraAbilitySystemComponent();
+	const UAuraAttributeSet* AuraAS = GetAuraAttributeSetChecked();
+	UAuraAbilitySystemComponent* AuraASC = GetAuraAbilitySystemComponentChecked();
 
 	// Attribute가 변경되면 Widget으로 새 데이터 전송
 	AuraASC->GetGameplayAttributeValueChangeDelegate(AuraAS->GetHealthAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)

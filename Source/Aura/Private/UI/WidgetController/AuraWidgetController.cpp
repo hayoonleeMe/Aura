@@ -16,22 +16,22 @@ void UAuraWidgetController::SetWidgetControllerParams(const FWidgetControllerPar
 	AttributeSet = WCParams.AttributeSet;
 }
 
-AAuraPlayerController* UAuraWidgetController::GetCheckedAuraPlayerController() const
+AAuraPlayerController* UAuraWidgetController::GetAuraPlayerControllerChecked() const
 {
 	return CastChecked<AAuraPlayerController>(PlayerController);
 }
 
-AAuraPlayerState* UAuraWidgetController::GetCheckedAuraPlayerState() const
+AAuraPlayerState* UAuraWidgetController::GetAuraPlayerStateChecked() const
 {
 	return CastChecked<AAuraPlayerState>(PlayerState);
 }
 
-UAuraAbilitySystemComponent* UAuraWidgetController::GetCheckedAuraAbilitySystemComponent() const
+UAuraAbilitySystemComponent* UAuraWidgetController::GetAuraAbilitySystemComponentChecked() const
 {
 	return CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
 }
 
-UAuraAttributeSet* UAuraWidgetController::GetCheckedAuraAttributeSet() const
+UAuraAttributeSet* UAuraWidgetController::GetAuraAttributeSetChecked() const
 {
 	return CastChecked<UAuraAttributeSet>(AttributeSet);
 }

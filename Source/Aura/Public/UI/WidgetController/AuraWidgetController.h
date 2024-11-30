@@ -69,8 +69,8 @@ protected:
 	TObjectPtr<UAttributeSet> AttributeSet;
 
 	// CastChecked 수행해 반환
-	AAuraPlayerController* GetCheckedAuraPlayerController() const;
-	AAuraPlayerState* GetCheckedAuraPlayerState() const;
-	UAuraAbilitySystemComponent* GetCheckedAuraAbilitySystemComponent() const;
-	UAuraAttributeSet* GetCheckedAuraAttributeSet() const;
+	AAuraPlayerController* GetAuraPlayerControllerChecked() const;
+	AAuraPlayerState* GetAuraPlayerStateChecked() const;
+	UAuraAbilitySystemComponent* GetAuraAbilitySystemComponentChecked() const;
+	UAuraAttributeSet* GetAuraAttributeSetChecked() const;
 };
