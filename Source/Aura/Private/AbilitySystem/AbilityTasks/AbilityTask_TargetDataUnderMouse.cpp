@@ -56,7 +56,7 @@ void UAbilityTask_TargetDataUnderMouse::SendTargetDataToServer()
 		// AbilityTask를 실행한 Ability가 유효하고 Active한지 체크하고 Broadcast
 		if (ShouldBroadcastAbilityTaskDelegates())
 		{
-			TargetDataUnderMouseSet.Execute(TargetDataHandle);
+			TargetDataUnderMouseSetDelegate.Execute(TargetDataHandle);
 		}
 		EndTask();
 	}
@@ -70,7 +70,7 @@ void UAbilityTask_TargetDataUnderMouse::OnAbilityTargetDataSet(const FGameplayAb
 	// AbilityTask를 실행한 Ability가 유효하고 Active한지 체크하고 Broadcast
 	if (ShouldBroadcastAbilityTaskDelegates())
 	{
-		TargetDataUnderMouseSet.Execute(TargetDataHandle);
+		TargetDataUnderMouseSetDelegate.Execute(TargetDataHandle);
 	}
 	EndTask();
 }
