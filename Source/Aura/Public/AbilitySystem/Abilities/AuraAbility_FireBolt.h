@@ -17,7 +17,7 @@ class AURA_API UAuraAbility_FireBolt : public UAuraProjectileAbility
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
-	// UAbilityTask_TargetDataUnderMouse::TargetDataUnderMouseSet 델레게이트의 Callback 함수
+	// UAbilityTask_TargetDataUnderMouse::TargetDataUnderMouseSetDelegate 델레게이트의 Callback 함수
 	void OnTargetDataUnderMouseSet(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 
 	// UAbilityTask_WaitGameplayEvent::EventReceived 델레게이트의 Callback 함수

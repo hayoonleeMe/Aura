@@ -6,7 +6,7 @@
 #include "Abilities/Tasks/AbilityTask.h"
 #include "AbilityTask_ClickToMove.generated.h"
 
-DECLARE_DELEGATE(FOnArrived);
+DECLARE_DELEGATE(FOnArrivedSignature);
 
 class UAuraAbility_ClickToMove;
 /**
@@ -23,7 +23,7 @@ public:
 	virtual void TickTask(float DeltaTime) override;
 
 	// 캐릭터가 목적지에 도착하면 실행되는 델레게이트
-	FOnArrived OnArrived;		
+	FOnArrivedSignature OnArrivedDelegate;		
 	
 private:
 	UPROPERTY()

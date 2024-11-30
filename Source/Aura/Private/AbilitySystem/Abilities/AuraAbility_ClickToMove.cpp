@@ -76,7 +76,7 @@ void UAuraAbility_ClickToMove::InputPressed(const FGameplayAbilitySpecHandle Han
 			if (AbilityTask_ClickToMove)
 			{
 				// 목적지에 도착하고 Key를 떼면 Ability 종료
-				AbilityTask_ClickToMove->OnArrived.BindLambda([this]()
+				AbilityTask_ClickToMove->OnArrivedDelegate.BindLambda([this]()
 				{
 					if (!bShouldMove)
 					{

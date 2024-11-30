@@ -15,7 +15,7 @@ void UAuraAbility_FireBolt::ActivateAbility(const FGameplayAbilitySpecHandle Han
 {
 	if (UAbilityTask_TargetDataUnderMouse* AbilityTask = UAbilityTask_TargetDataUnderMouse::CreateTask(this))
 	{
-		AbilityTask->TargetDataUnderMouseSet.BindUObject(this, &ThisClass::OnTargetDataUnderMouseSet);
+		AbilityTask->TargetDataUnderMouseSetDelegate.BindUObject(this, &ThisClass::OnTargetDataUnderMouseSet);
 		AbilityTask->ReadyForActivation();
 	}
 }

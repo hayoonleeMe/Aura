@@ -6,7 +6,7 @@
 #include "Abilities/Tasks/AbilityTask.h"
 #include "AbilityTask_TargetDataUnderMouse.generated.h"
 
-DECLARE_DELEGATE_OneParam(FTargetDataUnderMouseSet, const FGameplayAbilityTargetDataHandle& /* TargetDataHandle */);
+DECLARE_DELEGATE_OneParam(FTargetDataUnderMouseSetSignature, const FGameplayAbilityTargetDataHandle& /* TargetDataHandle */);
 
 /**
  * 마우스 커서의 HitResult를 얻는 AbilityTask
@@ -22,7 +22,7 @@ public:
 	static UAbilityTask_TargetDataUnderMouse* CreateTask(UGameplayAbility* OwningAbility);
 
 	// 올바른 TargetData(HitResult)를 반환할 때 실행되는 델레게이트
-	FTargetDataUnderMouseSet TargetDataUnderMouseSet;
+	FTargetDataUnderMouseSetSignature TargetDataUnderMouseSetDelegate;
 	
 protected:
 	virtual void Activate() override;
