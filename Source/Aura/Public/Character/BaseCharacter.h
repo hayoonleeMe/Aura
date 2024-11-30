@@ -32,6 +32,7 @@ public:
 	virtual FVector GetCombatSocketLocation_Implementation() const override;
 	virtual FGameplayTag GetRoleTag_Implementation() const override { return RoleTag; }
 	virtual void SetFacingTarget_Implementation(const FVector& TargetLocation) override;
+	virtual UAnimMontage* GetHitReactMontage_Implementation() const override { return HitReactMontage; }
 	/* End CombatInterface */
 	
 protected:
@@ -82,4 +83,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Motion Warping")
 	FName WarpTargetName;
+
+	/*
+	 *	HitReact
+	 */
+	UPROPERTY(EditAnywhere, Category="Aura|HitReact")
+	TObjectPtr<UAnimMontage> HitReactMontage;
 };

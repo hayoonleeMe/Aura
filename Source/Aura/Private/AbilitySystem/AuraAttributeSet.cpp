@@ -115,7 +115,16 @@ void UAuraAttributeSet::HandleIncomingDamage()
 		const float NewHealth = FMath::Clamp(GetHealth() - LocalIncomingDamage, 0.f, GetMaxHealth());
 		SetHealth(NewHealth);
 
-		PrintDebug();
+		if (NewHealth <= 0.f)
+		{
+			// TODO : Dead
+		}
+		else
+		{
+			// HitReact
+			const FGameplayTagContainer TagContainer(FAuraGameplayTags::Get().Abilities_HitReact);
+			GetOwningAbilitySystemComponentChecked()->TryActivateAbilitiesByTag(TagContainer);
+		}
 	}
 }
 

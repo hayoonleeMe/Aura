@@ -33,4 +33,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void SetFacingTarget(const FVector& TargetLocation);
+
+	UFUNCTION(BlueprintNativeEvent)
+	UAnimMontage* GetHitReactMontage() const;
 };
