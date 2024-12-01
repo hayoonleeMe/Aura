@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AuraBlueprintLibrary.h"
+#include "AuraGameplayTags.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Aura/Aura.h"
 #include "Components/AudioComponent.h"
@@ -55,8 +56,11 @@ void AAuraProjectile::BeginPlay()
 
 void AAuraProjectile::Destroyed()
 {
-	// Projectile이 제거되기 전에
-	SpawnImpactEffect();
+	if (LoopingSoundComponent)
+	{
+		LoopingSoundComponent->Stop();
+		LoopingSoundComponent->DestroyComponent();
+	}
 	Super::Destroyed();
 }
 
@@ -75,23 +79,17 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 		UAuraBlueprintLibrary::ApplyDamageEffect(DamageEffectParams);
 	}
 	
+	ExecuteImpactCue();
 	Destroy();
 }
 
-void AAuraProjectile::SpawnImpactEffect() const
+void AAuraProjectile::ExecuteImpactCue() const
 {
-	if (ImpactEffect)
+	if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwner()))
 	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
-	}
-	if (ImpactSound)
-	{
-		UGameplayStatics::SpawnSoundAtLocation(this, ImpactSound, GetActorLocation());
-	}
-	if (LoopingSoundComponent)
-	{
-		LoopingSoundComponent->Stop();
-		LoopingSoundComponent->DestroyComponent();
+		FGameplayCueParameters CueParameters;
+		CueParameters.Location = GetActorLocation();
+		ASC->ExecuteGameplayCue(FAuraGameplayTags::Get().GameplayCue_FireBoltImpact, CueParameters);
 	}
 }
 
