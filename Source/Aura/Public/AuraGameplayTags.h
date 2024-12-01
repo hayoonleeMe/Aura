@@ -82,6 +82,11 @@ struct FAuraGameplayTags
 	FGameplayTag Abilities_ClickToMove;
 	FGameplayTag Abilities_FireBolt;
 	FGameplayTag Abilities_HitReact;
+
+	/*
+	 *	GameplayCue
+	 */
+	FGameplayTag GameplayCue_FireBoltImpact;
 	
 private:
 	static FAuraGameplayTags GameplayTags;
