@@ -7,7 +7,9 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Character/EnemyClassConfig.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Net/UnrealNetwork.h"
 #include "UI/Widget/AuraUserWidget.h"
 
 AAuraEnemy::AAuraEnemy()
@@ -26,6 +28,16 @@ AAuraEnemy::AAuraEnemy()
 	/* Health Bar */
 	HealthBarComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Health Bar Component"));
 	HealthBarComponent->SetupAttachment(GetRootComponent());
+
+	/* Dead */
+	DeadLifeSpan = 5.f;
+}
+
+void AAuraEnemy::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AAuraEnemy, bDead);
 }
 
 void AAuraEnemy::BeginPlay()
@@ -98,4 +110,32 @@ void AAuraEnemy::InitializeForHealthBar()
 		OnHealthChangedDelegate.Broadcast(AuraAS->GetHealth());
 		OnMaxHealthChangedDelegate.Broadcast(AuraAS->GetMaxHealth());
 	}
+}
+
+void AAuraEnemy::Die_Implementation()
+{
+	// DeadLifeSpan 이후 Destroy
+	SetLifeSpan(DeadLifeSpan);
+	// Play dead animation and trigger rep notify
+	bDead = true;
+	HandleDeathLocally();
+}
+
+void AAuraEnemy::OnRep_Dead() const
+{
+	// Rep Notify로 Multicast RPC를 대신함
+	HandleDeathLocally();
+}
+
+void AAuraEnemy::HandleDeathLocally() const
+{
+	// 충돌 방지
+	FCollisionResponseContainer Container(ECR_Ignore);
+	Container.SetResponse(ECC_WorldStatic, ECR_Block);
+	Container.SetResponse(ECC_WorldDynamic, ECR_Block);
+	GetCapsuleComponent()->SetCollisionResponseToChannels(Container);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
+	// 로컬에서 죽었음을 알림 (Will hide enemy health bar)
+	OnCharacterDeadDelegate.Broadcast();
 }
