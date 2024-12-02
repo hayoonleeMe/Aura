@@ -5,9 +5,12 @@
 #include "CoreMinimal.h"
 #include "Character/BaseCharacter.h"
 #include "Types/EnemyClassType.h"
+#include "UI/WidgetController/OverlayWidgetController.h"
 #include "AuraEnemy.generated.h"
 
+class UWidgetComponent;
 class UEnemyClassConfig;
+
 /**
  * 
  */
@@ -18,6 +21,15 @@ class AURA_API AAuraEnemy : public ABaseCharacter
 
 public:
 	AAuraEnemy();
+
+	/*
+	 *	Overlay Widget Controller
+	 */
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChangedSignature OnHealthChangedDelegate;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChangedSignature OnMaxHealthChangedDelegate;
 
 protected:
 	virtual void BeginPlay() override;
@@ -37,4 +49,14 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
 	EEnemyClassType EnemyClassType;
+
+	/*
+	 *	Health Bar
+	 */
+	// set widget in blueprint
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UWidgetComponent> HealthBarComponent;
+
+	// HealthBar 업데이트를 위한 초기화 수행
+	void InitializeForHealthBar();
 };

@@ -7,6 +7,8 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Character/EnemyClassConfig.h"
+#include "Components/WidgetComponent.h"
+#include "UI/Widget/AuraUserWidget.h"
 
 AAuraEnemy::AAuraEnemy()
 {
@@ -20,6 +22,10 @@ AAuraEnemy::AAuraEnemy()
 
 	/* Combat */
 	Level = 1;
+
+	/* Health Bar */
+	HealthBarComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Health Bar Component"));
+	HealthBarComponent->SetupAttachment(GetRootComponent());
 }
 
 void AAuraEnemy::BeginPlay()
@@ -28,6 +34,7 @@ void AAuraEnemy::BeginPlay()
 
 	InitAbilityActorInfo();
 	InitializeAttributes();
+	InitializeForHealthBar();
 }
 
 void AAuraEnemy::InitAbilityActorInfo()
@@ -62,5 +69,33 @@ void AAuraEnemy::InitializeAttributes()
 			ApplyEffectSpecToSelf(EnemyClassConfig->SecondaryAttributes, Level);
 			ApplyEffectSpecToSelf(EnemyClassConfig->VitalAttributes, Level);
 		}
+	}
+}
+
+void AAuraEnemy::InitializeForHealthBar()
+{
+	check(AbilitySystemComponent && AttributeSet && HealthBarComponent);
+
+	// AuraEnemy가 Widget Controller 역할을 함
+	if (UAuraUserWidget* HealthBarWidget = Cast<UAuraUserWidget>(HealthBarComponent->GetWidget()))
+	{
+		HealthBarWidget->SetWidgetController(this);
+	}
+
+	if (const UAuraAttributeSet* AuraAS = Cast<UAuraAttributeSet>(AttributeSet))
+	{
+		// Attribute Changed Event를 알리기 위해 바인딩
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAS->GetHealthAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
+		{
+			OnHealthChangedDelegate.Broadcast(Data.NewValue);
+		});
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAS->GetMaxHealthAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
+		{
+			OnMaxHealthChangedDelegate.Broadcast(Data.NewValue);
+		});
+
+		// 초기값 Broadcast
+		OnHealthChangedDelegate.Broadcast(AuraAS->GetHealth());
+		OnMaxHealthChangedDelegate.Broadcast(AuraAS->GetMaxHealth());
 	}
 }
