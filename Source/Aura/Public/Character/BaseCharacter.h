@@ -15,6 +15,8 @@ class UGameplayAbility;
 class UAttributeSet;
 class UAbilitySystemComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterDeadSignature);
+
 UCLASS(Abstract)
 class AURA_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
@@ -34,6 +36,12 @@ public:
 	virtual void SetFacingTarget_Implementation(const FVector& TargetLocation) override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() const override { return HitReactMontage; }
 	/* End CombatInterface */
+
+	/*
+	 *	Dead
+	 */
+	UPROPERTY(BlueprintAssignable)
+	FOnCharacterDeadSignature OnCharacterDeadDelegate;
 	
 protected:
 	virtual void BeginPlay() override;
