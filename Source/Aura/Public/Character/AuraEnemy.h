@@ -34,7 +34,6 @@ public:
 	
 	/* Begin CombatInterface */
 	virtual int32 GetCharacterLevel_Implementation() override { return Level; }
-	// Called on server
 	virtual void Die_Implementation() override;
 	/* End CombatInterface */
 
