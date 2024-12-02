@@ -21,6 +21,7 @@ class AURA_API AAuraEnemy : public ABaseCharacter
 
 public:
 	AAuraEnemy();
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/*
 	 *	Overlay Widget Controller
@@ -30,15 +31,17 @@ public:
 	
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnMaxHealthChangedDelegate;
+	
+	/* Begin CombatInterface */
+	virtual int32 GetCharacterLevel_Implementation() override { return Level; }
+	// Called on server
+	virtual void Die_Implementation() override;
+	/* End CombatInterface */
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeAttributes() override;
-
-	/* Begin CombatInterface */
-	virtual int32 GetCharacterLevel_Implementation() override { return Level; }
-	/* End CombatInterface */
 	
 private:
 	/*
@@ -59,4 +62,21 @@ private:
 
 	// HealthBar 업데이트를 위한 초기화 수행
 	void InitializeForHealthBar();
+
+	/*
+	 * Dead
+	 */
+	// Retrieved from enemy's anim instance to play death animation
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Dead, Category="Aura|Dead", meta=(AllowPrivateAccess=true))
+	uint8 bDead : 1;
+
+	UFUNCTION()
+	void OnRep_Dead() const;
+
+	// Enemy가 죽을 때, Destroy 될 때까지의 시간
+	UPROPERTY(EditAnywhere, Category="Aura|Dead")
+	float DeadLifeSpan;
+
+	// Local에서만 적용되는 Dead 관련 작업을 수행
+	void HandleDeathLocally() const;
 };

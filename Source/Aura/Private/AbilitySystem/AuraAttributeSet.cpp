@@ -5,6 +5,7 @@
 
 #include "AuraGameplayTags.h"
 #include "GameplayEffectExtension.h"
+#include "Interaction/CombatInterface.h"
 #include "Net/UnrealNetwork.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
@@ -117,7 +118,11 @@ void UAuraAttributeSet::HandleIncomingDamage()
 
 		if (NewHealth <= 0.f)
 		{
-			// TODO : Dead
+			// Dead
+			if (GetActorInfo() && GetActorInfo()->AvatarActor.IsValid() && GetActorInfo()->AvatarActor->Implements<UCombatInterface>())
+			{
+				ICombatInterface::Execute_Die(GetActorInfo()->AvatarActor.Get());
+			}
 		}
 		else
 		{
