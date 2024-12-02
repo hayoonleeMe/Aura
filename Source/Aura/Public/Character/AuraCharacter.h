@@ -25,6 +25,7 @@ public:
 
 	/* Begin CombatInterface */
 	virtual int32 GetCharacterLevel_Implementation() override;
+	virtual void Die_Implementation() override;
 	/* End CombatInterface */
 
 protected:
@@ -51,5 +52,11 @@ private:
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
 	
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UCameraComponent> CameraComponent;	
+	TObjectPtr<UCameraComponent> CameraComponent;
+
+	/*
+	 *	Dead
+	 */
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastHandleDeath();
 };

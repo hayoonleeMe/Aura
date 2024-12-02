@@ -21,6 +21,7 @@ ABaseCharacter::ABaseCharacter()
 	/* Weapon Mesh */
 	WeaponSocketName = TEXT("WeaponHandSocket");
 	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon Mesh Component"));
+	WeaponMeshComponent->SetCollisionObjectType(ECC_Pawn);	// same with mesh
 	WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	WeaponMeshComponent->SetupAttachment(GetMesh(), WeaponSocketName);
 	CombatSocketName = TEXT("CombatSocket");

@@ -114,6 +114,7 @@ void AAuraEnemy::InitializeForHealthBar()
 
 void AAuraEnemy::Die_Implementation()
 {
+	/* Called on server */
 	// DeadLifeSpan 이후 Destroy
 	SetLifeSpan(DeadLifeSpan);
 	// Play dead animation and trigger rep notify
