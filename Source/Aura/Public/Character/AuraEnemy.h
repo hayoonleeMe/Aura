@@ -30,15 +30,15 @@ public:
 	
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnMaxHealthChangedDelegate;
+	
+	/* Begin CombatInterface */
+	virtual int32 GetCharacterLevel_Implementation() override { return Level; }
+	/* End CombatInterface */
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeAttributes() override;
-
-	/* Begin CombatInterface */
-	virtual int32 GetCharacterLevel_Implementation() override { return Level; }
-	/* End CombatInterface */
 	
 private:
 	/*
