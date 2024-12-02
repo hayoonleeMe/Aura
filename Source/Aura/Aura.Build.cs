@@ -21,7 +21,8 @@ public class Aura : ModuleRules
 			"NavigationSystem", 
 			"Niagara", 
 			"MotionWarping",
-			"UMG"
+			"UMG",
+			"AIModule"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
