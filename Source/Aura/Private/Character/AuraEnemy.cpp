@@ -4,8 +4,11 @@
 #include "Character/AuraEnemy.h"
 
 #include "AuraBlueprintLibrary.h"
+#include "AI/AuraAIController.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Character/EnemyClassConfig.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
@@ -38,6 +41,19 @@ void AAuraEnemy::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifeti
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AAuraEnemy, bDead);
+}
+
+void AAuraEnemy::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	// AI server only
+	if (HasAuthority())
+	{
+		AuraAIController = Cast<AAuraAIController>(NewController);
+		AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+		AuraAIController->RunBehaviorTree(BehaviorTree);
+	}
 }
 
 void AAuraEnemy::BeginPlay()

@@ -8,6 +8,8 @@
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "AuraEnemy.generated.h"
 
+class AAuraAIController;
+class UBehaviorTree;
 class UWidgetComponent;
 class UEnemyClassConfig;
 
@@ -22,6 +24,7 @@ class AURA_API AAuraEnemy : public ABaseCharacter
 public:
 	AAuraEnemy();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void PossessedBy(AController* NewController) override;
 
 	/*
 	 *	Overlay Widget Controller
@@ -78,4 +81,13 @@ private:
 
 	// Local에서만 적용되는 Dead 관련 작업을 수행
 	void HandleDeathLocally() const;
+
+	/*
+	 *	AI
+	 */
+	UPROPERTY(EditAnywhere, Category="Aura|AI")
+	TObjectPtr<UBehaviorTree> BehaviorTree;
+
+	UPROPERTY()
+	TObjectPtr<AAuraAIController> AuraAIController;
 };
