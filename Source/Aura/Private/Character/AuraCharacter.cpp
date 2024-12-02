@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Player/AuraPlayerController.h"
@@ -86,4 +87,31 @@ void AAuraCharacter::InitializeAttributes()
 	{
 		ApplyEffectSpecToSelf(EffectClass);
 	}
+}
+
+void AAuraCharacter::Die_Implementation()
+{
+	/* Called on server */
+	MulticastHandleDeath();
+
+	// TODO : Respawn
+}
+
+void AAuraCharacter::MulticastHandleDeath_Implementation()
+{
+	// 충돌 방지
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	FCollisionResponseContainer Container(ECR_Ignore);
+	Container.SetResponse(ECC_WorldStatic, ECR_Block);
+	Container.SetResponse(ECC_WorldDynamic, ECR_Block);
+	GetMesh()->SetCollisionResponseToChannels(Container);
+	WeaponMeshComponent->SetCollisionResponseToChannels(Container);
+	
+	// Ragdoll
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetEnableGravity(true);
+	WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	WeaponMeshComponent->SetSimulatePhysics(true);		
+	WeaponMeshComponent->SetEnableGravity(true);	
 }
