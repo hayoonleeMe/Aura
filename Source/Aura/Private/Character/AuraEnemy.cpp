@@ -12,6 +12,7 @@
 #include "Character/EnemyClassConfig.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "UI/Widget/AuraUserWidget.h"
 
@@ -34,6 +35,10 @@ AAuraEnemy::AAuraEnemy()
 
 	/* Dead */
 	DeadLifeSpan = 5.f;
+
+	/* Movement */
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
 }
 
 void AAuraEnemy::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

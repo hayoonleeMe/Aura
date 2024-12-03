@@ -29,6 +29,11 @@ ABaseCharacter::ABaseCharacter()
 	/* Motion Warping */
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("Motion Warping Component"));
 	WarpTargetName = TEXT("FacingTarget");
+
+	/* Movement */
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
 }
 
 FVector ABaseCharacter::GetCombatSocketLocation_Implementation() const
