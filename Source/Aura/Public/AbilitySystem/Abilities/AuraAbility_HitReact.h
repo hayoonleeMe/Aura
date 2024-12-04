@@ -14,16 +14,9 @@ class AURA_API UAuraAbility_HitReact : public UAuraGameplayAbility
 {
 	GENERATED_BODY()
 
+public:
+	UAuraAbility_HitReact();
+	
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
-
-private:
-	UPROPERTY(EditDefaultsOnly, Category="Aura")
-	TSubclassOf<UGameplayEffect> HitReactEffectClass;
-
-	// Owner에 적용한 GameplayEffect의 Handle
-	FActiveGameplayEffectHandle ActiveEffectHandle;
-
-	UFUNCTION()
-	void OnMontageFinished();
 };
