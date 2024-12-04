@@ -4,6 +4,7 @@
 #include "Character/AuraEnemy.h"
 
 #include "AuraBlueprintLibrary.h"
+#include "AuraGameplayTags.h"
 #include "AI/AuraAIController.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
@@ -86,6 +87,9 @@ void AAuraEnemy::InitAbilityActorInfo()
 			AddStartupAbilities(EnemyClassConfig->SharedAbilities);
 		}
 	}
+
+	// Abilities.HitReact Tag의 Added, Removed Event에 Binding
+	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Abilities_HitReact).AddUObject(this, &ThisClass::OnHitReactTagChanged);
 }
 
 void AAuraEnemy::InitializeAttributes()
@@ -102,6 +106,26 @@ void AAuraEnemy::InitializeAttributes()
 			ApplyEffectSpecToSelf(EnemyClassConfig->SecondaryAttributes, Level);
 			ApplyEffectSpecToSelf(EnemyClassConfig->VitalAttributes, Level);
 		}
+	}
+}
+
+void AAuraEnemy::OnHitReactTagChanged(const FGameplayTag Tag, int32 Count) const
+{
+	const bool bHitReact = Count > 0;
+	if (bHitReact)
+	{
+		// HitReact - 움직임 방지
+		GetCharacterMovement()->DisableMovement();
+	}
+	else
+	{
+		GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+	}
+	
+	if (IsValid(AuraAIController) && AuraAIController->GetBlackboardComponent())
+	{
+		// AIController server only
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("HitReact"), bHitReact);
 	}
 }
 

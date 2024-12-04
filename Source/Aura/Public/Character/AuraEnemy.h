@@ -55,6 +55,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
 	EEnemyClassType EnemyClassType;
 
+	// Abilities.HitReact Tag가 추가, 제거 될 때 호출됨
+	// Count=0: Removed, Count=1: Added
+	void OnHitReactTagChanged(const FGameplayTag Tag, int32 Count) const;
+
 	/*
 	 *	Health Bar
 	 */
