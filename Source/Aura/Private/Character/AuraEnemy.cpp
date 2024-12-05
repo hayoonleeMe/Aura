@@ -41,7 +41,6 @@ AAuraEnemy::AAuraEnemy()
 
 	/* Movement */
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
 }
 
 void AAuraEnemy::PossessedBy(AController* NewController)
