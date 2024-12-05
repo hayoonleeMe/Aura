@@ -31,10 +31,11 @@ public:
 	FORCEINLINE UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
 	/* Begin CombatInterface */
-	virtual FVector GetCombatSocketLocation_Implementation() const override;
 	virtual FGameplayTag GetRoleTag_Implementation() const override { return RoleTag; }
 	virtual void SetFacingTarget_Implementation(const FVector& TargetLocation) override;
-	virtual UAnimMontage* GetHitReactMontage_Implementation() const override { return HitReactMontage; }
+	virtual FTaggedCombatInfo GetTaggedCombatInfo_Implementation(const FGameplayTag& InTag) const override;
+	virtual FVector GetCombatSocketLocation_Implementation(const FName& CombatSocketName) const override;
+	virtual FTransform GetCombatSocketTransform_Implementation(const FName& CombatSocketName) const override;
 	/* End CombatInterface */
 
 	/*
@@ -54,9 +55,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Weapon Mesh")
 	FName WeaponSocketName;
-
-	UPROPERTY(EditDefaultsOnly, Category="Aura|Weapon Mesh")
-	FName CombatSocketName;
 
 	/*
 	 *	GAS
@@ -93,8 +91,8 @@ protected:
 	FName WarpTargetName;
 
 	/*
-	 *	HitReact
+	 *	Combat
 	 */
-	UPROPERTY(EditAnywhere, Category="Aura|HitReact")
-	TObjectPtr<UAnimMontage> HitReactMontage;
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
+	TArray<FTaggedCombatInfo> TaggedCombatInfos;
 };

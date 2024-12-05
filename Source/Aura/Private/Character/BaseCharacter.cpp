@@ -24,7 +24,6 @@ ABaseCharacter::ABaseCharacter()
 	WeaponMeshComponent->SetCollisionObjectType(ECC_Pawn);	// same with mesh
 	WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	WeaponMeshComponent->SetupAttachment(GetMesh(), WeaponSocketName);
-	CombatSocketName = TEXT("CombatSocket");
 
 	/* Motion Warping */
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("Motion Warping Component"));
@@ -36,21 +35,44 @@ ABaseCharacter::ABaseCharacter()
 	bUseControllerRotationYaw = false;
 }
 
-FVector ABaseCharacter::GetCombatSocketLocation_Implementation() const
-{
-	if (WeaponMeshComponent)
-	{
-		return WeaponMeshComponent->GetSocketLocation(CombatSocketName);
-	}
-	return FVector::ZeroVector;
-}
-
 void ABaseCharacter::SetFacingTarget_Implementation(const FVector& TargetLocation)
 {
 	if (MotionWarpingComponent)
 	{
 		MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(WarpTargetName, TargetLocation);
 	}
+}
+
+FTaggedCombatInfo ABaseCharacter::GetTaggedCombatInfo_Implementation(const FGameplayTag& InTag) const
+{
+	// InTag를 가지는 랜덤한 FTaggedCombatInfo를 반환 
+	const TArray Filtered = TaggedCombatInfos.FilterByPredicate([InTag](const FTaggedCombatInfo& TaggedCombatInfo)
+	{
+		return TaggedCombatInfo.Tag == InTag;
+	});
+	check(!Filtered.IsEmpty());
+
+	// 랜덤한 원소 반환
+	const int32 RandIndex = FMath::RandRange(0, Filtered.Num() - 1);
+	return Filtered[RandIndex];
+}
+
+FVector ABaseCharacter::GetCombatSocketLocation_Implementation(const FName& CombatSocketName) const
+{
+	return Execute_GetCombatSocketTransform(this, CombatSocketName).GetLocation();
+}
+
+FTransform ABaseCharacter::GetCombatSocketTransform_Implementation(const FName& CombatSocketName) const
+{
+	if (WeaponMeshComponent && WeaponMeshComponent->DoesSocketExist(CombatSocketName))
+	{
+		return WeaponMeshComponent->GetSocketTransform(CombatSocketName);
+	}
+	if (GetMesh() && GetMesh()->DoesSocketExist(CombatSocketName))
+	{
+		return GetMesh()->GetSocketTransform(CombatSocketName);
+	}
+	return FTransform::Identity;
 }
 
 void ABaseCharacter::BeginPlay()

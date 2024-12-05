@@ -7,6 +7,7 @@
 #include "AuraProjectileAbility.generated.h"
 
 class AAuraProjectile;
+
 /**
  * Projectile을 발사하는 Ability
  */
@@ -18,8 +19,8 @@ class AURA_API UAuraProjectileAbility : public UAuraDamageAbility
 public:
 	UAuraProjectileAbility();
 	
-	// 하나의 Projectile을 발사
-	virtual void SpawnProjectile(const FVector& TargetLocation);
+	// CombatSocketLocation에서 TargetLocation으로 하나의 Projectile을 발사
+	virtual void SpawnProjectile(const FVector& TargetLocation, const FVector& CombatSocketLocation);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Projectile")

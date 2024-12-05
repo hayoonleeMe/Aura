@@ -8,7 +8,6 @@
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystem/AbilityTasks/AbilityTask_TargetDataUnderMouse.h"
-#include "Interaction/CombatInterface.h"
 
 void UAuraAbility_FireBolt::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                             const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -22,15 +21,24 @@ void UAuraAbility_FireBolt::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
+	const AActor* AvatarActor = GetAvatarActorFromActorInfo();
+	if (!IsValid(AvatarActor) || !AvatarActor->Implements<UCombatInterface>())
+	{
+		return;
+	}
+
 	// Caching
 	const FHitResult& HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
 	CachedTargetLocation = HitResult.ImpactPoint;
+	
+	const FTaggedCombatInfo TaggedCombatInfo = ICombatInterface::Execute_GetTaggedCombatInfo(AvatarActor, FAuraGameplayTags::Get().Abilities_FireBolt);
+	check(TaggedCombatInfo.AnimMontage);
+	CachedCombatSocketName = TaggedCombatInfo.CombatSocketName;
 
 	// for Anim Montage Motion Warping
 	ICombatInterface::Execute_SetFacingTarget(GetAvatarActorFromActorInfo(), CachedTargetLocation);
 
-	check(BaseMontage);
-	if (UAbilityTask_PlayMontageAndWait* AbilityTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, FName(), BaseMontage, 1.f, NAME_None, false))
+	if (UAbilityTask_PlayMontageAndWait* AbilityTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, FName(), TaggedCombatInfo.AnimMontage, 1.f, NAME_None, false))
 	{
 		AbilityTask->OnCompleted.AddDynamic(this, &ThisClass::K2_EndAbility);
 		AbilityTask->OnCancelled.AddDynamic(this, &ThisClass::K2_EndAbility);
@@ -47,5 +55,12 @@ void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTarg
 
 void UAuraAbility_FireBolt::OnEventReceived(FGameplayEventData Payload)
 {
-	SpawnProjectile(CachedTargetLocation);
+	const AActor* AvatarActor = GetAvatarActorFromActorInfo();
+	if (!IsValid(AvatarActor) || !AvatarActor->Implements<UCombatInterface>())
+	{
+		return;
+	}
+	
+	const FVector CombatSocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(AvatarActor, CachedCombatSocketName);
+	SpawnProjectile(CachedTargetLocation, CombatSocketLocation);
 }

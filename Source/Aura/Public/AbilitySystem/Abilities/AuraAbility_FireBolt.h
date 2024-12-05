@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AuraProjectileAbility.h"
+#include "Interaction/CombatInterface.h"
 #include "AuraAbility_FireBolt.generated.h"
 
 /**
@@ -27,4 +28,6 @@ protected:
 private:
 	// UAbilityTask_TargetDataUnderMouse 결과 저장
 	FVector CachedTargetLocation;
+
+	FName CachedCombatSocketName;
 };

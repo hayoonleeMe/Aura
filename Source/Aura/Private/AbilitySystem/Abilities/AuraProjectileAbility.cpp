@@ -11,7 +11,7 @@ UAuraProjectileAbility::UAuraProjectileAbility()
 	NumProjectiles = 1;
 }
 
-void UAuraProjectileAbility::SpawnProjectile(const FVector& TargetLocation)
+void UAuraProjectileAbility::SpawnProjectile(const FVector& TargetLocation, const FVector& CombatSocketLocation)
 {
 	const AActor* AvatarActor = GetAvatarActorFromActorInfo();
 	if (!IsValid(AvatarActor) || !AvatarActor->HasAuthority())	// Only Spawn in Server
@@ -21,7 +21,6 @@ void UAuraProjectileAbility::SpawnProjectile(const FVector& TargetLocation)
 	check(ProjectileClass);
 
 	// CombatSocket에서 Projectile 발사
-	const FVector CombatSocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(AvatarActor);
 	const FRotator Rotation = (TargetLocation - CombatSocketLocation).Rotation();
 	
 	FTransform SpawnTransform;
