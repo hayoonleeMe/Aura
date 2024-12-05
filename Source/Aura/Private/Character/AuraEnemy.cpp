@@ -166,6 +166,11 @@ void AAuraEnemy::Die()
 	// DeadLifeSpan 이후 Destroy
 	SetLifeSpan(DeadLifeSpan);
 
+	// Update Dead Blackboard Key
+	if (IsValid(AuraAIController) && AuraAIController->GetBlackboardComponent())
+	{
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("Dead"), bDead);
+	}
 }
 
 void AAuraEnemy::HandleDeathLocally() const
@@ -179,4 +184,9 @@ void AAuraEnemy::HandleDeathLocally() const
 	
 	// 로컬에서 죽었음을 알림 (Will hide enemy health bar)
 	OnCharacterDeadDelegate.Broadcast();
+
+	if (GetMesh() && GetMesh()->GetAnimInstance())
+    {
+    	GetMesh()->GetAnimInstance()->StopAllMontages(0.f);
+    }
 }
