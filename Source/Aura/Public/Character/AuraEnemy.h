@@ -61,6 +61,10 @@ private:
 	// Count=0: Removed, Count=1: Added
 	void OnHitReactTagChanged(const FGameplayTag Tag, int32 Count) const;
 
+	// Enemy AI가 대상과의 거리를 기준으로 공격 가능 여부를 판단할 때 사용하는 거리 기준값
+	UPROPERTY(EditAnywhere, Category="Aura|Combat")
+	float AttackEffectiveRange;
+	
 	// AI Enemy의 공격 대상
 	// Set in BTTask
 	UPROPERTY()

@@ -29,6 +29,7 @@ AAuraEnemy::AAuraEnemy()
 
 	/* Combat */
 	Level = 1;
+	AttackEffectiveRange = 120.f;
 
 	/* Health Bar */
 	HealthBarComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Health Bar Component"));
@@ -58,6 +59,7 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 	{
 		AuraAIController = Cast<AAuraAIController>(NewController);
 		AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+		AuraAIController->GetBlackboardComponent()->SetValueAsFloat(TEXT("AttackEffectiveRange"), AttackEffectiveRange);
 		AuraAIController->RunBehaviorTree(BehaviorTree);
 	}
 }
