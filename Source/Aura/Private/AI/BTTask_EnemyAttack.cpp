@@ -33,8 +33,24 @@ EBTNodeResult::Type UBTTask_EnemyAttack::ExecuteTask(UBehaviorTreeComponent& Own
 
 		// Enemy의 공격을 나타내는 GameplayTag로 Attack Ability 실행
 		const FGameplayTagContainer TagContainer(FAuraGameplayTags::Get().Abilities_EnemyAttack);
-		OwnerASC->TryActivateAbilitiesByTag(TagContainer);	
-	}
+		if (!OwnerASC->TryActivateAbilitiesByTag(TagContainer))
+		{
+			return EBTNodeResult::Failed;
+		}
 
-	return EBTNodeResult::Succeeded;
+		// Enemy Attack Ability가 끝나면 Succeeded
+		FDelegateHandle AbilityEndedDelegateHandle = OwnerASC->OnAbilityEnded.AddWeakLambda(this, [this, TagContainer, OwnerASC, AbilityEndedDelegateHandle, &OwnerComp](const FAbilityEndedData& EndedData)
+		{
+			if (EndedData.AbilityThatEnded->AbilityTags.HasAllExact(TagContainer))
+			{
+				OwnerASC->OnAbilityEnded.Remove(AbilityEndedDelegateHandle);
+
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			}
+		});
+		
+		// Enemy Attack Ability가 끝나기 전
+		return EBTNodeResult::InProgress;
+	}
+	return EBTNodeResult::Failed;
 }

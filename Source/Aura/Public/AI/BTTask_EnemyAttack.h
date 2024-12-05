@@ -8,6 +8,7 @@
 
 /**
  * BlackboardKey Object를 CombatTarget으로 Enemy AI의 Attack Ability를 실행하는 BTTask
+ * Ability를 실행하고 종료되어야 EBTNodeResult::Succeeded 반환
  */
 UCLASS()
 class AURA_API UBTTask_EnemyAttack : public UBTTask_BlackboardBase
