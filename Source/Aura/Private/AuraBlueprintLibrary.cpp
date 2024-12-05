@@ -47,3 +47,13 @@ bool UAuraBlueprintLibrary::IsNotFriend(const AActor* Actor1, const AActor* Acto
 	}
 	return true;
 }
+
+void UAuraBlueprintLibrary::ExecuteGameplayCue(AActor* OwnerActor, const FGameplayTag& CueTag, const FVector& CueLocation)
+{
+	if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OwnerActor))
+	{
+		FGameplayCueParameters CueParameters;
+		CueParameters.Location = CueLocation;
+		ASC->ExecuteGameplayCue(CueTag, CueParameters);
+	}
+}

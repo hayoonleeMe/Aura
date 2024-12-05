@@ -30,4 +30,8 @@ public:
 	// 데미지를 입히기 위해 서로 적인지를 판별하는 함수
 	UFUNCTION(BlueprintCallable)
 	static bool IsNotFriend(const AActor* Actor1, const AActor* Actor2);
+
+	// CueLocation을 GameplayCueParameters로 전달하고 Replicate되는 GameplayCueNotify_Static을 실행
+	UFUNCTION(BlueprintCallable)
+	static void ExecuteGameplayCue(AActor* OwnerActor, const FGameplayTag& CueTag, const FVector& CueLocation);
 };

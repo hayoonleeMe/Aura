@@ -79,18 +79,8 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 		UAuraBlueprintLibrary::ApplyDamageEffect(DamageEffectParams);
 	}
 	
-	ExecuteImpactCue();
+	UAuraBlueprintLibrary::ExecuteGameplayCue(GetOwner(), FAuraGameplayTags::Get().GameplayCue_FireBoltImpact, GetActorLocation());
 	Destroy();
-}
-
-void AAuraProjectile::ExecuteImpactCue() const
-{
-	if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwner()))
-	{
-		FGameplayCueParameters CueParameters;
-		CueParameters.Location = GetActorLocation();
-		ASC->ExecuteGameplayCue(FAuraGameplayTags::Get().GameplayCue_FireBoltImpact, CueParameters);
-	}
 }
 
 bool AAuraProjectile::IsValidOverlap(const AActor* TargetActor) const

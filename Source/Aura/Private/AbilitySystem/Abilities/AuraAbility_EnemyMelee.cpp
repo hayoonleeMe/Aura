@@ -97,9 +97,10 @@ void UAuraAbility_EnemyMelee::OnEventReceived(FGameplayEventData Payload)
 			if (DamageEffectParams.TargetAbilitySystemComponent)
 			{
 				UAuraBlueprintLibrary::ApplyDamageEffect(DamageEffectParams);
-			}
 
-			// TODO : Impact Effect using gameplay cue
+				// Execute EnemyMeleeImpact GameplayCue
+				UAuraBlueprintLibrary::ExecuteGameplayCue(TargetActor, FAuraGameplayTags::Get().GameplayCue_EnemyMeleeImpact, TargetActor->GetActorLocation());
+			}
 		}
 
 		// 한번에 여러 대상을 공격할 수 없으면 하나의 대상만 공격하고 빠져나간다.

@@ -35,10 +35,6 @@ protected:
 	UFUNCTION()
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	// ImpactEffect를 생성하고 ImpactSound를 재생하는 GameplayCue를 실행
-	// Replicate되는 GameplayCueNotify_Static을 실행
-	virtual void ExecuteImpactCue() const;
-
 	// Projectile의 Overlap이 발생할 수 있는지 판별
 	bool IsValidOverlap(const AActor* TargetActor) const;
 
