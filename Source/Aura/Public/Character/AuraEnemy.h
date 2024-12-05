@@ -23,7 +23,6 @@ class AURA_API AAuraEnemy : public ABaseCharacter
 
 public:
 	AAuraEnemy();
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PossessedBy(AController* NewController) override;
 
 	/*
@@ -37,16 +36,18 @@ public:
 	
 	/* Begin CombatInterface */
 	virtual int32 GetCharacterLevel_Implementation() override { return Level; }
-	virtual void Die_Implementation() override;
 	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override { CombatTarget = InCombatTarget; }
 	virtual TWeakObjectPtr<AActor> GetCombatTarget() const override { return CombatTarget; }
 	virtual void GetAttackCheckRange_Implementation(float& OutRadius, float& OutHalfHeight) const override;
+	virtual void Die() override;
 	/* End CombatInterface */
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeAttributes() override;
+
+	virtual void HandleDeathLocally() const override;
 	
 private:
 	/*
@@ -92,19 +93,9 @@ private:
 	/*
 	 * Dead
 	 */
-	// Retrieved from enemy's anim instance to play death animation
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Dead, Category="Aura|Dead", meta=(AllowPrivateAccess=true))
-	uint8 bDead : 1;
-
-	UFUNCTION()
-	void OnRep_Dead() const;
-
 	// Enemy가 죽을 때, Destroy 될 때까지의 시간
 	UPROPERTY(EditAnywhere, Category="Aura|Dead")
 	float DeadLifeSpan;
-
-	// Local에서만 적용되는 Dead 관련 작업을 수행
-	void HandleDeathLocally() const;
 
 	/*
 	 *	AI

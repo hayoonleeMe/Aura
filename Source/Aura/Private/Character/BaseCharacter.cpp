@@ -7,6 +7,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
+#include "Net/UnrealNetwork.h"
 
 ABaseCharacter::ABaseCharacter()
 {
@@ -33,6 +34,13 @@ ABaseCharacter::ABaseCharacter()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
 	bUseControllerRotationYaw = false;
+}
+
+void ABaseCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ABaseCharacter, bDead);
 }
 
 void ABaseCharacter::SetFacingTarget_Implementation(const FVector& TargetLocation)
@@ -99,4 +107,17 @@ void ABaseCharacter::AddStartupAbilities(const TArray<TSubclassOf<UGameplayAbili
 		UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
 		AuraASC->AddAbilities(AbilityClasses);
 	}
+}
+
+void ABaseCharacter::Die()
+{
+	/* Called on server */
+	bDead = true;
+	HandleDeathLocally();
+}
+
+void ABaseCharacter::OnRep_Dead() const
+{
+	// Rep Notify로 Multicast RPC를 대신함
+	HandleDeathLocally();
 }

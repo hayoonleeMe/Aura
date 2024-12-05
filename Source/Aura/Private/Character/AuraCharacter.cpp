@@ -86,15 +86,7 @@ void AAuraCharacter::InitializeAttributes()
 	}
 }
 
-void AAuraCharacter::Die_Implementation()
-{
-	/* Called on server */
-	MulticastHandleDeath();
-
-	// TODO : Respawn
-}
-
-void AAuraCharacter::MulticastHandleDeath_Implementation()
+void AAuraCharacter::HandleDeathLocally() const
 {
 	// 충돌 방지
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -110,5 +102,5 @@ void AAuraCharacter::MulticastHandleDeath_Implementation()
 	GetMesh()->SetEnableGravity(true);
 	WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	WeaponMeshComponent->SetSimulatePhysics(true);		
-	WeaponMeshComponent->SetEnableGravity(true);	
+	WeaponMeshComponent->SetEnableGravity(true);
 }

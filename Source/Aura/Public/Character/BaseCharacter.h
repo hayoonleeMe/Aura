@@ -24,6 +24,7 @@ class AURA_API ABaseCharacter : public ACharacter, public IAbilitySystemInterfac
 
 public:
 	ABaseCharacter();
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/* Begin IAbilitySystemInterface */
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComponent; }
@@ -36,6 +37,8 @@ public:
 	virtual FTaggedCombatInfo GetTaggedCombatInfo_Implementation(const FGameplayTag& InTag) const override;
 	virtual FVector GetCombatSocketLocation_Implementation(const FName& CombatSocketName) const override;
 	virtual FTransform GetCombatSocketTransform_Implementation(const FName& CombatSocketName) const override;
+	virtual void Die() override;
+	virtual bool IsDead_Implementation() const override { return bDead; }
 	/* End CombatInterface */
 
 	/*
@@ -95,4 +98,16 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
 	TArray<FTaggedCombatInfo> TaggedCombatInfos;
+
+	/*
+	 *	Dead
+	 */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Dead, Category="Aura|Dead", meta=(AllowPrivateAccess=true))
+	uint8 bDead : 1;
+
+	UFUNCTION()
+	virtual void OnRep_Dead() const;
+
+	// Local에서만 적용되는 Dead 관련 작업을 수행
+	virtual void HandleDeathLocally() const {}
 };

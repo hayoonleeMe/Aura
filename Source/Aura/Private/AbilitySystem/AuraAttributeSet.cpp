@@ -119,9 +119,12 @@ void UAuraAttributeSet::HandleIncomingDamage()
 		if (NewHealth <= 0.f)
 		{
 			// Dead
-			if (GetActorInfo() && GetActorInfo()->AvatarActor.IsValid() && GetActorInfo()->AvatarActor->Implements<UCombatInterface>())
+			if (GetActorInfo() && GetActorInfo()->AvatarActor.IsValid())
 			{
-				ICombatInterface::Execute_Die(GetActorInfo()->AvatarActor.Get());
+				if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetActorInfo()->AvatarActor.Get()))
+				{
+					CombatInterface->Die();
+				}
 			}
 		}
 		else

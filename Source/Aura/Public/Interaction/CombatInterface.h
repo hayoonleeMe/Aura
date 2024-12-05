@@ -49,8 +49,10 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void SetFacingTarget(const FVector& TargetLocation);
 
+	virtual void Die() {}
+
 	UFUNCTION(BlueprintNativeEvent)
-	void Die();
+	bool IsDead() const;
 	
 	UFUNCTION(BlueprintNativeEvent)
 	void GetAttackCheckRange(float& OutRadius, float& OutHalfHeight) const;
