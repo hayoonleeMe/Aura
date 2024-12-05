@@ -30,6 +30,8 @@ AAuraEnemy::AAuraEnemy()
 	/* Combat */
 	Level = 1;
 	AttackEffectiveRange = 120.f;
+	AttackRangeRadius = 10.f;
+	AttackRangeHalfHeight = 30.f;
 
 	/* Health Bar */
 	HealthBarComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Health Bar Component"));
@@ -62,6 +64,12 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 		AuraAIController->GetBlackboardComponent()->SetValueAsFloat(TEXT("AttackEffectiveRange"), AttackEffectiveRange);
 		AuraAIController->RunBehaviorTree(BehaviorTree);
 	}
+}
+
+void AAuraEnemy::GetAttackCheckRange_Implementation(float& OutRadius, float& OutHalfHeight) const
+{
+	OutRadius = AttackRangeRadius;
+	OutHalfHeight = AttackRangeHalfHeight;
 }
 
 void AAuraEnemy::BeginPlay()

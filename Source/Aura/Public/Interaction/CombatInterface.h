@@ -53,6 +53,9 @@ public:
 	void Die();
 	
 	UFUNCTION(BlueprintNativeEvent)
+	void GetAttackCheckRange(float& OutRadius, float& OutHalfHeight) const;
+	
+	UFUNCTION(BlueprintNativeEvent)
 	FTaggedCombatInfo GetTaggedCombatInfo(const FGameplayTag& InTag) const;
 
 	UFUNCTION(BlueprintNativeEvent)

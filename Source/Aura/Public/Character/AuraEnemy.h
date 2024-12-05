@@ -40,6 +40,7 @@ public:
 	virtual void Die_Implementation() override;
 	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override { CombatTarget = InCombatTarget; }
 	virtual TWeakObjectPtr<AActor> GetCombatTarget() const override { return CombatTarget; }
+	virtual void GetAttackCheckRange_Implementation(float& OutRadius, float& OutHalfHeight) const override;
 	/* End CombatInterface */
 
 protected:
@@ -65,6 +66,14 @@ private:
 	UPROPERTY(EditAnywhere, Category="Aura|Combat")
 	float AttackEffectiveRange;
 	
+	// 공격을 체크하는 Capsule의 Radius
+	UPROPERTY(EditAnywhere, Category="Aura|Combat")
+	float AttackRangeRadius;
+	
+	// 공격을 체크하는 Capsule의 Half Height
+	UPROPERTY(EditAnywhere, Category="Aura|Combat")
+	float AttackRangeHalfHeight;
+
 	// AI Enemy의 공격 대상
 	// Set in BTTask
 	UPROPERTY()
