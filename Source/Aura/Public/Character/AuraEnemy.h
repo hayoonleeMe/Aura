@@ -38,6 +38,8 @@ public:
 	/* Begin CombatInterface */
 	virtual int32 GetCharacterLevel_Implementation() override { return Level; }
 	virtual void Die_Implementation() override;
+	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override { CombatTarget = InCombatTarget; }
+	virtual TWeakObjectPtr<AActor> GetCombatTarget() const override { return CombatTarget; }
 	/* End CombatInterface */
 
 protected:
@@ -58,6 +60,11 @@ private:
 	// Abilities.HitReact Tag가 추가, 제거 될 때 호출됨
 	// Count=0: Removed, Count=1: Added
 	void OnHitReactTagChanged(const FGameplayTag Tag, int32 Count) const;
+
+	// AI Enemy의 공격 대상
+	// Set in BTTask
+	UPROPERTY()
+	TWeakObjectPtr<AActor> CombatTarget;
 
 	/*
 	 *	Health Bar

@@ -39,4 +39,9 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void Die();
+	
+	UFUNCTION(BlueprintNativeEvent)
+	void SetCombatTarget(AActor* InCombatTarget);
+
+	virtual TWeakObjectPtr<AActor> GetCombatTarget() const { return nullptr; }
 };
