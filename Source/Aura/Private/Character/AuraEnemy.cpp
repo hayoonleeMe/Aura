@@ -76,9 +76,9 @@ void AAuraEnemy::InitAbilityActorInfo()
 {
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
-	// EnemyClassConfig에 정의된 데이터에 따라, EnemyClassType에 맞는 GameplayAbility 추가 
 	if (HasAuthority())
 	{
+		// EnemyClassConfig에 정의된 데이터에 따라, EnemyClassType에 맞는 GameplayAbility 추가 
 		if (const UEnemyClassConfig* EnemyClassConfig = UAuraBlueprintLibrary::GetEnemyClassConfig(this))
 		{
 			if (const FEnemyClassInfo* EnemyClassInfo = EnemyClassConfig->GetInfoByType(EnemyClassType))
@@ -87,6 +87,8 @@ void AAuraEnemy::InitAbilityActorInfo()
 			}
 			AddStartupAbilities(EnemyClassConfig->SharedAbilities);
 		}
+		// 특정 Enemy에 귀속되는 GameplayAbility 추가
+		AddStartupAbilities(StartupAbilities);
 	}
 
 	// Abilities.HitReact Tag의 Added, Removed Event에 Binding

@@ -100,6 +100,12 @@ protected:
 	TArray<FTaggedCombatInfo> TaggedCombatInfos;
 
 	/*
+	 *	Abilities
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Ability")
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
+
+	/*
 	 *	Dead
 	 */
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Dead, Category="Aura|Dead", meta=(AllowPrivateAccess=true))
