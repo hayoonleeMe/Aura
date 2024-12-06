@@ -23,7 +23,7 @@ void UAuraAbility_EnemyMelee::ActivateAbility(const FGameplayAbilitySpecHandle H
 {
 	// Activated only in server by AI (BTTask)
 	AActor* AvatarActor = GetAvatarActorFromActorInfo();
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(AvatarActor);
+	const ICombatInterface* CombatInterface = Cast<ICombatInterface>(AvatarActor);
 	if (!IsValid(AvatarActor) || !CombatInterface)
 	{
 		return;
