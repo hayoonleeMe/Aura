@@ -90,6 +90,7 @@ struct FAuraGameplayTags
 	 */
 	FGameplayTag GameplayCue_FireBoltImpact;
 	FGameplayTag GameplayCue_EnemyMeleeImpact;
+	FGameplayTag GameplayCue_RockImpact;
 	
 private:
 	static FAuraGameplayTags GameplayTags;
