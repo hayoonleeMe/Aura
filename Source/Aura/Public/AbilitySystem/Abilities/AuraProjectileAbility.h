@@ -28,4 +28,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Projectile")
 	int32 NumProjectiles;
+
+	// Projectile의 초기 Rotation Pitch를 Override 할 것인지
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Projectile")
+	uint8 bOverridePitch : 1;
+
+	// bOverridePitch가 true일 때, Projectile의 초기 Rotation Pitch 값
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Projectile", meta=(EditCondition="bOverridePitch"))
+	float PitchOverride;
 };

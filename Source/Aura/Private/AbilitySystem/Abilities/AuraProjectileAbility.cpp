@@ -9,6 +9,8 @@
 UAuraProjectileAbility::UAuraProjectileAbility()
 {
 	NumProjectiles = 1;
+	bOverridePitch = false;
+	PitchOverride = 0.f;
 }
 
 void UAuraProjectileAbility::SpawnProjectile(const FVector& TargetLocation, const FVector& CombatSocketLocation)
@@ -21,7 +23,11 @@ void UAuraProjectileAbility::SpawnProjectile(const FVector& TargetLocation, cons
 	check(ProjectileClass);
 
 	// CombatSocket에서 Projectile 발사
-	const FRotator Rotation = (TargetLocation - CombatSocketLocation).Rotation();
+	FRotator Rotation = (TargetLocation - CombatSocketLocation).Rotation();
+	if (bOverridePitch)
+	{
+		Rotation.Pitch = PitchOverride;
+	}
 	
 	FTransform SpawnTransform;
 	SpawnTransform.SetLocation(CombatSocketLocation);
