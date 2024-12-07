@@ -26,10 +26,12 @@ EBTNodeResult::Type UBTTask_EnemyAttack::ExecuteTask(UBehaviorTreeComponent& Own
 		check(OwnerASC);
 
 		// Enemy가 공격할 대상인 CombatTarget 설정
-		if (AActor* TargetActor = CastChecked<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(GetSelectedBlackboardKey())))
+		AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(GetSelectedBlackboardKey()));
+		if (!IsValid(TargetActor))
 		{
-			ICombatInterface::Execute_SetCombatTarget(OwnerActor, TargetActor);
+			return EBTNodeResult::Failed;
 		}
+		ICombatInterface::Execute_SetCombatTarget(OwnerActor, TargetActor);
 
 		// Enemy의 공격을 나타내는 GameplayTag로 Attack Ability 실행
 		const FGameplayTagContainer TagContainer(FAuraGameplayTags::Get().Abilities_EnemyAttack);
