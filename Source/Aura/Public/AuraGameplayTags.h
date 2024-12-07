@@ -86,6 +86,17 @@ struct FAuraGameplayTags
 	FGameplayTag Abilities_EnemyAttack;
 
 	/*
+	 *	Cooldown
+	 */
+	FGameplayTag Cooldown_FireBolt;
+	FGameplayTag Cooldown_Melee_GoblinSpear;
+	FGameplayTag Cooldown_Melee_DemonWarrior;
+	FGameplayTag Cooldown_Melee_Ghoul;
+	FGameplayTag Cooldown_Range_GoblinSlingshot;
+	FGameplayTag Cooldown_Range_DemonRanger;
+	FGameplayTag Cooldown_Range_Shaman;
+
+	/*
 	 *	GameplayCue
 	 */
 	FGameplayTag GameplayCue_FireBoltImpact;
