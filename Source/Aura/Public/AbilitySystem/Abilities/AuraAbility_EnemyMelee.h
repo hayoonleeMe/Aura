@@ -20,9 +20,7 @@ public:
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
-	// UAbilityTask_WaitGameplayEvent::EventReceived 델레게이트의 Callback 함수
-	UFUNCTION()
-	void OnEventReceived(FGameplayEventData Payload);
+	virtual void OnEventReceived(FGameplayEventData Payload) override;
 
 	// 한번에 여러 대상을 공격할 수 있는지
 	UPROPERTY(EditDefaultsOnly)

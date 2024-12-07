@@ -6,10 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
-#include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
-#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Interaction/CombatInterface.h"
-#include "Kismet/KismetSystemLibrary.h"
 #include "Types/AuraAbilityTypes.h"
 
 UAuraAbility_EnemyMelee::UAuraAbility_EnemyMelee()
@@ -42,21 +39,8 @@ void UAuraAbility_EnemyMelee::ActivateAbility(const FGameplayAbilitySpecHandle H
 		ICombatInterface::Execute_SetFacingTarget(AvatarActor, CombatTargetLocation);
 	}
 
-	// Play attack montage
-	if (UAbilityTask_PlayMontageAndWait* AbilityTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, FName(), TaggedCombatInfo.AnimMontage, 1.f, NAME_None, false))
-	{
-		AbilityTask->OnCompleted.AddDynamic(this, &ThisClass::K2_EndAbility);
-		AbilityTask->OnCancelled.AddDynamic(this, &ThisClass::K2_EndAbility);
-		AbilityTask->OnInterrupted.AddDynamic(this, &ThisClass::K2_EndAbility);
-		AbilityTask->ReadyForActivation();
-	}
-
-	// Wait gameplay event from attack montage
-	if (UAbilityTask_WaitGameplayEvent* AbilityTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, FAuraGameplayTags::Get().Event_Montage_EnemyAttack))
-	{
-		AbilityTask->EventReceived.AddDynamic(this, &ThisClass::OnEventReceived);
-		AbilityTask->ReadyForActivation();
-	}
+	PlayAttackMontage(TaggedCombatInfo.AnimMontage, false);
+	WaitGameplayEvent(FAuraGameplayTags::Get().Event_Montage_EnemyAttack);
 }
 
 void UAuraAbility_EnemyMelee::OnEventReceived(FGameplayEventData Payload)
@@ -80,33 +64,33 @@ void UAuraAbility_EnemyMelee::OnEventReceived(FGameplayEventData Payload)
 	//DrawDebugCapsule(GetWorld(), CombatSocketTransform.GetLocation(), AttackRangeHalfHeight, AttackRangeRadius, CombatSocketTransform.GetRotation(), FColor::Green, false, 3.f);
 	
 	TArray<FOverlapResult> OverlapResults;
-	if (!GetWorld()->OverlapMultiByChannel(OverlapResults, CombatSocketTransform.GetLocation(), CombatSocketTransform.GetRotation(), ECC_Visibility, CollisionShape, QueryParams))
+	if (GetWorld()->OverlapMultiByChannel(OverlapResults, CombatSocketTransform.GetLocation(), CombatSocketTransform.GetRotation(), ECC_Visibility, CollisionShape, QueryParams))
 	{
-		return;
-	}
-
-	// Apply Damage
-	FDamageEffectParams DamageEffectParams;
-	MakeDamageEffectParams(DamageEffectParams, nullptr);	// Need to set TargetAbilitySystemComponent
-	for (const FOverlapResult& OverlapResult : OverlapResults)
-	{
-		AActor* TargetActor = OverlapResult.GetActor();
-		if (OverlapResult.bBlockingHit && IsValid(TargetActor) && UAuraBlueprintLibrary::IsNotFriend(AvatarActor, TargetActor))
+		// Apply Damage
+		FDamageEffectParams DamageEffectParams;
+		MakeDamageEffectParams(DamageEffectParams, nullptr);	// Need to set TargetAbilitySystemComponent
+		for (const FOverlapResult& OverlapResult : OverlapResults)
 		{
-			DamageEffectParams.TargetAbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
-			if (DamageEffectParams.TargetAbilitySystemComponent)
+			AActor* TargetActor = OverlapResult.GetActor();
+			if (OverlapResult.bBlockingHit && IsValid(TargetActor) && UAuraBlueprintLibrary::IsNotFriend(AvatarActor, TargetActor))
 			{
-				UAuraBlueprintLibrary::ApplyDamageEffect(DamageEffectParams);
+				DamageEffectParams.TargetAbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+				if (DamageEffectParams.TargetAbilitySystemComponent)
+				{
+					UAuraBlueprintLibrary::ApplyDamageEffect(DamageEffectParams);
 
-				// Execute EnemyMeleeImpact GameplayCue
-				UAuraBlueprintLibrary::ExecuteGameplayCue(TargetActor, FAuraGameplayTags::Get().GameplayCue_EnemyMeleeImpact, TargetActor->GetActorLocation());
+					// Execute EnemyMeleeImpact GameplayCue
+					UAuraBlueprintLibrary::ExecuteGameplayCue(TargetActor, FAuraGameplayTags::Get().GameplayCue_EnemyMeleeImpact, TargetActor->GetActorLocation());
+				}
+			}
+
+			// 한번에 여러 대상을 공격할 수 없으면 하나의 대상만 공격하고 빠져나간다.
+			if (!bCanAttackMultiTarget)
+			{
+				break;
 			}
 		}
-
-		// 한번에 여러 대상을 공격할 수 없으면 하나의 대상만 공격하고 빠져나간다.
-		if (!bCanAttackMultiTarget)
-		{
-			break;
-		}
 	}
+
+	FinishAttack();
 }
