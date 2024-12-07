@@ -53,7 +53,7 @@ protected:
 	/*
 	 *	Weapon Mesh
 	 */
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<USkeletalMeshComponent> WeaponMeshComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Weapon Mesh")
