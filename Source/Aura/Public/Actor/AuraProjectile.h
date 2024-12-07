@@ -47,15 +47,13 @@ private:
 	TObjectPtr<USphereComponent> SphereComponent;
 
 	UPROPERTY(EditAnywhere, Category="Aura")
-	TObjectPtr<UNiagaraSystem> ImpactEffect;
-	
-	UPROPERTY(EditAnywhere, Category="Aura")
-	TObjectPtr<USoundBase> ImpactSound;
-
-	UPROPERTY(EditAnywhere, Category="Aura")
 	TObjectPtr<USoundBase> LoopingSound;
 
 	// Actor의 수명
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	float LifeSpan;
+
+	// Projectile의 Impact Effect를 표시하고 Impact Sound를 재생하는 GameplayCue의 GameplayTag
+	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	FGameplayTag ImpactCueTag;
 };
