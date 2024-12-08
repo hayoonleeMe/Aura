@@ -57,7 +57,7 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 	}
 }
 
-void AAuraEnemy::GetAttackCheckRange_Implementation(float& OutRadius, float& OutHalfHeight) const
+void AAuraEnemy::GetAttackCheckRange(float& OutRadius, float& OutHalfHeight) const
 {
 	OutRadius = AttackRangeRadius;
 	OutHalfHeight = AttackRangeHalfHeight;

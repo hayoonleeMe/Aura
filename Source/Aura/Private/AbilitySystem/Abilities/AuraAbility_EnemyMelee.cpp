@@ -24,15 +24,14 @@ void UAuraAbility_EnemyMelee::ActivateAbility(const FGameplayAbilitySpecHandle H
 	}
 	
 	// Activated only in server by AI (BTTask)
-	AActor* AvatarActor = GetAvatarActorFromActorInfo();
-	const ICombatInterface* CombatInterface = Cast<ICombatInterface>(AvatarActor);
-	if (!IsValid(AvatarActor) || !CombatInterface)
+	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
+	if (!CombatInterface)
 	{
 		return;
 	}
 
 	// Get TaggedCombatInfo and Caching
-	const FTaggedCombatInfo TaggedCombatInfo = ICombatInterface::Execute_GetTaggedCombatInfo(AvatarActor, FAuraGameplayTags::Get().Abilities_EnemyAttack);
+	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(FAuraGameplayTags::Get().Abilities_EnemyAttack);
 	check(TaggedCombatInfo.AnimMontage);
 	CachedCombatSocketName = TaggedCombatInfo.CombatSocketName;
 
@@ -41,7 +40,7 @@ void UAuraAbility_EnemyMelee::ActivateAbility(const FGameplayAbilitySpecHandle H
 	if (CombatTargetWeakPtr.IsValid())
 	{
 		const FVector CombatTargetLocation = CombatTargetWeakPtr.Get()->GetActorLocation(); 
-		ICombatInterface::Execute_SetFacingTarget(AvatarActor, CombatTargetLocation);
+		CombatInterface->SetFacingTarget(CombatTargetLocation);
 	}
 
 	PlayAttackMontage(TaggedCombatInfo.AnimMontage, false);
@@ -50,21 +49,21 @@ void UAuraAbility_EnemyMelee::ActivateAbility(const FGameplayAbilitySpecHandle H
 
 void UAuraAbility_EnemyMelee::OnEventReceived(FGameplayEventData Payload)
 {
-	const AActor* AvatarActor = GetAvatarActorFromActorInfo();
-	if (!IsValid(AvatarActor) || !AvatarActor->Implements<UCombatInterface>())
+	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
+	if (!CombatInterface)
 	{
 		return;
 	}
 
 	float AttackRangeRadius = 0.f, AttackRangeHalfHeight = 0.f;
-	ICombatInterface::Execute_GetAttackCheckRange(AvatarActor, AttackRangeRadius, AttackRangeHalfHeight);
-	const FTransform CombatSocketTransform = ICombatInterface::Execute_GetCombatSocketTransform(AvatarActor, CachedCombatSocketName);
+	CombatInterface->GetAttackCheckRange(AttackRangeRadius, AttackRangeHalfHeight);
+	const FTransform CombatSocketTransform = CombatInterface->GetCombatSocketTransform(CachedCombatSocketName);
 
 	FCollisionShape CollisionShape;
 	CollisionShape.SetCapsule(AttackRangeRadius, AttackRangeHalfHeight);
 	
 	FCollisionQueryParams QueryParams;
-	QueryParams.AddIgnoredActor(AvatarActor);
+	QueryParams.AddIgnoredActor(GetAvatarActorFromActorInfo());
 
 	//DrawDebugCapsule(GetWorld(), CombatSocketTransform.GetLocation(), AttackRangeHalfHeight, AttackRangeRadius, CombatSocketTransform.GetRotation(), FColor::Green, false, 3.f);
 	
@@ -77,7 +76,7 @@ void UAuraAbility_EnemyMelee::OnEventReceived(FGameplayEventData Payload)
 		for (const FOverlapResult& OverlapResult : OverlapResults)
 		{
 			AActor* TargetActor = OverlapResult.GetActor();
-			if (OverlapResult.bBlockingHit && IsValid(TargetActor) && UAuraBlueprintLibrary::IsNotFriend(AvatarActor, TargetActor))
+			if (OverlapResult.bBlockingHit && IsValid(TargetActor) && UAuraBlueprintLibrary::IsNotFriend(GetAvatarActorFromActorInfo(), TargetActor))
 			{
 				DamageEffectParams.TargetAbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 				if (DamageEffectParams.TargetAbilitySystemComponent)

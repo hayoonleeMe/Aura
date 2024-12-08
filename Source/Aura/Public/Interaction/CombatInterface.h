@@ -40,34 +40,39 @@ class AURA_API ICombatInterface
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintNativeEvent)
-	int32 GetCharacterLevel();
+	// Character Level을 반환
+	virtual int32 GetCharacterLevel() { return 0; }
 
-	UFUNCTION(BlueprintNativeEvent)
-	FGameplayTag GetRoleTag() const;
+	// Character의 RoleTag 반환
+	// Role.Player, Role.Enemy
+	virtual FGameplayTag GetRoleTag() const { return FGameplayTag(); }
 
-	UFUNCTION(BlueprintNativeEvent)
-	void SetFacingTarget(const FVector& TargetLocation);
+	// Anim Montage의 MotionWarping을 위한 FacingTarget 설정
+	virtual void SetFacingTarget(const FVector& TargetLocation) {}
 
+	// Character가 죽을 때 호출
 	virtual void Die() {}
 
-	UFUNCTION(BlueprintNativeEvent)
-	bool IsDead() const;
-	
-	UFUNCTION(BlueprintNativeEvent)
-	void GetAttackCheckRange(float& OutRadius, float& OutHalfHeight) const;
-	
-	UFUNCTION(BlueprintNativeEvent)
-	FTaggedCombatInfo GetTaggedCombatInfo(const FGameplayTag& InTag) const;
+	// Character가 죽었는지 반환
+	virtual bool IsDead() const { return false; }
 
-	UFUNCTION(BlueprintNativeEvent)
-	FVector GetCombatSocketLocation(const FName& CombatSocketName) const;
-	
-	UFUNCTION(BlueprintNativeEvent)
-	FTransform GetCombatSocketTransform(const FName& CombatSocketName) const;
-	
-	UFUNCTION(BlueprintNativeEvent)
-	void SetCombatTarget(AActor* InCombatTarget);
+	// Enemy의 AttackRangeRadius, AttackRangeHalfHeight 반환
+	virtual void GetAttackCheckRange(float& OutRadius, float& OutHalfHeight) const {}
 
+	// Character의 InTag에 해당하는 TaggedCombatInfo 반환
+	virtual FTaggedCombatInfo GetTaggedCombatInfo(const FGameplayTag& InTag) const { return FTaggedCombatInfo(); }
+
+	// Character의 Mesh, WeaponMesh에서 이름이 CombatSocketName인 Socket을 찾아 Location 반환
+	// Mesh, WeaponMesh에 Socket이 없으면 ZeroVector 반환
+	virtual FVector GetCombatSocketLocation(const FName& CombatSocketName) const { return FVector::ZeroVector; }
+
+	// Character의 Mesh, WeaponMesh에서 이름이 CombatSocketName인 Socket을 찾아 Transform 반환
+	// Mesh, WeaponMesh에 Socket이 없으면 Identity 반환
+	virtual FTransform GetCombatSocketTransform(const FName& CombatSocketName) const { return FTransform::Identity; }
+
+	// AI Enemy의 공격 대상 저장
+	virtual void SetCombatTarget(AActor* InCombatTarget) {}
+
+	// AI Enemy의 공격 대상을 반환
 	virtual TWeakObjectPtr<AActor> GetCombatTarget() const { return nullptr; }
 };

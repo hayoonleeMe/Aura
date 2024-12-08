@@ -24,8 +24,8 @@ void UAuraAbility_FireBolt::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
-	const AActor* AvatarActor = GetAvatarActorFromActorInfo();
-	if (!IsValid(AvatarActor) || !AvatarActor->Implements<UCombatInterface>())
+	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
+	if (!CombatInterface)
 	{
 		return;
 	}
@@ -34,12 +34,12 @@ void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTarg
 	const FHitResult& HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
 	CachedTargetLocation = HitResult.ImpactPoint;
 	
-	const FTaggedCombatInfo TaggedCombatInfo = ICombatInterface::Execute_GetTaggedCombatInfo(AvatarActor, FAuraGameplayTags::Get().Abilities_FireBolt);
+	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(FAuraGameplayTags::Get().Abilities_FireBolt);
 	check(TaggedCombatInfo.AnimMontage);
 	CachedCombatSocketName = TaggedCombatInfo.CombatSocketName;
 
 	// for Anim Montage Motion Warping
-	ICombatInterface::Execute_SetFacingTarget(GetAvatarActorFromActorInfo(), CachedTargetLocation);
+	CombatInterface->SetFacingTarget(CachedTargetLocation);
 
 	PlayAttackMontage(TaggedCombatInfo.AnimMontage, true);
 	WaitGameplayEvent(FAuraGameplayTags::Get().Event_Montage_FireBolt);
@@ -47,13 +47,13 @@ void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTarg
 
 void UAuraAbility_FireBolt::OnEventReceived(FGameplayEventData Payload)
 {
-	const AActor* AvatarActor = GetAvatarActorFromActorInfo();
-	if (!IsValid(AvatarActor) || !AvatarActor->Implements<UCombatInterface>())
+	const ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
+	if (!CombatInterface)
 	{
 		return;
 	}
 	
-	const FVector CombatSocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(AvatarActor, CachedCombatSocketName);
+	const FVector CombatSocketLocation = CombatInterface->GetCombatSocketLocation(CachedCombatSocketName);
 	SpawnProjectile(CachedTargetLocation, CombatSocketLocation);
 
 	FinishAttack();

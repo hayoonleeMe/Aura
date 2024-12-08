@@ -20,15 +20,14 @@ void UAuraAbility_EnemyRange::ActivateAbility(const FGameplayAbilitySpecHandle H
 	}
 	
 	// Activated only in server by AI (BTTask)
-	AActor* AvatarActor = GetAvatarActorFromActorInfo();
-	const ICombatInterface* CombatInterface = Cast<ICombatInterface>(AvatarActor);
-	if (!IsValid(AvatarActor) || !CombatInterface)
+	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
+	if (!CombatInterface)
 	{
 		return;
 	}
 
 	// Caching
-	const FTaggedCombatInfo TaggedCombatInfo = ICombatInterface::Execute_GetTaggedCombatInfo(AvatarActor, FAuraGameplayTags::Get().Abilities_EnemyAttack);
+	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(FAuraGameplayTags::Get().Abilities_EnemyAttack);
 	check(TaggedCombatInfo.AnimMontage);
 	CachedCombatSocketName = TaggedCombatInfo.CombatSocketName;
 
@@ -38,7 +37,7 @@ void UAuraAbility_EnemyRange::ActivateAbility(const FGameplayAbilitySpecHandle H
 	if (CombatTargetWeakPtr.IsValid())
 	{
 		CachedTargetLocation = CombatTargetWeakPtr.Get()->GetActorLocation(); 
-		ICombatInterface::Execute_SetFacingTarget(AvatarActor, CachedTargetLocation);
+		CombatInterface->SetFacingTarget(CachedTargetLocation);
 	}
 
 	PlayAttackMontage(TaggedCombatInfo.AnimMontage, false);
@@ -47,13 +46,13 @@ void UAuraAbility_EnemyRange::ActivateAbility(const FGameplayAbilitySpecHandle H
 
 void UAuraAbility_EnemyRange::OnEventReceived(FGameplayEventData Payload)
 {
-	const AActor* AvatarActor = GetAvatarActorFromActorInfo();
-	if (!IsValid(AvatarActor) || !AvatarActor->Implements<UCombatInterface>())
+	const ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
+	if (!CombatInterface)
 	{
 		return;
 	}
 
-	const FVector& CombatSocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(AvatarActor, CachedCombatSocketName);
+	const FVector& CombatSocketLocation = CombatInterface->GetCombatSocketLocation(CachedCombatSocketName);
 	SpawnProjectile(CachedTargetLocation, CombatSocketLocation);
 
 	FinishAttack();

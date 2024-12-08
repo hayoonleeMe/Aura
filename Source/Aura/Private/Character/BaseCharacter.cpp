@@ -45,7 +45,7 @@ void ABaseCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 	DOREPLIFETIME(ABaseCharacter, bDead);
 }
 
-void ABaseCharacter::SetFacingTarget_Implementation(const FVector& TargetLocation)
+void ABaseCharacter::SetFacingTarget(const FVector& TargetLocation)
 {
 	if (MotionWarpingComponent)
 	{
@@ -53,7 +53,7 @@ void ABaseCharacter::SetFacingTarget_Implementation(const FVector& TargetLocatio
 	}
 }
 
-FTaggedCombatInfo ABaseCharacter::GetTaggedCombatInfo_Implementation(const FGameplayTag& InTag) const
+FTaggedCombatInfo ABaseCharacter::GetTaggedCombatInfo(const FGameplayTag& InTag) const
 {
 	// InTag를 가지는 랜덤한 FTaggedCombatInfo를 반환 
 	const TArray Filtered = TaggedCombatInfos.FilterByPredicate([InTag](const FTaggedCombatInfo& TaggedCombatInfo)
@@ -67,12 +67,12 @@ FTaggedCombatInfo ABaseCharacter::GetTaggedCombatInfo_Implementation(const FGame
 	return Filtered[RandIndex];
 }
 
-FVector ABaseCharacter::GetCombatSocketLocation_Implementation(const FName& CombatSocketName) const
+FVector ABaseCharacter::GetCombatSocketLocation(const FName& CombatSocketName) const
 {
-	return Execute_GetCombatSocketTransform(this, CombatSocketName).GetLocation();
+	return GetCombatSocketTransform(CombatSocketName).GetLocation();
 }
 
-FTransform ABaseCharacter::GetCombatSocketTransform_Implementation(const FName& CombatSocketName) const
+FTransform ABaseCharacter::GetCombatSocketTransform(const FName& CombatSocketName) const
 {
 	if (WeaponMeshComponent && WeaponMeshComponent->DoesSocketExist(CombatSocketName))
 	{

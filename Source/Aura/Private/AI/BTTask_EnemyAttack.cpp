@@ -19,10 +19,9 @@ EBTNodeResult::Type UBTTask_EnemyAttack::ExecuteTask(UBehaviorTreeComponent& Own
 {
 	const AAIController* AIController = OwnerComp.GetAIOwner();
 	check(AIController);
-	AActor* OwnerActor = AIController->GetPawn();
-	if (IsValid(OwnerActor) && OwnerActor->Implements<UCombatInterface>())
+	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(AIController->GetPawn()))
 	{
-		UAbilitySystemComponent* OwnerASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OwnerActor);
+		UAbilitySystemComponent* OwnerASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(AIController->GetPawn());
 		check(OwnerASC);
 
 		// Enemy가 공격할 대상인 CombatTarget 설정
@@ -31,7 +30,7 @@ EBTNodeResult::Type UBTTask_EnemyAttack::ExecuteTask(UBehaviorTreeComponent& Own
 		{
 			return EBTNodeResult::Failed;
 		}
-		ICombatInterface::Execute_SetCombatTarget(OwnerActor, TargetActor);
+		CombatInterface->SetCombatTarget(TargetActor);
 
 		// Enemy의 공격을 나타내는 GameplayTag로 Attack Ability 실행
 		const FGameplayTagContainer TagContainer(FAuraGameplayTags::Get().Abilities_EnemyAttack);

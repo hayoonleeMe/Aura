@@ -50,7 +50,7 @@ void AAuraCharacter::OnRep_PlayerState()
 	InitAbilityActorInfo();
 }
 
-int32 AAuraCharacter::GetCharacterLevel_Implementation()
+int32 AAuraCharacter::GetCharacterLevel()
 {
 	const AAuraPlayerState* AuraPS = GetPlayerState<AAuraPlayerState>();
 	check(AuraPS);

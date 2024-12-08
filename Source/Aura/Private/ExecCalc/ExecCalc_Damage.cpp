@@ -92,9 +92,17 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	const UAbilitySystemComponent* SourceASC = ExecutionParams.GetSourceAbilitySystemComponent();
 	const UAbilitySystemComponent* TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
+	if (!SourceASC || !TargetASC)
+	{
+		return;
+	}
 
-	AActor* SourceAvatar = SourceASC ? SourceASC->GetAvatarActor() : nullptr;
-	AActor* TargetAvatar = TargetASC ? TargetASC->GetAvatarActor() : nullptr;
+	ICombatInterface* SourceCombatInterface = Cast<ICombatInterface>(SourceASC->GetAvatarActor());
+	ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(TargetASC->GetAvatarActor());
+	if (!SourceCombatInterface || !TargetCombatInterface)
+	{
+		return;
+	}
 
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 
@@ -106,8 +114,8 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	EvaluateParameters.TargetTags = TargetTags;
 
 	// Player Level
-	const int32 SourceCharacterLevel = ICombatInterface::Execute_GetCharacterLevel(SourceAvatar);
-	const int32 TargetCharacterLevel = ICombatInterface::Execute_GetCharacterLevel(TargetAvatar);
+	const int32 SourceCharacterLevel = SourceCombatInterface->GetCharacterLevel();
+	const int32 TargetCharacterLevel = TargetCombatInterface->GetCharacterLevel();
 
 	// Get Damage SetByCaller Magnitude
 	float Damage = 0.f;
@@ -143,7 +151,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// TODO : Set to Custom EffectContext
 
 	// Damage 계산식에 사용되는 계수를 Level에 따른 Curve로 저장하는 CurveTable
-	const UCurveTable* DamageCalculationCoefficients = UAuraBlueprintLibrary::GetDamageCalculationCoefficients(SourceAvatar);
+	const UCurveTable* DamageCalculationCoefficients = UAuraBlueprintLibrary::GetDamageCalculationCoefficients(SourceASC->GetAvatarActor());
 	check(DamageCalculationCoefficients);
 
 	// Target Armor & Source ArmorPenetration
