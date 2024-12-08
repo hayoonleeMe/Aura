@@ -40,34 +40,25 @@ class AURA_API ICombatInterface
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintNativeEvent)
-	int32 GetCharacterLevel();
+	virtual int32 GetCharacterLevel() { return 0; }
 
-	UFUNCTION(BlueprintNativeEvent)
-	FGameplayTag GetRoleTag() const;
+	virtual FGameplayTag GetRoleTag() const { return FGameplayTag(); }
 
-	UFUNCTION(BlueprintNativeEvent)
-	void SetFacingTarget(const FVector& TargetLocation);
+	virtual void SetFacingTarget(const FVector& TargetLocation) {}
 
 	virtual void Die() {}
 
-	UFUNCTION(BlueprintNativeEvent)
-	bool IsDead() const;
+	virtual bool IsDead() const { return false; }
 	
-	UFUNCTION(BlueprintNativeEvent)
-	void GetAttackCheckRange(float& OutRadius, float& OutHalfHeight) const;
+	virtual void GetAttackCheckRange(float& OutRadius, float& OutHalfHeight) const {}
 	
-	UFUNCTION(BlueprintNativeEvent)
-	FTaggedCombatInfo GetTaggedCombatInfo(const FGameplayTag& InTag) const;
+	virtual FTaggedCombatInfo GetTaggedCombatInfo(const FGameplayTag& InTag) const { return FTaggedCombatInfo(); }
 
-	UFUNCTION(BlueprintNativeEvent)
-	FVector GetCombatSocketLocation(const FName& CombatSocketName) const;
+	virtual FVector GetCombatSocketLocation(const FName& CombatSocketName) const { return FVector::ZeroVector; }
 	
-	UFUNCTION(BlueprintNativeEvent)
-	FTransform GetCombatSocketTransform(const FName& CombatSocketName) const;
+	virtual FTransform GetCombatSocketTransform(const FName& CombatSocketName) const { return FTransform::Identity; }
 	
-	UFUNCTION(BlueprintNativeEvent)
-	void SetCombatTarget(AActor* InCombatTarget);
+	virtual void SetCombatTarget(AActor* InCombatTarget) {}
 
 	virtual TWeakObjectPtr<AActor> GetCombatTarget() const { return nullptr; }
 };

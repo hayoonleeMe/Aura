@@ -41,10 +41,12 @@ void UAuraBlueprintLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
 
 bool UAuraBlueprintLibrary::IsNotFriend(const AActor* Actor1, const AActor* Actor2)
 {
-	if (Actor1->Implements<UCombatInterface>() && Actor2->Implements<UCombatInterface>())
+	const ICombatInterface* CombatInterface1 = Cast<ICombatInterface>(Actor1);
+	const ICombatInterface* CombatInterface2 = Cast<ICombatInterface>(Actor2);
+	if (CombatInterface1 && CombatInterface2)
 	{
-		const FGameplayTag& RoleTag1 = ICombatInterface::Execute_GetRoleTag(Actor1);
-		const FGameplayTag& RoleTag2 = ICombatInterface::Execute_GetRoleTag(Actor2);
+		const FGameplayTag& RoleTag1 = CombatInterface1->GetRoleTag();
+		const FGameplayTag& RoleTag2 = CombatInterface2->GetRoleTag();
 		return !RoleTag1.MatchesTagExact(RoleTag2);
 	}
 	return true;
@@ -66,7 +68,8 @@ void UAuraBlueprintLibrary::GetAlivePawnsFromPlayers(const UObject* WorldContext
 	{
 		for (const APlayerState* PS : GameState->PlayerArray)
 		{
-			if (IsValid(PS) && IsValid(PS->GetPawn()) && !ICombatInterface::Execute_IsDead(PS->GetPawn()))
+			const ICombatInterface* CombatInterface = Cast<ICombatInterface>(PS->GetPawn());
+			if (PS && IsValid(PS->GetPawn()) && CombatInterface && !CombatInterface->IsDead())
 			{
 				OutPlayers.Add(PS->GetPawn());
 			}

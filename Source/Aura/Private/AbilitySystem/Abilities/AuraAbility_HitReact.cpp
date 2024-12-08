@@ -17,13 +17,13 @@ UAuraAbility_HitReact::UAuraAbility_HitReact()
 void UAuraAbility_HitReact::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                             const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	const AActor* AvatarActor = GetAvatarActorFromActorInfo();
-	if (!IsValid(AvatarActor) || !AvatarActor->Implements<UCombatInterface>())
+	const ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
+	if (!CombatInterface)
 	{
 		return;
 	}
 	
-	const FTaggedCombatInfo TaggedCombatInfo = ICombatInterface::Execute_GetTaggedCombatInfo(AvatarActor, FAuraGameplayTags::Get().Abilities_HitReact);
+	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(FAuraGameplayTags::Get().Abilities_HitReact);
 	check(TaggedCombatInfo.AnimMontage);
 	
 	// HitReactMontage를 재생하고 Wait

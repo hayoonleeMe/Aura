@@ -32,13 +32,13 @@ public:
 	FORCEINLINE UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
 	/* Begin CombatInterface */
-	virtual FGameplayTag GetRoleTag_Implementation() const override { return RoleTag; }
-	virtual void SetFacingTarget_Implementation(const FVector& TargetLocation) override;
-	virtual FTaggedCombatInfo GetTaggedCombatInfo_Implementation(const FGameplayTag& InTag) const override;
-	virtual FVector GetCombatSocketLocation_Implementation(const FName& CombatSocketName) const override;
-	virtual FTransform GetCombatSocketTransform_Implementation(const FName& CombatSocketName) const override;
+	virtual FGameplayTag GetRoleTag() const override { return RoleTag; }
+	virtual void SetFacingTarget(const FVector& TargetLocation) override;
+	virtual FTaggedCombatInfo GetTaggedCombatInfo(const FGameplayTag& InTag) const override;
+	virtual FVector GetCombatSocketLocation(const FName& CombatSocketName) const override;
+	virtual FTransform GetCombatSocketTransform(const FName& CombatSocketName) const override;
 	virtual void Die() override;
-	virtual bool IsDead_Implementation() const override { return bDead; }
+	virtual bool IsDead() const override { return bDead; }
 	/* End CombatInterface */
 
 	/*

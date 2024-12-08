@@ -35,10 +35,10 @@ public:
 	FOnAttributeChangedSignature OnMaxHealthChangedDelegate;
 	
 	/* Begin CombatInterface */
-	virtual int32 GetCharacterLevel_Implementation() override { return Level; }
-	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override { CombatTarget = InCombatTarget; }
+	virtual int32 GetCharacterLevel() override { return Level; }
+	virtual void SetCombatTarget(AActor* InCombatTarget) override { CombatTarget = InCombatTarget; }
 	virtual TWeakObjectPtr<AActor> GetCombatTarget() const override { return CombatTarget; }
-	virtual void GetAttackCheckRange_Implementation(float& OutRadius, float& OutHalfHeight) const override;
+	virtual void GetAttackCheckRange(float& OutRadius, float& OutHalfHeight) const override;
 	virtual void Die() override;
 	/* End CombatInterface */
 
