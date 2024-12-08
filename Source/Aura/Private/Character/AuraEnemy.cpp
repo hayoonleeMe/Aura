@@ -4,12 +4,16 @@
 #include "Character/AuraEnemy.h"
 
 #include "AuraBlueprintLibrary.h"
+#include "AuraGameplayTags.h"
+#include "AI/AuraAIController.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Character/EnemyClassConfig.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
-#include "Net/UnrealNetwork.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "UI/Widget/AuraUserWidget.h"
 
 AAuraEnemy::AAuraEnemy()
@@ -24,6 +28,9 @@ AAuraEnemy::AAuraEnemy()
 
 	/* Combat */
 	Level = 1;
+	AttackEffectiveRange = 120.f;
+	AttackRangeRadius = 10.f;
+	AttackRangeHalfHeight = 30.f;
 
 	/* Health Bar */
 	HealthBarComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Health Bar Component"));
@@ -31,13 +38,29 @@ AAuraEnemy::AAuraEnemy()
 
 	/* Dead */
 	DeadLifeSpan = 5.f;
+
+	/* Movement */
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 }
 
-void AAuraEnemy::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void AAuraEnemy::PossessedBy(AController* NewController)
 {
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	Super::PossessedBy(NewController);
 
-	DOREPLIFETIME(AAuraEnemy, bDead);
+	// AI server only
+	if (HasAuthority())
+	{
+		AuraAIController = Cast<AAuraAIController>(NewController);
+		AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+		AuraAIController->GetBlackboardComponent()->SetValueAsFloat(TEXT("AttackEffectiveRange"), AttackEffectiveRange);
+		AuraAIController->RunBehaviorTree(BehaviorTree);
+	}
+}
+
+void AAuraEnemy::GetAttackCheckRange_Implementation(float& OutRadius, float& OutHalfHeight) const
+{
+	OutRadius = AttackRangeRadius;
+	OutHalfHeight = AttackRangeHalfHeight;
 }
 
 void AAuraEnemy::BeginPlay()
@@ -53,9 +76,9 @@ void AAuraEnemy::InitAbilityActorInfo()
 {
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
-	// EnemyClassConfig에 정의된 데이터에 따라, EnemyClassType에 맞는 GameplayAbility 추가 
 	if (HasAuthority())
 	{
+		// EnemyClassConfig에 정의된 데이터에 따라, EnemyClassType에 맞는 GameplayAbility 추가 
 		if (const UEnemyClassConfig* EnemyClassConfig = UAuraBlueprintLibrary::GetEnemyClassConfig(this))
 		{
 			if (const FEnemyClassInfo* EnemyClassInfo = EnemyClassConfig->GetInfoByType(EnemyClassType))
@@ -64,7 +87,12 @@ void AAuraEnemy::InitAbilityActorInfo()
 			}
 			AddStartupAbilities(EnemyClassConfig->SharedAbilities);
 		}
+		// 특정 Enemy에 귀속되는 GameplayAbility 추가
+		AddStartupAbilities(StartupAbilities);
 	}
+
+	// Abilities.HitReact Tag의 Added, Removed Event에 Binding
+	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Abilities_HitReact).AddUObject(this, &ThisClass::OnHitReactTagChanged);
 }
 
 void AAuraEnemy::InitializeAttributes()
@@ -81,6 +109,26 @@ void AAuraEnemy::InitializeAttributes()
 			ApplyEffectSpecToSelf(EnemyClassConfig->SecondaryAttributes, Level);
 			ApplyEffectSpecToSelf(EnemyClassConfig->VitalAttributes, Level);
 		}
+	}
+}
+
+void AAuraEnemy::OnHitReactTagChanged(const FGameplayTag Tag, int32 Count) const
+{
+	const bool bHitReact = Count > 0;
+	if (bHitReact)
+	{
+		// HitReact - 움직임 방지
+		GetCharacterMovement()->DisableMovement();
+	}
+	else
+	{
+		GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+	}
+	
+	if (IsValid(AuraAIController) && AuraAIController->GetBlackboardComponent())
+	{
+		// AIController server only
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("HitReact"), bHitReact);
 	}
 }
 
@@ -112,20 +160,18 @@ void AAuraEnemy::InitializeForHealthBar()
 	}
 }
 
-void AAuraEnemy::Die_Implementation()
+void AAuraEnemy::Die()
 {
-	/* Called on server */
+	Super::Die();
+	
 	// DeadLifeSpan 이후 Destroy
 	SetLifeSpan(DeadLifeSpan);
-	// Play dead animation and trigger rep notify
-	bDead = true;
-	HandleDeathLocally();
-}
 
-void AAuraEnemy::OnRep_Dead() const
-{
-	// Rep Notify로 Multicast RPC를 대신함
-	HandleDeathLocally();
+	// Update Dead Blackboard Key
+	if (IsValid(AuraAIController) && AuraAIController->GetBlackboardComponent())
+	{
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("Dead"), bDead);
+	}
 }
 
 void AAuraEnemy::HandleDeathLocally() const
@@ -139,4 +185,9 @@ void AAuraEnemy::HandleDeathLocally() const
 	
 	// 로컬에서 죽었음을 알림 (Will hide enemy health bar)
 	OnCharacterDeadDelegate.Broadcast();
+
+	if (GetMesh() && GetMesh()->GetAnimInstance())
+    {
+    	GetMesh()->GetAnimInstance()->StopAllMontages(0.f);
+    }
 }

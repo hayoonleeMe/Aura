@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AuraProjectileAbility.h"
+#include "Interaction/CombatInterface.h"
 #include "AuraAbility_FireBolt.generated.h"
 
 /**
@@ -20,11 +21,11 @@ protected:
 	// UAbilityTask_TargetDataUnderMouse::TargetDataUnderMouseSetDelegate 델레게이트의 Callback 함수
 	void OnTargetDataUnderMouseSet(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 
-	// UAbilityTask_WaitGameplayEvent::EventReceived 델레게이트의 Callback 함수
-	UFUNCTION()
-	void OnEventReceived(FGameplayEventData Payload);
+	virtual void OnEventReceived(FGameplayEventData Payload) override;
 
 private:
 	// UAbilityTask_TargetDataUnderMouse 결과 저장
 	FVector CachedTargetLocation;
+
+	FName CachedCombatSocketName;
 };

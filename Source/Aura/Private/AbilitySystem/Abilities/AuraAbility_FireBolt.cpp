@@ -5,14 +5,16 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
-#include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
-#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystem/AbilityTasks/AbilityTask_TargetDataUnderMouse.h"
-#include "Interaction/CombatInterface.h"
 
 void UAuraAbility_FireBolt::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                             const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
+	if (!K2_CommitAbility())
+	{
+		return;
+	}
+	
 	if (UAbilityTask_TargetDataUnderMouse* AbilityTask = UAbilityTask_TargetDataUnderMouse::CreateTask(this))
 	{
 		AbilityTask->TargetDataUnderMouseSetDelegate.BindUObject(this, &ThisClass::OnTargetDataUnderMouseSet);
@@ -22,30 +24,37 @@ void UAuraAbility_FireBolt::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
+	const AActor* AvatarActor = GetAvatarActorFromActorInfo();
+	if (!IsValid(AvatarActor) || !AvatarActor->Implements<UCombatInterface>())
+	{
+		return;
+	}
+
 	// Caching
 	const FHitResult& HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
 	CachedTargetLocation = HitResult.ImpactPoint;
+	
+	const FTaggedCombatInfo TaggedCombatInfo = ICombatInterface::Execute_GetTaggedCombatInfo(AvatarActor, FAuraGameplayTags::Get().Abilities_FireBolt);
+	check(TaggedCombatInfo.AnimMontage);
+	CachedCombatSocketName = TaggedCombatInfo.CombatSocketName;
 
 	// for Anim Montage Motion Warping
 	ICombatInterface::Execute_SetFacingTarget(GetAvatarActorFromActorInfo(), CachedTargetLocation);
 
-	check(BaseMontage);
-	if (UAbilityTask_PlayMontageAndWait* AbilityTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, FName(), BaseMontage, 1.f, NAME_None, false))
-	{
-		AbilityTask->OnCompleted.AddDynamic(this, &ThisClass::K2_EndAbility);
-		AbilityTask->OnCancelled.AddDynamic(this, &ThisClass::K2_EndAbility);
-		AbilityTask->OnInterrupted.AddDynamic(this, &ThisClass::K2_EndAbility);
-		AbilityTask->OnBlendOut.AddDynamic(this, &ThisClass::K2_EndAbility);
-		AbilityTask->ReadyForActivation();
-	}
-	if (UAbilityTask_WaitGameplayEvent* AbilityTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, FAuraGameplayTags::Get().Event_Montage_FireBolt))
-	{
-		AbilityTask->EventReceived.AddDynamic(this, &ThisClass::OnEventReceived);
-		AbilityTask->ReadyForActivation();
-	}
+	PlayAttackMontage(TaggedCombatInfo.AnimMontage, true);
+	WaitGameplayEvent(FAuraGameplayTags::Get().Event_Montage_FireBolt);
 }
 
 void UAuraAbility_FireBolt::OnEventReceived(FGameplayEventData Payload)
 {
-	SpawnProjectile(CachedTargetLocation);
+	const AActor* AvatarActor = GetAvatarActorFromActorInfo();
+	if (!IsValid(AvatarActor) || !AvatarActor->Implements<UCombatInterface>())
+	{
+		return;
+	}
+	
+	const FVector CombatSocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(AvatarActor, CachedCombatSocketName);
+	SpawnProjectile(CachedTargetLocation, CombatSocketLocation);
+
+	FinishAttack();
 }

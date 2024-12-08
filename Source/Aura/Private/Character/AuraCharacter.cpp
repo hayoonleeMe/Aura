@@ -31,9 +31,6 @@ AAuraCharacter::AAuraCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 500.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;         // 이동을 평면에 제한
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;       // 시작 시 캐릭터가 평면에 부착됨
-	bUseControllerRotationPitch = false;
-	bUseControllerRotationRoll = false;
-	bUseControllerRotationYaw = false;
 }
 
 void AAuraCharacter::PossessedBy(AController* NewController)
@@ -89,15 +86,7 @@ void AAuraCharacter::InitializeAttributes()
 	}
 }
 
-void AAuraCharacter::Die_Implementation()
-{
-	/* Called on server */
-	MulticastHandleDeath();
-
-	// TODO : Respawn
-}
-
-void AAuraCharacter::MulticastHandleDeath_Implementation()
+void AAuraCharacter::HandleDeathLocally() const
 {
 	// 충돌 방지
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -113,5 +102,5 @@ void AAuraCharacter::MulticastHandleDeath_Implementation()
 	GetMesh()->SetEnableGravity(true);
 	WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	WeaponMeshComponent->SetSimulatePhysics(true);		
-	WeaponMeshComponent->SetEnableGravity(true);	
+	WeaponMeshComponent->SetEnableGravity(true);
 }

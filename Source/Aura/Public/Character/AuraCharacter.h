@@ -25,12 +25,13 @@ public:
 
 	/* Begin CombatInterface */
 	virtual int32 GetCharacterLevel_Implementation() override;
-	virtual void Die_Implementation() override;
 	/* End CombatInterface */
 
 protected:
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeAttributes() override;
+
+	virtual void HandleDeathLocally() const override;
 
 private:
 	/*
@@ -40,12 +41,6 @@ private:
 	TArray<TSubclassOf<UGameplayEffect>> DefaultEffects;
 
 	/*
-	 *	Abilities
-	 */
-	UPROPERTY(EditDefaultsOnly, Category="Aura|Ability")
-	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
-
-	/*
 	 *	Camera
 	 */
 	UPROPERTY(VisibleAnywhere)
@@ -53,10 +48,4 @@ private:
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComponent;
-
-	/*
-	 *	Dead
-	 */
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastHandleDeath();
 };

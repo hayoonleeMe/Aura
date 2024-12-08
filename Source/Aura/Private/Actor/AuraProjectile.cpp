@@ -6,7 +6,6 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AuraBlueprintLibrary.h"
-#include "AuraGameplayTags.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Aura/Aura.h"
 #include "Components/AudioComponent.h"
@@ -78,19 +77,12 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 		DamageEffectParams.TargetAbilitySystemComponent = TargetASC;	
 		UAuraBlueprintLibrary::ApplyDamageEffect(DamageEffectParams);
 	}
-	
-	ExecuteImpactCue();
-	Destroy();
-}
 
-void AAuraProjectile::ExecuteImpactCue() const
-{
-	if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwner()))
+	if (ImpactCueTag.IsValid())
 	{
-		FGameplayCueParameters CueParameters;
-		CueParameters.Location = GetActorLocation();
-		ASC->ExecuteGameplayCue(FAuraGameplayTags::Get().GameplayCue_FireBoltImpact, CueParameters);
+		UAuraBlueprintLibrary::ExecuteGameplayCue(GetOwner(), ImpactCueTag, GetActorLocation());
 	}
+	Destroy();
 }
 
 bool AAuraProjectile::IsValidOverlap(const AActor* TargetActor) const

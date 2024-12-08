@@ -8,6 +8,8 @@
 #include "AuraGameplayTags.h"
 #include "GameplayEffectTypes.h"
 #include "Game/AuraGameModeBase.h"
+#include "GameFramework/GameStateBase.h"
+#include "GameFramework/PlayerState.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Types/AuraAbilityTypes.h"
@@ -46,4 +48,28 @@ bool UAuraBlueprintLibrary::IsNotFriend(const AActor* Actor1, const AActor* Acto
 		return !RoleTag1.MatchesTagExact(RoleTag2);
 	}
 	return true;
+}
+
+void UAuraBlueprintLibrary::ExecuteGameplayCue(AActor* OwnerActor, const FGameplayTag& CueTag, const FVector& CueLocation)
+{
+	if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OwnerActor))
+	{
+		FGameplayCueParameters CueParameters;
+		CueParameters.Location = CueLocation;
+		ASC->ExecuteGameplayCue(CueTag, CueParameters);
+	}
+}
+
+void UAuraBlueprintLibrary::GetAlivePawnsFromPlayers(const UObject* WorldContextObject, TArray<AActor*>& OutPlayers)
+{
+	if (AGameStateBase* GameState = WorldContextObject->GetWorld()->GetGameState())
+	{
+		for (const APlayerState* PS : GameState->PlayerArray)
+		{
+			if (IsValid(PS) && IsValid(PS->GetPawn()) && !ICombatInterface::Execute_IsDead(PS->GetPawn()))
+			{
+				OutPlayers.Add(PS->GetPawn());
+			}
+		}
+	}
 }

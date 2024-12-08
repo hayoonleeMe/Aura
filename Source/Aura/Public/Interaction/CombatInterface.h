@@ -7,6 +7,24 @@
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
 
+/**
+ * GameplayTag에 연관된 Combat 정보들을 저장하는 구조체
+ */
+USTRUCT(BlueprintType)
+struct FTaggedCombatInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly)
+	FGameplayTag Tag;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UAnimMontage> AnimMontage;
+
+	UPROPERTY(EditDefaultsOnly)
+	FName CombatSocketName;
+};
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UCombatInterface : public UInterface
@@ -26,17 +44,30 @@ public:
 	int32 GetCharacterLevel();
 
 	UFUNCTION(BlueprintNativeEvent)
-	FVector GetCombatSocketLocation() const;
-
-	UFUNCTION(BlueprintNativeEvent)
 	FGameplayTag GetRoleTag() const;
 
 	UFUNCTION(BlueprintNativeEvent)
 	void SetFacingTarget(const FVector& TargetLocation);
 
-	UFUNCTION(BlueprintNativeEvent)
-	UAnimMontage* GetHitReactMontage() const;
+	virtual void Die() {}
 
 	UFUNCTION(BlueprintNativeEvent)
-	void Die();
+	bool IsDead() const;
+	
+	UFUNCTION(BlueprintNativeEvent)
+	void GetAttackCheckRange(float& OutRadius, float& OutHalfHeight) const;
+	
+	UFUNCTION(BlueprintNativeEvent)
+	FTaggedCombatInfo GetTaggedCombatInfo(const FGameplayTag& InTag) const;
+
+	UFUNCTION(BlueprintNativeEvent)
+	FVector GetCombatSocketLocation(const FName& CombatSocketName) const;
+	
+	UFUNCTION(BlueprintNativeEvent)
+	FTransform GetCombatSocketTransform(const FName& CombatSocketName) const;
+	
+	UFUNCTION(BlueprintNativeEvent)
+	void SetCombatTarget(AActor* InCombatTarget);
+
+	virtual TWeakObjectPtr<AActor> GetCombatTarget() const { return nullptr; }
 };

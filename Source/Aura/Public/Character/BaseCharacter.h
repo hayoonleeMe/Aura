@@ -24,6 +24,7 @@ class AURA_API ABaseCharacter : public ACharacter, public IAbilitySystemInterfac
 
 public:
 	ABaseCharacter();
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/* Begin IAbilitySystemInterface */
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComponent; }
@@ -31,10 +32,13 @@ public:
 	FORCEINLINE UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
 	/* Begin CombatInterface */
-	virtual FVector GetCombatSocketLocation_Implementation() const override;
 	virtual FGameplayTag GetRoleTag_Implementation() const override { return RoleTag; }
 	virtual void SetFacingTarget_Implementation(const FVector& TargetLocation) override;
-	virtual UAnimMontage* GetHitReactMontage_Implementation() const override { return HitReactMontage; }
+	virtual FTaggedCombatInfo GetTaggedCombatInfo_Implementation(const FGameplayTag& InTag) const override;
+	virtual FVector GetCombatSocketLocation_Implementation(const FName& CombatSocketName) const override;
+	virtual FTransform GetCombatSocketTransform_Implementation(const FName& CombatSocketName) const override;
+	virtual void Die() override;
+	virtual bool IsDead_Implementation() const override { return bDead; }
 	/* End CombatInterface */
 
 	/*
@@ -49,14 +53,11 @@ protected:
 	/*
 	 *	Weapon Mesh
 	 */
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<USkeletalMeshComponent> WeaponMeshComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Weapon Mesh")
 	FName WeaponSocketName;
-
-	UPROPERTY(EditDefaultsOnly, Category="Aura|Weapon Mesh")
-	FName CombatSocketName;
 
 	/*
 	 *	GAS
@@ -93,8 +94,26 @@ protected:
 	FName WarpTargetName;
 
 	/*
-	 *	HitReact
+	 *	Combat
 	 */
-	UPROPERTY(EditAnywhere, Category="Aura|HitReact")
-	TObjectPtr<UAnimMontage> HitReactMontage;
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
+	TArray<FTaggedCombatInfo> TaggedCombatInfos;
+
+	/*
+	 *	Abilities
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Ability")
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
+
+	/*
+	 *	Dead
+	 */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Dead, Category="Aura|Dead", meta=(AllowPrivateAccess=true))
+	uint8 bDead : 1;
+
+	UFUNCTION()
+	virtual void OnRep_Dead() const;
+
+	// Local에서만 적용되는 Dead 관련 작업을 수행
+	virtual void HandleDeathLocally() const {}
 };

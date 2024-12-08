@@ -64,12 +64,25 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 
 	/* Event */
 	GameplayTags.Event_Montage_FireBolt = Manager.AddNativeGameplayTag(TEXT("Event.Montage.FireBolt"), TEXT("FireBolt Montage Event Tag"));
+	GameplayTags.Event_Montage_EnemyAttack = Manager.AddNativeGameplayTag(TEXT("Event.Montage.EnemyAttack"), TEXT("EnemyAttack Montage Event Tag"));
 
 	/* Abilities */
 	GameplayTags.Abilities_ClickToMove = Manager.AddNativeGameplayTag(TEXT("Abilities.ClickToMove"), TEXT("ClickToMove Ability Tag"));
 	GameplayTags.Abilities_FireBolt = Manager.AddNativeGameplayTag(TEXT("Abilities.FireBolt"), TEXT("FireBolt Ability Tag"));
 	GameplayTags.Abilities_HitReact = Manager.AddNativeGameplayTag(TEXT("Abilities.HitReact"), TEXT("HitReact Ability Tag"));
+	GameplayTags.Abilities_EnemyAttack = Manager.AddNativeGameplayTag(TEXT("Abilities.EnemyAttack"), TEXT("EnemyAttack Ability Tag"));
+	
+	/* Cooldown */
+	GameplayTags.Cooldown_FireBolt = Manager.AddNativeGameplayTag(TEXT("Cooldown.FireBolt"), TEXT("FireBolt Cooldown Tag"));
+	GameplayTags.Cooldown_Melee_GoblinSpear = Manager.AddNativeGameplayTag(TEXT("Cooldown.Melee.GoblinSpear"), TEXT("GoblinSpear Melee Cooldown Tag"));
+	GameplayTags.Cooldown_Melee_DemonWarrior = Manager.AddNativeGameplayTag(TEXT("Cooldown.Melee.DemonWarrior"), TEXT("DemonWarrior Melee Cooldown Tag"));
+	GameplayTags.Cooldown_Melee_Ghoul = Manager.AddNativeGameplayTag(TEXT("Cooldown.Melee.Ghoul"), TEXT("Ghoul Melee Cooldown Tag"));
+	GameplayTags.Cooldown_Range_GoblinSlingshot = Manager.AddNativeGameplayTag(TEXT("Cooldown.Range.GoblinSlingshot"), TEXT("GoblinSlingshot Range Cooldown Tag"));
+	GameplayTags.Cooldown_Range_DemonRanger = Manager.AddNativeGameplayTag(TEXT("Cooldown.Range.DemonRanger"), TEXT("DemonRanger Range Cooldown Tag"));
+	GameplayTags.Cooldown_Range_Shaman = Manager.AddNativeGameplayTag(TEXT("Cooldown.Range.Shaman"), TEXT("Shaman Range Cooldown Tag"));
 
 	/* GameplayCue */
 	GameplayTags.GameplayCue_FireBoltImpact = Manager.AddNativeGameplayTag(TEXT("GameplayCue.FireBoltImpact"), TEXT("FireBoltImpact GameplayCue Tag"));
+	GameplayTags.GameplayCue_EnemyMeleeImpact = Manager.AddNativeGameplayTag(TEXT("GameplayCue.EnemyMeleeImpact"), TEXT("EnemyMeleeImpact GameplayCue Tag"));
+	GameplayTags.GameplayCue_RockImpact = Manager.AddNativeGameplayTag(TEXT("GameplayCue.RockImpact"), TEXT("RockImpact GameplayCue Tag"));
 }

@@ -75,6 +75,7 @@ struct FAuraGameplayTags
 	 *	Event
 	 */
 	FGameplayTag Event_Montage_FireBolt;
+	FGameplayTag Event_Montage_EnemyAttack;
 
 	/*
 	 *	Abilities
@@ -82,11 +83,25 @@ struct FAuraGameplayTags
 	FGameplayTag Abilities_ClickToMove;
 	FGameplayTag Abilities_FireBolt;
 	FGameplayTag Abilities_HitReact;
+	FGameplayTag Abilities_EnemyAttack;
+
+	/*
+	 *	Cooldown
+	 */
+	FGameplayTag Cooldown_FireBolt;
+	FGameplayTag Cooldown_Melee_GoblinSpear;
+	FGameplayTag Cooldown_Melee_DemonWarrior;
+	FGameplayTag Cooldown_Melee_Ghoul;
+	FGameplayTag Cooldown_Range_GoblinSlingshot;
+	FGameplayTag Cooldown_Range_DemonRanger;
+	FGameplayTag Cooldown_Range_Shaman;
 
 	/*
 	 *	GameplayCue
 	 */
 	FGameplayTag GameplayCue_FireBoltImpact;
+	FGameplayTag GameplayCue_EnemyMeleeImpact;
+	FGameplayTag GameplayCue_RockImpact;
 	
 private:
 	static FAuraGameplayTags GameplayTags;
