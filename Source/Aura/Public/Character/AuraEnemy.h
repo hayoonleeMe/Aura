@@ -47,9 +47,8 @@ protected:
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeAttributes() override;
 
-	virtual void HandleDeathLocally() const override;
+	virtual void HandleDeathLocally() override;
 	
-private:
 	/*
 	 *	Combat
 	 */
@@ -96,6 +95,23 @@ private:
 	// Enemy가 죽을 때, Destroy 될 때까지의 시간
 	UPROPERTY(EditAnywhere, Category="Aura|Dead")
 	float DeadLifeSpan;
+
+	/*
+	 *	Dissolve
+	 */
+	void Dissolve();
+	
+	UPROPERTY(EditAnywhere, Category="Aura|Dissolve")
+	TObjectPtr<UMaterialInstance> MeshDissolveMaterial;
+
+	UPROPERTY(EditAnywhere, Category="Aura|Dissolve")
+	TObjectPtr<UMaterialInstance> WeaponMeshDissolveMaterial;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartDissolveTimeline(UMaterialInstanceDynamic* MID);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartWeaponDissolveTimeline(UMaterialInstanceDynamic* MID);
 
 	/*
 	 *	AI

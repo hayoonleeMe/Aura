@@ -125,7 +125,7 @@ void ABaseCharacter::Die()
 	}
 }
 
-void ABaseCharacter::OnRep_Dead() const
+void ABaseCharacter::OnRep_Dead()
 {
 	// Rep Notify로 Multicast RPC를 대신함
 	HandleDeathLocally();

@@ -86,7 +86,7 @@ void AAuraCharacter::InitializeAttributes()
 	}
 }
 
-void AAuraCharacter::HandleDeathLocally() const
+void AAuraCharacter::HandleDeathLocally()
 {
 	// 충돌 방지
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);

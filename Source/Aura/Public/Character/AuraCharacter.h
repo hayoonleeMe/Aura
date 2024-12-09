@@ -31,7 +31,7 @@ protected:
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeAttributes() override;
 
-	virtual void HandleDeathLocally() const override;
+	virtual void HandleDeathLocally() override;
 
 private:
 	/*
