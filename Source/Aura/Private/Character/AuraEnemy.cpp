@@ -160,6 +160,18 @@ void AAuraEnemy::InitializeForHealthBar()
 	}
 }
 
+void AAuraEnemy::Dissolve()
+{
+	if (UMaterialInstanceDynamic* MID = GetMesh()->CreateAndSetMaterialInstanceDynamicFromMaterial(0, MeshDissolveMaterial))
+	{
+		StartDissolveTimeline(MID);
+	}
+	if (UMaterialInstanceDynamic* MID = WeaponMeshComponent->CreateAndSetMaterialInstanceDynamicFromMaterial(0, WeaponMeshDissolveMaterial))
+	{
+		StartWeaponDissolveTimeline(MID);
+	}
+}
+
 void AAuraEnemy::Die()
 {
 	Super::Die();
@@ -174,7 +186,7 @@ void AAuraEnemy::Die()
 	}
 }
 
-void AAuraEnemy::HandleDeathLocally() const
+void AAuraEnemy::HandleDeathLocally()
 {
 	// 충돌 방지
 	FCollisionResponseContainer Container(ECR_Ignore);
@@ -190,4 +202,6 @@ void AAuraEnemy::HandleDeathLocally() const
     {
     	GetMesh()->GetAnimInstance()->StopAllMontages(0.f);
     }
+
+	Dissolve();
 }

@@ -112,8 +112,8 @@ protected:
 	uint8 bDead : 1;
 
 	UFUNCTION()
-	virtual void OnRep_Dead() const;
+	virtual void OnRep_Dead();
 
 	// Local에서만 적용되는 Dead 관련 작업을 수행
-	virtual void HandleDeathLocally() const {}
+	virtual void HandleDeathLocally() {}
 };

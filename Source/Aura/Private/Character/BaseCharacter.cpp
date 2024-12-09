@@ -116,9 +116,16 @@ void ABaseCharacter::Die()
 	/* Called on server */
 	bDead = true;
 	HandleDeathLocally();
+
+	// Block Input
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->CancelAllAbilities();
+		AbilitySystemComponent->ClearAllAbilities();
+	}
 }
 
-void ABaseCharacter::OnRep_Dead() const
+void ABaseCharacter::OnRep_Dead()
 {
 	// Rep Notify로 Multicast RPC를 대신함
 	HandleDeathLocally();
