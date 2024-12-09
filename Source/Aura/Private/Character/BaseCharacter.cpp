@@ -116,6 +116,13 @@ void ABaseCharacter::Die()
 	/* Called on server */
 	bDead = true;
 	HandleDeathLocally();
+
+	// Block Input
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->CancelAllAbilities();
+		AbilitySystemComponent->ClearAllAbilities();
+	}
 }
 
 void ABaseCharacter::OnRep_Dead() const
