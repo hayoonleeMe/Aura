@@ -41,3 +41,30 @@
   LOG_CALLINFO, \
   *FString::Printf(Format, ##__VA_ARGS__))
 
+// Log + Screen
+#define AURA_PrintString(Owner, LinearColor, Duration, Format, ...) \
+ UKismetSystemLibrary::PrintString( \
+  Owner, \
+  FString::Printf(TEXT("[%s/%s] %s %s"), \
+   LOG_LOCALROLEINFO(Owner), \
+   LOG_REMOTEROLEINFO(Owner), \
+   LOG_CALLINFO, \
+   *FString::Printf(Format, ##__VA_ARGS__)), \
+ true, \
+ true, \
+ LinearColor, \
+ Duration)
+
+#define AURA_PrintStringWithKey(Owner, LinearColor, Duration, KeyName, Format, ...) \
+ UKismetSystemLibrary::PrintString( \
+ Owner, \
+ FString::Printf(TEXT("[%s/%s] %s %s"), \
+  LOG_LOCALROLEINFO(Owner), \
+  LOG_REMOTEROLEINFO(Owner), \
+  LOG_CALLINFO, \
+  *FString::Printf(Format, ##__VA_ARGS__)), \
+ true, \
+ true, \
+ LinearColor, \
+ Duration, \
+ KeyName)
