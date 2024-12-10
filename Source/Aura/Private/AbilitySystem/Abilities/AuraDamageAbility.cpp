@@ -35,8 +35,8 @@ void UAuraDamageAbility::PlayAttackMontage(UAnimMontage* MontageToPlay, bool bEn
 			AbilityTask->OnBlendOut.AddDynamic(this, &ThisClass::FinishMontage);
 		}
 		AbilityTask->OnCompleted.AddDynamic(this, &ThisClass::FinishMontage);
-		AbilityTask->OnCancelled.AddDynamic(this, &ThisClass::FinishMontage);
-		AbilityTask->OnInterrupted.AddDynamic(this, &ThisClass::FinishMontage);
+		AbilityTask->OnCancelled.AddDynamic(this, &ThisClass::K2_EndAbility);
+		AbilityTask->OnInterrupted.AddDynamic(this, &ThisClass::K2_EndAbility);
 		AbilityTask->ReadyForActivation();
 	}
 }
