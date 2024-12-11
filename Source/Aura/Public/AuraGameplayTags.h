@@ -76,6 +76,8 @@ struct FAuraGameplayTags
 	 */
 	FGameplayTag Event_Montage_FireBolt;
 	FGameplayTag Event_Montage_EnemyAttack;
+	
+	FGameplayTag Event_ModifyAttribute;
 
 	/*
 	 *	Abilities
@@ -84,6 +86,8 @@ struct FAuraGameplayTags
 	FGameplayTag Abilities_FireBolt;
 	FGameplayTag Abilities_HitReact;
 	FGameplayTag Abilities_EnemyAttack;
+	
+	FGameplayTag Abilities_ListenForModifyAttributeEvent;
 
 	/*
 	 *	Cooldown

@@ -20,6 +20,7 @@ AAuraPlayerState::AAuraPlayerState()
 
 	/* Combat */
 	Level = 1;
+	AttributePoints = 0;
 }
 
 void AAuraPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -27,8 +28,20 @@ void AAuraPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AAuraPlayerState, Level);
+	DOREPLIFETIME(AAuraPlayerState, AttributePoints);
 }
 
 void AAuraPlayerState::OnRep_Level(int32 OldLevel)
 {
+}
+
+void AAuraPlayerState::OnRep_AttributePoints() const
+{
+	OnAttributePointsChangedDelegate.Broadcast(AttributePoints);
+}
+
+void AAuraPlayerState::AddToAttributePoints(int32 InValue)
+{
+	AttributePoints += InValue;
+	OnAttributePointsChangedDelegate.Broadcast(AttributePoints);
 }

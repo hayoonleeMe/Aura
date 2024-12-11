@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AuraBlueprintLibrary.generated.h"
 
+struct FGameplayTag;
 struct FDamageEffectParams;
 class UEnemyClassConfig;
 
