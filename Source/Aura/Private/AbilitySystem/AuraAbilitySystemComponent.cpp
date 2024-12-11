@@ -7,7 +7,6 @@
 
 void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities)
 {
-	ABILITYLIST_SCOPE_LOCK()
 	for (const TSubclassOf<UGameplayAbility>& AbilityClass : Abilities)
 	{
 		FGameplayAbilitySpec AbilitySpec(AbilityClass, 1);
@@ -15,6 +14,12 @@ void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGamepla
 		{
 			AbilitySpec.DynamicAbilityTags.AddTag(AuraGameplayAbility->InputTag);
 			GiveAbility(AbilitySpec);
+
+			// TODO : 추후 해당되는 Ability를 자동 활성화하는 기능 추가 예정
+			if (AuraGameplayAbility->AbilityTags.HasTagExact(FGameplayTag::RequestGameplayTag(TEXT("Abilities.ListenForModifyAttributeEvent"))))
+			{
+				TryActivateAbility(AbilitySpec.Handle);
+			}
 		}
 	}
 }
