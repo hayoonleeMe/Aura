@@ -34,6 +34,10 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributePointsChangedSignature OnAttributePointsChangedDelegate;
 
+	// AttributeTag에 해당하는 Attribute의 값을 1만큼 증가
+	UFUNCTION(BlueprintCallable)
+	void UpgradeAttribute(const FGameplayTag& AttributeTag);
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	TObjectPtr<UAttributeConfig> AttributeConfig;

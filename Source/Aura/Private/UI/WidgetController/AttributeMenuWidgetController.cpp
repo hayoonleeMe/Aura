@@ -3,8 +3,10 @@
 
 #include "UI/WidgetController/AttributeMenuWidgetController.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AttributeSet.h"
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Data/AttributeConfig.h"
 #include "Player/AuraPlayerState.h"
@@ -43,6 +45,19 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 	{
 		OnAttributePointsChangedDelegate.Broadcast(Value);
 	});
+}
+
+void UAttributeMenuWidgetController::UpgradeAttribute(const FGameplayTag& AttributeTag)
+{
+	if (PlayerState)
+	{
+		// AuraAbility_ListenForModifyAttributeEvent에서 아래의 GameplayEvent를 Wait하고,
+		// 받으면 AttributeTag에 해당하는 Attribute를 1만큼 Add Modify하는 GameplayEffect를 적용
+		FGameplayEventData Payload;
+		Payload.TargetTags.AddTag(AttributeTag);
+		Payload.EventMagnitude = 1;
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(PlayerState, FAuraGameplayTags::Get().Event_ModifyAttribute, Payload);
+	}
 }
 
 void UAttributeMenuWidgetController::BroadcastAttributeInfo(const FGameplayTag& AttributeTag, float AttributeValue) const

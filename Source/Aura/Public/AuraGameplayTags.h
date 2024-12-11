@@ -76,6 +76,8 @@ struct FAuraGameplayTags
 	 */
 	FGameplayTag Event_Montage_FireBolt;
 	FGameplayTag Event_Montage_EnemyAttack;
+	
+	FGameplayTag Event_ModifyAttribute;
 
 	/*
 	 *	Abilities
