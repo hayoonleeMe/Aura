@@ -19,13 +19,22 @@ void UAuraWidgetController::SetWidgetControllerParams(const FWidgetControllerPar
 
 void UAuraWidgetController::ShowAttributeMenu(bool bVisible)
 {
-	if (PlayerController)
-	{
-		if (const AAuraHUD* AuraHUD = PlayerController->GetHUD<AAuraHUD>())
-		{
-			AuraHUD->SetAttributeMenuVisible(bVisible);
-		}
-	}
+	AAuraPlayerController* AuraPC = GetAuraPlayerControllerChecked();
+	
+	if (const AAuraHUD* AuraHUD = AuraPC->GetHUD<AAuraHUD>())
+    {
+    	AuraHUD->SetAttributeMenuVisible(bVisible);
+    }
+
+    if (bVisible)
+    {
+		// Attribute Menu가 열리면 Game Input 방지
+    	AuraPC->SetUIInputMode();
+    }
+    else
+    {
+    	AuraPC->SetInGameInputMode();
+    }
 }
 
 AAuraPlayerController* UAuraWidgetController::GetAuraPlayerControllerChecked() const

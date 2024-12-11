@@ -11,6 +11,7 @@ class USplineComponent;
 class UAuraAbilitySystemComponent;
 class UInputMappingContext;
 class UAuraInputConfig;
+
 /**
  * 
  */
@@ -23,6 +24,12 @@ public:
 	AAuraPlayerController();
 
 	FORCEINLINE USplineComponent* GetSplineComponent() const { return SplineComponent; }
+
+	// 게임에서 기본으로 사용하는 Input Mode로 설정
+	void SetInGameInputMode();
+	
+	// UI 전용 Input Mode로 설정
+	void SetUIInputMode();
 
 protected:
 	virtual void BeginPlay() override;

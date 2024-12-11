@@ -15,6 +15,20 @@ AAuraPlayerController::AAuraPlayerController()
 	SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("Spline Component"));
 }
 
+void AAuraPlayerController::SetInGameInputMode()
+{
+	FInputModeGameAndUI InputMode;
+	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+	InputMode.SetHideCursorDuringCapture(false);
+	SetInputMode(InputMode);
+}
+
+void AAuraPlayerController::SetUIInputMode()
+{
+	const FInputModeUIOnly InputMode;
+	SetInputMode(InputMode);
+}
+
 void AAuraPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -28,10 +42,7 @@ void AAuraPlayerController::BeginPlay()
 	}
 
 	bShowMouseCursor = true;
-	FInputModeGameAndUI InputMode;
-	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-	InputMode.SetHideCursorDuringCapture(false);
-	SetInputMode(InputMode);
+	SetInGameInputMode();
 }
 
 void AAuraPlayerController::SetupInputComponent()
