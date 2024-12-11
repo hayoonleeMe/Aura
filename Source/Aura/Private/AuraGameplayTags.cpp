@@ -72,6 +72,8 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Abilities_HitReact = Manager.AddNativeGameplayTag(TEXT("Abilities.HitReact"), TEXT("HitReact Ability Tag"));
 	GameplayTags.Abilities_EnemyAttack = Manager.AddNativeGameplayTag(TEXT("Abilities.EnemyAttack"), TEXT("EnemyAttack Ability Tag"));
 	
+	GameplayTags.Abilities_ListenForModifyAttributeEvent = Manager.AddNativeGameplayTag(TEXT("Abilities.ListenForModifyAttributeEvent"), TEXT("ListenForModifyAttributeEvent Ability Tag"));
+	
 	/* Cooldown */
 	GameplayTags.Cooldown_FireBolt = Manager.AddNativeGameplayTag(TEXT("Cooldown.FireBolt"), TEXT("FireBolt Cooldown Tag"));
 	GameplayTags.Cooldown_Melee_GoblinSpear = Manager.AddNativeGameplayTag(TEXT("Cooldown.Melee.GoblinSpear"), TEXT("GoblinSpear Melee Cooldown Tag"));
