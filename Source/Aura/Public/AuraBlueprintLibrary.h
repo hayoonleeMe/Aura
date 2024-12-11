@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AuraBlueprintLibrary.generated.h"
 
+struct FGameplayTag;
 struct FDamageEffectParams;
 class UEnemyClassConfig;
 
@@ -38,4 +39,12 @@ public:
 	// 현재 월드에서 모든 살아 있는 PlayerState가 컨트롤하는 Pawn을 가져온다.
 	UFUNCTION(BlueprintCallable)
 	static void GetAlivePawnsFromPlayers(const UObject* WorldContextObject, TArray<AActor*>& OutPlayers);
+
+	// ============================================================================
+	// UI
+	// ============================================================================
+
+	// Attribute Menu를 화면에 표시하거나 숨김
+	UFUNCTION(BlueprintCallable)
+	static void ShowAttributeMenu(const APlayerController* OwningController, bool bVisible);
 };

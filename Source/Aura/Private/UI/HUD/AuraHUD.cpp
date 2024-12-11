@@ -6,6 +6,7 @@
 #include "UI/Widget/AuraUserWidget.h"
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
+#include "UI/WidgetController/AttributeMenuWidgetController.h"
 
 void AAuraHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
 {
@@ -21,6 +22,19 @@ void AAuraHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySyst
 		OverlayWidgetController->BroadcastInitialValues();
 		// 화면에 표시
 		OverlayWidget->AddToViewport();
+	}
+
+	check(AttributeMenuWidgetClass);
+	
+	// AttributeMenuWidget을 생성해 캐싱
+	AttributeMenuWidget = CreateWidget<UAuraUserWidget>(GetWorld(), AttributeMenuWidgetClass);
+	if (AttributeMenuWidget && GetAttributeMenuWidgetController(WidgetControllerParams))
+	{
+		// AttributeMenuWidget에 WidgetController 저장 및 초기값 Broadcast
+		AttributeMenuWidget->SetWidgetController(AttributeMenuWidgetController);
+		// 화면에 추가하고 숨기기
+		AttributeMenuWidget->AddToViewport();
+		AttributeMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
@@ -39,4 +53,31 @@ UOverlayWidgetController* AAuraHUD::GetOverlayWidgetController(const FWidgetCont
 		}
 	}
 	return OverlayWidgetController;
+}
+
+UAttributeMenuWidgetController* AAuraHUD::GetAttributeMenuWidgetController(const FWidgetControllerParams& WCParams)
+{
+	check(AttributeMenuWidgetControllerClass);
+
+	if (!AttributeMenuWidgetController)
+	{
+		AttributeMenuWidgetController = NewObject<UAttributeMenuWidgetController>(this, AttributeMenuWidgetControllerClass);
+		if (AttributeMenuWidgetController)
+		{
+			// WidgetController 초기화 및 바인딩
+			AttributeMenuWidgetController->SetWidgetControllerParams(WCParams);
+			AttributeMenuWidgetController->BindCallbacksToDependencies();
+		}
+	}
+	return AttributeMenuWidgetController;
+}
+
+void AAuraHUD::SetAttributeMenuVisible(bool bVisible) const
+{
+	if (AttributeMenuWidget && AttributeMenuWidgetController)
+	{
+		// Attribute 값들을 업데이트하고 화면에 표시
+		AttributeMenuWidgetController->BroadcastInitialValues();
+		AttributeMenuWidget->SetVisibility(bVisible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+	}
 }
