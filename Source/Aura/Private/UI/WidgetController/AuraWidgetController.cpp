@@ -7,6 +7,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
+#include "UI/HUD/AuraHUD.h"
 
 void UAuraWidgetController::SetWidgetControllerParams(const FWidgetControllerParams& WCParams)
 {
@@ -14,6 +15,17 @@ void UAuraWidgetController::SetWidgetControllerParams(const FWidgetControllerPar
 	PlayerState = WCParams.PlayerState;
 	AbilitySystemComponent = WCParams.AbilitySystemComponent;
 	AttributeSet = WCParams.AttributeSet;
+}
+
+void UAuraWidgetController::ShowAttributeMenu(bool bVisible)
+{
+	if (PlayerController)
+	{
+		if (const AAuraHUD* AuraHUD = PlayerController->GetHUD<AAuraHUD>())
+		{
+			AuraHUD->SetAttributeMenuVisible(bVisible);
+		}
+	}
 }
 
 AAuraPlayerController* UAuraWidgetController::GetAuraPlayerControllerChecked() const

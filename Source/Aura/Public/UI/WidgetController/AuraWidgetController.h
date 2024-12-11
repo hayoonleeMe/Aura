@@ -54,6 +54,11 @@ public:
 
 	// Callback 함수 바인딩
 	virtual void BindCallbacksToDependencies() {}
+
+public:
+	// Attribute Menu를 화면에 표시하거나 숨김
+	UFUNCTION(BlueprintCallable)
+	void ShowAttributeMenu(bool bVisible);
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, Category="Aura|Widget Controller")

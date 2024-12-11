@@ -5,7 +5,6 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
-#include "AuraGameplayTags.h"
 #include "GameplayEffectTypes.h"
 #include "Game/AuraGameModeBase.h"
 #include "GameFramework/GameStateBase.h"
@@ -13,7 +12,6 @@
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Types/AuraAbilityTypes.h"
-#include "UI/HUD/AuraHUD.h"
 
 UEnemyClassConfig* UAuraBlueprintLibrary::GetEnemyClassConfig(const UObject* WorldContextObject)
 {
@@ -74,17 +72,6 @@ void UAuraBlueprintLibrary::GetAlivePawnsFromPlayers(const UObject* WorldContext
 			{
 				OutPlayers.Add(PS->GetPawn());
 			}
-		}
-	}
-}
-
-void UAuraBlueprintLibrary::ShowAttributeMenu(const APlayerController* OwningController, bool bVisible)
-{
-	if (OwningController)
-	{
-		if (const AAuraHUD* AuraHUD = OwningController->GetHUD<AAuraHUD>())
-		{
-			AuraHUD->SetAttributeMenuVisible(bVisible);
 		}
 	}
 }
