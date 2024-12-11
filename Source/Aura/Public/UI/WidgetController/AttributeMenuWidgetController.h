@@ -13,6 +13,9 @@ struct FAttributeInfo;
 // Attribute가 변경되면 그 Attribute의 정보를 담은 구조체를 전달하는 델레게이트
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedWithInfoSignature, const FAttributeInfo&, AttributeInfo);
 
+// AuraPlayerState의 AttributePoints 값이 변경되면 그 값을 전달하는 델레게이트
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributePointsChangedSignature, int32, Value);
+
 /**
  * Attribute Menu에서 사용할 Widget Controller
  */
@@ -27,6 +30,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedWithInfoSignature OnAttributeChangedWithInfoDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributePointsChangedSignature OnAttributePointsChangedDelegate;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category="Aura")

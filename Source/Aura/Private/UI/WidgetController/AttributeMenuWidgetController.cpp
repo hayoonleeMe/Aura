@@ -7,6 +7,7 @@
 #include "AttributeSet.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Data/AttributeConfig.h"
+#include "Player/AuraPlayerState.h"
 
 void UAttributeMenuWidgetController::BroadcastInitialValues()
 {
@@ -17,6 +18,10 @@ void UAttributeMenuWidgetController::BroadcastInitialValues()
 	{
 		BroadcastAttributeInfo(Tuple.Key, Tuple.Value.GetNumericValue(AuraAS));
 	}
+
+	// AttributePoints 값 전달
+	const AAuraPlayerState* AuraPS = GetAuraPlayerStateChecked();
+	OnAttributePointsChangedDelegate.Broadcast(AuraPS->GetAttributePoints());
 }
 
 void UAttributeMenuWidgetController::BindCallbacksToDependencies()
@@ -31,6 +36,13 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 			BroadcastAttributeInfo(Tuple.Key, AttributeChangeData.NewValue);
 		});
 	}
+
+	// AttributePoints가 변경되면 그 값을 전달
+	AAuraPlayerState* AuraPS = GetAuraPlayerStateChecked();
+	AuraPS->OnAttributePointsChangedDelegate.AddWeakLambda(this, [this](int32 Value)
+	{
+		OnAttributePointsChangedDelegate.Broadcast(Value);
+	});
 }
 
 void UAttributeMenuWidgetController::BroadcastAttributeInfo(const FGameplayTag& AttributeTag, float AttributeValue) const

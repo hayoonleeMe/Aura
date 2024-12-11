@@ -9,6 +9,10 @@
 
 class UAttributeSet;
 class UAbilitySystemComponent;
+
+// AuraPlayerState에서 관리하는 Stat이 변경될 때 실행되는 델레게이트
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnStatChangedSignature, int32 /* Value */);
+
 /**
  * 
  */
@@ -27,6 +31,14 @@ public:
 	FORCEINLINE UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
 	FORCEINLINE int32 GetCharacterLevel() const { return Level; }
+	FORCEINLINE int32 GetAttributePoints() const { return AttributePoints; }
+
+	// AttributePoints를 1 증가
+	void IncrementAttributePoints() { AddToAttributePoints(1); }
+	// AttributePoints를 1 감소
+	void DecrementAttributePoints() { AddToAttributePoints(-1); }
+
+	FOnStatChangedSignature OnAttributePointsChangedDelegate;
 	
 private:
 	/*
@@ -46,4 +58,13 @@ private:
 
 	UFUNCTION()
 	void OnRep_Level(int32 OldLevel);
+
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_AttributePoints)
+	int32 AttributePoints;
+
+	UFUNCTION()
+	void OnRep_AttributePoints() const;
+
+	// AttributePoints 값을 업데이트하고 델레게이트 Broadcast
+	void AddToAttributePoints(int32 InValue);
 };
