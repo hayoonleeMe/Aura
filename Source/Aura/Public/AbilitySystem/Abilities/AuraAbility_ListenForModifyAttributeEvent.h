@@ -24,4 +24,8 @@ protected:
 	// AttributeTag로 등록된 SetByCaller Magnitude로 Attribute를 변경하는 GameplayEffect Class
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	TSubclassOf<UGameplayEffect> ModifyAttributeEventEffectClass;
+
+	// 변경될 Attribute Tag 캐싱
+	UPROPERTY()
+	TArray<FGameplayTag> AttributeToModifyTags;
 };
