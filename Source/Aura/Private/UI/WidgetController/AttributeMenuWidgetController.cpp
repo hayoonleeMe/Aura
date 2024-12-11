@@ -49,8 +49,11 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 
 void UAttributeMenuWidgetController::UpgradeAttribute(const FGameplayTag& AttributeTag)
 {
-	if (PlayerState)
+	AAuraPlayerState* AuraPS = GetAuraPlayerStateChecked();
+	if (AuraPS->GetAttributePoints() > 0)
 	{
+		AuraPS->DecrementAttributePoints();
+		
 		// AuraAbility_ListenForModifyAttributeEvent에서 아래의 GameplayEvent를 Wait하고,
 		// 받으면 AttributeTag에 해당하는 Attribute를 1만큼 Add Modify하는 GameplayEffect를 적용
 		FGameplayEventData Payload;
