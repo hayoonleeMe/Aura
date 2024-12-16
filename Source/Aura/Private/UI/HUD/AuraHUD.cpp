@@ -10,12 +10,15 @@
 
 void AAuraHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
 {
+	// Widget Controller 캐싱
+	const FWidgetControllerParams WidgetControllerParams{ PC, PS, ASC, AS };
+	MakeOverlayWidgetController(WidgetControllerParams);
+	MakeAttributeMenuWidgetController(WidgetControllerParams);
+	
 	check(OverlayWidgetClass);
 
 	OverlayWidget = CreateWidget<UAuraUserWidget>(GetWorld(), OverlayWidgetClass);
-	const FWidgetControllerParams WidgetControllerParams{ PC, PS, ASC, AS };
-	
-	if (OverlayWidget && GetOverlayWidgetController(WidgetControllerParams))
+	if (OverlayWidget && OverlayWidgetController)
 	{
 		// OverlayWidget에 WidgetController 저장 및 초기값 Broadcast
 		OverlayWidget->SetWidgetController(OverlayWidgetController);
@@ -23,22 +26,9 @@ void AAuraHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySyst
 		// 화면에 표시
 		OverlayWidget->AddToViewport();
 	}
-
-	check(AttributeMenuWidgetClass);
-	
-	// AttributeMenuWidget을 생성해 캐싱
-	AttributeMenuWidget = CreateWidget<UAuraUserWidget>(GetWorld(), AttributeMenuWidgetClass);
-	if (AttributeMenuWidget && GetAttributeMenuWidgetController(WidgetControllerParams))
-	{
-		// AttributeMenuWidget에 WidgetController 저장 및 초기값 Broadcast
-		AttributeMenuWidget->SetWidgetController(AttributeMenuWidgetController);
-		// 화면에 추가하고 숨기기
-		AttributeMenuWidget->AddToViewport();
-		AttributeMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
 }
 
-UOverlayWidgetController* AAuraHUD::GetOverlayWidgetController(const FWidgetControllerParams& WCParams)
+void AAuraHUD::MakeOverlayWidgetController(const FWidgetControllerParams& WCParams)
 {
 	check(OverlayWidgetControllerClass);
 
@@ -52,10 +42,9 @@ UOverlayWidgetController* AAuraHUD::GetOverlayWidgetController(const FWidgetCont
 			OverlayWidgetController->BindCallbacksToDependencies();
 		}
 	}
-	return OverlayWidgetController;
 }
 
-UAttributeMenuWidgetController* AAuraHUD::GetAttributeMenuWidgetController(const FWidgetControllerParams& WCParams)
+void AAuraHUD::MakeAttributeMenuWidgetController(const FWidgetControllerParams& WCParams)
 {
 	check(AttributeMenuWidgetControllerClass);
 
@@ -68,16 +57,5 @@ UAttributeMenuWidgetController* AAuraHUD::GetAttributeMenuWidgetController(const
 			AttributeMenuWidgetController->SetWidgetControllerParams(WCParams);
 			AttributeMenuWidgetController->BindCallbacksToDependencies();
 		}
-	}
-	return AttributeMenuWidgetController;
-}
-
-void AAuraHUD::SetAttributeMenuVisible(bool bVisible) const
-{
-	if (AttributeMenuWidget && AttributeMenuWidgetController)
-	{
-		// Attribute 값들을 업데이트하고 화면에 표시
-		AttributeMenuWidgetController->BroadcastInitialValues();
-		AttributeMenuWidget->SetVisibility(bVisible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 	}
 }
