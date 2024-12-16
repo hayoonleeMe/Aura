@@ -10,7 +10,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Character/EnemyClassConfig.h"
+#include "Data/EnemyClassConfig.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
