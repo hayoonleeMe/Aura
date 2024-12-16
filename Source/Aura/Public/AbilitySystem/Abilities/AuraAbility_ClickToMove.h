@@ -8,10 +8,9 @@
 
 class UNiagaraSystem;
 class UAbilityTask_ClickToMove;
-class AAuraPlayerController;
-class USplineComponent;
+
 /**
- * 
+ * 클릭한 마우스 커서 위치로 Navigation System에 의한 Path를 따라 캐릭터를 이동시키는 Ability 
  */
 UCLASS()
 class AURA_API UAuraAbility_ClickToMove : public UAuraGameplayAbility
@@ -24,22 +23,19 @@ public:
 	virtual void InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
 	virtual void InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
 
-	bool MoveToDestination() const;
+	// NavPaths를 따라 캐릭터를 이동시키는 함수
+	// UAbilityTask_ClickToMove에 의해 호출됨
+	bool MoveToDestination();
 	
 private:
 	UPROPERTY()
 	TObjectPtr<ACharacter> Character;
-	
-	UPROPERTY()
-	TObjectPtr<AAuraPlayerController> AuraPlayerController;
-	
-	UPROPERTY()
-	TObjectPtr<USplineComponent> SplineComponent;
 
+	UPROPERTY()
+	TObjectPtr<APlayerController> PlayerController;
+	
 	UPROPERTY()
 	TObjectPtr<UAbilityTask_ClickToMove> AbilityTask_ClickToMove;
-
-	FVector Destination;
 
 	// 캐릭터가 계속 목적지로 이동해야 하는지를 나타내는 변수
 	uint8 bShouldMove : 1;
@@ -52,6 +48,11 @@ private:
 	FTimerHandle DelayTimer;
 	float InputDelay;
 	uint8 bProcessInput : 1;
+
+	// UNavigationSystemV1에 의해 구해진 경로를 캐싱
+	TArray<FVector> NavPaths;
+
+	int32 PathIndex;
 
 	// ============================================================================
 	// Effect

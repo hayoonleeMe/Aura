@@ -7,26 +7,23 @@
 #include "NavigationSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "AbilitySystem/AbilityTasks/AbilityTask_ClickToMove.h"
-#include "Components/SplineComponent.h"
 #include "GameFramework/Character.h"
-#include "Player/AuraPlayerController.h"
 
 UAuraAbility_ClickToMove::UAuraAbility_ClickToMove()
 {
 	bShouldMove = true;
-	SquaredArriveAcceptanceRadius = 1600.f;
+	SquaredArriveAcceptanceRadius = 600.f;
 	bShouldSpawnCursorEffect = true;
 	InputDelay = 0.03f;
 	bProcessInput = true;
+	PathIndex = 0;
 }
 
 void UAuraAbility_ClickToMove::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Character = CastChecked<ACharacter>(GetAvatarActorFromActorInfo());
-	AuraPlayerController = CastChecked<AAuraPlayerController>(Character->GetController());
-	SplineComponent = AuraPlayerController->GetSplineComponent();
-	check(SplineComponent);
+	PlayerController = CastChecked<APlayerController>(Character->GetController());
 
 	bShouldMove = true;
 	bShouldSpawnCursorEffect = true;	// 처음 마우스 클릭하면 커서 효과 생성
@@ -46,7 +43,7 @@ void UAuraAbility_ClickToMove::InputPressed(const FGameplayAbilitySpecHandle Han
 		bProcessInput = false;
 		
 		FHitResult CursorHit;
-		AuraPlayerController->GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
+		PlayerController->GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
 		if (!CursorHit.bBlockingHit)
 		{
 			return;
@@ -55,17 +52,18 @@ void UAuraAbility_ClickToMove::InputPressed(const FGameplayAbilitySpecHandle Han
 		// 경로 계산
 		if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(Character, Character->GetActorLocation(), CursorHit.ImpactPoint))
 		{
-			SplineComponent->SetSplineWorldPoints(NavPath->PathPoints);
-			if (NavPath->PathPoints.Num())
+			PathIndex = 0;
+			NavPaths = MoveTemp(NavPath->PathPoints);
+			if (NavPaths.IsEmpty())
 			{
-				Destination = NavPath->PathPoints.Last();
+				return;
 			}
 		}
 
 		// 장애물을 피한 NavPath를 따른 위치에 커서 효과 생성
 		if (CursorEffect && bShouldSpawnCursorEffect)
 		{
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(Character, CursorEffect, Destination);
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(Character, CursorEffect, NavPaths.Last());
 			bShouldSpawnCursorEffect = false;
 		}
 
@@ -97,18 +95,41 @@ void UAuraAbility_ClickToMove::InputReleased(const FGameplayAbilitySpecHandle Ha
 	bShouldSpawnCursorEffect = true;	// 캐릭터가 이동 중에 다시 마우스 클릭하면 커서 효과 생성
 }
 
-bool UAuraAbility_ClickToMove::MoveToDestination() const
+bool UAuraAbility_ClickToMove::MoveToDestination()
 {
-	// Destination까지 NavPath에 따라 설정된 Spline Points를 향해 캐릭터를 이동시킨다.
-	const FVector LocationOnSpline = SplineComponent->FindLocationClosestToWorldLocation(Character->GetActorLocation(), ESplineCoordinateSpace::World);
-	const FVector Direction = SplineComponent->FindDirectionClosestToWorldLocation(LocationOnSpline, ESplineCoordinateSpace::World);
-	Character->AddMovementInput(Direction);
+	// NavPaths가 유효하지 않으면 Ability Task가 생성되지 않아 해당 함수도 호출되지 않을 것으로 예상하지만,
+	// 만약을 대비해 Ability Task를 종료하도록 true를 반환
+	if (NavPaths.IsEmpty())
+	{
+		return true;
+	}
 
-	// 목적지에 도착
-	const float SquaredDistToDest = (LocationOnSpline - Destination).SquaredLength();
+	// 캐릭터의 바닥 지점 좌표
+	const FVector CharacterLocation = Character->GetNavAgentLocation();
+
+	// 캐릭터가 향해야 할 NavPaths 상의 지점을 찾음
+	for (; PathIndex < NavPaths.Num(); ++PathIndex)
+	{
+		const float SquaredDist = FVector::DistSquared(CharacterLocation, NavPaths[PathIndex]);
+		if (SquaredDist > SquaredArriveAcceptanceRadius)
+		{
+			break;
+		}
+	}
+	// 찾은 지점을 향해 캐릭터를 이동
+	if (NavPaths.IsValidIndex(PathIndex))
+	{
+		const FVector Direction = (NavPaths[PathIndex] - CharacterLocation).GetSafeNormal();
+		Character->AddMovementInput(Direction);
+	}
+
+	// 목적지에 도착하면 Ability Task를 종료하도록 true 반환
+	const float SquaredDistToDest = (CharacterLocation - NavPaths.Last()).SquaredLength();
 	if (SquaredDistToDest <= SquaredArriveAcceptanceRadius)
 	{
 		return true;
 	}
+
+	// 계속 이동하기 위해 false 반환
 	return false;
 }
