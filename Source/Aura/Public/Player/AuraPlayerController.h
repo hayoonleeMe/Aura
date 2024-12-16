@@ -36,9 +36,10 @@ protected:
 	virtual void SetupInputComponent() override;
 	
 private:
-	/*
-	 *	Input
-	 */
+	// ============================================================================
+	// Input
+	// ============================================================================
+
 	UPROPERTY(EditAnywhere, Category="Aura|Input")
 	TObjectPtr<UInputMappingContext> AuraContext;
 	
@@ -49,17 +50,19 @@ private:
 	void AbilityInputTagReleased(FGameplayTag InputTag);
 	void AbilityInputTagHeld(FGameplayTag InputTag);
 
-	/*
-	 *	GAS
-	 */
+	// ============================================================================
+	// GAS
+	// ============================================================================
+
 	UPROPERTY()
 	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
 	
 	UAuraAbilitySystemComponent* GetAuraAbilitySystemComponent();
 
-	/*
-	 *	Click To Move
-	 */
+	// ============================================================================
+	// Click To Move
+	// ============================================================================
+
 	UPROPERTY()
 	TObjectPtr<USplineComponent> SplineComponent;
 };

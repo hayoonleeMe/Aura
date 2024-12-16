@@ -31,9 +31,10 @@ public:
 	// Tag와 Attribute Mapping
 	TMap<FGameplayTag, FGameplayAttribute> TagToAttributeMap;
 	
-	/*
-	 *	Primary Attributes
-	 */
+	// ============================================================================
+	// Primary Attributes
+	// ============================================================================
+
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Strength, Category="Aura|Primary Attributes")
 	FGameplayAttributeData Strength;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Strength);
@@ -62,9 +63,10 @@ public:
 	UFUNCTION()
 	void OnRep_Vigor(const FGameplayAttributeData& OldVigor) const;
 
-	/*
-	 *	Secondary Attributes
-	 */
+	// ============================================================================
+	// Secondary Attributes
+	// ============================================================================
+
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Armor, Category="Aura|Secondary Attributes")
 	FGameplayAttributeData Armor;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Armor);
@@ -163,9 +165,10 @@ public:
 	UFUNCTION()
 	void OnRep_PhysicalResistance(const FGameplayAttributeData& OldPhysicalResistance) const;
 
-	/*
-	 *	Vital Attributes
-	 */
+	// ============================================================================
+	// Vital Attributes
+	// ============================================================================
+
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Health, Category="Aura|Vital Attributes")
 	FGameplayAttributeData Health;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Health);
@@ -180,9 +183,10 @@ public:
 	UFUNCTION()
 	void OnRep_Mana(const FGameplayAttributeData& OldMana) const;
 
-	/*
-	 *	Meta Attributes
-	 */
+	// ============================================================================
+	// Meta Attributes
+	// ============================================================================
+
 	UPROPERTY(BlueprintReadOnly, Category="Aura|Meta Attributes")
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);

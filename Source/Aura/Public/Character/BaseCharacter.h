@@ -41,27 +41,30 @@ public:
 	virtual bool IsDead() const override { return bDead; }
 	/* End CombatInterface */
 
-	/*
-	 *	Dead
-	 */
+	// ============================================================================
+	// Dead
+	// ============================================================================
+
 	UPROPERTY(BlueprintAssignable)
 	FOnCharacterDeadSignature OnCharacterDeadDelegate;
 	
 protected:
 	virtual void BeginPlay() override;
 
-	/*
-	 *	Weapon Mesh
-	 */
+	// ============================================================================
+	// Weapon Mesh
+	// ============================================================================
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<USkeletalMeshComponent> WeaponMeshComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Weapon Mesh")
 	FName WeaponSocketName;
 
-	/*
-	 *	GAS
-	 */
+	// ============================================================================
+	// GAS
+	// ============================================================================
+
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
@@ -78,36 +81,41 @@ protected:
 
 	void AddStartupAbilities(const TArray<TSubclassOf<UGameplayAbility>>& AbilityClasses) const;
 
-	/*
-	 *	Role
-	 */
+	// ============================================================================
+	// Role
+	// ============================================================================
+
 	UPROPERTY(EditAnywhere, Category="Aura|Role")
 	FGameplayTag RoleTag;
 
-	/*
-	 *	Motion Warping
-	 */
+	// ============================================================================
+	// Motion Warping
+	// ============================================================================
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Motion Warping")
 	FName WarpTargetName;
 
-	/*
-	 *	Combat
-	 */
+	// ============================================================================
+	// Combat
+	// ============================================================================
+
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
 	TArray<FTaggedCombatInfo> TaggedCombatInfos;
 
-	/*
-	 *	Abilities
-	 */
+	// ============================================================================
+	// Abilities
+	// ============================================================================
+
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Ability")
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 
-	/*
-	 *	Dead
-	 */
+	// ============================================================================
+	// Dead
+	// ============================================================================
+
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Dead, Category="Aura|Dead", meta=(AllowPrivateAccess=true))
 	uint8 bDead : 1;
 

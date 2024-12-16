@@ -5,16 +5,16 @@
 #include "CoreMinimal.h"
 #include "Kismet/KismetSystemLibrary.h"
 
-/*
- * Trace Channels
- */
+// ============================================================================
+// Trace Channels
+// ============================================================================
 
 #define ECC_Projectile ECollisionChannel::ECC_GameTraceChannel1
 #define ECC_EQS_Overlap ECollisionChannel::ECC_GameTraceChannel2
 
-/*
- * Custom Log Macro
- */
+// ============================================================================
+// Custom Log Macro
+// ============================================================================
 
 // 현재 액터의 ENetRole 타입의 Local Network Role 값을 가져온다.
 // ENetRole은 UEnum()으로 지정되어 있으므로 UEnum::GetValueAsString를 통해 값을 가져올 수 있다.

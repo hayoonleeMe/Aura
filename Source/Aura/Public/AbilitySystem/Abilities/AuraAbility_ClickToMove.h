@@ -53,9 +53,10 @@ private:
 	float InputDelay;
 	uint8 bProcessInput : 1;
 
-	/*
-	 * Effect
-	 */
+	// ============================================================================
+	// Effect
+	// ============================================================================
+
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Effect")
 	TObjectPtr<UNiagaraSystem> CursorEffect;
 

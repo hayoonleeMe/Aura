@@ -34,15 +34,17 @@ protected:
 	virtual void HandleDeathLocally() override;
 
 private:
-	/*
-	 *	Effects
-	 */
+	// ============================================================================
+	// Effects
+	// ============================================================================
+
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Effects")
 	TArray<TSubclassOf<UGameplayEffect>> DefaultEffects;
 
-	/*
-	 *	Camera
-	 */
+	// ============================================================================
+	// Camera
+	// ============================================================================
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
 	
