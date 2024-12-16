@@ -11,7 +11,9 @@
 #include "GameFramework/PlayerState.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/AuraPlayerController.h"
 #include "Types/AuraAbilityTypes.h"
+#include "UI/HUD/AuraHUD.h"
 
 UEnemyClassConfig* UAuraBlueprintLibrary::GetEnemyClassConfig(const UObject* WorldContextObject)
 {
@@ -74,4 +76,50 @@ void UAuraBlueprintLibrary::GetAlivePawnsFromPlayers(const UObject* WorldContext
 			}
 		}
 	}
+}
+
+void UAuraBlueprintLibrary::SetInGameInputMode(const UObject* WorldContextObject)
+{
+	if (WorldContextObject && WorldContextObject->GetWorld())
+	{
+		if (AAuraPlayerController* AuraPC = WorldContextObject->GetWorld()->GetFirstPlayerController<AAuraPlayerController>())
+		{
+			AuraPC->SetInGameInputMode();
+		}
+	}
+}
+
+void UAuraBlueprintLibrary::SetUIInputMode(const UObject* WorldContextObject)
+{
+	if (WorldContextObject && WorldContextObject->GetWorld())
+	{
+		if (AAuraPlayerController* AuraPC = WorldContextObject->GetWorld()->GetFirstPlayerController<AAuraPlayerController>())
+		{
+			AuraPC->SetUIInputMode();
+		}
+	}
+}
+
+UOverlayWidgetController* UAuraBlueprintLibrary::GetOverlayWidgetController(const APlayerController* OwningController)
+{
+	if (OwningController)
+	{
+		if (const AAuraHUD* AuraHUD = OwningController->GetHUD<AAuraHUD>())
+		{
+			return AuraHUD->GetOverlayWidgetController();
+		}
+	}
+	return nullptr;
+}
+
+UAttributeMenuWidgetController* UAuraBlueprintLibrary::GetAttributeMenuWidgetController(const APlayerController* OwningController)
+{
+	if (OwningController)
+	{
+		if (const AAuraHUD* AuraHUD = OwningController->GetHUD<AAuraHUD>())
+		{
+			return AuraHUD->GetAttributeMenuWidgetController();
+		}
+	}
+	return nullptr;
 }

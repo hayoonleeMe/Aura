@@ -25,14 +25,8 @@ public:
 	// Overlay Widget, WidgetController를 초기화하고 Overlay Widget을 화면에 표시
 	void InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);
 
-	// OverlayWidgetController가 유효하지 않다면 FWidgetControllerParams로 OverlayWidgetController를 생성해 반환
-	UOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& WCParams);
-
-	// AttributeMenuWidgetController가 유효하지 않다면 FWidgetControllerParams로 AttributeMenuWidgetController를 생성해 반환
-	UAttributeMenuWidgetController* GetAttributeMenuWidgetController(const FWidgetControllerParams& WCParams);
-
-	// Attribute Menu를 화면에 표시하거나 숨김
-	void SetAttributeMenuVisible(bool bVisible) const;
+	UOverlayWidgetController* GetOverlayWidgetController() const { return OverlayWidgetController; }
+	UAttributeMenuWidgetController* GetAttributeMenuWidgetController() const { return AttributeMenuWidgetController; }
 
 private:
 	/*
@@ -50,20 +44,19 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Overlay")
 	TSubclassOf<UOverlayWidgetController> OverlayWidgetControllerClass;
 
+	// OverlayWidgetController가 유효하지 않다면 FWidgetControllerParams로 OverlayWidgetController를 생성
+	void MakeOverlayWidgetController(const FWidgetControllerParams& WCParams);
+
 	// ============================================================================
 	// Attribute Menu
 	// ============================================================================
-
-	// 위젯을 캐싱하고 SetAttributeMenuVisible()로 화면에 표시하거나 숨김
-	UPROPERTY()
-	TObjectPtr<UAuraUserWidget> AttributeMenuWidget;
-
-	UPROPERTY(EditDefaultsOnly, Category="Aura|Attribute Menu")
-	TSubclassOf<UAuraUserWidget> AttributeMenuWidgetClass;
 
 	UPROPERTY()
 	TObjectPtr<UAttributeMenuWidgetController> AttributeMenuWidgetController;
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Attribute Menu")
 	TSubclassOf<UAttributeMenuWidgetController> AttributeMenuWidgetControllerClass;
+
+	// AttributeMenuWidgetController가 유효하지 않다면 FWidgetControllerParams로 AttributeMenuWidgetController를 생성
+	void MakeAttributeMenuWidgetController(const FWidgetControllerParams& WCParams);
 };

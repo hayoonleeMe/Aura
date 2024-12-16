@@ -6,6 +6,9 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AuraBlueprintLibrary.generated.h"
 
+class UOverlayWidgetController;
+struct FWidgetControllerParams;
+class UAttributeMenuWidgetController;
 struct FGameplayTag;
 struct FDamageEffectParams;
 class UEnemyClassConfig;
@@ -19,6 +22,10 @@ class AURA_API UAuraBlueprintLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
+	// ============================================================================
+	// Gameplay
+	// ============================================================================
+
 	UFUNCTION(BlueprintCallable)
 	static UEnemyClassConfig* GetEnemyClassConfig(const UObject* WorldContextObject);
 
@@ -39,4 +46,24 @@ public:
 	// 현재 월드에서 모든 살아 있는 PlayerState가 컨트롤하는 Pawn을 가져온다.
 	UFUNCTION(BlueprintCallable)
 	static void GetAlivePawnsFromPlayers(const UObject* WorldContextObject, TArray<AActor*>& OutPlayers);
+
+	// 게임에서 기본으로 사용하는 Input Mode로 설정
+	UFUNCTION(BlueprintCallable)
+	static void SetInGameInputMode(const UObject* WorldContextObject);
+
+	// UI 전용 Input Mode로 설정
+	UFUNCTION(BlueprintCallable)
+	static void SetUIInputMode(const UObject* WorldContextObject);
+
+	// ============================================================================
+	// UI
+	// ============================================================================
+
+	// OwningController의 HUD에 저장된 Overlay Widget Controller 반환
+	UFUNCTION(BlueprintPure)
+	static UOverlayWidgetController* GetOverlayWidgetController(const APlayerController* OwningController);
+	
+	// OwningController의 HUD에 저장된 Attribute Menu Widget Controller 반환
+	UFUNCTION(BlueprintPure)
+	static UAttributeMenuWidgetController* GetAttributeMenuWidgetController(const APlayerController* OwningController);
 };
