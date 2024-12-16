@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Character/EnemyClassConfig.h"
+#include "Data/EnemyClassConfig.h"
 
 const FEnemyClassInfo* UEnemyClassConfig::GetInfoByType(EEnemyClassType InType) const
 {
