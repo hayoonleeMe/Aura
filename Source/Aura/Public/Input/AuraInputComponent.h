@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AuraInputConfig.h"
+#include "Data/AuraInputConfig.h"
 #include "EnhancedInputComponent.h"
 #include "AuraInputComponent.generated.h"
 
