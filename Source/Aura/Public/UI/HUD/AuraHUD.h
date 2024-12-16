@@ -29,9 +29,10 @@ public:
 	UAttributeMenuWidgetController* GetAttributeMenuWidgetController() const { return AttributeMenuWidgetController; }
 
 private:
-	/*
-	 *	Overlay
-	 */
+	// ============================================================================
+	// Overlay
+	// ============================================================================
+
 	UPROPERTY()
 	TObjectPtr<UAuraUserWidget> OverlayWidget;
 

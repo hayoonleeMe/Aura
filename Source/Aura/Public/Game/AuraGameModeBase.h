@@ -17,9 +17,10 @@ class AURA_API AAuraGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 
 public:
-	/*
-	 *	Combat
-	 */
+	// ============================================================================
+	// Combat
+	// ============================================================================
+
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
 	TObjectPtr<UEnemyClassConfig> EnemyClassConfig;
 

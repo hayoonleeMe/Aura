@@ -13,9 +13,10 @@ struct FAuraGameplayTags
 	static FAuraGameplayTags& Get() { return GameplayTags; }
 	static void InitializeNativeGameplayTags();
 
-	/*
-	 *	Input
-	 */
+	// ============================================================================
+	// Input
+	// ============================================================================
+
 	FGameplayTag InputTag_LMB;
 	FGameplayTag InputTag_RMB;
 	FGameplayTag InputTag_1;
@@ -23,17 +24,19 @@ struct FAuraGameplayTags
 	FGameplayTag InputTag_3;
 	FGameplayTag InputTag_4;
 
-	/*
-	 *	Primary Attributes
-	 */
+	// ============================================================================
+	// Primary Attributes
+	// ============================================================================
+
 	FGameplayTag Attributes_Primary_Strength;
 	FGameplayTag Attributes_Primary_Intelligence;
 	FGameplayTag Attributes_Primary_Resilience;
 	FGameplayTag Attributes_Primary_Vigor;
 
-	/*
-	 *	Secondary Attributes
-	 */
+	// ============================================================================
+	// Secondary Attributes
+	// ============================================================================
+
 	FGameplayTag Attributes_Secondary_Armor;
 	FGameplayTag Attributes_Secondary_ArmorPenetration;
 	FGameplayTag Attributes_Secondary_BlockChance;
@@ -49,15 +52,17 @@ struct FAuraGameplayTags
 	FGameplayTag Attributes_Secondary_ArcaneResistance;
 	FGameplayTag Attributes_Secondary_PhysicalResistance;
 
-	/*
-	 *	Vital Attributes
-	 */
+	// ============================================================================
+	// Vital Attributes
+	// ============================================================================
+
 	FGameplayTag Attributes_Vital_Health;
 	FGameplayTag Attributes_Vital_Mana;
 
-	/*
-	 *	Damage Types
-	 */
+	// ============================================================================
+	// Damage Types
+	// ============================================================================
+
 	FGameplayTag Damage_Type_Fire;
 	FGameplayTag Damage_Type_Lightning;
 	FGameplayTag Damage_Type_Arcane;
@@ -65,23 +70,26 @@ struct FAuraGameplayTags
 
 	TMap<FGameplayTag, FGameplayTag> DamageTypeToResistanceMap;
 
-	/*
-	 *	Role
-	 */
+	// ============================================================================
+	// Role
+	// ============================================================================
+
 	FGameplayTag Role_Player;
 	FGameplayTag Role_Enemy;
 
-	/*
-	 *	Event
-	 */
+	// ============================================================================
+	// Event
+	// ============================================================================
+
 	FGameplayTag Event_Montage_FireBolt;
 	FGameplayTag Event_Montage_EnemyAttack;
 	
 	FGameplayTag Event_ModifyAttribute;
 
-	/*
-	 *	Abilities
-	 */
+	// ============================================================================
+	// Abilities
+	// ============================================================================
+
 	FGameplayTag Abilities_ClickToMove;
 	FGameplayTag Abilities_FireBolt;
 	FGameplayTag Abilities_HitReact;
@@ -89,9 +97,10 @@ struct FAuraGameplayTags
 	
 	FGameplayTag Abilities_ListenForModifyAttributeEvent;
 
-	/*
-	 *	Cooldown
-	 */
+	// ============================================================================
+	// Cooldown
+	// ============================================================================
+
 	FGameplayTag Cooldown_FireBolt;
 	FGameplayTag Cooldown_Melee_GoblinSpear;
 	FGameplayTag Cooldown_Melee_DemonWarrior;
@@ -100,9 +109,10 @@ struct FAuraGameplayTags
 	FGameplayTag Cooldown_Range_DemonRanger;
 	FGameplayTag Cooldown_Range_Shaman;
 
-	/*
-	 *	GameplayCue
-	 */
+	// ============================================================================
+	// GameplayCue
+	// ============================================================================
+
 	FGameplayTag GameplayCue_FireBoltImpact;
 	FGameplayTag GameplayCue_EnemyMeleeImpact;
 	FGameplayTag GameplayCue_RockImpact;

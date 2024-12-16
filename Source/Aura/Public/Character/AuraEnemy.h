@@ -25,9 +25,10 @@ public:
 	AAuraEnemy();
 	virtual void PossessedBy(AController* NewController) override;
 
-	/*
-	 *	Overlay Widget Controller
-	 */
+	// ============================================================================
+	// Overlay Widget Controller
+	// ============================================================================
+
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnHealthChangedDelegate;
 	
@@ -49,9 +50,10 @@ protected:
 
 	virtual void HandleDeathLocally() override;
 	
-	/*
-	 *	Combat
-	 */
+	// ============================================================================
+	// Combat
+	// ============================================================================
+
 	UPROPERTY(EditAnywhere, Category="Aura|Combat")
 	int32 Level;
 
@@ -79,9 +81,10 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<AActor> CombatTarget;
 
-	/*
-	 *	Health Bar
-	 */
+	// ============================================================================
+	// Health Bar
+	// ============================================================================
+
 	// set widget in blueprint
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UWidgetComponent> HealthBarComponent;
@@ -89,16 +92,18 @@ protected:
 	// HealthBar 업데이트를 위한 초기화 수행
 	void InitializeForHealthBar();
 
-	/*
-	 * Dead
-	 */
+	// ============================================================================
+	// Dead
+	// ============================================================================
+
 	// Enemy가 죽을 때, Destroy 될 때까지의 시간
 	UPROPERTY(EditAnywhere, Category="Aura|Dead")
 	float DeadLifeSpan;
 
-	/*
-	 *	Dissolve
-	 */
+	// ============================================================================
+	// Dissolve
+	// ============================================================================
+
 	void Dissolve();
 	
 	UPROPERTY(EditAnywhere, Category="Aura|Dissolve")
@@ -113,9 +118,10 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartWeaponDissolveTimeline(UMaterialInstanceDynamic* MID);
 
-	/*
-	 *	AI
-	 */
+	// ============================================================================
+	// AI
+	// ============================================================================
+
 	UPROPERTY(EditAnywhere, Category="Aura|AI")
 	TObjectPtr<UBehaviorTree> BehaviorTree;
 

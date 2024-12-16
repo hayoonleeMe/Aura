@@ -41,18 +41,20 @@ public:
 	FOnStatChangedSignature OnAttributePointsChangedDelegate;
 	
 private:
-	/*
-	 *	GAS
-	 */
+	// ============================================================================
+	// GAS
+	// ============================================================================
+
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
 
-	/*
-	 *	Combat
-	 */
+	// ============================================================================
+	// Combat
+	// ============================================================================
+
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_Level)
 	int32 Level;
 
