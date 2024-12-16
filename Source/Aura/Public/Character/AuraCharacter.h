@@ -39,7 +39,7 @@ private:
 	// ============================================================================
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Effects")
-	TArray<TSubclassOf<UGameplayEffect>> DefaultEffects;
+	TArray<TSubclassOf<UGameplayEffect>> StartupEffects;
 
 	// ============================================================================
 	// Camera

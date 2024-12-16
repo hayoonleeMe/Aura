@@ -80,7 +80,7 @@ void AAuraCharacter::InitializeAttributes()
 {
 	check(GetAbilitySystemComponent());
 
-	for (const TSubclassOf<UGameplayEffect>& EffectClass : DefaultEffects)
+	for (const TSubclassOf<UGameplayEffect>& EffectClass : StartupEffects)
 	{
 		ApplyEffectSpecToSelf(EffectClass);
 	}
