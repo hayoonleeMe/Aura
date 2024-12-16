@@ -21,10 +21,6 @@ class AURA_API AAuraPlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
-	AAuraPlayerController();
-
-	FORCEINLINE USplineComponent* GetSplineComponent() const { return SplineComponent; }
-
 	// 게임에서 기본으로 사용하는 Input Mode로 설정
 	void SetInGameInputMode();
 	
@@ -58,11 +54,4 @@ private:
 	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
 	
 	UAuraAbilitySystemComponent* GetAuraAbilitySystemComponent();
-
-	// ============================================================================
-	// Click To Move
-	// ============================================================================
-
-	UPROPERTY()
-	TObjectPtr<USplineComponent> SplineComponent;
 };
