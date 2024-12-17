@@ -7,6 +7,7 @@
 #include "NavigationSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "AbilitySystem/AbilityTasks/AbilityTask_ClickToMove.h"
+#include "Aura/Aura.h"
 #include "GameFramework/Character.h"
 
 UAuraAbility_ClickToMove::UAuraAbility_ClickToMove()
@@ -43,7 +44,7 @@ void UAuraAbility_ClickToMove::InputPressed(const FGameplayAbilitySpecHandle Han
 		bProcessInput = false;
 		
 		FHitResult CursorHit;
-		PlayerController->GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
+		PlayerController->GetHitResultUnderCursor(ECC_ClickToMove, false, CursorHit);
 		if (!CursorHit.bBlockingHit)
 		{
 			return;
