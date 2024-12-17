@@ -4,13 +4,13 @@
 #include "AbilitySystem/Abilities/AuraProjectileAbility.h"
 
 #include "Actor/AuraProjectile.h"
-#include "Interaction/CombatInterface.h"
 
 UAuraProjectileAbility::UAuraProjectileAbility()
 {
 	NumProjectiles = 1;
 	bOverridePitch = false;
 	PitchOverride = 0.f;
+	bUseCharacterLocationForDirection = false;
 }
 
 void UAuraProjectileAbility::SpawnProjectile(const FVector& TargetLocation, const FVector& CombatSocketLocation)
@@ -22,13 +22,16 @@ void UAuraProjectileAbility::SpawnProjectile(const FVector& TargetLocation, cons
 	}
 	check(ProjectileClass);
 
-	// CombatSocket에서 Projectile 발사
-	FRotator Rotation = (TargetLocation - CombatSocketLocation).Rotation();
+	// Projectile 발사 방향 계산
+	const FVector StartLocation = bUseCharacterLocationForDirection ? AvatarActor->GetActorLocation() : CombatSocketLocation;
+	FRotator Rotation = (TargetLocation - StartLocation).Rotation();
+	Rotation.Roll = 0.f;
 	if (bOverridePitch)
 	{
 		Rotation.Pitch = PitchOverride;
 	}
 	
+	// CombatSocket에서 Projectile 발사
 	FTransform SpawnTransform;
 	SpawnTransform.SetLocation(CombatSocketLocation);
 	SpawnTransform.SetRotation(Rotation.Quaternion());
