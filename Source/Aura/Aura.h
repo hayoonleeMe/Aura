@@ -9,7 +9,12 @@
 // Trace Channels
 // ============================================================================
 
+// Projectile을 나타내는 Object Channel
+// Default Response Overlap, Ignore BaseCharacter's Capsule
 #define ECC_Projectile ECollisionChannel::ECC_GameTraceChannel1
+
+// AI Enemy에서 Environment Query System을 이용해 공격 위치를 결정할 때 사용할 Trace Channel
+// Default Response Ignore, Only Overlap BaseCharacter's Capsule
 #define ECC_EQS_Overlap ECollisionChannel::ECC_GameTraceChannel2
 
 // Player의 ClickToMove Ability에서 마우스 커서 위치를 구할 때 사용할 Trace Channel
