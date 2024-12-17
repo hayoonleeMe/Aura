@@ -27,10 +27,11 @@ void UAuraAbility_HitReact::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	check(TaggedCombatInfo.AnimMontage);
 	
 	// HitReactMontage를 재생하고 Wait
-	if (UAbilityTask_PlayMontageAndWait* AbilityTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, FName(), TaggedCombatInfo.AnimMontage))
+	if (UAbilityTask_PlayMontageAndWait* AbilityTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, FName(), TaggedCombatInfo.AnimMontage, 1.f, NAME_None, false))
 	{
 		AbilityTask->OnCompleted.AddDynamic(this, &ThisClass::K2_EndAbility);
 		AbilityTask->OnCancelled.AddDynamic(this, &ThisClass::K2_EndAbility);
+		AbilityTask->OnBlendOut.AddDynamic(this, &ThisClass::K2_EndAbility);
 		AbilityTask->OnInterrupted.AddDynamic(this, &ThisClass::K2_EndAbility);
 		AbilityTask->ReadyForActivation();			
 	}
