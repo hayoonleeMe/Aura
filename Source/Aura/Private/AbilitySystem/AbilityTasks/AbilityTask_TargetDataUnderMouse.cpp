@@ -4,6 +4,7 @@
 #include "AbilitySystem/AbilityTasks/AbilityTask_TargetDataUnderMouse.h"
 
 #include "AbilitySystemComponent.h"
+#include "Aura/Aura.h"
 
 UAbilityTask_TargetDataUnderMouse* UAbilityTask_TargetDataUnderMouse::CreateTask(UGameplayAbility* OwningAbility)
 {
@@ -45,7 +46,7 @@ void UAbilityTask_TargetDataUnderMouse::SendTargetDataToServer()
 	if (const APlayerController* PC = Ability->GetActorInfo().PlayerController.Get())
 	{
 		FHitResult HitResult;
-		PC->GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
+		PC->GetHitResultUnderCursor(ECC_Target, false, HitResult);
 
 		// FGameplayAbilityTargetData_SingleTargetHit 포인터는 FGameplayAbilityTargetDataHandle 내부에서 TSharedPtr로 괸리됨
 		FGameplayAbilityTargetDataHandle TargetDataHandle(new FGameplayAbilityTargetData_SingleTargetHit(HitResult));
