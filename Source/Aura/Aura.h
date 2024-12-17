@@ -21,6 +21,10 @@
 // Default Response Block, Ignore BaseCharacter's Mesh and Capsule 
 #define ECC_ClickToMove ECollisionChannel::ECC_GameTraceChannel3
 
+// Player의 TargetDataUnderMouse Ability Task에서 마우스 커서 위치의 Target을 구할 때 사용할 Trace Channel
+// Default Response Block, Ignore BaseCharacter's Mesh and Capsule, Block Enemy's Mesh
+#define ECC_Target ECollisionChannel::ECC_GameTraceChannel4
+
 // ============================================================================
 // Custom Log Macro
 // ============================================================================

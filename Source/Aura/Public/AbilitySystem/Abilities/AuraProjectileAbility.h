@@ -36,4 +36,9 @@ protected:
 	// bOverridePitch가 true일 때, Projectile의 초기 Rotation Pitch 값
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Projectile", meta=(EditCondition="bOverridePitch"))
 	float PitchOverride;
+
+	// Projectile 발사 방향을 결정할 때, CombatSocketLocation 대신 CharacterLocation을 사용할 것인지 여부
+	// 마우스 커서로 Target 지점을 결정하는 Player Ability에서 사용하길 권장 
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Projectile")
+	uint8 bUseCharacterLocationForDirection : 1;
 };
