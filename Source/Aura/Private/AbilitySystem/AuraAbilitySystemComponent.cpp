@@ -15,8 +15,8 @@ void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGamepla
 			AbilitySpec.DynamicAbilityTags.AddTag(AuraGameplayAbility->InputTag);
 			GiveAbility(AbilitySpec);
 
-			// TODO : 추후 해당되는 Ability를 자동 활성화하는 기능 추가 예정
-			if (AuraGameplayAbility->AbilityTags.HasTagExact(FGameplayTag::RequestGameplayTag(TEXT("Abilities.ListenForModifyAttributeEvent"))))
+			// Passive Ability는 Give와 동시에 활성화
+			if (AuraGameplayAbility->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag(TEXT("Abilities.Passive"))))
 			{
 				TryActivateAbility(AbilitySpec.Handle);
 			}
