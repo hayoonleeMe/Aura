@@ -123,3 +123,15 @@ UAttributeMenuWidgetController* UAuraBlueprintLibrary::GetAttributeMenuWidgetCon
 	}
 	return nullptr;
 }
+
+USpellMenuWidgetController* UAuraBlueprintLibrary::GetSpellMenuWidgetController(const APlayerController* OwningController)
+{
+	if (OwningController)
+	{
+		if (const AAuraHUD* AuraHUD = OwningController->GetHUD<AAuraHUD>())
+		{
+			return AuraHUD->GetSpellMenuWidgetController();
+		}
+	}
+	return nullptr;
+}

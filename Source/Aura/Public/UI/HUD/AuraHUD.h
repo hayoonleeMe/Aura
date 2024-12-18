@@ -6,6 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "AuraHUD.generated.h"
 
+class USpellMenuWidgetController;
 class UAttributeMenuWidgetController;
 struct FWidgetControllerParams;
 class UOverlayWidgetController;
@@ -27,6 +28,7 @@ public:
 
 	UOverlayWidgetController* GetOverlayWidgetController() const { return OverlayWidgetController; }
 	UAttributeMenuWidgetController* GetAttributeMenuWidgetController() const { return AttributeMenuWidgetController; }
+	USpellMenuWidgetController* GetSpellMenuWidgetController() const { return SpellMenuWidgetController; }
 
 private:
 	// ============================================================================
@@ -60,4 +62,17 @@ private:
 
 	// AttributeMenuWidgetController가 유효하지 않다면 FWidgetControllerParams로 AttributeMenuWidgetController를 생성
 	void MakeAttributeMenuWidgetController(const FWidgetControllerParams& WCParams);
+
+	// ============================================================================
+	// Spell Menu
+	// ============================================================================
+
+	UPROPERTY()
+	TObjectPtr<USpellMenuWidgetController> SpellMenuWidgetController;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Spell Menu")
+	TSubclassOf<USpellMenuWidgetController> SpellMenuWidgetControllerClass;
+
+	// SpellMenuWidgetController가 유효하지 않다면 FWidgetControllerParams로 SpellMenuWidgetController를 생성
+	void MakeSpellMenuWidgetController(const FWidgetControllerParams& WCParams);
 };
