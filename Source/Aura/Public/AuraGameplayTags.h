@@ -91,11 +91,22 @@ struct FAuraGameplayTags
 	// ============================================================================
 
 	FGameplayTag Abilities_ClickToMove;
-	FGameplayTag Abilities_FireBolt;
 	FGameplayTag Abilities_HitReact;
 	FGameplayTag Abilities_EnemyAttack;
+
+	// ============================================================================
+	// Abilities.Offensive
+	// 플레이어가 Damage를 입히기 위해 직접 사용하는 Offensive Ability
+	// ============================================================================
 	
-	FGameplayTag Abilities_ListenForModifyAttributeEvent;
+	FGameplayTag Abilities_Offensive_FireBolt;
+
+	// ============================================================================
+	// Abilities.Passive
+	// Give 됨과 동시에 활성화되는 Passive Ability
+	// ============================================================================
+	
+	FGameplayTag Abilities_Passive_ListenForModifyAttributeEvent;
 
 	// ============================================================================
 	// Cooldown

@@ -70,11 +70,14 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 
 	/* Abilities */
 	GameplayTags.Abilities_ClickToMove = Manager.AddNativeGameplayTag(TEXT("Abilities.ClickToMove"), TEXT("ClickToMove Ability Tag"));
-	GameplayTags.Abilities_FireBolt = Manager.AddNativeGameplayTag(TEXT("Abilities.FireBolt"), TEXT("FireBolt Ability Tag"));
 	GameplayTags.Abilities_HitReact = Manager.AddNativeGameplayTag(TEXT("Abilities.HitReact"), TEXT("HitReact Ability Tag"));
 	GameplayTags.Abilities_EnemyAttack = Manager.AddNativeGameplayTag(TEXT("Abilities.EnemyAttack"), TEXT("EnemyAttack Ability Tag"));
-	
-	GameplayTags.Abilities_ListenForModifyAttributeEvent = Manager.AddNativeGameplayTag(TEXT("Abilities.ListenForModifyAttributeEvent"), TEXT("ListenForModifyAttributeEvent Ability Tag"));
+
+	/* Abilities.Offensive */
+	GameplayTags.Abilities_Offensive_FireBolt = Manager.AddNativeGameplayTag(TEXT("Abilities.Offensive.FireBolt"), TEXT("FireBolt Offensive Ability Tag"));
+
+	/* Abilities.Passive */
+	GameplayTags.Abilities_Passive_ListenForModifyAttributeEvent = Manager.AddNativeGameplayTag(TEXT("Abilities.Passive.ListenForModifyAttributeEvent"), TEXT("ListenForModifyAttributeEvent Passive Ability Tag"));
 	
 	/* Cooldown */
 	GameplayTags.Cooldown_FireBolt = Manager.AddNativeGameplayTag(TEXT("Cooldown.FireBolt"), TEXT("FireBolt Cooldown Tag"));
