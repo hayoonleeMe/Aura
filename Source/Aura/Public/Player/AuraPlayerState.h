@@ -32,13 +32,20 @@ public:
 
 	FORCEINLINE int32 GetCharacterLevel() const { return Level; }
 	FORCEINLINE int32 GetAttributePoints() const { return AttributePoints; }
+	FORCEINLINE int32 GetSpellPoints() const { return SpellPoints; }
 
 	// AttributePoints를 1 증가
 	void IncrementAttributePoints() { AddToAttributePoints(1); }
 	// AttributePoints를 1 감소
 	void DecrementAttributePoints() { AddToAttributePoints(-1); }
 
+	// SpellPoints를 1 증가
+	void IncrementSpellPoints() { AddToSpellPoints(1); }
+	// SpellPoints를 1 감소
+	void DecrementSpellPoints() { AddToSpellPoints(-1); }
+
 	FOnStatChangedSignature OnAttributePointsChangedDelegate;
+	FOnStatChangedSignature OnSpellPointsChangedDelegate;
 	
 private:
 	// ============================================================================
@@ -61,6 +68,7 @@ private:
 	UFUNCTION()
 	void OnRep_Level(int32 OldLevel);
 
+	// Attribute를 Upgrade하는 데 사용하는 Point
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_AttributePoints)
 	int32 AttributePoints;
 
@@ -69,4 +77,14 @@ private:
 
 	// AttributePoints 값을 업데이트하고 델레게이트 Broadcast
 	void AddToAttributePoints(int32 InValue);
+
+	// Spell을 Upgrade하는 데 사용하는 Point
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_SpellPoints)
+	int32 SpellPoints;
+
+	UFUNCTION()
+	void OnRep_SpellPoints() const;
+
+	// SpellPoints 값을 업데이트하고 델레게이트 Broadcast
+	void AddToSpellPoints(int32 InValue);
 };
