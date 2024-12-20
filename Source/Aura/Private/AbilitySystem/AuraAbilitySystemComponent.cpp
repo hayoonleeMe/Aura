@@ -15,8 +15,8 @@ void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGamepla
 			AbilitySpec.DynamicAbilityTags.AddTag(AuraGameplayAbility->InputTag);
 			GiveAbility(AbilitySpec);
 
-			// Passive Ability는 Give와 동시에 활성화
-			if (AuraGameplayAbility->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag(TEXT("Abilities.Passive"))))
+			// System Ability는 Give와 동시에 활성화
+			if (AuraGameplayAbility->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag(TEXT("Abilities.System"))))
 			{
 				TryActivateAbility(AbilitySpec.Handle);
 			}

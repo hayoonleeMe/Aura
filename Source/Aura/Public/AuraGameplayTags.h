@@ -95,6 +95,13 @@ struct FAuraGameplayTags
 	FGameplayTag Abilities_EnemyAttack;
 
 	// ============================================================================
+	// Abilities.System
+	// 내부 동작을 위해 Give 됨과 동시에 활성화되는 System Ability
+	// ============================================================================
+	
+	FGameplayTag Abilities_System_ListenForModifyAttributeEvent;
+
+	// ============================================================================
 	// Abilities.Offensive
 	// 플레이어가 Damage를 입히기 위해 직접 사용하는 Offensive Ability
 	// ============================================================================
@@ -103,10 +110,11 @@ struct FAuraGameplayTags
 
 	// ============================================================================
 	// Abilities.Passive
-	// Give 됨과 동시에 활성화되는 Passive Ability
+	// 장착하는 동안 계속해서 적용되는 Passive Ability
 	// ============================================================================
-	
-	FGameplayTag Abilities_Passive_ListenForModifyAttributeEvent;
+
+	// TODO : for Debug & Test, Need to delete
+	FGameplayTag Abilities_Passive_Test;	
 
 	// ============================================================================
 	// Cooldown

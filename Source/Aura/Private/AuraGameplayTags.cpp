@@ -73,12 +73,15 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Abilities_HitReact = Manager.AddNativeGameplayTag(TEXT("Abilities.HitReact"), TEXT("HitReact Ability Tag"));
 	GameplayTags.Abilities_EnemyAttack = Manager.AddNativeGameplayTag(TEXT("Abilities.EnemyAttack"), TEXT("EnemyAttack Ability Tag"));
 
+	/* Abilities.System */
+	GameplayTags.Abilities_System_ListenForModifyAttributeEvent = Manager.AddNativeGameplayTag(TEXT("Abilities.System.ListenForModifyAttributeEvent"), TEXT("ListenForModifyAttributeEvent System Ability Tag"));
+
 	/* Abilities.Offensive */
 	GameplayTags.Abilities_Offensive_FireBolt = Manager.AddNativeGameplayTag(TEXT("Abilities.Offensive.FireBolt"), TEXT("FireBolt Offensive Ability Tag"));
 
 	/* Abilities.Passive */
-	GameplayTags.Abilities_Passive_ListenForModifyAttributeEvent = Manager.AddNativeGameplayTag(TEXT("Abilities.Passive.ListenForModifyAttributeEvent"), TEXT("ListenForModifyAttributeEvent Passive Ability Tag"));
-	
+	GameplayTags.Abilities_Passive_Test = Manager.AddNativeGameplayTag(TEXT("Abilities.Passive.Test"), TEXT("Test Passive Ability Tag"));
+
 	/* Cooldown */
 	GameplayTags.Cooldown_FireBolt = Manager.AddNativeGameplayTag(TEXT("Cooldown.FireBolt"), TEXT("FireBolt Cooldown Tag"));
 	GameplayTags.Cooldown_Melee_GoblinSpear = Manager.AddNativeGameplayTag(TEXT("Cooldown.Melee.GoblinSpear"), TEXT("GoblinSpear Melee Cooldown Tag"));
