@@ -122,7 +122,14 @@ struct FAuraGameplayTags
 	// ============================================================================
 
 	// TODO : for Debug & Test, Need to delete
-	FGameplayTag Abilities_Passive_Test;	
+	FGameplayTag Abilities_Passive_Test;
+
+	// ============================================================================
+	// Spell Status
+	// ============================================================================
+	FGameplayTag SpellStatus_Locked;	
+	FGameplayTag SpellStatus_Unlocked;	
+	FGameplayTag SpellStatus_Equipped;	
 
 	// ============================================================================
 	// Cooldown
