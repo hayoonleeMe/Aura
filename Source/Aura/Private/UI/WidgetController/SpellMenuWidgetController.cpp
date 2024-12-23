@@ -18,13 +18,12 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 {
 	// Spell의 변경을 전달
 	UAuraAbilitySystemComponent* AuraASC = GetAuraAbilitySystemComponentChecked();
-	AuraASC->OnSpellAbilityChangedDelegate.AddWeakLambda(this, [this](const FGameplayTag& SpellTag, int32 SpellLevel)
+	AuraASC->OnSpellAbilityChangedDelegate.AddWeakLambda(this, [this](const FGameplayTag& SpellTag)
 	{
 		if (SpellConfig)
 		{
-			FSpellInfo SpellInfo = SpellConfig->GetSpellInfoByTag(SpellTag);
-			SpellInfo.SpellLevel = SpellLevel;
-			OnSpellChangedDelegate.Broadcast(SpellInfo);
+			OnSpellChangedDelegate.Broadcast(SpellConfig->GetSpellInfoByTag(SpellTag));
+
 		}
 	});
 

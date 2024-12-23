@@ -17,10 +17,6 @@ struct FSpellInfo
 {
 	GENERATED_BODY()
 
-	FSpellInfo()
-		: SpellLevel(1)
-	{}
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FGameplayTag SpellTag;
 
@@ -32,9 +28,6 @@ struct FSpellInfo
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UMaterialInstance> Background;
-
-	UPROPERTY(BlueprintReadOnly)
-	int32 SpellLevel;
 };
 
 /**

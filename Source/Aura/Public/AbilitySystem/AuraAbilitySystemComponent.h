@@ -7,7 +7,7 @@
 #include "AuraAbilitySystemComponent.generated.h"
 
 // Spell이 Unlock 된 이후로, Spell의 변경된 정보를 전달하는 델레게이트
-DECLARE_MULTICAST_DELEGATE_TwoParams(FOnSpellAbilityChangedSignature, const FGameplayTag& /* SpellTag */, int32 /* SpellLevel */);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnSpellAbilityChangedSignature, const FGameplayTag& /* SpellTag */);
 
 // Spell의 장착 상태 변경을 전달하는 델레게이트
 DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnEquippedSpellAbilityChangedSignature, bool /* bEquipped */, const FGameplayTag& /* InputTag */, const FGameplayTag& /* SpellTag */);
@@ -89,7 +89,7 @@ private:
 
 	// 항상 서버에서 작업을 처리하므로 Client RPC를 이용해 기존 클라이언트에서 OnSpellAbilityChangedDelegate를 실행한다. 
 	UFUNCTION(Client, Reliable)
-	void ClientBroadcastSpellChange(const FGameplayTag& SpellTag, int32 SpellLevel);
+	void ClientBroadcastSpellChange(const FGameplayTag& SpellTag);
 
 	// 항상 서버에서 작업을 처리하므로 Client RPC를 이용해 기존 클라이언트에서 OnEquippedSpellAbilityChangedDelegate 실행한다. 
 	UFUNCTION(Client, Reliable)

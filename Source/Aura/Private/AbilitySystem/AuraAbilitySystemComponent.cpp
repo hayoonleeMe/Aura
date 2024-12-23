@@ -131,7 +131,7 @@ void UAuraAbilitySystemComponent::UnlockSpell(const FGameplayTag& SpellTag, cons
 	GiveAbility(SpellSpec);
 
 	// Spell이 Unlock 됨을 전달해 UI에 표시
-	ClientBroadcastSpellChange(SpellTag, SpellSpec.Level);
+	ClientBroadcastSpellChange(SpellTag);
 }
 
 void UAuraAbilitySystemComponent::UpgradeSpell(const FGameplayTag& SpellTag)
@@ -142,7 +142,7 @@ void UAuraAbilitySystemComponent::UpgradeSpell(const FGameplayTag& SpellTag)
 		MarkAbilitySpecDirty(*SpellSpec);
 
 		// Spell의 Level 변경을 전달
-		ClientBroadcastSpellChange(SpellTag, SpellSpec->Level);
+		ClientBroadcastSpellChange(SpellTag);
 	}
 }
 
@@ -218,9 +218,9 @@ void UAuraAbilitySystemComponent::UnEquipSpell(FGameplayAbilitySpec* SpellSpecTo
 	}
 }
 
-void UAuraAbilitySystemComponent::ClientBroadcastSpellChange_Implementation(const FGameplayTag& SpellTag, int32 SpellLevel)
+void UAuraAbilitySystemComponent::ClientBroadcastSpellChange_Implementation(const FGameplayTag& SpellTag)
 {
-	OnSpellAbilityChangedDelegate.Broadcast(SpellTag, SpellLevel);
+	OnSpellAbilityChangedDelegate.Broadcast(SpellTag);
 }
 
 void UAuraAbilitySystemComponent::ClientBroadcastEquippedSpellChange_Implementation(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag)
