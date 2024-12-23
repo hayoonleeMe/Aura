@@ -64,10 +64,9 @@ public:
 	// 현재 선택한 SpellGlobe의 Spell이 Unlock 됐는 지를 반환  
 	UFUNCTION(BlueprintCallable)
 	bool IsSelectedSpellUnlocked() const;
-	
-	// 현재 Spell Menu에서 선택 중인 Spell Globe의 Spell Tag 캐싱
-	UPROPERTY(BlueprintReadWrite)
-	FGameplayTag SelectedSpellTag;
+
+	UFUNCTION(BlueprintCallable)
+	bool CanSpendPoint() const;
 
 	// Spell Menu에서 특정 Spell Globe를 선택
 	// SelectedSpellTag를 업데이트하고, SelectSpellGlobeDelegate 실행
@@ -91,6 +90,16 @@ public:
 	uint8 bWaitSelectGlobe : 1;
 
 private:
+	void UpdateSpellPoints(int32 SpellPoints);
+	
+	// 현재 Spell Menu에서 선택 중인 Spell Globe의 Spell Tag 캐싱
+	UPROPERTY()
+	FGameplayTag SelectedSpellTag;
+
+	// 현재 Spell Point를 가지고 있는지를 나타냄
+	UPROPERTY()
+	uint8 bHasSpellPoints : 1;
+	
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	TObjectPtr<USpellConfig> SpellConfig;
 };

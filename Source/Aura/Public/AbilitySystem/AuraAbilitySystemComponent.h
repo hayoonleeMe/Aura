@@ -52,7 +52,6 @@ public:
 	FOnEquippedSpellAbilityChangedSignature OnEquippedSpellAbilityChangedDelegate;
 	FOnActivatableAbilitiesReplicatedSignature OnActivatableAbilitiesReplicatedDelegate;
 
-private:
 	// ============================================================================
 	// Helper
 	// ============================================================================
@@ -73,6 +72,7 @@ private:
 	// 존재하지 않으면 EmptyTag를 반환한다.
 	static FGameplayTag GetSpellTagForSpellSpec(const FGameplayAbilitySpec* SpellSpec);
 
+private:
 	// ============================================================================
 	// Spell
 	// ============================================================================

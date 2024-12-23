@@ -4,6 +4,7 @@
 #include "UI/WidgetController/SpellMenuWidgetController.h"
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "Data/SpellConfig.h"
 #include "Player/AuraPlayerState.h"
 
@@ -11,7 +12,7 @@ void USpellMenuWidgetController::BroadcastInitialValues()
 {
 	// SpellPoints 값 전달
 	const AAuraPlayerState* AuraPS = GetAuraPlayerStateChecked();
-	OnSpellPointsChangedDelegate.Broadcast(AuraPS->GetSpellPoints());
+	UpdateSpellPoints(AuraPS->GetSpellPoints());
 }
 
 void USpellMenuWidgetController::BindCallbacksToDependencies()
@@ -45,10 +46,7 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 	
 	// SpellPoints가 변경되면 그 값을 전달
 	AAuraPlayerState* AuraPS = GetAuraPlayerStateChecked();
-	AuraPS->OnSpellPointsChangedDelegate.AddWeakLambda(this, [this](int32 Value)
-	{
-		OnSpellPointsChangedDelegate.Broadcast(Value);
-	});
+	AuraPS->OnSpellPointsChangedDelegate.AddUObject(this, &ThisClass::UpdateSpellPoints);
 }
 
 bool USpellMenuWidgetController::IsSelectedSpellOffensive() const
@@ -60,6 +58,37 @@ bool USpellMenuWidgetController::IsSelectedSpellUnlocked() const
 {
 	UAuraAbilitySystemComponent* AuraASC = GetAuraAbilitySystemComponentChecked();
 	return AuraASC->IsSpellUnlocked(SelectedSpellTag);
+}
+
+bool USpellMenuWidgetController::CanSpendPoint() const
+{
+	// Spell Point가 없거나 선택한 Spell Globe가 없으므로 불가능
+	if (!bHasSpellPoints || !SelectedSpellTag.IsValid())
+	{
+		return false;
+	}
+
+	// Spell이 이미 Unlock된 상태라면 항상 가능
+	UAuraAbilitySystemComponent* AuraASC = GetAuraAbilitySystemComponentChecked();
+	if (AuraASC->IsSpellUnlocked(SelectedSpellTag))
+	{
+		return true;
+	}
+
+	// 현재 플레이어의 레벨이 Spell을 Unlock 할 수 있는 레벨인지 반환
+	if (SpellConfig)
+	{
+		if (const TSubclassOf<UGameplayAbility>& SpellAbilityClass = SpellConfig->GetSpellInfoByTag(SelectedSpellTag).SpellAbilityClass)
+		{
+			if (const UAuraGameplayAbility* AuraAbilityCDO = SpellAbilityClass->GetDefaultObject<UAuraGameplayAbility>())
+			{
+				const AAuraPlayerState* AuraPS = GetAuraPlayerStateChecked();
+				return AuraPS->GetCharacterLevel() >= AuraAbilityCDO->LevelRequirement;
+			}
+		}
+	}
+
+	return false;
 }
 
 void USpellMenuWidgetController::SelectSpellGlobe(const FGameplayTag& SpellTag)
@@ -115,3 +144,10 @@ void USpellMenuWidgetController::HandleEquipSpell(const FGameplayTag& InputTag)
 	UAuraAbilitySystemComponent* AuraASC = GetAuraAbilitySystemComponentChecked();
 	AuraASC->ServerHandleEquipSpell(SelectedSpellTag, InputTag);
 }
+
+void USpellMenuWidgetController::UpdateSpellPoints(int32 SpellPoints)
+{
+	bHasSpellPoints = SpellPoints > 0;
+	OnSpellPointsChangedDelegate.Broadcast(SpellPoints);
+}
+
