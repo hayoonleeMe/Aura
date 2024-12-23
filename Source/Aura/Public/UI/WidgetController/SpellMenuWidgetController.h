@@ -58,19 +58,16 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnDescriptionUpdatedSignature OnDescriptionUpdatedDelegate;
 	
-	// 현재 선택한 Spell Globe가 있는지 반환
-	UFUNCTION(BlueprintCallable)
-	bool IsValidSelectedSpellTag() const { return SelectedSpellTag.IsValid(); }
-
 	// 현재 선택한 SpellGlobe의 Spell이 Offensive Spell인지를 반환
 	// true면 Offensive Spell, false면 Passive Spell
 	UFUNCTION(BlueprintCallable)
 	bool IsSelectedSpellOffensive() const;
 
-	// 현재 선택한 SpellGlobe의 Spell이 Unlock 됐는 지를 반환  
+	// Equip Button을 활성화할 수 있는지를 반환
 	UFUNCTION(BlueprintCallable)
-	bool IsSelectedSpellUnlocked() const;
+	bool CanEquipSpell() const;
 
+	// Spend Point Button을 활성화할 수 있는지를 반환
 	UFUNCTION(BlueprintCallable)
 	bool CanSpendPoint() const;
 

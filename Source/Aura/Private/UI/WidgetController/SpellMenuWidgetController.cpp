@@ -57,10 +57,10 @@ bool USpellMenuWidgetController::IsSelectedSpellOffensive() const
 	return SelectedSpellTag.MatchesTag(FGameplayTag::RequestGameplayTag(TEXT("Abilities.Offensive")));
 }
 
-bool USpellMenuWidgetController::IsSelectedSpellUnlocked() const
+bool USpellMenuWidgetController::CanEquipSpell() const
 {
 	UAuraAbilitySystemComponent* AuraASC = GetAuraAbilitySystemComponentChecked();
-	return AuraASC->IsSpellUnlocked(SelectedSpellTag);
+	return SelectedSpellTag.IsValid() && AuraASC->IsSpellUnlocked(SelectedSpellTag);
 }
 
 bool USpellMenuWidgetController::CanSpendPoint() const
