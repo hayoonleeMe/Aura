@@ -19,6 +19,12 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FSelectSpellGlobeSignature, bool,
 // Spell이 Unlock 된 이후로, Spell의 변경된 정보를 전달하는 델레게이트
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSpellChangedSignature, const FSpellInfo&, SpellInfo);
 
+// Spell의 장착 상태 변경을 전달하는 델레게이트
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnEquippedSpellChangedSignature, bool, bEquipped, const FGameplayTag&, InputTag, const FSpellInfo&, SpellInfo);
+
+// 서버의 ASC에서 ActivatableAbilities가 변경되어 클라이언트에서 OnRep_ActivateAbilities이 호출될 때를 전달하는 델레게이트
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSpellGivenSignature);
+
 /**
  * Spell Menu에서 사용할 Widget Controller
  */
@@ -40,6 +46,11 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnSpellChangedSignature OnSpellChangedDelegate;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnEquippedSpellChangedSignature OnEquippedSpellChangedDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnSpellGivenSignature OnSpellGivenDelegate;
 
 	// 현재 선택한 Spell Globe가 있는지 반환
 	UFUNCTION(BlueprintCallable)
@@ -71,6 +82,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SpendPointButtonPressed();
 
+	// 선택한 Spell을 Input에 장착
+	UFUNCTION(BlueprintCallable)
+	void HandleEquipSpell(const FGameplayTag& InputTag);
 
 	// EquippedSpellRow Widget의 Globe를 선택하기를 기다리는 상태를 나타냄
 	UPROPERTY(BlueprintReadWrite)

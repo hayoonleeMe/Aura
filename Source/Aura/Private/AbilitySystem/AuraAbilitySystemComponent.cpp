@@ -7,6 +7,14 @@
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "Player/AuraPlayerState.h"
 
+void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
+{
+	Super::OnRep_ActivateAbilities();
+
+	// 클라이언트의 Spell Menu Widget에서 Spell을 Unlock한 뒤 Equip Button을 올바르게 활성화하기 위함
+	OnActivatableAbilitiesReplicatedDelegate.Broadcast();
+}
+
 void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities)
 {
 	for (const TSubclassOf<UGameplayAbility>& AbilityClass : Abilities)
@@ -140,9 +148,86 @@ void UAuraAbilitySystemComponent::UpgradeSpell(const FGameplayTag& SpellTag)
 	}
 }
 
+void UAuraAbilitySystemComponent::ServerHandleEquipSpell_Implementation(const FGameplayTag& SpellTagToEquip, const FGameplayTag& InputTag)
+{
+	FGameplayAbilitySpec* SpellSpecToEquip = GetSpellSpecForSpellTag(SpellTagToEquip);
+	if (!SpellSpecToEquip)
+	{
+		return;
+	}
+
+	// Input에 이미 Spell이 장착되어 있다면
+	if (FGameplayAbilitySpec* EquippedSpellSpec = GetSpellSpecForInputTag(InputTag))
+	{
+		// Input의 이미 장착된 Spell을 장착 해제
+		UnEquipSpell(EquippedSpellSpec, InputTag, true);
+		
+		// 장착하려는 Spell이 Input에 이미 장착되어 있으므로 장착 해제만 수행하고 return
+		if (EquippedSpellSpec == SpellSpecToEquip)
+		{
+			return;
+		}
+	}
+
+	// 장착하고자 하는 Spell이 다른 Input에 장착되어 있다면, 그 Input에서 장착 해제
+	const FGameplayTag PrevInputTag = GetInputTagForSpellSpec(SpellSpecToEquip);
+	if (PrevInputTag.IsValid())
+	{
+		UnEquipSpell(SpellSpecToEquip, PrevInputTag, false);
+	}
+	
+	// InputTag를 추가해 장착
+	SpellSpecToEquip->DynamicAbilityTags.AddTag(InputTag);
+
+	// 장착하고자 하는 Spell에 SpellStatus_Equipped Tag 추가
+	SpellSpecToEquip->DynamicAbilityTags.RemoveTag(FAuraGameplayTags::Get().SpellStatus_Unlocked);
+	SpellSpecToEquip->DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().SpellStatus_Equipped);
+
+	// InputTag에 Spell을 장착했음을 전달
+	ClientBroadcastEquippedSpellChange(true, InputTag, SpellTagToEquip);
+
+	MarkAbilitySpecDirty(*SpellSpecToEquip);
+
+	// Passive Spell은 장착과 동시에 활성화
+	if (SpellSpecToEquip->Ability->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag(TEXT("Abilities.Passive"))) && !SpellSpecToEquip->Ability->IsActive())
+	{
+		TryActivateAbility(SpellSpecToEquip->Handle);
+	}
+}
+
+void UAuraAbilitySystemComponent::UnEquipSpell(FGameplayAbilitySpec* SpellSpecToUnEquip, const FGameplayTag& InputTagToRemove, bool bClearPassiveSpell)
+{
+	if (SpellSpecToUnEquip)
+	{
+		// InputTag 제거
+		SpellSpecToUnEquip->DynamicAbilityTags.RemoveTag(InputTagToRemove);
+
+		// SpellStatus_Unlocked Tag 추가
+		SpellSpecToUnEquip->DynamicAbilityTags.RemoveTag(FAuraGameplayTags::Get().SpellStatus_Equipped);
+		SpellSpecToUnEquip->DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().SpellStatus_Unlocked);
+
+		// InputTagToRemove이 나타내는 Input에 대한 UnEquip을 전달한다.
+		ClientBroadcastEquippedSpellChange(false, InputTagToRemove, GetSpellTagForSpellSpec(SpellSpecToUnEquip));
+
+		// Passive Spell은 장착과 동시에 실행되므로, 장착 해제 후 종료
+		if (bClearPassiveSpell)
+		{
+			if (SpellSpecToUnEquip->Ability->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag(TEXT("Abilities.Passive"))))
+			{
+				CancelAbilitySpec(*SpellSpecToUnEquip, nullptr);
+			}
+		}
+	}
+}
+
 void UAuraAbilitySystemComponent::ClientBroadcastSpellChange_Implementation(const FGameplayTag& SpellTag, int32 SpellLevel)
 {
 	OnSpellAbilityChangedDelegate.Broadcast(SpellTag, SpellLevel);
+}
+
+void UAuraAbilitySystemComponent::ClientBroadcastEquippedSpellChange_Implementation(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag)
+{
+	OnEquippedSpellAbilityChangedDelegate.Broadcast(bEquipped, InputTag, SpellTag);
 }
 
 FGameplayAbilitySpec* UAuraAbilitySystemComponent::GetSpellSpecForSpellTag(const FGameplayTag& SpellTag)
@@ -157,3 +242,45 @@ FGameplayAbilitySpec* UAuraAbilitySystemComponent::GetSpellSpecForSpellTag(const
 	return nullptr;
 }
 
+FGameplayAbilitySpec* UAuraAbilitySystemComponent::GetSpellSpecForInputTag(const FGameplayTag& InputTag)
+{
+	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+		{
+			return &AbilitySpec;
+		}
+	}
+	return nullptr;
+}
+
+FGameplayTag UAuraAbilitySystemComponent::GetInputTagForSpellSpec(FGameplayAbilitySpec* SpellSpec)
+{
+	if (SpellSpec)
+	{
+		const FGameplayTag FilterTag = FGameplayTag::RequestGameplayTag(TEXT("InputTag"));
+		for (const FGameplayTag& Tag : SpellSpec->DynamicAbilityTags)
+		{
+			if (Tag.MatchesTag(FilterTag))
+			{
+				return Tag;
+			}
+		}
+	}
+	return FGameplayTag::EmptyTag;
+}
+
+FGameplayTag UAuraAbilitySystemComponent::GetSpellTagForSpellSpec(const FGameplayAbilitySpec* SpellSpec)
+{
+	if (SpellSpec)
+	{
+		for (const FGameplayTag& Tag : SpellSpec->Ability->AbilityTags)
+		{
+			if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(TEXT("Abilities"))))
+			{
+				return Tag;
+			}
+		}
+	}
+	return FGameplayTag::EmptyTag;
+}

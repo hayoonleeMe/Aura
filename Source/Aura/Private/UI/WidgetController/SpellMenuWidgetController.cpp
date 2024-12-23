@@ -28,6 +28,22 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 		}
 	});
 
+	// Spell의 장착 상황 변경을 전달
+	AuraASC->OnEquippedSpellAbilityChangedDelegate.AddWeakLambda(this, [this](bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag)
+	{
+		if (SpellConfig)
+		{
+			const FSpellInfo SpellInfo = SpellConfig->GetSpellInfoByTag(SpellTag);
+			OnEquippedSpellChangedDelegate.Broadcast(bEquipped, InputTag, SpellInfo);
+		}
+	});
+
+	// 클라이언트에서 Spell을 Unlock할 때 Equip Button을 올바르게 활성화하기 위해 바인딩
+	AuraASC->OnActivatableAbilitiesReplicatedDelegate.AddWeakLambda(this, [this]()
+	{
+		OnSpellGivenDelegate.Broadcast();
+	});
+	
 	// SpellPoints가 변경되면 그 값을 전달
 	AAuraPlayerState* AuraPS = GetAuraPlayerStateChecked();
 	AuraPS->OnSpellPointsChangedDelegate.AddWeakLambda(this, [this](int32 Value)
@@ -88,4 +104,15 @@ void USpellMenuWidgetController::SpendPointButtonPressed()
 	UAuraAbilitySystemComponent* AuraASC = GetAuraAbilitySystemComponentChecked();
 	const FSpellInfo SpellInfo = SpellConfig->GetSpellInfoByTag(SelectedSpellTag);
 	AuraASC->ServerSpendPointButtonPressed(SelectedSpellTag, SpellInfo.SpellAbilityClass);
+}
+
+void USpellMenuWidgetController::HandleEquipSpell(const FGameplayTag& InputTag)
+{
+	if (!SelectedSpellTag.IsValid() || !InputTag.IsValid())
+	{
+		return;
+	}
+	
+	UAuraAbilitySystemComponent* AuraASC = GetAuraAbilitySystemComponentChecked();
+	AuraASC->ServerHandleEquipSpell(SelectedSpellTag, InputTag);
 }
