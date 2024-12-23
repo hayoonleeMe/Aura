@@ -57,6 +57,24 @@ int32 AAuraCharacter::GetCharacterLevel()
 	return AuraPS->GetCharacterLevel();
 }
 
+int32 AAuraCharacter::GetSpellPoints() const
+{
+	const AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
+	return AuraPS->GetSpellPoints();
+}
+
+void AAuraCharacter::IncrementSpellPoints()
+{
+	AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
+	AuraPS->IncrementSpellPoints();
+}
+
+void AAuraCharacter::DecrementSpellPoints()
+{
+	AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
+	AuraPS->DecrementSpellPoints();
+}
+
 void AAuraCharacter::InitAbilityActorInfo()
 {
 	AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();

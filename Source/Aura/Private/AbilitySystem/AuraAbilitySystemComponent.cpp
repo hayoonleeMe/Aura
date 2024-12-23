@@ -5,7 +5,7 @@
 
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
-#include "Player/AuraPlayerState.h"
+#include "Interaction/PlayerInterface.h"
 
 void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
 {
@@ -95,15 +95,13 @@ void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputT
 
 void UAuraAbilitySystemComponent::ServerSpendPointButtonPressed_Implementation(const FGameplayTag& SpellTag, TSubclassOf<UGameplayAbility> SpellAbilityClass)
 {
-	// TODO : 새 Interface를 사용해 AAuraPlayerState에 의존하지 않고 Spell Point에 접근하도록 변경
-	if (AAuraPlayerState* AuraPS = CastChecked<AAuraPlayerState>(GetOwnerActor()))
+	// Spell Points가 있을 때, 1만큼 소모해 진행
+	IPlayerInterface* PlayerInterface = CastChecked<IPlayerInterface>(GetAvatarActor());
+	if (PlayerInterface->GetSpellPoints() <= 0)
 	{
-		if (AuraPS->GetSpellPoints() <= 0)
-		{
-			return;
-		}
-		AuraPS->DecrementSpellPoints();
+		return;
 	}
+	PlayerInterface->DecrementSpellPoints();
 	
 	if (IsSpellUnlocked(SpellTag))
 	{
