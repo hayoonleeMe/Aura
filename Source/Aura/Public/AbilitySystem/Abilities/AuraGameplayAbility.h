@@ -25,6 +25,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	int32 LevelRequirement;
 
+	// Spell의 최대 레벨
+	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	int32 MaxSpellLevel;
+
 	// Spell Menu의 Description Widget에 표시할 Level에 따른 Text를 반환한다.
 	virtual FText GetDescription(int32 Level) const { return FText(); }
 

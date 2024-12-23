@@ -71,20 +71,22 @@ bool USpellMenuWidgetController::CanSpendPoint() const
 		return false;
 	}
 
-	// Spell이 이미 Unlock된 상태라면 항상 가능
 	UAuraAbilitySystemComponent* AuraASC = GetAuraAbilitySystemComponentChecked();
-	if (AuraASC->IsSpellUnlocked(SelectedSpellTag))
+	if (const FGameplayAbilitySpec* SpellSpec = AuraASC->GetSpellSpecForSpellTag(SelectedSpellTag))
 	{
-		return true;
+		// Spell Spec을 가져올 수 있으면 이미 Unlock 된 것을 의미
+		// Unlock 된 상태라면, Spell을 더 레벨업 할 수 있는지 반환
+		const UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(SpellSpec->Ability);
+		return AuraAbility && SpellSpec->Level < AuraAbility->MaxSpellLevel; 
 	}
 
-	// 현재 플레이어의 레벨이 Spell을 Unlock 할 수 있는 레벨인지 반환
 	if (SpellConfig)
 	{
 		if (const TSubclassOf<UGameplayAbility>& SpellAbilityClass = SpellConfig->GetSpellInfoByTag(SelectedSpellTag).SpellAbilityClass)
 		{
 			if (const UAuraGameplayAbility* AuraAbilityCDO = SpellAbilityClass->GetDefaultObject<UAuraGameplayAbility>())
 			{
+				// 현재 플레이어의 레벨이 Spell을 Unlock 할 수 있는 레벨인지 반환
 				const AAuraPlayerState* AuraPS = GetAuraPlayerStateChecked();
 				return AuraPS->GetCharacterLevel() >= AuraAbilityCDO->LevelRequirement;
 			}
@@ -174,9 +176,9 @@ void USpellMenuWidgetController::UpdateDescription(bool bSelected) const
 			// SpellSpec을 구할 수 있다는 것은 해당 Spell이 이미 Unlock 됐다는 것을 의미
 			if (const UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(SpellSpec->Ability))
 			{
+				// Spell이 최대 레벨이면 Next Level Description은 표시 X
+				const FText NextLevelDescriptionText = SpellSpec->Level < AuraAbility->MaxSpellLevel ? AuraAbility->GetDescription(SpellSpec->Level + 1) : FText();
 				const FText DescriptionText = AuraAbility->GetDescription(SpellSpec->Level);
-				// TODO : Spell Level 상한에 따라 다르게 표현
-				const FText NextLevelDescriptionText = AuraAbility->GetDescription(SpellSpec->Level + 1);
 				OnDescriptionUpdatedDelegate.Broadcast(DescriptionText, NextLevelDescriptionText);
 			}
 		}

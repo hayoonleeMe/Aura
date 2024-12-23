@@ -134,7 +134,7 @@ void UAuraAbilitySystemComponent::UpgradeSpell(const FGameplayTag& SpellTag)
 {
 	if (FGameplayAbilitySpec* SpellSpec = GetSpellSpecForSpellTag(SpellTag))
 	{
-		SpellSpec->Level += 1;	// TODO : Need to Clamp
+		SpellSpec->Level += 1;
 		MarkAbilitySpecDirty(*SpellSpec);
 
 		// Spell의 Level 변경을 전달
