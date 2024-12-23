@@ -117,17 +117,13 @@ void UAuraAbilitySystemComponent::ServerSpendPointButtonPressed_Implementation(c
 
 bool UAuraAbilitySystemComponent::IsSpellUnlocked(const FGameplayTag& SpellTag)
 {
-	if (const FGameplayAbilitySpec* SpellSpec = GetSpellSpecForSpellTag(SpellTag))
-	{
-		return SpellSpec->DynamicAbilityTags.HasTagExact(FAuraGameplayTags::Get().SpellStatus_Unlocked) || SpellSpec->DynamicAbilityTags.HasTagExact(FAuraGameplayTags::Get().SpellStatus_Equipped);
-	}
-	return false;
+	// Spell Ability가 Give되어 ActivatableAbilities에 존재하면 Unlock 된 것을 의미 
+	return GetSpellSpecForSpellTag(SpellTag) != nullptr;
 }
 
 void UAuraAbilitySystemComponent::UnlockSpell(const FGameplayTag& SpellTag, const TSubclassOf<UGameplayAbility>& SpellAbilityClass)
 {
-	FGameplayAbilitySpec SpellSpec(SpellAbilityClass, 1);
-	SpellSpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().SpellStatus_Unlocked);
+	const FGameplayAbilitySpec SpellSpec(SpellAbilityClass);
 	GiveAbility(SpellSpec);
 
 	// Spell이 Unlock 됨을 전달해 UI에 표시
@@ -177,10 +173,6 @@ void UAuraAbilitySystemComponent::ServerHandleEquipSpell_Implementation(const FG
 	// InputTag를 추가해 장착
 	SpellSpecToEquip->DynamicAbilityTags.AddTag(InputTag);
 
-	// 장착하고자 하는 Spell에 SpellStatus_Equipped Tag 추가
-	SpellSpecToEquip->DynamicAbilityTags.RemoveTag(FAuraGameplayTags::Get().SpellStatus_Unlocked);
-	SpellSpecToEquip->DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().SpellStatus_Equipped);
-
 	// InputTag에 Spell을 장착했음을 전달
 	ClientBroadcastEquippedSpellChange(true, InputTag, SpellTagToEquip);
 
@@ -199,10 +191,6 @@ void UAuraAbilitySystemComponent::UnEquipSpell(FGameplayAbilitySpec* SpellSpecTo
 	{
 		// InputTag 제거
 		SpellSpecToUnEquip->DynamicAbilityTags.RemoveTag(InputTagToRemove);
-
-		// SpellStatus_Unlocked Tag 추가
-		SpellSpecToUnEquip->DynamicAbilityTags.RemoveTag(FAuraGameplayTags::Get().SpellStatus_Equipped);
-		SpellSpecToUnEquip->DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().SpellStatus_Unlocked);
 
 		// InputTagToRemove이 나타내는 Input에 대한 UnEquip을 전달한다.
 		ClientBroadcastEquippedSpellChange(false, InputTagToRemove, GetSpellTagForSpellSpec(SpellSpecToUnEquip));

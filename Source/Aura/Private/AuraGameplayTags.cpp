@@ -86,11 +86,6 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	/* Abilities.Passive */
 	GameplayTags.Abilities_Passive_Test = Manager.AddNativeGameplayTag(TEXT("Abilities.Passive.Test"), TEXT("Test Passive Ability Tag"));
 
-	/* Spell Status */
-	GameplayTags.SpellStatus_Locked = Manager.AddNativeGameplayTag(TEXT("SpellStatus.Locked"), TEXT("Locked Spell Status Tag"));
-	GameplayTags.SpellStatus_Unlocked = Manager.AddNativeGameplayTag(TEXT("SpellStatus.Unlocked"), TEXT("Unlocked Spell Status Tag"));
-	GameplayTags.SpellStatus_Equipped = Manager.AddNativeGameplayTag(TEXT("SpellStatus.Equipped"), TEXT("Equipped Spell Status Tag"));
-
 	/* Cooldown */
 	GameplayTags.Cooldown_FireBolt = Manager.AddNativeGameplayTag(TEXT("Cooldown.FireBolt"), TEXT("FireBolt Cooldown Tag"));
 	GameplayTags.Cooldown_Melee_GoblinSpear = Manager.AddNativeGameplayTag(TEXT("Cooldown.Melee.GoblinSpear"), TEXT("GoblinSpear Melee Cooldown Tag"));

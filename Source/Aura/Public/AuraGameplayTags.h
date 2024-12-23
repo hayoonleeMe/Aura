@@ -125,13 +125,6 @@ struct FAuraGameplayTags
 	FGameplayTag Abilities_Passive_Test;
 
 	// ============================================================================
-	// Spell Status
-	// ============================================================================
-	FGameplayTag SpellStatus_Locked;	
-	FGameplayTag SpellStatus_Unlocked;	
-	FGameplayTag SpellStatus_Equipped;	
-
-	// ============================================================================
 	// Cooldown
 	// ============================================================================
 
