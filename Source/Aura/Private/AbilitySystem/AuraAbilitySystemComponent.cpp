@@ -191,6 +191,7 @@ void UAuraAbilitySystemComponent::UnEquipSpell(FGameplayAbilitySpec* SpellSpecTo
 	{
 		// InputTag 제거
 		SpellSpecToUnEquip->DynamicAbilityTags.RemoveTag(InputTagToRemove);
+		MarkAbilitySpecDirty(*SpellSpecToUnEquip);
 
 		// InputTagToRemove이 나타내는 Input에 대한 UnEquip을 전달한다.
 		ClientBroadcastEquippedSpellChange(false, InputTagToRemove, GetSpellTagForSpellSpec(SpellSpecToUnEquip));
