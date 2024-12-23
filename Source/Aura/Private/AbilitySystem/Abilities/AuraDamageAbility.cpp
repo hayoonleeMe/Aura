@@ -14,16 +14,16 @@ void UAuraDamageAbility::MakeDamageEffectParams(FDamageEffectParams& OutParams, 
 	OutParams.SourceAbilitySystemComponent = GetAbilitySystemComponentFromActorInfo();
 	OutParams.TargetAbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 	OutParams.DamageEffectClass = DamageEffectClass;
-	OutParams.BaseDamage = GetDamageByLevel();
+	OutParams.BaseDamage = GetDamageByLevel(GetAbilityLevel());
 	OutParams.DamageTypeTag = DamageTypeTag;
 	OutParams.AbilityLevel = GetAbilityLevel();
 
 	// TODO : Knockback, Debuff, etc..
 }
 
-float UAuraDamageAbility::GetDamageByLevel() const
+float UAuraDamageAbility::GetDamageByLevel(int32 Level) const
 {
-	return DamageCurve.GetValueAtLevel(GetAbilityLevel());
+	return DamageCurve.GetValueAtLevel(Level);
 }
 
 void UAuraDamageAbility::PlayAttackMontage(UAnimMontage* MontageToPlay, bool bEndOnBlendOut)
