@@ -25,6 +25,7 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 		{
 			OnSpellChangedDelegate.Broadcast(SpellConfig->GetSpellInfoByTag(SpellTag));
 
+			UpdateDescription(true);
 		}
 	});
 
@@ -42,6 +43,8 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 	AuraASC->OnActivatableAbilitiesReplicatedDelegate.AddWeakLambda(this, [this]()
 	{
 		OnSpellGivenDelegate.Broadcast();
+
+		UpdateDescription(true);
 	});
 	
 	// SpellPoints가 변경되면 그 값을 전달
@@ -100,6 +103,9 @@ void USpellMenuWidgetController::SelectSpellGlobe(const FGameplayTag& SpellTag)
 		
 		// 기존 Spell Globe 선택 해제 및 Sound 재생
 		SelectSpellGlobeDelegate.Broadcast(false, SpellTag, true);
+
+		// Spell Globe가 선택 해제될 때 Description 업데이트
+		UpdateDescription(false);
 	}
 	else
 	{
@@ -109,6 +115,9 @@ void USpellMenuWidgetController::SelectSpellGlobe(const FGameplayTag& SpellTag)
 		// 새 Spell Globe 선택
 		SelectedSpellTag = SpellTag;
 		SelectSpellGlobeDelegate.Broadcast(true, SelectedSpellTag, false);
+
+		// Spell Globe를 선택할 때 Description 업데이트
+		UpdateDescription(true);
 	}
 }
 
@@ -119,6 +128,9 @@ void USpellMenuWidgetController::DeselectSpellGlobe()
 		const FGameplayTag DupSelectedSpellTag = SelectedSpellTag;
 		SelectedSpellTag = FGameplayTag::EmptyTag;
 		SelectSpellGlobeDelegate.Broadcast(false, DupSelectedSpellTag, false);
+
+		// Spell Globe가 선택 해제될 때 Description 업데이트
+		UpdateDescription(false);
 	}
 }
 
@@ -151,3 +163,41 @@ void USpellMenuWidgetController::UpdateSpellPoints(int32 SpellPoints)
 	OnSpellPointsChangedDelegate.Broadcast(SpellPoints);
 }
 
+void USpellMenuWidgetController::UpdateDescription(bool bSelected) const
+{
+	if (bSelected)
+	{
+		// 현재 Spell Ability Level에 맞는 Description 전달
+		UAuraAbilitySystemComponent* AuraASC = GetAuraAbilitySystemComponentChecked();
+		if (const FGameplayAbilitySpec* SpellSpec = AuraASC->GetSpellSpecForSpellTag(SelectedSpellTag))
+		{
+			// SpellSpec을 구할 수 있다는 것은 해당 Spell이 이미 Unlock 됐다는 것을 의미
+			if (const UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(SpellSpec->Ability))
+			{
+				const FText DescriptionText = AuraAbility->GetDescription(SpellSpec->Level);
+				// TODO : Spell Level 상한에 따라 다르게 표현
+				const FText NextLevelDescriptionText = AuraAbility->GetDescription(SpellSpec->Level + 1);
+				OnDescriptionUpdatedDelegate.Broadcast(DescriptionText, NextLevelDescriptionText);
+			}
+		}
+		else
+		{
+			if (SpellConfig)
+			{
+				if (const TSubclassOf<UGameplayAbility>& SpellAbilityClass = SpellConfig->GetSpellInfoByTag(SelectedSpellTag).SpellAbilityClass)
+				{
+					if (const UAuraGameplayAbility* AuraAbilityCDO = Cast<UAuraGameplayAbility>(SpellAbilityClass.GetDefaultObject()))
+					{
+						// Locked Description
+						OnDescriptionUpdatedDelegate.Broadcast(AuraAbilityCDO->GetLockedDescription(), FText());
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		// Description Widget Text 제거
+		OnDescriptionUpdatedDelegate.Broadcast(FText(), FText());		
+	}
+}

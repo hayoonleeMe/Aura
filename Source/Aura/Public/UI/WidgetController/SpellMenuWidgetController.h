@@ -25,6 +25,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnEquippedSpellChangedSignature,
 // 서버의 ASC에서 ActivatableAbilities가 변경되어 클라이언트에서 OnRep_ActivateAbilities이 호출될 때를 전달하는 델레게이트
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSpellGivenSignature);
 
+// Description Widget에 표시할 Text가 변경될 때 호출되는 델리게이트
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDescriptionUpdatedSignature, const FText&, Description, const FText&, NextLevelDescription);
+
 /**
  * Spell Menu에서 사용할 Widget Controller
  */
@@ -52,6 +55,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnSpellGivenSignature OnSpellGivenDelegate;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnDescriptionUpdatedSignature OnDescriptionUpdatedDelegate;
+	
 	// 현재 선택한 Spell Globe가 있는지 반환
 	UFUNCTION(BlueprintCallable)
 	bool IsValidSelectedSpellTag() const { return SelectedSpellTag.IsValid(); }
@@ -100,6 +106,9 @@ private:
 	UPROPERTY()
 	uint8 bHasSpellPoints : 1;
 	
+	// bSelected에 따라 Spell Menu의 Description Text를 설정
+	void UpdateDescription(bool bSelected) const;
+
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	TObjectPtr<USpellConfig> SpellConfig;
 };
