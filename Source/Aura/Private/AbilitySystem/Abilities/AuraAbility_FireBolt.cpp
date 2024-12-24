@@ -7,6 +7,73 @@
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AbilityTasks/AbilityTask_TargetDataUnderMouse.h"
 
+FText UAuraAbility_FireBolt::GetDescription(int32 Level) const
+{
+	const float ScaledDamage = GetDamageByLevel(Level);
+	const float ManaCost = GetManaCost(Level);
+	const float Cooldown = GetCooldown(Level);
+
+	FString RetStr;
+	if (Level == 1)
+	{
+		RetStr = FString::Printf(TEXT(
+			// Title
+			"<Title>FIRE BOLT</>\n\n"
+
+			// Level
+			"<Small>Level: </><Level>%d</>\n"
+			// ManaCost
+			"<Small>ManaCost: </><ManaCost>%.1f</>\n"
+			// Cooldown
+			"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
+
+			"<Default>Launches a bolt of fire, "
+			"exploding on impact and dealing: </>"
+
+			// Damage
+			"<Damage>%.1f</><Default> fire damage with"
+			" a chance to burn</>"),
+
+			// Values
+			Level,
+			ManaCost,
+			Cooldown,
+			ScaledDamage
+		);
+	}
+	else
+	{
+		RetStr = FString::Printf(TEXT(
+			// Title
+			"<Title>FIRE BOLT</>\n\n"
+
+			// Level
+			"<Small>Level: </><Level>%d</>\n"
+			// ManaCost
+			"<Small>ManaCost: </><ManaCost>%.1f</>\n"
+			// Cooldown
+			"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
+
+			// NumProjectiles
+			"<Default>Launches %d bolts of fire, "
+			"exploding on impact and dealing: </>"
+
+			// Damage
+			"<Damage>%.1f</><Default> fire damage with"
+			" a chance to burn</>"),
+
+			// Values
+			Level,
+			ManaCost,
+			Cooldown,
+			FMath::Min(Level, NumProjectiles),
+			ScaledDamage
+		);
+	}
+
+	return FText::FromString(RetStr);
+}
+
 void UAuraAbility_FireBolt::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                             const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -34,7 +101,7 @@ void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTarg
 	const FHitResult& HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
 	CachedTargetLocation = HitResult.ImpactPoint;
 	
-	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(FAuraGameplayTags::Get().Abilities_FireBolt);
+	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(FAuraGameplayTags::Get().Abilities_Offensive_FireBolt);
 	check(TaggedCombatInfo.AnimMontage);
 	CachedCombatSocketName = TaggedCombatInfo.CombatSocketName;
 

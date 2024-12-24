@@ -21,7 +21,7 @@ public:
 	void MakeDamageEffectParams(FDamageEffectParams& OutParams, AActor* TargetActor) const;
 
 	// DamageCurve에서 Level에 따른 Damage Value를 반환한다.
-	float GetDamageByLevel() const;
+	float GetDamageByLevel(int32 Level) const;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Damage")

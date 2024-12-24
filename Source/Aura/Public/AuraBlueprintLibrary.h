@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AuraBlueprintLibrary.generated.h"
 
+class USpellMenuWidgetController;
 class UOverlayWidgetController;
 struct FWidgetControllerParams;
 class UAttributeMenuWidgetController;
@@ -66,4 +67,8 @@ public:
 	// OwningController의 HUD에 저장된 Attribute Menu Widget Controller 반환
 	UFUNCTION(BlueprintPure)
 	static UAttributeMenuWidgetController* GetAttributeMenuWidgetController(const APlayerController* OwningController);
+
+	// OwningController의 HUD에 저장된 Spell Menu Widget Controller 반환
+	UFUNCTION(BlueprintPure)
+	static USpellMenuWidgetController* GetSpellMenuWidgetController(const APlayerController* OwningController);
 };

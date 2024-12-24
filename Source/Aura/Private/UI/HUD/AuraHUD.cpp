@@ -7,6 +7,7 @@
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "UI/WidgetController/AttributeMenuWidgetController.h"
+#include "UI/WidgetController/SpellMenuWidgetController.h"
 
 void AAuraHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
 {
@@ -14,6 +15,7 @@ void AAuraHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySyst
 	const FWidgetControllerParams WidgetControllerParams{ PC, PS, ASC, AS };
 	MakeOverlayWidgetController(WidgetControllerParams);
 	MakeAttributeMenuWidgetController(WidgetControllerParams);
+	MakeSpellMenuWidgetController(WidgetControllerParams);
 	
 	check(OverlayWidgetClass);
 
@@ -58,4 +60,20 @@ void AAuraHUD::MakeAttributeMenuWidgetController(const FWidgetControllerParams& 
 			AttributeMenuWidgetController->BindCallbacksToDependencies();
 		}
 	}
+}
+
+void AAuraHUD::MakeSpellMenuWidgetController(const FWidgetControllerParams& WCParams)
+{
+	check(SpellMenuWidgetControllerClass);
+    
+    if (!SpellMenuWidgetController)
+    {
+    	SpellMenuWidgetController = NewObject<USpellMenuWidgetController>(this, SpellMenuWidgetControllerClass);
+    	if (SpellMenuWidgetController)
+    	{
+    		// WidgetController 초기화 및 바인딩
+    		SpellMenuWidgetController->SetWidgetControllerParams(WCParams);
+    		SpellMenuWidgetController->BindCallbacksToDependencies();
+    	}
+    }
 }

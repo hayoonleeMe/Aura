@@ -25,6 +25,14 @@ struct FAuraGameplayTags
 	FGameplayTag InputTag_4;
 
 	// ============================================================================
+	// Passive Input
+	// 실제 트리거하는 Key는 아니지만, UI에 Passive Spell을 나타내기 위한 Tag
+	// ============================================================================
+
+	FGameplayTag InputTag_Passive_1;
+	FGameplayTag InputTag_Passive_2;
+
+	// ============================================================================
 	// Primary Attributes
 	// ============================================================================
 
@@ -91,11 +99,30 @@ struct FAuraGameplayTags
 	// ============================================================================
 
 	FGameplayTag Abilities_ClickToMove;
-	FGameplayTag Abilities_FireBolt;
 	FGameplayTag Abilities_HitReact;
 	FGameplayTag Abilities_EnemyAttack;
+
+	// ============================================================================
+	// Abilities.System
+	// 내부 동작을 위해 Give 됨과 동시에 활성화되는 System Ability
+	// ============================================================================
 	
-	FGameplayTag Abilities_ListenForModifyAttributeEvent;
+	FGameplayTag Abilities_System_ListenForModifyAttributeEvent;
+
+	// ============================================================================
+	// Abilities.Offensive
+	// 플레이어가 Damage를 입히기 위해 직접 사용하는 Offensive Ability
+	// ============================================================================
+	
+	FGameplayTag Abilities_Offensive_FireBolt;
+
+	// ============================================================================
+	// Abilities.Passive
+	// 장착하는 동안 계속해서 적용되는 Passive Ability
+	// ============================================================================
+
+	// TODO : for Debug & Test, Need to delete
+	FGameplayTag Abilities_Passive_Test;
 
 	// ============================================================================
 	// Cooldown

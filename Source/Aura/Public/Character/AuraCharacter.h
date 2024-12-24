@@ -5,16 +5,18 @@
 #include "CoreMinimal.h"
 #include "Character/BaseCharacter.h"
 #include "Interaction/CombatInterface.h"
+#include "Interaction/PlayerInterface.h"
 #include "AuraCharacter.generated.h"
 
 class UCameraComponent;
 class USpringArmComponent;
 class UGameplayEffect;
+
 /**
  * 
  */
 UCLASS()
-class AURA_API AAuraCharacter : public ABaseCharacter
+class AURA_API AAuraCharacter : public ABaseCharacter, public IPlayerInterface
 {
 	GENERATED_BODY()
 
@@ -27,6 +29,12 @@ public:
 	virtual int32 GetCharacterLevel() override;
 	/* End CombatInterface */
 
+	/* Begin PlayerInterface */
+	virtual int32 GetSpellPoints() const override;
+	virtual void IncrementSpellPoints() override;
+	virtual void DecrementSpellPoints() override;
+	/* End PlayerInterface */
+	
 protected:
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeAttributes() override;

@@ -19,6 +19,10 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.InputTag_3 = Manager.AddNativeGameplayTag(TEXT("InputTag.3"), TEXT("Input Tag for 3 key"));
 	GameplayTags.InputTag_4 = Manager.AddNativeGameplayTag(TEXT("InputTag.4"), TEXT("Input Tag for 4 key"));
 
+	/* Passive Input */
+	GameplayTags.InputTag_Passive_1 = Manager.AddNativeGameplayTag(TEXT("InputTag.Passive.1"), TEXT("Passive Input Tag for first slot"));
+	GameplayTags.InputTag_Passive_2 = Manager.AddNativeGameplayTag(TEXT("InputTag.Passive.2"), TEXT("Passive Input Tag for second slot"));
+
 	/* Primary Attributes */
 	GameplayTags.Attributes_Primary_Strength = Manager.AddNativeGameplayTag(TEXT("Attributes.Primary.Strength"), TEXT("Increases physical damage"));
 	GameplayTags.Attributes_Primary_Intelligence = Manager.AddNativeGameplayTag(TEXT("Attributes.Primary.Intelligence"), TEXT("Increases magical damage"));
@@ -70,12 +74,18 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 
 	/* Abilities */
 	GameplayTags.Abilities_ClickToMove = Manager.AddNativeGameplayTag(TEXT("Abilities.ClickToMove"), TEXT("ClickToMove Ability Tag"));
-	GameplayTags.Abilities_FireBolt = Manager.AddNativeGameplayTag(TEXT("Abilities.FireBolt"), TEXT("FireBolt Ability Tag"));
 	GameplayTags.Abilities_HitReact = Manager.AddNativeGameplayTag(TEXT("Abilities.HitReact"), TEXT("HitReact Ability Tag"));
 	GameplayTags.Abilities_EnemyAttack = Manager.AddNativeGameplayTag(TEXT("Abilities.EnemyAttack"), TEXT("EnemyAttack Ability Tag"));
-	
-	GameplayTags.Abilities_ListenForModifyAttributeEvent = Manager.AddNativeGameplayTag(TEXT("Abilities.ListenForModifyAttributeEvent"), TEXT("ListenForModifyAttributeEvent Ability Tag"));
-	
+
+	/* Abilities.System */
+	GameplayTags.Abilities_System_ListenForModifyAttributeEvent = Manager.AddNativeGameplayTag(TEXT("Abilities.System.ListenForModifyAttributeEvent"), TEXT("ListenForModifyAttributeEvent System Ability Tag"));
+
+	/* Abilities.Offensive */
+	GameplayTags.Abilities_Offensive_FireBolt = Manager.AddNativeGameplayTag(TEXT("Abilities.Offensive.FireBolt"), TEXT("FireBolt Offensive Ability Tag"));
+
+	/* Abilities.Passive */
+	GameplayTags.Abilities_Passive_Test = Manager.AddNativeGameplayTag(TEXT("Abilities.Passive.Test"), TEXT("Test Passive Ability Tag"));
+
 	/* Cooldown */
 	GameplayTags.Cooldown_FireBolt = Manager.AddNativeGameplayTag(TEXT("Cooldown.FireBolt"), TEXT("FireBolt Cooldown Tag"));
 	GameplayTags.Cooldown_Melee_GoblinSpear = Manager.AddNativeGameplayTag(TEXT("Cooldown.Melee.GoblinSpear"), TEXT("GoblinSpear Melee Cooldown Tag"));

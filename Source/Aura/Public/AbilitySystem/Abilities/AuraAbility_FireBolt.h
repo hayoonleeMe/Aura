@@ -15,6 +15,9 @@ class AURA_API UAuraAbility_FireBolt : public UAuraProjectileAbility
 {
 	GENERATED_BODY()
 
+public:
+	virtual FText GetDescription(int32 Level) const override;
+
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
