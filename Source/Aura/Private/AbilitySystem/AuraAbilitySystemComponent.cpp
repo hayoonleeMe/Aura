@@ -261,9 +261,12 @@ FGameplayTag UAuraAbilitySystemComponent::GetSpellTagForSpellSpec(const FGamepla
 {
 	if (SpellSpec)
 	{
+		const FGameplayTag OffensiveFilter = FGameplayTag::RequestGameplayTag(TEXT("Abilities.Offensive")); 
+		const FGameplayTag PassiveFilter = FGameplayTag::RequestGameplayTag(TEXT("Abilities.Passive"));
+		
 		for (const FGameplayTag& Tag : SpellSpec->Ability->AbilityTags)
 		{
-			if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(TEXT("Abilities"))))
+			if (Tag.MatchesTag(OffensiveFilter) || Tag.MatchesTag(PassiveFilter))
 			{
 				return Tag;
 			}
