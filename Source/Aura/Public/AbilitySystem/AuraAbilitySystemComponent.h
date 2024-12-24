@@ -72,6 +72,9 @@ public:
 	// 존재하지 않으면 EmptyTag를 반환한다.
 	static FGameplayTag GetSpellTagForSpellSpec(const FGameplayAbilitySpec* SpellSpec);
 
+	// ActivatableAbilities에 존재하는 모든 Spell Ability의 SpellTag와 InputTag 쌍을 반환한다.
+	void GetSpellAndInputTagPairs(TArray<TTuple<FGameplayTag, FGameplayTag>>& OutArray);
+
 private:
 	// ============================================================================
 	// Spell

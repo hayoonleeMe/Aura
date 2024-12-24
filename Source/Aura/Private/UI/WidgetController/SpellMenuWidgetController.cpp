@@ -8,44 +8,33 @@
 #include "Data/SpellConfig.h"
 #include "Player/AuraPlayerState.h"
 
+USpellMenuWidgetController::USpellMenuWidgetController()
+{
+	bWaitSelectGlobe = false;
+	bHasSpellPoints = false;
+	bClientInitialized = false;
+}
+
 void USpellMenuWidgetController::BroadcastInitialValues()
 {
-	// SpellPoints 값 전달
+	UpdateStartupSpells();
+	
 	const AAuraPlayerState* AuraPS = GetAuraPlayerStateChecked();
 	UpdateSpellPoints(AuraPS->GetSpellPoints());
 }
 
 void USpellMenuWidgetController::BindCallbacksToDependencies()
 {
-	// Spell의 변경을 전달
 	UAuraAbilitySystemComponent* AuraASC = GetAuraAbilitySystemComponentChecked();
-	AuraASC->OnSpellAbilityChangedDelegate.AddWeakLambda(this, [this](const FGameplayTag& SpellTag)
-	{
-		if (SpellConfig)
-		{
-			OnSpellChangedDelegate.Broadcast(SpellConfig->GetSpellInfoByTag(SpellTag));
-
-			UpdateDescription(true);
-		}
-	});
+	
+	// Spell의 변경을 전달
+	AuraASC->OnSpellAbilityChangedDelegate.AddUObject(this, &ThisClass::UpdateSpellChange);
 
 	// Spell의 장착 상황 변경을 전달
-	AuraASC->OnEquippedSpellAbilityChangedDelegate.AddWeakLambda(this, [this](bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag)
-	{
-		if (SpellConfig)
-		{
-			const FSpellInfo SpellInfo = SpellConfig->GetSpellInfoByTag(SpellTag);
-			OnEquippedSpellChangedDelegate.Broadcast(bEquipped, InputTag, SpellInfo);
-		}
-	});
+	AuraASC->OnEquippedSpellAbilityChangedDelegate.AddUObject(this, &ThisClass::UpdateEquippedSpellChange);
 
 	// 클라이언트에서 Spell을 Unlock할 때 Equip Button을 올바르게 활성화하기 위해 바인딩
-	AuraASC->OnActivatableAbilitiesReplicatedDelegate.AddWeakLambda(this, [this]()
-	{
-		OnSpellGivenDelegate.Broadcast();
-
-		UpdateDescription(true);
-	});
+	AuraASC->OnActivatableAbilitiesReplicatedDelegate.AddUObject(this, &ThisClass::OnSpellGiven);
 	
 	// SpellPoints가 변경되면 그 값을 전달
 	AAuraPlayerState* AuraPS = GetAuraPlayerStateChecked();
@@ -163,6 +152,54 @@ void USpellMenuWidgetController::UpdateSpellPoints(int32 SpellPoints)
 {
 	bHasSpellPoints = SpellPoints > 0;
 	OnSpellPointsChangedDelegate.Broadcast(SpellPoints);
+}
+
+void USpellMenuWidgetController::UpdateSpellChange(const FGameplayTag& SpellTag) const
+{
+	if (SpellConfig)
+	{
+		OnSpellChangedDelegate.Broadcast(SpellConfig->GetSpellInfoByTag(SpellTag));
+
+		UpdateDescription(true);
+	}
+}
+
+void USpellMenuWidgetController::UpdateEquippedSpellChange(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag) const
+{
+	if (SpellConfig)
+	{
+		const FSpellInfo SpellInfo = SpellConfig->GetSpellInfoByTag(SpellTag);
+		OnEquippedSpellChangedDelegate.Broadcast(bEquipped, InputTag, SpellInfo);
+	}
+}
+
+void USpellMenuWidgetController::OnSpellGiven()
+{
+	// 초기에 Spell이 Give되어 ActivatableAbilities가 Replicate되기 전에 클라이언트의 BroadcastInitialValues()가 호출되기 때문에
+	// 클라이언트의 Spell Menu에 StartupSpell들이 업데이트되지 않으므로 OnSpellGiven에서 한번만 업데이트해준다.
+	if (!bClientInitialized)
+	{
+		bClientInitialized = true;
+		UpdateStartupSpells();
+	}
+
+	// Spell Menu에 전달
+	OnSpellGivenDelegate.Broadcast();
+
+	UpdateDescription(true);
+}
+
+void USpellMenuWidgetController::UpdateStartupSpells() const
+{
+	UAuraAbilitySystemComponent* AuraASC = GetAuraAbilitySystemComponentChecked();
+	
+	TArray<TTuple<FGameplayTag, FGameplayTag>> StartupSpells;
+	AuraASC->GetSpellAndInputTagPairs(StartupSpells);
+	for (const TTuple<FGameplayTag, FGameplayTag>& Tuple : StartupSpells)
+	{
+		UpdateSpellChange(Tuple.Key);
+		UpdateEquippedSpellChange(true, Tuple.Value, Tuple.Key);
+	}
 }
 
 void USpellMenuWidgetController::UpdateDescription(bool bSelected) const

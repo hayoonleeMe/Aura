@@ -274,3 +274,19 @@ FGameplayTag UAuraAbilitySystemComponent::GetSpellTagForSpellSpec(const FGamepla
 	}
 	return FGameplayTag::EmptyTag;
 }
+
+void UAuraAbilitySystemComponent::GetSpellAndInputTagPairs(TArray<TTuple<FGameplayTag, FGameplayTag>>& OutArray)
+{
+	for (FGameplayAbilitySpec& SpellSpec : GetActivatableAbilities())
+	{
+		const FGameplayTag SpellTag = GetSpellTagForSpellSpec(&SpellSpec);
+		if (SpellTag.IsValid())
+		{
+			const FGameplayTag InputTag = GetInputTagForSpellSpec(&SpellSpec);
+			if (InputTag.IsValid())
+			{
+				OutArray.Add({ SpellTag, InputTag });
+			}
+		}
+	}
+}

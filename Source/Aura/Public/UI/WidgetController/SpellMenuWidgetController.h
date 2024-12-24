@@ -37,6 +37,8 @@ class AURA_API USpellMenuWidgetController : public UAuraWidgetController
 	GENERATED_BODY()
 
 public:
+	USpellMenuWidgetController();
+	
 	virtual void BroadcastInitialValues() override;
 	virtual void BindCallbacksToDependencies() override;
 
@@ -93,7 +95,23 @@ public:
 	uint8 bWaitSelectGlobe : 1;
 
 private:
+	// Spell의 변경을 Spell Menu에 업데이트
+	void UpdateSpellChange(const FGameplayTag& SpellTag) const;
+
+	// Spell의 장착 상태 변경을 Spell Menu에 업데이트
+	void UpdateEquippedSpellChange(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag) const;
+
+	// Spell Points의 변경을 Spell Menu에 업데이트
 	void UpdateSpellPoints(int32 SpellPoints);
+
+	// Startup Spell들을 Spell Menu에 업데이트
+	void UpdateStartupSpells() const;
+
+	// 서버에서 Spell이 Give되어 ASC의 ActivatableAbilities가 Replicated 될 때 호출할 Callback 함수
+	void OnSpellGiven();
+
+	// 클라이언트가 초기화되었는지
+	uint8 bClientInitialized : 1;
 	
 	// 현재 Spell Menu에서 선택 중인 Spell Globe의 Spell Tag 캐싱
 	UPROPERTY()
