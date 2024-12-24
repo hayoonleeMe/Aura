@@ -22,7 +22,7 @@ void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGamepla
 		FGameplayAbilitySpec AbilitySpec(AbilityClass, 1);
 		if (const UAuraGameplayAbility* AuraGameplayAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
 		{
-			AbilitySpec.DynamicAbilityTags.AddTag(AuraGameplayAbility->InputTag);
+			AbilitySpec.DynamicAbilityTags.AddTag(AuraGameplayAbility->StartupInputTag);
 			GiveAbility(AbilitySpec);
 
 			// System Ability는 Give와 동시에 활성화

@@ -19,7 +19,7 @@ public:
 	
 	// Ability를 활성화하는 Input Key를 나타내는 Tag
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
-	FGameplayTag InputTag;
+	FGameplayTag StartupInputTag;
 
 	// 해당 Spell을 Unlock할 수 있는 필요 레벨
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
