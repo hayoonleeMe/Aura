@@ -39,7 +39,6 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 
 	// for server (PossessedBy is called on server)
 	InitAbilityActorInfo();
-	AddStartupAbilities(StartupAbilities);
 	InitializeAttributes();
 }
 
@@ -101,6 +100,9 @@ void AAuraCharacter::InitAbilityActorInfo()
 	AbilitySystemComponent->InitAbilityActorInfo(AuraPS, this);
 	AttributeSet = AuraPS->GetAttributeSet();
 
+	// Overlay Widget 생성 전에 Startup Ability 추가
+	AddStartupAbilities(StartupAbilities);
+	
 	// Overlay Widget 초기화
 	if (AAuraPlayerController* AuraPC = GetController<AAuraPlayerController>())
 	{
