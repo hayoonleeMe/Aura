@@ -39,6 +39,7 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 
 	// for server (PossessedBy is called on server)
 	InitAbilityActorInfo();
+	AddStartupAbilities(StartupAbilities);
 	InitializeAttributes();
 }
 
@@ -55,6 +56,24 @@ int32 AAuraCharacter::GetCharacterLevel()
 	const AAuraPlayerState* AuraPS = GetPlayerState<AAuraPlayerState>();
 	check(AuraPS);
 	return AuraPS->GetCharacterLevel();
+}
+
+int32 AAuraCharacter::GetAttributePoints() const
+{
+	const AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
+	return AuraPS->GetAttributePoints();
+}
+
+void AAuraCharacter::IncrementAttributePoints()
+{
+	AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
+	AuraPS->IncrementAttributePoints();
+}
+
+void AAuraCharacter::DecrementAttributePoints()
+{
+	AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
+	AuraPS->DecrementAttributePoints();
 }
 
 int32 AAuraCharacter::GetSpellPoints() const
@@ -81,8 +100,6 @@ void AAuraCharacter::InitAbilityActorInfo()
 	AbilitySystemComponent = AuraPS->GetAbilitySystemComponent();
 	AbilitySystemComponent->InitAbilityActorInfo(AuraPS, this);
 	AttributeSet = AuraPS->GetAttributeSet();
-
-	AddStartupAbilities(StartupAbilities);
 
 	// Overlay Widget 초기화
 	if (AAuraPlayerController* AuraPC = GetController<AAuraPlayerController>())

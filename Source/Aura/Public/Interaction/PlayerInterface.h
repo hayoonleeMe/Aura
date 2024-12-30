@@ -21,6 +21,23 @@ class AURA_API IPlayerInterface
 	GENERATED_BODY()
 
 public:
+	// ============================================================================
+	// Attribute Points
+	// ============================================================================
+	
+	// PlayerState의 Attribute Points 반환
+	virtual int32 GetAttributePoints() const { return 0; }
+	
+	// PlayerState의 Attribute Points를 1 증가
+	virtual void IncrementAttributePoints() {}
+
+	// PlayerState의 Attribute Points를 1 감소
+	virtual void DecrementAttributePoints() {}
+
+	// ============================================================================
+	// Spell Points
+	// ============================================================================
+
 	// PlayerState의 Spell Points 반환
 	virtual int32 GetSpellPoints() const { return 0; }
 

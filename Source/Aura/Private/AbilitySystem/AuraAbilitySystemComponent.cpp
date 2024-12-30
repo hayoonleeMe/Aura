@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "Interaction/PlayerInterface.h"
@@ -91,6 +92,24 @@ void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputT
 			}
 		}
 	}
+}
+
+void UAuraAbilitySystemComponent::ServerUpgradeAttribute_Implementation(const FGameplayTag& AttributeTag)
+{
+	// Attribute Points가 있을 때, 1만큼 소모해 진행
+	IPlayerInterface* PlayerInterface = CastChecked<IPlayerInterface>(GetAvatarActor());
+	if (PlayerInterface->GetAttributePoints() <= 0)
+	{
+		return;
+	}
+	PlayerInterface->DecrementAttributePoints();
+	
+	// AuraAbility_ListenForModifyAttributeEvent에서 아래의 GameplayEvent를 Wait하고,
+	// 받으면 AttributeTag에 해당하는 Attribute를 1만큼 Add Modify하는 GameplayEffect를 적용
+	FGameplayEventData Payload;
+	Payload.TargetTags.AddTag(AttributeTag);
+	Payload.EventMagnitude = 1;
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActor(), FAuraGameplayTags::Get().Event_ModifyAttribute, Payload);
 }
 
 void UAuraAbilitySystemComponent::ServerSpendPointButtonPressed_Implementation(const FGameplayTag& SpellTag, TSubclassOf<UGameplayAbility> SpellAbilityClass)
