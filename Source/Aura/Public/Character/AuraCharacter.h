@@ -30,6 +30,9 @@ public:
 	/* End CombatInterface */
 
 	/* Begin PlayerInterface */
+	virtual int32 GetAttributePoints() const override;
+	virtual void IncrementAttributePoints() override;
+	virtual void DecrementAttributePoints() override;
 	virtual int32 GetSpellPoints() const override;
 	virtual void IncrementSpellPoints() override;
 	virtual void DecrementSpellPoints() override;

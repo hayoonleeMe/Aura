@@ -36,6 +36,17 @@ public:
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 	void AbilityInputTagHeld(const FGameplayTag& InputTag);
 
+	// ============================================================================
+	// Attribute
+	// ============================================================================
+
+	UFUNCTION(Server, Reliable)
+	void ServerUpgradeAttribute(const FGameplayTag& AttributeTag);
+	
+	// ============================================================================
+	// Spell
+	// ============================================================================
+
 	// SpellTag를 가지는 Spell Ability가 Unlocked 또는 Equipped 상태인지를 반환
 	bool IsSpellUnlocked(const FGameplayTag& SpellTag);
 

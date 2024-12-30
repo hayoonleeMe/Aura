@@ -3,7 +3,7 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
-#include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "Interaction/PlayerInterface.h"
 
@@ -24,12 +24,6 @@ void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGamepla
 		{
 			AbilitySpec.DynamicAbilityTags.AddTag(AuraGameplayAbility->StartupInputTag);
 			GiveAbility(AbilitySpec);
-
-			// System Ability는 Give와 동시에 활성화
-			if (AuraGameplayAbility->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag(TEXT("Abilities.System"))))
-			{
-				TryActivateAbility(AbilitySpec.Handle);
-			}
 		}
 	}
 }
@@ -89,6 +83,27 @@ void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputT
 			{
 				TryActivateAbility(AbilitySpec.Handle);
 			}
+		}
+	}
+}
+
+void UAuraAbilitySystemComponent::ServerUpgradeAttribute_Implementation(const FGameplayTag& AttributeTag)
+{
+	// Attribute Points가 있을 때, 1만큼 소모해 진행
+	IPlayerInterface* PlayerInterface = CastChecked<IPlayerInterface>(GetAvatarActor());
+	if (PlayerInterface->GetAttributePoints() <= 0)
+	{
+		return;
+	}
+	PlayerInterface->DecrementAttributePoints();
+	
+	if (const UAuraAttributeSet* AuraAS = Cast<UAuraAttributeSet>(GetAttributeSet(UAuraAttributeSet::StaticClass())))
+	{
+		if (AuraAS->TagToAttributeMap.Contains(AttributeTag))
+		{
+			// AttributeTag에 해당하는 Attribute의 값에 1을 더한다.
+			const FGameplayAttribute& AttributeToUpgrade = AuraAS->TagToAttributeMap[AttributeTag];
+			ApplyModToAttribute(AttributeToUpgrade, EGameplayModOp::Additive, 1.f);
 		}
 	}
 }

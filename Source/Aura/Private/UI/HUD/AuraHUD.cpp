@@ -24,7 +24,6 @@ void AAuraHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySyst
 	{
 		// OverlayWidget에 WidgetController 저장 및 초기값 Broadcast
 		OverlayWidget->SetWidgetController(OverlayWidgetController);
-		OverlayWidgetController->BroadcastInitialValues();
 		// 화면에 표시
 		OverlayWidget->AddToViewport();
 	}

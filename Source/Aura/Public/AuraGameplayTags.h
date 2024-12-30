@@ -92,8 +92,6 @@ struct FAuraGameplayTags
 	FGameplayTag Event_Montage_FireBolt;
 	FGameplayTag Event_Montage_EnemyAttack;
 	
-	FGameplayTag Event_ModifyAttribute;
-
 	// ============================================================================
 	// Abilities
 	// ============================================================================
@@ -101,13 +99,6 @@ struct FAuraGameplayTags
 	FGameplayTag Abilities_ClickToMove;
 	FGameplayTag Abilities_HitReact;
 	FGameplayTag Abilities_EnemyAttack;
-
-	// ============================================================================
-	// Abilities.System
-	// 내부 동작을 위해 Give 됨과 동시에 활성화되는 System Ability
-	// ============================================================================
-	
-	FGameplayTag Abilities_System_ListenForModifyAttributeEvent;
 
 	// ============================================================================
 	// Abilities.Offensive
