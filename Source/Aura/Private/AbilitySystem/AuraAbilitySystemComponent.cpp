@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "Interaction/PlayerInterface.h"
@@ -194,7 +195,7 @@ void UAuraAbilitySystemComponent::ServerHandleEquipSpell_Implementation(const FG
 	MarkAbilitySpecDirty(*SpellSpecToEquip);
 
 	// Passive Spell은 장착과 동시에 활성화
-	if (SpellSpecToEquip->Ability->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag(TEXT("Abilities.Passive"))) && !SpellSpecToEquip->Ability->IsActive())
+	if (SpellSpecToEquip->Ability->AbilityTags.HasTag(FAuraGameplayTags::Get().Abilities_Passive) && !SpellSpecToEquip->Ability->IsActive())
 	{
 		TryActivateAbility(SpellSpecToEquip->Handle);
 	}
@@ -214,7 +215,7 @@ void UAuraAbilitySystemComponent::UnEquipSpell(FGameplayAbilitySpec* SpellSpecTo
 		// Passive Spell은 장착과 동시에 실행되므로, 장착 해제 후 종료
 		if (bClearPassiveSpell)
 		{
-			if (SpellSpecToUnEquip->Ability->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag(TEXT("Abilities.Passive"))))
+			if (SpellSpecToUnEquip->Ability->AbilityTags.HasTag(FAuraGameplayTags::Get().Abilities_Passive))
 			{
 				CancelAbilitySpec(*SpellSpecToUnEquip, nullptr);
 			}
@@ -260,10 +261,9 @@ FGameplayTag UAuraAbilitySystemComponent::GetInputTagForSpellSpec(FGameplayAbili
 {
 	if (SpellSpec)
 	{
-		const FGameplayTag FilterTag = FGameplayTag::RequestGameplayTag(TEXT("InputTag"));
 		for (const FGameplayTag& Tag : SpellSpec->DynamicAbilityTags)
 		{
-			if (Tag.MatchesTag(FilterTag))
+			if (Tag.MatchesTag(FAuraGameplayTags::Get().InputTag))
 			{
 				return Tag;
 			}
@@ -276,12 +276,9 @@ FGameplayTag UAuraAbilitySystemComponent::GetSpellTagForSpellSpec(const FGamepla
 {
 	if (SpellSpec)
 	{
-		const FGameplayTag OffensiveFilter = FGameplayTag::RequestGameplayTag(TEXT("Abilities.Offensive")); 
-		const FGameplayTag PassiveFilter = FGameplayTag::RequestGameplayTag(TEXT("Abilities.Passive"));
-		
 		for (const FGameplayTag& Tag : SpellSpec->Ability->AbilityTags)
 		{
-			if (Tag.MatchesTag(OffensiveFilter) || Tag.MatchesTag(PassiveFilter))
+			if (Tag.MatchesTag(FAuraGameplayTags::Get().Abilities_Offensive) || Tag.MatchesTag(FAuraGameplayTags::Get().Abilities_Passive))
 			{
 				return Tag;
 			}

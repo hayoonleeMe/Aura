@@ -17,6 +17,7 @@ struct FAuraGameplayTags
 	// Input
 	// ============================================================================
 
+	FGameplayTag InputTag;
 	FGameplayTag InputTag_LMB;
 	FGameplayTag InputTag_RMB;
 	FGameplayTag InputTag_1;
@@ -104,7 +105,8 @@ struct FAuraGameplayTags
 	// Abilities.Offensive
 	// 플레이어가 Damage를 입히기 위해 직접 사용하는 Offensive Ability
 	// ============================================================================
-	
+
+	FGameplayTag Abilities_Offensive;
 	FGameplayTag Abilities_Offensive_FireBolt;
 
 	// ============================================================================
@@ -112,6 +114,7 @@ struct FAuraGameplayTags
 	// 장착하는 동안 계속해서 적용되는 Passive Ability
 	// ============================================================================
 
+	FGameplayTag Abilities_Passive;
 	// TODO : for Debug & Test, Need to delete
 	FGameplayTag Abilities_Passive_Test;
 
