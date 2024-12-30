@@ -3,6 +3,7 @@
 
 #include "UI/WidgetController/SpellMenuWidgetController.h"
 
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "Data/SpellConfig.h"
@@ -43,7 +44,7 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 
 bool USpellMenuWidgetController::IsSelectedSpellOffensive() const
 {
-	return SelectedSpellTag.MatchesTag(FGameplayTag::RequestGameplayTag(TEXT("Abilities.Offensive")));
+	return SelectedSpellTag.MatchesTag(FAuraGameplayTags::Get().Abilities_Offensive);
 }
 
 bool USpellMenuWidgetController::CanEquipSpell() const

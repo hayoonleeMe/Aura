@@ -12,6 +12,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	UGameplayTagsManager& Manager = UGameplayTagsManager::Get();
 
 	/* Input */
+	GameplayTags.InputTag = Manager.AddNativeGameplayTag(TEXT("InputTag"), TEXT("Input Tag"));
 	GameplayTags.InputTag_LMB = Manager.AddNativeGameplayTag(TEXT("InputTag.LMB"), TEXT("Input Tag for Left Mouse Button"));
 	GameplayTags.InputTag_RMB = Manager.AddNativeGameplayTag(TEXT("InputTag.RMB"), TEXT("Input Tag for Right Mouse Button"));
 	GameplayTags.InputTag_1 = Manager.AddNativeGameplayTag(TEXT("InputTag.1"), TEXT("Input Tag for 1 key"));
@@ -76,9 +77,11 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Abilities_EnemyAttack = Manager.AddNativeGameplayTag(TEXT("Abilities.EnemyAttack"), TEXT("EnemyAttack Ability Tag"));
 
 	/* Abilities.Offensive */
+	GameplayTags.Abilities_Offensive = Manager.AddNativeGameplayTag(TEXT("Abilities.Offensive"), TEXT("Offensive Ability Tag"));
 	GameplayTags.Abilities_Offensive_FireBolt = Manager.AddNativeGameplayTag(TEXT("Abilities.Offensive.FireBolt"), TEXT("FireBolt Offensive Ability Tag"));
 
 	/* Abilities.Passive */
+	GameplayTags.Abilities_Passive = Manager.AddNativeGameplayTag(TEXT("Abilities.Passive"), TEXT("Passive Ability Tag"));
 	GameplayTags.Abilities_Passive_Test = Manager.AddNativeGameplayTag(TEXT("Abilities.Passive.Test"), TEXT("Test Passive Ability Tag"));
 
 	/* Cooldown */
