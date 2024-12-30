@@ -69,16 +69,11 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	/* Event */
 	GameplayTags.Event_Montage_FireBolt = Manager.AddNativeGameplayTag(TEXT("Event.Montage.FireBolt"), TEXT("FireBolt Montage Event Tag"));
 	GameplayTags.Event_Montage_EnemyAttack = Manager.AddNativeGameplayTag(TEXT("Event.Montage.EnemyAttack"), TEXT("EnemyAttack Montage Event Tag"));
-	
-	GameplayTags.Event_ModifyAttribute = Manager.AddNativeGameplayTag(TEXT("Event.ModifyAttribute"), TEXT("Modify Attribute Event Tag"));
 
 	/* Abilities */
 	GameplayTags.Abilities_ClickToMove = Manager.AddNativeGameplayTag(TEXT("Abilities.ClickToMove"), TEXT("ClickToMove Ability Tag"));
 	GameplayTags.Abilities_HitReact = Manager.AddNativeGameplayTag(TEXT("Abilities.HitReact"), TEXT("HitReact Ability Tag"));
 	GameplayTags.Abilities_EnemyAttack = Manager.AddNativeGameplayTag(TEXT("Abilities.EnemyAttack"), TEXT("EnemyAttack Ability Tag"));
-
-	/* Abilities.System */
-	GameplayTags.Abilities_System_ListenForModifyAttributeEvent = Manager.AddNativeGameplayTag(TEXT("Abilities.System.ListenForModifyAttributeEvent"), TEXT("ListenForModifyAttributeEvent System Ability Tag"));
 
 	/* Abilities.Offensive */
 	GameplayTags.Abilities_Offensive_FireBolt = Manager.AddNativeGameplayTag(TEXT("Abilities.Offensive.FireBolt"), TEXT("FireBolt Offensive Ability Tag"));

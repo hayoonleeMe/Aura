@@ -3,8 +3,7 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
-#include "AbilitySystemBlueprintLibrary.h"
-#include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "Interaction/PlayerInterface.h"
 
@@ -25,12 +24,6 @@ void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGamepla
 		{
 			AbilitySpec.DynamicAbilityTags.AddTag(AuraGameplayAbility->StartupInputTag);
 			GiveAbility(AbilitySpec);
-
-			// System Ability는 Give와 동시에 활성화
-			if (AuraGameplayAbility->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag(TEXT("Abilities.System"))))
-			{
-				TryActivateAbility(AbilitySpec.Handle);
-			}
 		}
 	}
 }
@@ -104,12 +97,15 @@ void UAuraAbilitySystemComponent::ServerUpgradeAttribute_Implementation(const FG
 	}
 	PlayerInterface->DecrementAttributePoints();
 	
-	// AuraAbility_ListenForModifyAttributeEvent에서 아래의 GameplayEvent를 Wait하고,
-	// 받으면 AttributeTag에 해당하는 Attribute를 1만큼 Add Modify하는 GameplayEffect를 적용
-	FGameplayEventData Payload;
-	Payload.TargetTags.AddTag(AttributeTag);
-	Payload.EventMagnitude = 1;
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActor(), FAuraGameplayTags::Get().Event_ModifyAttribute, Payload);
+	if (const UAuraAttributeSet* AuraAS = Cast<UAuraAttributeSet>(GetAttributeSet(UAuraAttributeSet::StaticClass())))
+	{
+		if (AuraAS->TagToAttributeMap.Contains(AttributeTag))
+		{
+			// AttributeTag에 해당하는 Attribute의 값에 1을 더한다.
+			const FGameplayAttribute& AttributeToUpgrade = AuraAS->TagToAttributeMap[AttributeTag];
+			ApplyModToAttribute(AttributeToUpgrade, EGameplayModOp::Additive, 1.f);
+		}
+	}
 }
 
 void UAuraAbilitySystemComponent::ServerSpendPointButtonPressed_Implementation(const FGameplayTag& SpellTag, TSubclassOf<UGameplayAbility> SpellAbilityClass)
