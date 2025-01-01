@@ -121,11 +121,18 @@ void ABaseCharacter::Die()
 	bDead = true;
 	HandleDeathLocally();
 
-	// Block Input
 	if (AbilitySystemComponent)
 	{
+		// Block Input
 		AbilitySystemComponent->CancelAllAbilities();
 		AbilitySystemComponent->ClearAllAbilities();
+
+		// Remove All Active Effects
+     	TArray<FActiveGameplayEffectHandle> ActiveEffectHandles = AbilitySystemComponent->GetActiveGameplayEffects().GetAllActiveEffectHandles();
+		for (const FActiveGameplayEffectHandle& EffectHandle : ActiveEffectHandles)
+		{
+			AbilitySystemComponent->RemoveActiveGameplayEffect(EffectHandle);
+		}
 	}
 }
 
