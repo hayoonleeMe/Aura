@@ -6,6 +6,7 @@
 #include "UObject/Object.h"
 #include "AuraWidgetController.generated.h"
 
+class USpellConfig;
 class UAttributeSet;
 class UAbilitySystemComponent;
 class UAuraAttributeSet;
@@ -73,4 +74,7 @@ protected:
 	AAuraPlayerState* GetAuraPlayerStateChecked() const;
 	UAuraAbilitySystemComponent* GetAuraAbilitySystemComponentChecked() const;
 	UAuraAttributeSet* GetAuraAttributeSetChecked() const;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Widget Controller")
+	TObjectPtr<USpellConfig> SpellConfig;
 };

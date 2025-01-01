@@ -7,7 +7,6 @@
 #include "GameplayTagContainer.h"
 #include "SpellMenuWidgetController.generated.h"
 
-class USpellConfig;
 struct FSpellInfo;
 
 // AuraPlayerState의 SpellPoints 값이 변경되면 그 값을 전달하는 델레게이트
@@ -123,7 +122,4 @@ private:
 	
 	// bSelected에 따라 Spell Menu의 Description Text를 설정
 	void UpdateDescription(bool bSelected) const;
-
-	UPROPERTY(EditDefaultsOnly, Category="Aura")
-	TObjectPtr<USpellConfig> SpellConfig;
 };

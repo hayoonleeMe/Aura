@@ -5,6 +5,7 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "Data/SpellConfig.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
@@ -14,6 +15,8 @@ void UOverlayWidgetController::BroadcastInitialValues()
 	OnMaxHealthChangedDelegate.Broadcast(AuraAS->GetMaxHealth());
 	OnManaChangedDelegate.Broadcast(AuraAS->GetMana());
 	OnMaxManaChangedDelegate.Broadcast(AuraAS->GetMaxMana());
+
+	UpdateStartupSpells();
 }
 
 void UOverlayWidgetController::BindCallbacksToDependencies()
@@ -38,4 +41,28 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	{
 		OnMaxManaChangedDelegate.Broadcast(Data.NewValue);
 	});
+
+	// Spell의 장착 상황 변경을 전달
+	AuraASC->OnEquippedSpellAbilityChangedDelegate.AddUObject(this, &ThisClass::UpdateEquippedSpellChange);
+}
+
+void UOverlayWidgetController::UpdateEquippedSpellChange(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag) const
+{
+	if (SpellConfig)
+	{
+		const FSpellInfo SpellInfo = SpellConfig->GetSpellInfoByTag(SpellTag);
+		OnEquippedSpellChangedDelegate.Broadcast(bEquipped, InputTag, SpellInfo);
+	}	
+}
+
+void UOverlayWidgetController::UpdateStartupSpells() const
+{
+	UAuraAbilitySystemComponent* AuraASC = GetAuraAbilitySystemComponentChecked();
+	
+	TArray<TTuple<FGameplayTag, FGameplayTag>> StartupSpells;
+	AuraASC->GetSpellAndInputTagPairs(StartupSpells);
+	for (const TTuple<FGameplayTag, FGameplayTag>& Tuple : StartupSpells)
+	{
+		UpdateEquippedSpellChange(true, Tuple.Value, Tuple.Key);
+	}
 }
