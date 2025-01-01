@@ -192,5 +192,5 @@ public:
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
 
 private:
-	void HandleIncomingDamage();
+	void HandleIncomingDamage(UObject* SourceObject);
 };

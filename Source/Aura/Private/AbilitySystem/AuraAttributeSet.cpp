@@ -6,6 +6,7 @@
 #include "AuraGameplayTags.h"
 #include "GameplayEffectExtension.h"
 #include "Interaction/CombatInterface.h"
+#include "Interaction/PlayerInterface.h"
 #include "Net/UnrealNetwork.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
@@ -112,11 +113,11 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	}
 	else if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
-		HandleIncomingDamage();
+		HandleIncomingDamage(Data.EffectSpec.GetContext().GetSourceObject());
 	}
 }
 
-void UAuraAttributeSet::HandleIncomingDamage()
+void UAuraAttributeSet::HandleIncomingDamage(UObject* SourceObject)
 {
 	const float LocalIncomingDamage = GetIncomingDamage();
 	if (LocalIncomingDamage > 0.f)
@@ -140,6 +141,12 @@ void UAuraAttributeSet::HandleIncomingDamage()
 			// HitReact
 			const FGameplayTagContainer TagContainer(FAuraGameplayTags::Get().Abilities_HitReact);
 			GetOwningAbilitySystemComponentChecked()->TryActivateAbilitiesByTag(TagContainer);
+		}
+
+		// Damage Indicator
+		if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(SourceObject))
+		{
+			PlayerInterface->IndicateDamage(LocalIncomingDamage);
 		}
 	}
 }
