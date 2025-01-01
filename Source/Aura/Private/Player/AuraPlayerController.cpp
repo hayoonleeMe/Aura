@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Input/AuraInputComponent.h"
+#include "UI/Widget/DamageIndicatorComponent.h"
 
 void AAuraPlayerController::SetInGameInputMode()
 {
@@ -20,6 +21,22 @@ void AAuraPlayerController::SetUIInputMode()
 {
 	const FInputModeUIOnly InputMode;
 	SetInputMode(InputMode);
+}
+
+void AAuraPlayerController::ClientIndicateDamage_Implementation(float Damage) const
+{
+	if (!DamageIndicatorComponentClass || !IsValid(GetPawn()))
+	{
+		return;
+	}
+	
+	if (UDamageIndicatorComponent* DamageIndicatorComponent = NewObject<UDamageIndicatorComponent>(GetPawn(), DamageIndicatorComponentClass))
+	{
+		DamageIndicatorComponent->RegisterComponent();
+		DamageIndicatorComponent->AttachToComponent(GetPawn()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		DamageIndicatorComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+		DamageIndicatorComponent->UpdateDamage(Damage);
+	}
 }
 
 void AAuraPlayerController::BeginPlay()
