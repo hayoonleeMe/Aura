@@ -36,6 +36,7 @@ public:
 	virtual int32 GetSpellPoints() const override;
 	virtual void IncrementSpellPoints() override;
 	virtual void DecrementSpellPoints() override;
+	virtual void IndicateDamage(float Damage) const override;
 	/* End PlayerInterface */
 	
 protected:
