@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AuraWidgetController.h"
+#include "SpellMenuWidgetController.h"
 #include "OverlayWidgetController.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, NewValue);
@@ -37,4 +38,14 @@ public:
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category="Aura|Overlay")
 	FShowMenuWidgetSwitcherSignature ShowMenuWidgetSwitcherDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category="Aura|Overlay")
+	FOnEquippedSpellChangedSignature OnEquippedSpellChangedDelegate;
+
+private:
+	// Spell의 장착 상태 변경을 업데이트
+	void UpdateEquippedSpellChange(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag) const;
+
+	// Startup Spell들을 업데이트
+	void UpdateStartupSpells() const;
 };
