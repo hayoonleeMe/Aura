@@ -8,7 +8,7 @@
 UAuraGameplayAbility::UAuraGameplayAbility()
 {
 	LevelRequirement = 1;
-	MaxSpellLevel = 40;
+	MaxSpellLevel = 4;
 }
 
 FText UAuraGameplayAbility::GetLockedDescription() const
