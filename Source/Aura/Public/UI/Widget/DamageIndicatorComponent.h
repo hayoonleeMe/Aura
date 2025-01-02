@@ -18,7 +18,7 @@ public:
 	UDamageIndicatorComponent();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void UpdateDamage(float Damage);
+	void UpdateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit);
 
 	// Widget을 표시할 위치를 구하는 데 사용할 최소 거리
 	UPROPERTY(EditDefaultsOnly, Category="Aura")

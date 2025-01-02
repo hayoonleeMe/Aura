@@ -24,7 +24,7 @@ void AAuraPlayerController::SetUIInputMode()
 	SetInputMode(InputMode);
 }
 
-void AAuraPlayerController::ClientIndicateDamage_Implementation(float Damage, const FVector_NetQuantize& TargetLocation) const
+void AAuraPlayerController::ClientIndicateDamage_Implementation(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const
 {
 	if (!DamageIndicatorComponentClass || !IsValid(GetPawn()))
 	{
@@ -34,7 +34,7 @@ void AAuraPlayerController::ClientIndicateDamage_Implementation(float Damage, co
 	if (UDamageIndicatorComponent* DamageIndicatorComponent = NewObject<UDamageIndicatorComponent>(GetPawn(), DamageIndicatorComponentClass))
 	{
 		DamageIndicatorComponent->RegisterComponent();
-		DamageIndicatorComponent->UpdateDamage(Damage);
+		DamageIndicatorComponent->UpdateDamage(Damage, bIsBlockedHit, bIsCriticalHit);
 
 		// Damage Indicator를 랜덤한 위치에 표시
 		const FVector RandomLocation = TargetLocation + UKismetMathLibrary::RandomUnitVector() * FMath::RandRange(DamageIndicatorComponent->WidgetSpawnMinDist, DamageIndicatorComponent->WidgetSpawnMaxDist);

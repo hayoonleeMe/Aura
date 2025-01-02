@@ -192,5 +192,5 @@ public:
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
 
 private:
-	void HandleIncomingDamage(UObject* SourceObject);
+	void HandleIncomingDamage(UObject* SourceObject, const FGameplayEffectContextHandle& EffectContextHandle);
 };

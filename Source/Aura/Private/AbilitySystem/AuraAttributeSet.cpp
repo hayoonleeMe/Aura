@@ -5,6 +5,8 @@
 
 #include "AuraGameplayTags.h"
 #include "GameplayEffectExtension.h"
+#include "AbilitySystem/AuraGameplayEffectContext.h"
+#include "Aura/Aura.h"
 #include "Interaction/CombatInterface.h"
 #include "Interaction/PlayerInterface.h"
 #include "Net/UnrealNetwork.h"
@@ -113,11 +115,11 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	}
 	else if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
-		HandleIncomingDamage(Data.EffectSpec.GetContext().GetSourceObject());
+		HandleIncomingDamage(Data.EffectSpec.GetContext().GetSourceObject(), Data.EffectSpec.GetEffectContext());
 	}
 }
 
-void UAuraAttributeSet::HandleIncomingDamage(UObject* SourceObject)
+void UAuraAttributeSet::HandleIncomingDamage(UObject* SourceObject, const FGameplayEffectContextHandle& EffectContextHandle)
 {
 	const float LocalIncomingDamage = GetIncomingDamage();
 	if (LocalIncomingDamage > 0.f)
@@ -148,7 +150,10 @@ void UAuraAttributeSet::HandleIncomingDamage(UObject* SourceObject)
 		{
 			if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(SourceObject))
 			{
-				PlayerInterface->IndicateDamage(LocalIncomingDamage, GetActorInfo()->AvatarActor->GetActorLocation());
+				const FAuraGameplayEffectContext* AuraEffectContext = FAuraGameplayEffectContext::ExtractEffectContext(EffectContextHandle);
+				check(AuraEffectContext);
+				
+				PlayerInterface->IndicateDamage(LocalIncomingDamage, AuraEffectContext->IsBlockedHit(), AuraEffectContext->IsCriticalHit(), GetActorInfo()->AvatarActor->GetActorLocation());
 			}
 		}
 	}

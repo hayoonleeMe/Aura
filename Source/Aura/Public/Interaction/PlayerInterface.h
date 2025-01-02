@@ -51,5 +51,5 @@ public:
 	// Combat
 	// ============================================================================
 
-	virtual void IndicateDamage(float Damage, const FVector_NetQuantize& TargetLocation) const {}
+	virtual void IndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const {}
 };

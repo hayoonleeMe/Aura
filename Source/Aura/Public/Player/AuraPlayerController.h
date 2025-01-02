@@ -30,7 +30,7 @@ public:
 
 	// Damage를 나타내는 DamageIndicator Widget을 화면에 표시한다.
 	UFUNCTION(Client, Reliable)
-	void ClientIndicateDamage(float Damage, const FVector_NetQuantize& TargetLocation) const;
+	void ClientIndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const;
 
 protected:
 	virtual void BeginPlay() override;
