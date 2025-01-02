@@ -30,6 +30,7 @@ protected:
 private:
 	// UAbilityTask_TargetDataUnderMouse 결과 저장
 	FVector CachedTargetLocation;
+	TWeakObjectPtr<AActor> CachedTargetActor;
 
 	FName CachedCombatSocketName;
 
@@ -44,4 +45,11 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	float SpreadAngle;
 
+	// FireBolt의 HomingAccelerationMagnitude의 최소값
+	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	float MinHomingAcceleration;
+
+	// FireBolt의 HomingAccelerationMagnitude의 최대값
+	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	float MaxHomingAcceleration;
 };

@@ -8,10 +8,13 @@
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AbilityTasks/AbilityTask_TargetDataUnderMouse.h"
 #include "Actor/AuraProjectile.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 UAuraAbility_FireBolt::UAuraAbility_FireBolt()
 {
 	SpreadAngle = 20.f;
+	MinHomingAcceleration = 1000.f;
+	MaxHomingAcceleration = 3200.f;
 }
 
 FText UAuraAbility_FireBolt::GetDescription(int32 Level) const
@@ -110,6 +113,7 @@ void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTarg
 	// Caching
 	const FHitResult& HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
 	CachedTargetLocation = HitResult.ImpactPoint;
+	CachedTargetActor = HitResult.GetActor();
 	
 	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(FAuraGameplayTags::Get().Abilities_Offensive_FireBolt);
 	check(TaggedCombatInfo.AnimMontage);
@@ -174,6 +178,15 @@ void UAuraAbility_FireBolt::SpawnFireBolts(const FVector& TargetLocation, const 
 		{
 			// Projectile로 데미지를 입히기 위해 설정
 			MakeDamageEffectParams(AuraProjectile->DamageEffectParams, nullptr);
+
+			// Cursor로 선택한 TargetActor가 있다면 Homing
+			if (CachedTargetActor.IsValid() && CachedTargetActor->Implements<UCombatInterface>())
+			{
+				AuraProjectile->ProjectileMovementComponent->bIsHomingProjectile = true;
+				AuraProjectile->ProjectileMovementComponent->HomingAccelerationMagnitude = FMath::RandRange(MinHomingAcceleration, MaxHomingAcceleration);
+				AuraProjectile->ProjectileMovementComponent->HomingTargetComponent = CachedTargetActor->GetRootComponent();
+			}
+			
 			AuraProjectile->FinishSpawning(SpawnTransform);
 		}	
 	}
