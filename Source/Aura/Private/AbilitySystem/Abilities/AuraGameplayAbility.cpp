@@ -30,7 +30,7 @@ float UAuraGameplayAbility::GetManaCost(int32 Level) const
 			}
 		}
 	}
-	return ManaCost;
+	return FMath::Abs(ManaCost);  
 }
 
 float UAuraGameplayAbility::GetCooldown(int32 Level) const
