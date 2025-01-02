@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Types/AuraAbilityTypes.h"
+#include "Types/DamageEffectParams.h"
 #include "AuraProjectile.generated.h"
 
 class UProjectileMovementComponent;

@@ -12,7 +12,7 @@
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerController.h"
-#include "Types/AuraAbilityTypes.h"
+#include "Types/DamageEffectParams.h"
 #include "UI/HUD/AuraHUD.h"
 
 UEnemyClassConfig* UAuraBlueprintLibrary::GetEnemyClassConfig(const UObject* WorldContextObject)
