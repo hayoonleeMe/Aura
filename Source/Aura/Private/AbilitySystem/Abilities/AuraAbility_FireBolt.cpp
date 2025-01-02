@@ -185,6 +185,12 @@ void UAuraAbility_FireBolt::SpawnFireBolts(const FVector& TargetLocation, const 
 				AuraProjectile->ProjectileMovementComponent->bIsHomingProjectile = true;
 				AuraProjectile->ProjectileMovementComponent->HomingAccelerationMagnitude = FMath::RandRange(MinHomingAcceleration, MaxHomingAcceleration);
 				AuraProjectile->ProjectileMovementComponent->HomingTargetComponent = CachedTargetActor->GetRootComponent();
+
+				// Target이 죽으면 FireBolt Self Destroy 
+				if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(CachedTargetActor))
+				{
+					CombatInterface->GetOnCharacterDeadDelegate()->AddDynamic(AuraProjectile, &AAuraProjectile::OnHomingTargetDead);
+				}
 			}
 			
 			AuraProjectile->FinishSpawning(SpawnTransform);
