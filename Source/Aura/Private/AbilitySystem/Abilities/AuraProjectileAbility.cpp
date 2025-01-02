@@ -7,7 +7,6 @@
 
 UAuraProjectileAbility::UAuraProjectileAbility()
 {
-	NumProjectiles = 1;
 	bOverridePitch = false;
 	PitchOverride = 0.f;
 	bUseCharacterLocationForDirection = false;

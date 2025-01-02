@@ -26,9 +26,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Projectile")
 	TSubclassOf<AAuraProjectile> ProjectileClass;
 
-	UPROPERTY(EditDefaultsOnly, Category="Aura|Projectile")
-	int32 NumProjectiles;
-
 	// Projectile의 초기 Rotation Pitch를 Override 할 것인지
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Projectile")
 	uint8 bOverridePitch : 1;
