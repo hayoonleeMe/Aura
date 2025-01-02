@@ -7,6 +7,9 @@
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
 
+// Character가 죽을 때를 알리는 델레게이트
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterDeadSignature);
+
 /**
  * GameplayTag에 연관된 Combat 정보들을 저장하는 구조체
  */
@@ -75,4 +78,6 @@ public:
 
 	// AI Enemy의 공격 대상을 반환
 	virtual TWeakObjectPtr<AActor> GetCombatTarget() const { return nullptr; }
+
+	virtual FOnCharacterDeadSignature* GetOnCharacterDeadDelegate() { return nullptr; }
 };
