@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Input/AuraInputComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "UI/Widget/DamageIndicatorComponent.h"
 
 void AAuraPlayerController::SetInGameInputMode()
@@ -23,7 +24,7 @@ void AAuraPlayerController::SetUIInputMode()
 	SetInputMode(InputMode);
 }
 
-void AAuraPlayerController::ClientIndicateDamage_Implementation(float Damage) const
+void AAuraPlayerController::ClientIndicateDamage_Implementation(float Damage, const FVector_NetQuantize& TargetLocation) const
 {
 	if (!DamageIndicatorComponentClass || !IsValid(GetPawn()))
 	{
@@ -33,9 +34,11 @@ void AAuraPlayerController::ClientIndicateDamage_Implementation(float Damage) co
 	if (UDamageIndicatorComponent* DamageIndicatorComponent = NewObject<UDamageIndicatorComponent>(GetPawn(), DamageIndicatorComponentClass))
 	{
 		DamageIndicatorComponent->RegisterComponent();
-		DamageIndicatorComponent->AttachToComponent(GetPawn()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-		DamageIndicatorComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 		DamageIndicatorComponent->UpdateDamage(Damage);
+
+		// Damage Indicator를 랜덤한 위치에 표시
+		const FVector RandomLocation = TargetLocation + UKismetMathLibrary::RandomUnitVector() * FMath::RandRange(DamageIndicatorComponent->WidgetSpawnMinDist, DamageIndicatorComponent->WidgetSpawnMaxDist);
+		DamageIndicatorComponent->SetWorldLocation(RandomLocation);
 	}
 }
 

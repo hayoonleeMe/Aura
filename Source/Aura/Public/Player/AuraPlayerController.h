@@ -30,7 +30,7 @@ public:
 
 	// Damage를 나타내는 DamageIndicator Widget을 화면에 표시한다.
 	UFUNCTION(Client, Reliable)
-	void ClientIndicateDamage(float Damage) const;
+	void ClientIndicateDamage(float Damage, const FVector_NetQuantize& TargetLocation) const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -64,6 +64,7 @@ private:
 	// Damage Indicator
 	// ============================================================================
 
+	// Damage Indicator를 표시하는 데 사용할 WidgetComponent Class
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Damage Indicator")
 	TSubclassOf<UDamageIndicatorComponent> DamageIndicatorComponentClass;
 };

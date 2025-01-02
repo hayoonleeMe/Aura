@@ -143,10 +143,13 @@ void UAuraAttributeSet::HandleIncomingDamage(UObject* SourceObject)
 			GetOwningAbilitySystemComponentChecked()->TryActivateAbilitiesByTag(TagContainer);
 		}
 
-		// Damage Indicator
-		if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(SourceObject))
+		// Damage Indicator 표시
+		if (GetActorInfo() && GetActorInfo()->AvatarActor.IsValid())
 		{
-			PlayerInterface->IndicateDamage(LocalIncomingDamage);
+			if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(SourceObject))
+			{
+				PlayerInterface->IndicateDamage(LocalIncomingDamage, GetActorInfo()->AvatarActor->GetActorLocation());
+			}
 		}
 	}
 }
