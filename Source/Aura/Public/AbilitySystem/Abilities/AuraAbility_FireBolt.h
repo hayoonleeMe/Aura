@@ -16,6 +16,7 @@ class AURA_API UAuraAbility_FireBolt : public UAuraProjectileAbility
 	GENERATED_BODY()
 
 public:
+	UAuraAbility_FireBolt();
 	virtual FText GetDescription(int32 Level) const override;
 
 protected:
@@ -38,4 +39,9 @@ private:
 
 	// 여러 개의 FireBolt를 Target을 향해 발사한다.
 	void SpawnFireBolts(const FVector& TargetLocation, const FVector& CombatSocketLocation) const;
+
+	// FireBolt를 발사하는 방향을 계산할 때 사용할 퍼지는 정도를 나타내는 각도
+	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	float SpreadAngle;
+
 };

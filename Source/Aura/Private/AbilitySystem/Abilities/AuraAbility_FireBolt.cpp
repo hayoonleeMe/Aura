@@ -9,6 +9,11 @@
 #include "AbilitySystem/AbilityTasks/AbilityTask_TargetDataUnderMouse.h"
 #include "Actor/AuraProjectile.h"
 
+UAuraAbility_FireBolt::UAuraAbility_FireBolt()
+{
+	SpreadAngle = 20.f;
+}
+
 FText UAuraAbility_FireBolt::GetDescription(int32 Level) const
 {
 	const float ScaledDamage = GetDamageByLevel(Level);
@@ -147,7 +152,7 @@ void UAuraAbility_FireBolt::SpawnFireBolts(const FVector& TargetLocation, const 
 	const FVector StartLocation = AvatarActor->GetActorLocation();
 	const FVector CentralDirection = TargetLocation - StartLocation;
 	TArray<FVector> Directions;
-	UAuraBlueprintLibrary::GetSpreadDirections(Directions, NumFireBolts, 10.f /* TODO : Parameterize */, CentralDirection);
+	UAuraBlueprintLibrary::GetSpreadDirections(Directions, NumFireBolts, SpreadAngle, CentralDirection);
 
 	// 각 방향으로 발사
 	for (const FVector& Direction : Directions)
