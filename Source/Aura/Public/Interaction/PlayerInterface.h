@@ -46,4 +46,10 @@ public:
 
 	// PlayerState의 SpellPoints를 1 감소
 	virtual void DecrementSpellPoints() {}
+
+	// ============================================================================
+	// Combat
+	// ============================================================================
+
+	virtual void IndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const {}
 };

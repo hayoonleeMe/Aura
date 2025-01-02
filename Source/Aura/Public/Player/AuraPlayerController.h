@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "AuraPlayerController.generated.h"
 
+class UDamageIndicatorComponent;
 class USplineComponent;
 class UAuraAbilitySystemComponent;
 class UInputMappingContext;
@@ -26,6 +27,10 @@ public:
 	
 	// UI 전용 Input Mode로 설정
 	void SetUIInputMode();
+
+	// Damage를 나타내는 DamageIndicator Widget을 화면에 표시한다.
+	UFUNCTION(Client, Reliable)
+	void ClientIndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -54,4 +59,12 @@ private:
 	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
 	
 	UAuraAbilitySystemComponent* GetAuraAbilitySystemComponent();
+
+	// ============================================================================
+	// Damage Indicator
+	// ============================================================================
+
+	// Damage Indicator를 표시하는 데 사용할 WidgetComponent Class
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Damage Indicator")
+	TSubclassOf<UDamageIndicatorComponent> DamageIndicatorComponentClass;
 };

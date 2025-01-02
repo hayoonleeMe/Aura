@@ -93,6 +93,14 @@ void AAuraCharacter::DecrementSpellPoints()
 	AuraPS->DecrementSpellPoints();
 }
 
+void AAuraCharacter::IndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const
+{
+	if (const AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(GetController()))
+	{
+		AuraPC->ClientIndicateDamage(Damage, bIsBlockedHit, bIsCriticalHit, TargetLocation);
+	}
+}
+
 void AAuraCharacter::InitAbilityActorInfo()
 {
 	AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();

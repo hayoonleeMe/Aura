@@ -6,6 +6,7 @@
 #include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "AbilitySystem/AuraGameplayEffectContext.h"
 #include "Interaction/CombatInterface.h"
 
 // 구조체로 Capture할 Attribute 관리 및 설정
@@ -113,6 +114,10 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	EvaluateParameters.SourceTags = SourceTags;
 	EvaluateParameters.TargetTags = TargetTags;
 
+	// Gameplay Effect Context 
+	FAuraGameplayEffectContext* AuraEffectContext = FAuraGameplayEffectContext::ExtractEffectContext(Spec.GetEffectContext());
+    check(AuraEffectContext);
+
 	// Player Level
 	const int32 SourceCharacterLevel = SourceCombatInterface->GetCharacterLevel();
 	const int32 TargetCharacterLevel = TargetCombatInterface->GetCharacterLevel();
@@ -148,7 +153,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// If Block, halve the Damage
 	const bool bBlocked = FMath::RandRange(1, 100) <= TargetBlockChance;
 	Damage = bBlocked ? Damage * 0.5f : Damage;
-	// TODO : Set to Custom EffectContext
+	AuraEffectContext->SetIsBlockedHit(bBlocked);
 
 	// Damage 계산식에 사용되는 계수를 Level에 따른 Curve로 저장하는 CurveTable
 	const UCurveTable* DamageCalculationCoefficients = UAuraBlueprintLibrary::GetDamageCalculationCoefficients(SourceASC->GetAvatarActor());
@@ -192,7 +197,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	const bool bCriticalHit = FMath::RandRange(1, 100) <= EffectiveCriticalHitChance;
 	// Double damage plus a bonus if critical hit
 	Damage = bCriticalHit ? Damage * 2.f + SourceCriticalHitDamage : Damage; 
-	// TODO : Set to Custom EffectContext
+	AuraEffectContext->SetIsCriticalHit(bCriticalHit);	
 
 	// 최종 Damage를 IncomingDamage Attribute에 Override 적용 
 	const FGameplayModifierEvaluatedData EvaluatedData(UAuraAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Override, Damage);

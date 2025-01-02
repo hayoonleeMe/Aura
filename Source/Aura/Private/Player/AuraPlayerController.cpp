@@ -7,6 +7,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Input/AuraInputComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "UI/Widget/DamageIndicatorComponent.h"
 
 void AAuraPlayerController::SetInGameInputMode()
 {
@@ -20,6 +22,24 @@ void AAuraPlayerController::SetUIInputMode()
 {
 	const FInputModeUIOnly InputMode;
 	SetInputMode(InputMode);
+}
+
+void AAuraPlayerController::ClientIndicateDamage_Implementation(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const
+{
+	if (!DamageIndicatorComponentClass || !IsValid(GetPawn()))
+	{
+		return;
+	}
+	
+	if (UDamageIndicatorComponent* DamageIndicatorComponent = NewObject<UDamageIndicatorComponent>(GetPawn(), DamageIndicatorComponentClass))
+	{
+		DamageIndicatorComponent->RegisterComponent();
+		DamageIndicatorComponent->UpdateDamage(Damage, bIsBlockedHit, bIsCriticalHit);
+
+		// Damage Indicator를 랜덤한 위치에 표시
+		const FVector RandomLocation = TargetLocation + UKismetMathLibrary::RandomUnitVector() * FMath::RandRange(DamageIndicatorComponent->WidgetSpawnMinDist, DamageIndicatorComponent->WidgetSpawnMaxDist);
+		DamageIndicatorComponent->SetWorldLocation(RandomLocation);
+	}
 }
 
 void AAuraPlayerController::BeginPlay()
