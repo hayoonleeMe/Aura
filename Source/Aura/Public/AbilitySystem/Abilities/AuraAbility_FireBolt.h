@@ -31,4 +31,8 @@ private:
 	FVector CachedTargetLocation;
 
 	FName CachedCombatSocketName;
+
+	// FireBolt Spell의 레벨에 따른 발사할 FireBolt 개수를 저장하는 Curve
+	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	TObjectPtr<UCurveFloat> NumFireBoltsCurve;
 };
