@@ -2,7 +2,7 @@
 
 #include "GameplayTagContainer.h"
 
-#include "AuraAbilityTypes.generated.h"
+#include "DamageEffectParams.generated.h"
 
 class UAbilitySystemComponent;
 class UGameplayEffect;
