@@ -37,6 +37,12 @@ AAuraProjectile::AAuraProjectile()
 	ProjectileMovementComponent->ProjectileGravityScale = 0.f;
 	
 	LifeSpan = 15.f;
+	LifeSpanWhenHomingTargetDead = 1.5f;
+}
+
+void AAuraProjectile::OnHomingTargetDead()
+{
+	SetLifeSpan(LifeSpanWhenHomingTargetDead);
 }
 
 void AAuraProjectile::BeginPlay()
@@ -60,6 +66,10 @@ void AAuraProjectile::Destroyed()
 		LoopingSoundComponent->Stop();
 		LoopingSoundComponent->DestroyComponent();
 	}
+	if (ImpactCueTag.IsValid())
+	{
+		UAuraBlueprintLibrary::ExecuteGameplayCue(GetOwner(), ImpactCueTag, GetActorLocation());
+	}
 	Super::Destroyed();
 }
 
@@ -78,10 +88,6 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 		UAuraBlueprintLibrary::ApplyDamageEffect(DamageEffectParams);
 	}
 
-	if (ImpactCueTag.IsValid())
-	{
-		UAuraBlueprintLibrary::ExecuteGameplayCue(GetOwner(), ImpactCueTag, GetActorLocation());
-	}
 	Destroy();
 }
 

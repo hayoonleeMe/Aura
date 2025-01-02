@@ -4,14 +4,27 @@
 #include "AbilitySystem/Abilities/AuraAbility_FireBolt.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AbilityTasks/AbilityTask_TargetDataUnderMouse.h"
+#include "Actor/AuraProjectile.h"
+#include "GameFramework/ProjectileMovementComponent.h"
+
+UAuraAbility_FireBolt::UAuraAbility_FireBolt()
+{
+	SpreadAngle = 20.f;
+	MinHomingAcceleration = 1000.f;
+	MaxHomingAcceleration = 3200.f;
+}
 
 FText UAuraAbility_FireBolt::GetDescription(int32 Level) const
 {
 	const float ScaledDamage = GetDamageByLevel(Level);
 	const float ManaCost = GetManaCost(Level);
 	const float Cooldown = GetCooldown(Level);
+
+	checkf(NumFireBoltsCurve, TEXT("Need to set NumFireBoltsCurve"));
+	const int32 NumFireBolts = NumFireBoltsCurve->GetFloatValue(Level);
 
 	FString RetStr;
 	if (Level == 1)
@@ -66,7 +79,7 @@ FText UAuraAbility_FireBolt::GetDescription(int32 Level) const
 			Level,
 			ManaCost,
 			Cooldown,
-			FMath::Min(Level, NumProjectiles),
+			NumFireBolts,
 			ScaledDamage
 		);
 	}
@@ -100,6 +113,7 @@ void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTarg
 	// Caching
 	const FHitResult& HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
 	CachedTargetLocation = HitResult.ImpactPoint;
+	CachedTargetActor = HitResult.GetActor();
 	
 	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(FAuraGameplayTags::Get().Abilities_Offensive_FireBolt);
 	check(TaggedCombatInfo.AnimMontage);
@@ -121,7 +135,65 @@ void UAuraAbility_FireBolt::OnEventReceived(FGameplayEventData Payload)
 	}
 	
 	const FVector CombatSocketLocation = CombatInterface->GetCombatSocketLocation(CachedCombatSocketName);
-	SpawnProjectile(CachedTargetLocation, CombatSocketLocation);
+	SpawnFireBolts(CachedTargetLocation, CombatSocketLocation);
 
 	FinishAttack();
+}
+
+void UAuraAbility_FireBolt::SpawnFireBolts(const FVector& TargetLocation, const FVector& CombatSocketLocation) const
+{
+	const AActor* AvatarActor = GetAvatarActorFromActorInfo();
+	if (!IsValid(AvatarActor) || !AvatarActor->HasAuthority())	// Only Spawn in Server
+	{
+		return;
+	}
+	check(ProjectileClass);
+
+	checkf(NumFireBoltsCurve, TEXT("Need to set NumFireBoltsCurve"));
+	const int32 NumFireBolts = NumFireBoltsCurve->GetFloatValue(GetAbilityLevel());
+
+	// Projectile 발사 방향 계산
+	const FVector StartLocation = AvatarActor->GetActorLocation();
+	const FVector CentralDirection = TargetLocation - StartLocation;
+	TArray<FVector> Directions;
+	UAuraBlueprintLibrary::GetSpreadDirections(Directions, NumFireBolts, SpreadAngle, CentralDirection);
+
+	// 각 방향으로 발사
+	for (const FVector& Direction : Directions)
+	{
+		FRotator Rotation = Direction.Rotation();
+		Rotation.Roll = 0.f;
+		if (bOverridePitch)
+		{
+			Rotation.Pitch = PitchOverride;
+		}
+
+		// CombatSocket에서 Projectile 발사
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(CombatSocketLocation);
+		SpawnTransform.SetRotation(Rotation.Quaternion());
+
+		AActor* OwningActor = GetOwningActorFromActorInfo();
+		if (AAuraProjectile* AuraProjectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(ProjectileClass, SpawnTransform, OwningActor, Cast<APawn>(OwningActor), ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
+		{
+			// Projectile로 데미지를 입히기 위해 설정
+			MakeDamageEffectParams(AuraProjectile->DamageEffectParams, nullptr);
+
+			// Cursor로 선택한 TargetActor가 있다면 Homing
+			if (CachedTargetActor.IsValid() && CachedTargetActor->Implements<UCombatInterface>())
+			{
+				AuraProjectile->ProjectileMovementComponent->bIsHomingProjectile = true;
+				AuraProjectile->ProjectileMovementComponent->HomingAccelerationMagnitude = FMath::RandRange(MinHomingAcceleration, MaxHomingAcceleration);
+				AuraProjectile->ProjectileMovementComponent->HomingTargetComponent = CachedTargetActor->GetRootComponent();
+
+				// Target이 죽으면 FireBolt Self Destroy 
+				if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(CachedTargetActor))
+				{
+					CombatInterface->GetOnCharacterDeadDelegate()->AddDynamic(AuraProjectile, &AAuraProjectile::OnHomingTargetDead);
+				}
+			}
+			
+			AuraProjectile->FinishSpawning(SpawnTransform);
+		}	
+	}
 }

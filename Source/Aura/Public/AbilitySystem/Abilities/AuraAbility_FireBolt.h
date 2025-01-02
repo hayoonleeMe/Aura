@@ -16,6 +16,7 @@ class AURA_API UAuraAbility_FireBolt : public UAuraProjectileAbility
 	GENERATED_BODY()
 
 public:
+	UAuraAbility_FireBolt();
 	virtual FText GetDescription(int32 Level) const override;
 
 protected:
@@ -29,6 +30,26 @@ protected:
 private:
 	// UAbilityTask_TargetDataUnderMouse 결과 저장
 	FVector CachedTargetLocation;
+	TWeakObjectPtr<AActor> CachedTargetActor;
 
 	FName CachedCombatSocketName;
+
+	// FireBolt Spell의 레벨에 따른 발사할 FireBolt 개수를 저장하는 Curve
+	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	TObjectPtr<UCurveFloat> NumFireBoltsCurve;
+
+	// 여러 개의 FireBolt를 Target을 향해 발사한다.
+	void SpawnFireBolts(const FVector& TargetLocation, const FVector& CombatSocketLocation) const;
+
+	// FireBolt를 발사하는 방향을 계산할 때 사용할 퍼지는 정도를 나타내는 각도
+	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	float SpreadAngle;
+
+	// FireBolt의 HomingAccelerationMagnitude의 최소값
+	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	float MinHomingAcceleration;
+
+	// FireBolt의 HomingAccelerationMagnitude의 최대값
+	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	float MaxHomingAcceleration;
 };

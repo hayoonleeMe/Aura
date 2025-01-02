@@ -28,6 +28,10 @@ public:
 	// for Apply Damage Effect
 	FDamageEffectParams DamageEffectParams;
 
+	// Homing 중인 Target이 죽으면 호출되는 Callback
+	UFUNCTION()
+	void OnHomingTargetDead();
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Destroyed() override;
@@ -52,6 +56,10 @@ private:
 	// Actor의 수명
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	float LifeSpan;
+
+	// Homing Target이 죽을 때의 수명
+	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	float LifeSpanWhenHomingTargetDead;
 
 	// Projectile의 Impact Effect를 표시하고 Impact Sound를 재생하는 GameplayCue의 GameplayTag
 	UPROPERTY(EditDefaultsOnly, Category="Aura")

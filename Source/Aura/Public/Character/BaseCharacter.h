@@ -15,8 +15,6 @@ class UGameplayAbility;
 class UAttributeSet;
 class UAbilitySystemComponent;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterDeadSignature);
-
 UCLASS(Abstract)
 class AURA_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
@@ -39,6 +37,7 @@ public:
 	virtual FTransform GetCombatSocketTransform(const FName& CombatSocketName) const override;
 	virtual void Die() override;
 	virtual bool IsDead() const override { return bDead; }
+	virtual FOnCharacterDeadSignature* GetOnCharacterDeadDelegate() override { return &OnCharacterDeadDelegate; }
 	/* End CombatInterface */
 
 	// ============================================================================

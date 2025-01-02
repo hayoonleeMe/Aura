@@ -21,7 +21,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
 	FGameplayTag StartupInputTag;
 
-	// 해당 Spell을 Unlock할 수 있는 필요 레벨
+	// 해당 Spell을 Unlock할 수 있는 Character의 필요 레벨
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	int32 LevelRequirement;
 

@@ -8,7 +8,7 @@
 UAuraGameplayAbility::UAuraGameplayAbility()
 {
 	LevelRequirement = 1;
-	MaxSpellLevel = 40;
+	MaxSpellLevel = 4;
 }
 
 FText UAuraGameplayAbility::GetLockedDescription() const
@@ -30,7 +30,7 @@ float UAuraGameplayAbility::GetManaCost(int32 Level) const
 			}
 		}
 	}
-	return ManaCost;
+	return FMath::Abs(ManaCost);  
 }
 
 float UAuraGameplayAbility::GetCooldown(int32 Level) const
