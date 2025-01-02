@@ -71,4 +71,12 @@ public:
 	// OwningController의 HUD에 저장된 Spell Menu Widget Controller 반환
 	UFUNCTION(BlueprintPure)
 	static USpellMenuWidgetController* GetSpellMenuWidgetController(const APlayerController* OwningController);
+
+	// ============================================================================
+	// Math
+	// ============================================================================
+
+	// CentralDirection을 기준으로 SpreadAngle만큼의 간격으로 NumDirections개의 방향을 계산한다.
+	UFUNCTION(BlueprintCallable)	
+	static void GetSpreadDirections(TArray<FVector>& OutDirections, int32 NumDirections, float SpreadAngle, const FVector& CentralDirection);
 };

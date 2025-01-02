@@ -135,3 +135,32 @@ USpellMenuWidgetController* UAuraBlueprintLibrary::GetSpellMenuWidgetController(
 	}
 	return nullptr;
 }
+
+void UAuraBlueprintLibrary::GetSpreadDirections(TArray<FVector>& OutDirections, int32 NumDirections, float SpreadAngle, const FVector& CentralDirection)
+{
+	if (NumDirections % 2)
+	{
+		OutDirections.Add(CentralDirection.GetSafeNormal());
+	}
+
+	if (NumDirections == 1)
+	{
+		return;
+	}
+
+	const int32 Half = NumDirections / 2;
+	
+	for (int32 Index = 1; Index <= Half; ++Index)
+	{
+		const float Angle = -Index * SpreadAngle * (NumDirections % 2 == 0 && Index == 1 ? 0.5f : 1.f);
+		const FVector Rotated = CentralDirection.RotateAngleAxis(Angle, FVector::UpVector);
+		OutDirections.Add(Rotated.GetSafeNormal());
+	}
+	
+	for (int32 Index = 1; Index <= Half; ++Index)
+	{
+		const float Angle = Index * SpreadAngle * (NumDirections % 2 == 0 && Index == 1 ? 0.5f : 1.f);
+		const FVector Rotated = CentralDirection.RotateAngleAxis(Angle, FVector::UpVector);
+		OutDirections.Add(Rotated.GetSafeNormal());
+	}
+}
