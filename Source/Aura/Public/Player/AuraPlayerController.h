@@ -48,7 +48,16 @@ private:
 	// Combat
 	// ============================================================================
 
+	void CursorTrace();
+
+	// Cached Target HitResult Under Cursor
 	FHitResult TargetHitResult;
+
+	// 이전 프레임에서의 TargetHitResult의 Actor
+	TWeakObjectPtr<AActor> TargetFromPrevFrame;
+
+	// 현재 프레임에서의 TargetHitResult의 Actor
+	TWeakObjectPtr<AActor> TargetFromCurrentFrame;
 	
 	// ============================================================================
 	// Input

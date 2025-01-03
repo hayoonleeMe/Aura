@@ -8,6 +8,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Aura/Aura.h"
 #include "Input/AuraInputComponent.h"
+#include "Interaction/TargetInterface.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "UI/Widget/DamageIndicatorComponent.h"
 
@@ -16,8 +17,28 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	// only called if the PlayerController has a PlayerInput object. it will not be called in non-locally controlled PlayerController.
 	Super::PlayerTick(DeltaTime);
 
+	CursorTrace();
+}
+
+void AAuraPlayerController::CursorTrace()
+{
 	// Caching Target HitResult
 	GetHitResultUnderCursor(ECC_Target, false, TargetHitResult);
+
+	// Highlight Target
+	TargetFromPrevFrame = TargetFromCurrentFrame;
+	TargetFromCurrentFrame = IsValid(TargetHitResult.GetActor()) && TargetHitResult.GetActor()->Implements<UTargetInterface>() ? TargetHitResult.GetActor() : nullptr;
+	if (TargetFromPrevFrame != TargetFromCurrentFrame)
+	{
+		if (ITargetInterface* PrevTargetInterface = Cast<ITargetInterface>(TargetFromPrevFrame))
+		{
+			PrevTargetInterface->UnHighlightActor();
+		}
+		if (ITargetInterface* CurrentTargetInterface = Cast<ITargetInterface>(TargetFromCurrentFrame))
+		{
+			CurrentTargetInterface->HighlightActor();
+		}		
+	}
 }
 
 void AAuraPlayerController::SetInGameInputMode()
