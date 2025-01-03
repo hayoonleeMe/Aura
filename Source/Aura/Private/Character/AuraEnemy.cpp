@@ -20,6 +20,7 @@
 AAuraEnemy::AAuraEnemy()
 {
 	GetMesh()->SetCollisionResponseToChannel(ECC_Target, ECR_Block);
+	GetMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);
 	
 	/* GAS */
 	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>(TEXT("Ability System Component"));
@@ -185,6 +186,16 @@ void AAuraEnemy::Die()
 	{
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("Dead"), bDead);
 	}
+}
+
+void AAuraEnemy::HighlightActor()
+{
+	GetMesh()->SetRenderCustomDepth(true);
+}
+
+void AAuraEnemy::UnHighlightActor()
+{
+	GetMesh()->SetRenderCustomDepth(false);
 }
 
 void AAuraEnemy::HandleDeathLocally()

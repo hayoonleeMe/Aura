@@ -44,6 +44,11 @@ public:
 	virtual void Die() override;
 	/* End CombatInterface */
 
+	/* Begin TargetInterface */
+	virtual void HighlightActor() override;
+	virtual void UnHighlightActor() override;
+	/* End TargetInterface */
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
