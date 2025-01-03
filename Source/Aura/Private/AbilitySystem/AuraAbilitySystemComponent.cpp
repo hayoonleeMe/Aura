@@ -302,3 +302,18 @@ void UAuraAbilitySystemComponent::GetSpellAndInputTagPairs(TArray<TTuple<FGamepl
 		}
 	}
 }
+
+float UAuraAbilitySystemComponent::GetCooldownTimeRemaining(const FGameplayTag& CooldownTag) const
+{
+	if (HasMatchingGameplayTag(CooldownTag))
+	{
+		const FGameplayEffectQuery Query = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(CooldownTag.GetSingleTagContainer());
+		TArray<float> TimesRemaining = GetActiveEffectsTimeRemaining(Query);
+		if (TimesRemaining.Num())
+		{
+			TimesRemaining.Sort();
+			return TimesRemaining.Last();
+		}
+	}
+	return 0.f;
+}
