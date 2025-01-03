@@ -52,4 +52,7 @@ public:
 	// ============================================================================
 
 	virtual void IndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const {}
+
+	// AuraPlayerController에서 Caching한 Target HitResult를 반환한다.
+	virtual FHitResult GetTargetHitResult() const { return FHitResult(); }
 };

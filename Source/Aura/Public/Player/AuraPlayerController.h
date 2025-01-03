@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "GameFramework/PlayerController.h"
+#include "Interaction/PlayerInterface.h"
 #include "AuraPlayerController.generated.h"
 
 class UDamageIndicatorComponent;
@@ -17,11 +18,17 @@ class UAuraInputConfig;
  * 
  */
 UCLASS()
-class AURA_API AAuraPlayerController : public APlayerController
+class AURA_API AAuraPlayerController : public APlayerController, public IPlayerInterface
 {
 	GENERATED_BODY()
 
 public:
+	virtual void PlayerTick(float DeltaTime) override;
+
+	/* Begin PlayerInterface */
+	virtual FHitResult GetTargetHitResult() const override { return TargetHitResult; }
+	/* End PlayerInterface */
+	
 	// 게임에서 기본으로 사용하는 Input Mode로 설정
 	void SetInGameInputMode();
 	
@@ -37,6 +44,12 @@ protected:
 	virtual void SetupInputComponent() override;
 	
 private:
+	// ============================================================================
+	// Combat
+	// ============================================================================
+
+	FHitResult TargetHitResult;
+	
 	// ============================================================================
 	// Input
 	// ============================================================================

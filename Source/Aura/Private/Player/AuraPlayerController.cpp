@@ -6,9 +6,19 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Aura/Aura.h"
 #include "Input/AuraInputComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "UI/Widget/DamageIndicatorComponent.h"
+
+void AAuraPlayerController::PlayerTick(float DeltaTime)
+{
+	// only called if the PlayerController has a PlayerInput object. it will not be called in non-locally controlled PlayerController.
+	Super::PlayerTick(DeltaTime);
+
+	// Caching Target HitResult
+	GetHitResultUnderCursor(ECC_Target, false, TargetHitResult);
+}
 
 void AAuraPlayerController::SetInGameInputMode()
 {

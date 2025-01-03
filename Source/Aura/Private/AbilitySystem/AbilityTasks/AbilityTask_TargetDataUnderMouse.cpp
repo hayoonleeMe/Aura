@@ -4,7 +4,7 @@
 #include "AbilitySystem/AbilityTasks/AbilityTask_TargetDataUnderMouse.h"
 
 #include "AbilitySystemComponent.h"
-#include "Aura/Aura.h"
+#include "Interaction/PlayerInterface.h"
 
 UAbilityTask_TargetDataUnderMouse* UAbilityTask_TargetDataUnderMouse::CreateTask(UGameplayAbility* OwningAbility)
 {
@@ -43,13 +43,13 @@ void UAbilityTask_TargetDataUnderMouse::SendTargetDataToServer()
 	// 해당 Scope 내의 작업을 Prediction
 	FScopedPredictionWindow ScopedPredictionWindow(AbilitySystemComponent.Get());
 	
-	if (const APlayerController* PC = Ability->GetActorInfo().PlayerController.Get())
+	if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(Ability->GetActorInfo().PlayerController.Get()))
 	{
-		FHitResult HitResult;
-		PC->GetHitResultUnderCursor(ECC_Target, false, HitResult);
+		// Retrieve Cached Target HitResult
+		FHitResult HitResult = PlayerInterface->GetTargetHitResult();
 
 		// FGameplayAbilityTargetData_SingleTargetHit 포인터는 FGameplayAbilityTargetDataHandle 내부에서 TSharedPtr로 괸리됨
-		FGameplayAbilityTargetDataHandle TargetDataHandle(new FGameplayAbilityTargetData_SingleTargetHit(HitResult));
+		const FGameplayAbilityTargetDataHandle TargetDataHandle(new FGameplayAbilityTargetData_SingleTargetHit(HitResult));
 
 		// Valid한 TargetData를 Server로 전송
 		AbilitySystemComponent->ServerSetReplicatedTargetData(GetAbilitySpecHandle(), GetActivationPredictionKey(), TargetDataHandle, FGameplayTag(), AbilitySystemComponent->ScopedPredictionKey);
