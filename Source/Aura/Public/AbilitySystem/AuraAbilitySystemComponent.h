@@ -86,6 +86,9 @@ public:
 	// ActivatableAbilities에 존재하는 모든 Spell Ability의 SpellTag와 InputTag 쌍을 반환한다.
 	void GetSpellAndInputTagPairs(TArray<TTuple<FGameplayTag, FGameplayTag>>& OutArray);
 
+	// CooldownTag를 가지는 Active Cooldown Effect의 가장 큰 Time Remaining을 반환
+	float GetCooldownTimeRemaining(const FGameplayTag& CooldownTag) const;
+
 private:
 	// ============================================================================
 	// Spell
