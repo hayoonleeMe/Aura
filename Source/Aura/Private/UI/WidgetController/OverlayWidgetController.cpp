@@ -6,7 +6,6 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Data/SpellConfig.h"
-#include "Player/AuraPlayerState.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
@@ -16,8 +15,9 @@ void UOverlayWidgetController::BroadcastInitialValues()
 	OnMaxHealthChangedDelegate.Broadcast(AuraAS->GetMaxHealth());
 	OnManaChangedDelegate.Broadcast(AuraAS->GetMana());
 	OnMaxManaChangedDelegate.Broadcast(AuraAS->GetMaxMana());
+	OnXPChangedDelegate.Broadcast(AuraAS->GetXP());
+	OnLevelChangedDelegate.Broadcast(AuraAS->GetLevel());
 
-	UpdateXPPercent();
 	UpdateStartupSpells();
 }
 
@@ -45,11 +45,11 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	});
 	AuraASC->GetGameplayAttributeValueChangeDelegate(AuraAS->GetXPAttribute()).AddWeakLambda(this, [this](const FOnAttributeChangeData& Data)
 	{
-		UpdateXPPercent();
+		OnXPChangedDelegate.Broadcast(Data.NewValue);
 	});
 	AuraASC->GetGameplayAttributeValueChangeDelegate(AuraAS->GetLevelAttribute()).AddWeakLambda(this, [this](const FOnAttributeChangeData& Data)
 	{
-		UpdateXPPercent();
+		OnLevelChangedDelegate.Broadcast(Data.NewValue);
 	});
 
 	// Spell의 장착 상황 변경을 전달
@@ -122,20 +122,5 @@ void UOverlayWidgetController::UpdateEquippedSpellCooldown(bool bEquipped, const
 				CooldownTagEvent.RemoveAll(this);
 			}	
 		}
-	}
-}
-
-void UOverlayWidgetController::UpdateXPPercent() const
-{
-	const UAuraAttributeSet* AuraAS = GetAuraAttributeSetChecked();
-	const int32 NextPlayerLevel = AuraAS->GetLevel() + 1;
-	
-	const AAuraPlayerState* AuraPS = GetAuraPlayerStateChecked();
-	const int32 XPRequirement = AuraPS->GetLevelUpXpRequirement(NextPlayerLevel);
-	
-	if (XPRequirement > 0)
-	{
-		const float XPPercent = AuraAS->GetXP() / XPRequirement;
-		OnXPPercentChangedDelegate.Broadcast(XPPercent);
 	}
 }

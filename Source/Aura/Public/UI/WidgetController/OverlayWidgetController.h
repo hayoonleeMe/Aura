@@ -44,7 +44,10 @@ public:
 	FOnAttributeChangedSignature OnMaxManaChangedDelegate;
 
 	UPROPERTY(BlueprintAssignable, Category="Aura|Overlay")
-	FOnAttributeChangedSignature OnXPPercentChangedDelegate;
+	FOnAttributeChangedSignature OnXPChangedDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category="Aura|Overlay")
+	FOnAttributeChangedSignature OnLevelChangedDelegate;
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category="Aura|Overlay")
 	FShowMenuWidgetSwitcherSignature ShowMenuWidgetSwitcherDelegate;
@@ -67,7 +70,4 @@ private:
 
 	// Equipped Spell의 Cooldown을 업데이트
 	void UpdateEquippedSpellCooldown(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag) const;
-
-	// Overlay Widget에 변경된 XP Percent를 업데이트
-	void UpdateXPPercent() const;
 };
