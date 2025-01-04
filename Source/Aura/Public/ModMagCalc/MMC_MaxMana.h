@@ -20,4 +20,5 @@ public:
 
 private:
 	FGameplayEffectAttributeCaptureDefinition IntelligenceDef;
+	FGameplayEffectAttributeCaptureDefinition LevelDef;
 };

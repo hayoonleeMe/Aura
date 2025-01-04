@@ -6,6 +6,8 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayEffectTypes.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/AuraAttributeSet.h"
 #include "Game/AuraGameModeBase.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
@@ -98,6 +100,18 @@ void UAuraBlueprintLibrary::SetUIInputMode(const UObject* WorldContextObject)
 			AuraPC->SetUIInputMode();
 		}
 	}
+}
+
+int32 UAuraBlueprintLibrary::GetLevelAttributeValue(AActor* Actor)
+{
+	if (const UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Actor)))
+	{
+		if (const UAuraAttributeSet* AuraAS = Cast<UAuraAttributeSet>(AuraASC->GetAttributeSet(UAuraAttributeSet::StaticClass())))
+		{
+			return AuraAS->GetLevel();
+		}
+	}
+	return 0;
 }
 
 UOverlayWidgetController* UAuraBlueprintLibrary::GetOverlayWidgetController(const APlayerController* OwningController)

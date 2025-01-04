@@ -50,6 +50,9 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Attributes_Vital_Health = Manager.AddNativeGameplayTag(TEXT("Attributes.Vital.Health"), TEXT("Amount of damage a player can take before death"));
 	GameplayTags.Attributes_Vital_Mana = Manager.AddNativeGameplayTag(TEXT("Attributes.Vital.Mana"), TEXT("Amount of energy a player can use to cast spells"));
 
+	/* Meta Attributes */
+	GameplayTags.Attributes_Meta_Level = Manager.AddNativeGameplayTag(TEXT("Attributes.Meta.Level"), TEXT("Indicates the character's current progression level"));
+
 	/* Damage Types */
 	GameplayTags.Damage_Type_Fire = Manager.AddNativeGameplayTag(TEXT("Damage.Type.Fire"), TEXT("Fire Damage Type"));
 	GameplayTags.DamageTypeToResistanceMap.Add(GameplayTags.Damage_Type_Fire, GameplayTags.Attributes_Secondary_FireResistance);

@@ -56,6 +56,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static void SetUIInputMode(const UObject* WorldContextObject);
 
+	// Actor의 Level Attribute 값을 반환
+	UFUNCTION(BlueprintCallable)
+	static int32 GetLevelAttributeValue(AActor* Actor);
+
 	// ============================================================================
 	// UI
 	// ============================================================================

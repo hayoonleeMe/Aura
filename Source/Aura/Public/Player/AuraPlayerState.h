@@ -30,7 +30,6 @@ public:
 	/* End IAbilitySystemInterface */
 	FORCEINLINE UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
-	FORCEINLINE int32 GetCharacterLevel() const { return Level; }
 	FORCEINLINE int32 GetAttributePoints() const { return AttributePoints; }
 	FORCEINLINE int32 GetSpellPoints() const { return SpellPoints; }
 
@@ -61,12 +60,6 @@ private:
 	// ============================================================================
 	// Combat
 	// ============================================================================
-
-	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_Level)
-	int32 Level;
-
-	UFUNCTION()
-	void OnRep_Level(int32 OldLevel);
 
 	// Attribute를 Upgrade하는 데 사용하는 Point
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_AttributePoints)

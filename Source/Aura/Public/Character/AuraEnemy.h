@@ -37,7 +37,6 @@ public:
 	FOnAttributeChangedSignature OnMaxHealthChangedDelegate;
 	
 	/* Begin CombatInterface */
-	virtual int32 GetCharacterLevel() override { return Level; }
 	virtual void SetCombatTarget(AActor* InCombatTarget) override { CombatTarget = InCombatTarget; }
 	virtual TWeakObjectPtr<AActor> GetCombatTarget() const override { return CombatTarget; }
 	virtual void GetAttackCheckRange(float& OutRadius, float& OutHalfHeight) const override;
@@ -59,9 +58,6 @@ protected:
 	// ============================================================================
 	// Combat
 	// ============================================================================
-
-	UPROPERTY(EditAnywhere, Category="Aura|Combat")
-	int32 Level;
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
 	EEnemyClassType EnemyClassType;

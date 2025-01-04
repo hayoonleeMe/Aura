@@ -4,7 +4,6 @@
 #include "ModMagCalc/MMC_MaxMana.h"
 
 #include "AbilitySystem/AuraAttributeSet.h"
-#include "Interaction/CombatInterface.h"
 
 UMMC_MaxMana::UMMC_MaxMana()
 {
@@ -12,6 +11,11 @@ UMMC_MaxMana::UMMC_MaxMana()
 	IntelligenceDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
 	IntelligenceDef.bSnapshot = false;	// Attribute를 실시간으로 캡쳐
 	RelevantAttributesToCapture.Add(IntelligenceDef);
+
+	LevelDef.AttributeToCapture = UAuraAttributeSet::GetLevelAttribute();
+	LevelDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
+	LevelDef.bSnapshot = false;
+	RelevantAttributesToCapture.Add(LevelDef);
 }
 
 float UMMC_MaxMana::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
@@ -26,13 +30,9 @@ float UMMC_MaxMana::CalculateBaseMagnitude_Implementation(const FGameplayEffectS
 	
 	float Intelligence = 0.f;
 	GetCapturedAttributeMagnitude(IntelligenceDef, Spec, EvaluateParameters, Intelligence);
-	Intelligence = FMath::Max(Intelligence, 0.f);
-	
-	int32 CharacterLevel = 1;
-	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetEffectContext().GetSourceObject()))
-	{
-		CharacterLevel = CombatInterface->GetCharacterLevel();
-	}
 
-	return 50.f + 2.5f * Intelligence + 15.f * CharacterLevel;
+	float Level = 0;
+	GetCapturedAttributeMagnitude(LevelDef, Spec, EvaluateParameters, Level);
+	
+	return 50.f + 2.5f * Intelligence + 15.f * Level;
 }

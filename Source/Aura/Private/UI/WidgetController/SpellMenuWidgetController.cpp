@@ -5,6 +5,7 @@
 
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "Data/SpellConfig.h"
 #include "Player/AuraPlayerState.h"
@@ -77,8 +78,8 @@ bool USpellMenuWidgetController::CanSpendPoint() const
 			if (const UAuraGameplayAbility* AuraAbilityCDO = SpellAbilityClass->GetDefaultObject<UAuraGameplayAbility>())
 			{
 				// 현재 플레이어의 레벨이 Spell을 Unlock 할 수 있는 레벨인지 반환
-				const AAuraPlayerState* AuraPS = GetAuraPlayerStateChecked();
-				return AuraPS->GetCharacterLevel() >= AuraAbilityCDO->LevelRequirement;
+				const int32 PlayerLevel = GetAuraAttributeSetChecked()->GetLevel();
+				return PlayerLevel >= AuraAbilityCDO->LevelRequirement;
 			}
 		}
 	}

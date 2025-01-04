@@ -19,7 +19,6 @@ AAuraPlayerState::AAuraPlayerState()
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>(TEXT("Attribute Set"));
 
 	/* Combat */
-	Level = 1;
 	AttributePoints = 0;
 	SpellPoints = 0;
 }
@@ -28,13 +27,8 @@ void AAuraPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(AAuraPlayerState, Level);
 	DOREPLIFETIME(AAuraPlayerState, AttributePoints);
 	DOREPLIFETIME(AAuraPlayerState, SpellPoints);
-}
-
-void AAuraPlayerState::OnRep_Level(int32 OldLevel)
-{
 }
 
 void AAuraPlayerState::OnRep_AttributePoints() const

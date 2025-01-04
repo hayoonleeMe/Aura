@@ -184,13 +184,24 @@ public:
 	void OnRep_Mana(const FGameplayAttributeData& OldMana) const;
 
 	// ============================================================================
-	// Meta Attributes
+	// Meta Attributes - NotReplicated
 	// ============================================================================
 
 	UPROPERTY(BlueprintReadOnly, Category="Aura|Meta Attributes")
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
 
+	// ============================================================================
+	// Meta Attributes - Replicated
+	// ============================================================================
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Level, Category="Aura|Meta Attributes")
+	FGameplayAttributeData Level;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Level);
+
+	UFUNCTION()
+	void OnRep_Level(const FGameplayAttributeData& OldLevel) const;
+	
 private:
 	void HandleIncomingDamage(UObject* SourceObject, const FGameplayEffectContextHandle& EffectContextHandle);
 };

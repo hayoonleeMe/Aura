@@ -43,9 +43,6 @@ class AURA_API ICombatInterface
 	GENERATED_BODY()
 
 public:
-	// Character Level을 반환
-	virtual int32 GetCharacterLevel() { return 0; }
-
 	// Character의 RoleTag 반환
 	// Role.Player, Role.Enemy
 	virtual FGameplayTag GetRoleTag() const { return FGameplayTag(); }

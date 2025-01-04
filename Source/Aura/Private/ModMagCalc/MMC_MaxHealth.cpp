@@ -4,7 +4,6 @@
 #include "ModMagCalc/MMC_MaxHealth.h"
 
 #include "AbilitySystem/AuraAttributeSet.h"
-#include "Interaction/CombatInterface.h"
 
 UMMC_MaxHealth::UMMC_MaxHealth()
 {
@@ -12,6 +11,11 @@ UMMC_MaxHealth::UMMC_MaxHealth()
 	VigorDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
 	VigorDef.bSnapshot = false;	// Attribute를 실시간으로 캡쳐
 	RelevantAttributesToCapture.Add(VigorDef);
+
+	LevelDef.AttributeToCapture = UAuraAttributeSet::GetLevelAttribute();
+	LevelDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
+	LevelDef.bSnapshot = false;
+	RelevantAttributesToCapture.Add(LevelDef);
 }
 
 float UMMC_MaxHealth::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
@@ -26,13 +30,9 @@ float UMMC_MaxHealth::CalculateBaseMagnitude_Implementation(const FGameplayEffec
 	
 	float Vigor = 0.f;
 	GetCapturedAttributeMagnitude(VigorDef, Spec, EvaluateParameters, Vigor);
-	Vigor = FMath::Max(Vigor, 0.f);
-	
-	int32 CharacterLevel = 1;
-	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetEffectContext().GetSourceObject()))
-	{
-		CharacterLevel = CombatInterface->GetCharacterLevel();
-	}
 
-	return 80.f + 2.5f * Vigor + 10.f * CharacterLevel;
+	float Level = 0;
+	GetCapturedAttributeMagnitude(LevelDef, Spec, EvaluateParameters, Level);
+
+	return 80.f + 2.5f * Vigor + 10.f * Level;
 }

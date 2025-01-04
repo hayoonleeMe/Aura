@@ -25,10 +25,6 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 
-	/* Begin CombatInterface */
-	virtual int32 GetCharacterLevel() override;
-	/* End CombatInterface */
-
 	/* Begin PlayerInterface */
 	virtual int32 GetAttributePoints() const override;
 	virtual void IncrementAttributePoints() override;
