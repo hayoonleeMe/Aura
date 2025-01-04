@@ -33,6 +33,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static UCurveTable* GetDamageCalculationCoefficients(const UObject* WorldContextObject);
 
+	// Level에 도달하는 데 필요한 XP 값을 반환
+	UFUNCTION(BlueprintCallable)
+	static int32 GetLevelUpXpRequirement(const UObject* WorldContextObject, int32 Level);
+
+	// Level에 도달했을 때 얻을 수 있는 Attribute Points 값을 반환
+	UFUNCTION(BlueprintCallable)
+	static int32 GetLevelUpAttributePointsAward(const UObject* WorldContextObject, int32 Level);
+
+	// Level에 도달했을 때 얻을 수 있는 Spell Points 값을 반환
+	UFUNCTION(BlueprintCallable)
+	static int32 GetLevelUpSpellPointsAward(const UObject* WorldContextObject, int32 Level);
+
 	UFUNCTION(BlueprintCallable)
 	static void ApplyDamageEffect(const FDamageEffectParams& Params);
 

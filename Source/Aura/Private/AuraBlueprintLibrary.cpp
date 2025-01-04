@@ -29,6 +29,36 @@ UCurveTable* UAuraBlueprintLibrary::GetDamageCalculationCoefficients(const UObje
 	return IsValid(AuraGameModeBase) ? AuraGameModeBase->DamageCalculationCoefficients : nullptr;
 }
 
+int32 UAuraBlueprintLibrary::GetLevelUpXpRequirement(const UObject* WorldContextObject, int32 Level)
+{
+	if (const AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject)))
+	{
+		const int32 RetValue = AuraGameModeBase->XPRequirementCurve.GetValueAtLevel(Level); 
+		return RetValue;
+	}
+	return 0;
+}
+
+int32 UAuraBlueprintLibrary::GetLevelUpAttributePointsAward(const UObject* WorldContextObject, int32 Level)
+{
+	if (const AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject)))
+	{
+		const int32 RetValue = AuraGameModeBase->AttributePointsAwardCurve.GetValueAtLevel(Level); 
+		return RetValue;
+	}
+	return 0;
+}
+
+int32 UAuraBlueprintLibrary::GetLevelUpSpellPointsAward(const UObject* WorldContextObject, int32 Level)
+{
+	if (const AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject)))
+	{
+		const int32 RetValue = AuraGameModeBase->SpellPointsAwardCurve.GetValueAtLevel(Level); 
+		return RetValue;
+	}
+	return 0;
+}
+
 void UAuraBlueprintLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
 {
 	const AActor* SourceAvatarActor = Params.SourceAbilitySystemComponent->GetAvatarActor();
