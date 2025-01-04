@@ -52,6 +52,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 
 	/* Meta Attributes */
 	GameplayTags.Attributes_Meta_Level = Manager.AddNativeGameplayTag(TEXT("Attributes.Meta.Level"), TEXT("Indicates the character's current progression level"));
+	GameplayTags.Attributes_Meta_XP = Manager.AddNativeGameplayTag(TEXT("Attributes.Meta.XP"), TEXT("Amount of experience points a player has accumulated for leveling up"));
 
 	/* Damage Types */
 	GameplayTags.Damage_Type_Fire = Manager.AddNativeGameplayTag(TEXT("Damage.Type.Fire"), TEXT("Fire Damage Type"));

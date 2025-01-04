@@ -202,6 +202,13 @@ public:
 	UFUNCTION()
 	void OnRep_Level(const FGameplayAttributeData& OldLevel) const;
 	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_XP, Category="Aura|Meta Attributes")
+	FGameplayAttributeData XP;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, XP);
+
+	UFUNCTION()
+	void OnRep_XP(const FGameplayAttributeData& OldXP) const;
+
 private:
 	void HandleIncomingDamage(UObject* SourceObject, const FGameplayEffectContextHandle& EffectContextHandle);
 };

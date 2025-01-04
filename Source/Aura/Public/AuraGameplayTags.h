@@ -73,6 +73,7 @@ struct FAuraGameplayTags
 	// ============================================================================
 
 	FGameplayTag Attributes_Meta_Level;
+	FGameplayTag Attributes_Meta_XP;
 
 	// ============================================================================
 	// Damage Types

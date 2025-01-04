@@ -74,6 +74,7 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 
 	/* Meta Attributes */
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Level, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, XP, COND_None, REPNOTIFY_Always);
 }
 
 void UAuraAttributeSet::PrintDebug()
@@ -267,3 +268,7 @@ void UAuraAttributeSet::OnRep_Level(const FGameplayAttributeData& OldLevel) cons
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Level, OldLevel);
 }
 
+void UAuraAttributeSet::OnRep_XP(const FGameplayAttributeData& OldXP) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, XP, OldXP);	
+}
