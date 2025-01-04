@@ -109,7 +109,7 @@ void AAuraCharacter::IndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCr
 int32 AAuraCharacter::GetLevelUpXpRequirement(int32 Level) const
 {
 	const AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
-	return AuraPS->GetLevelUpXpRequirement(Level);
+	return AuraPS->GetLevelUpXPRequirement(Level);
 }
 
 int32 AAuraCharacter::GetLevelUpAttributePointsAward(int32 Level) const

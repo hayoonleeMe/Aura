@@ -53,7 +53,7 @@ public:
 	void AddToSpellPoints(int32 InValue);
 
 	// Level에 도달하는 데 필요한 XP 값을 반환
-	int32 GetLevelUpXpRequirement(int32 Level) const;
+	int32 GetLevelUpXPRequirement(int32 Level) const;
 	
 	// Level에 도달했을 때 얻을 수 있는 Attribute Points 값을 반환
 	int32 GetLevelUpAttributePointsAward(int32 Level) const;

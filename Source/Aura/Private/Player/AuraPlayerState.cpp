@@ -53,7 +53,7 @@ void AAuraPlayerState::AddToSpellPoints(int32 InValue)
 	OnSpellPointsChangedDelegate.Broadcast(SpellPoints);
 }
 
-int32 AAuraPlayerState::GetLevelUpXpRequirement(int32 Level) const
+int32 AAuraPlayerState::GetLevelUpXPRequirement(int32 Level) const
 {
 	const int32 RetValue = XPRequirementCurve.GetValueAtLevel(Level); 
 	return RetValue;
