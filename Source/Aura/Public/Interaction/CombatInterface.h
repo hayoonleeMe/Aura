@@ -77,4 +77,7 @@ public:
 	virtual TWeakObjectPtr<AActor> GetCombatTarget() const { return nullptr; }
 
 	virtual FOnCharacterDeadSignature* GetOnCharacterDeadDelegate() { return nullptr; }
+
+	// 해당 Enemy를 죽일 때 얻을 수 있는 XP 값을 반환 
+	virtual int32 GetXPReward() { return 0; }
 };

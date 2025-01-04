@@ -188,6 +188,13 @@ void AAuraEnemy::Die()
 	}
 }
 
+int32 AAuraEnemy::GetXPReward()
+{
+	checkf(XPRewardCurve.IsValid(), TEXT("Need to set XPRewardCurve"));
+	const int32 XPReward = XPRewardCurve.GetValueAtLevel(UAuraBlueprintLibrary::GetLevelAttributeValue(this));
+	return XPReward;
+}
+
 void AAuraEnemy::HighlightActor()
 {
 	GetMesh()->SetRenderCustomDepth(true);
