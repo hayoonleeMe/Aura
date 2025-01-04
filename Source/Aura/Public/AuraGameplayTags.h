@@ -144,6 +144,7 @@ struct FAuraGameplayTags
 	FGameplayTag GameplayCue_FireBoltImpact;
 	FGameplayTag GameplayCue_EnemyMeleeImpact;
 	FGameplayTag GameplayCue_RockImpact;
+	FGameplayTag GameplayCue_LevelUp;
 	
 private:
 	static FAuraGameplayTags GameplayTags;
