@@ -64,6 +64,13 @@ public:
 	FOnActivatableAbilitiesReplicatedSignature OnActivatableAbilitiesReplicatedDelegate;
 
 	// ============================================================================
+	// Combat
+	// ============================================================================
+
+	// XP Attribute에 XPAmount를 더하는 GameplayEffect를 생성해 적용한다.
+	void ApplyXPGainEffect(int32 XPAmount);
+
+	// ============================================================================
 	// Helper
 	// ============================================================================
 

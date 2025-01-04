@@ -233,6 +233,25 @@ void UAuraAbilitySystemComponent::ClientBroadcastEquippedSpellChange_Implementat
 	OnEquippedSpellAbilityChangedDelegate.Broadcast(bEquipped, InputTag, SpellTag);
 }
 
+void UAuraAbilitySystemComponent::ApplyXPGainEffect(int32 XPAmount)
+{
+	const FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext();
+
+	// Make Instant Additive GameplayEffect
+	if (UGameplayEffect* EffectDef = NewObject<UGameplayEffect>(GetTransientPackage(), TEXT("XPGainEffect")))
+	{
+		FGameplayModifierInfo ModifierInfo;
+		ModifierInfo.Attribute = UAuraAttributeSet::GetXPAttribute();
+		ModifierInfo.ModifierOp = EGameplayModOp::Additive;
+		ModifierInfo.ModifierMagnitude = FScalableFloat(XPAmount);
+		EffectDef->Modifiers.Add(ModifierInfo);
+		EffectDef->DurationPolicy = EGameplayEffectDurationType::Instant;
+		
+		const FGameplayEffectSpec EffectSpec(EffectDef, EffectContextHandle, 1.f);
+		ApplyGameplayEffectSpecToSelf(EffectSpec);		
+	}
+}
+
 FGameplayAbilitySpec* UAuraAbilitySystemComponent::GetSpellSpecForSpellTag(const FGameplayTag& SpellTag)
 {
 	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())

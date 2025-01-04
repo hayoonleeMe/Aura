@@ -5,6 +5,7 @@
 
 #include "AuraGameplayTags.h"
 #include "GameplayEffectExtension.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraGameplayEffectContext.h"
 #include "Aura/Aura.h"
 #include "Interaction/CombatInterface.h"
@@ -119,26 +120,40 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	}
 	else if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
-		HandleIncomingDamage(Data.EffectSpec.GetContext().GetSourceObject(), Data.EffectSpec.GetEffectContext());
+		HandleIncomingDamage(Data.EffectSpec);
 	}
 }
 
-void UAuraAttributeSet::HandleIncomingDamage(UObject* SourceObject, const FGameplayEffectContextHandle& EffectContextHandle)
+void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSpec)
 {
 	const float LocalIncomingDamage = GetIncomingDamage();
 	if (LocalIncomingDamage > 0.f)
 	{
+		AActor* AvatarActor = GetActorInfo() && GetActorInfo()->AvatarActor.IsValid() ? GetActorInfo()->AvatarActor.Get() : nullptr;
+
+		const FAuraGameplayEffectContext* AuraEffectContext = FAuraGameplayEffectContext::ExtractEffectContext(EffectSpec.GetEffectContext());
+        check(AuraEffectContext);
+
+		// Update Health
 		const float NewHealth = FMath::Clamp(GetHealth() - LocalIncomingDamage, 0.f, GetMaxHealth());
 		SetHealth(NewHealth);
 
 		if (NewHealth <= 0.f)
 		{
 			// Dead
-			if (GetActorInfo() && GetActorInfo()->AvatarActor.IsValid())
+			if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(AvatarActor))
 			{
-				if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetActorInfo()->AvatarActor.Get()))
+				CombatInterface->Die();
+
+				// if player kill enemy
+				if (CombatInterface->GetRoleTag().MatchesTagExact(FAuraGameplayTags::Get().Role_Enemy))
 				{
-					CombatInterface->Die();
+					// Enemy Dead, Reward XP to Player
+					const int32 XPReward = CombatInterface->GetXPReward();
+					if (UAuraAbilitySystemComponent* InstigatorASC = Cast<UAuraAbilitySystemComponent>(AuraEffectContext->GetInstigatorAbilitySystemComponent()))
+					{
+						InstigatorASC->ApplyXPGainEffect(XPReward);
+					}
 				}
 			}
 		}
@@ -150,14 +165,11 @@ void UAuraAttributeSet::HandleIncomingDamage(UObject* SourceObject, const FGamep
 		}
 
 		// Damage Indicator 표시
-		if (GetActorInfo() && GetActorInfo()->AvatarActor.IsValid())
+		if (AvatarActor)
 		{
-			if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(SourceObject))
+			if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(AuraEffectContext->GetEffectCauser()))
 			{
-				const FAuraGameplayEffectContext* AuraEffectContext = FAuraGameplayEffectContext::ExtractEffectContext(EffectContextHandle);
-				check(AuraEffectContext);
-				
-				PlayerInterface->IndicateDamage(LocalIncomingDamage, AuraEffectContext->IsBlockedHit(), AuraEffectContext->IsCriticalHit(), GetActorInfo()->AvatarActor->GetActorLocation());
+				PlayerInterface->IndicateDamage(LocalIncomingDamage, AuraEffectContext->IsBlockedHit(), AuraEffectContext->IsCriticalHit(), AvatarActor->GetActorLocation());
 			}
 		}
 	}

@@ -210,5 +210,5 @@ public:
 	void OnRep_XP(const FGameplayAttributeData& OldXP) const;
 
 private:
-	void HandleIncomingDamage(UObject* SourceObject, const FGameplayEffectContextHandle& EffectContextHandle);
+	void HandleIncomingDamage(const FGameplayEffectSpec& EffectSpec);
 };
