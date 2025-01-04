@@ -50,6 +50,10 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Attributes_Vital_Health = Manager.AddNativeGameplayTag(TEXT("Attributes.Vital.Health"), TEXT("Amount of damage a player can take before death"));
 	GameplayTags.Attributes_Vital_Mana = Manager.AddNativeGameplayTag(TEXT("Attributes.Vital.Mana"), TEXT("Amount of energy a player can use to cast spells"));
 
+	/* Meta Attributes */
+	GameplayTags.Attributes_Meta_Level = Manager.AddNativeGameplayTag(TEXT("Attributes.Meta.Level"), TEXT("Indicates the character's current progression level"));
+	GameplayTags.Attributes_Meta_XP = Manager.AddNativeGameplayTag(TEXT("Attributes.Meta.XP"), TEXT("Amount of experience points a player has accumulated for leveling up"));
+
 	/* Damage Types */
 	GameplayTags.Damage_Type_Fire = Manager.AddNativeGameplayTag(TEXT("Damage.Type.Fire"), TEXT("Fire Damage Type"));
 	GameplayTags.DamageTypeToResistanceMap.Add(GameplayTags.Damage_Type_Fire, GameplayTags.Attributes_Secondary_FireResistance);
@@ -97,4 +101,5 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.GameplayCue_FireBoltImpact = Manager.AddNativeGameplayTag(TEXT("GameplayCue.FireBoltImpact"), TEXT("FireBoltImpact GameplayCue Tag"));
 	GameplayTags.GameplayCue_EnemyMeleeImpact = Manager.AddNativeGameplayTag(TEXT("GameplayCue.EnemyMeleeImpact"), TEXT("EnemyMeleeImpact GameplayCue Tag"));
 	GameplayTags.GameplayCue_RockImpact = Manager.AddNativeGameplayTag(TEXT("GameplayCue.RockImpact"), TEXT("RockImpact GameplayCue Tag"));
+	GameplayTags.GameplayCue_LevelUp = Manager.AddNativeGameplayTag(TEXT("GameplayCue.LevelUp"), TEXT("LevelUp GameplayCue Tag"));
 }

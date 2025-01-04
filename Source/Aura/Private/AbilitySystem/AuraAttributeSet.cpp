@@ -5,6 +5,7 @@
 
 #include "AuraGameplayTags.h"
 #include "GameplayEffectExtension.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraGameplayEffectContext.h"
 #include "Aura/Aura.h"
 #include "Interaction/CombatInterface.h"
@@ -71,6 +72,10 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	/* Vital Attributes */
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Health, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Mana, COND_None, REPNOTIFY_Always);
+
+	/* Meta Attributes */
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Level, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, XP, COND_None, REPNOTIFY_Always);
 }
 
 void UAuraAttributeSet::PrintDebug()
@@ -115,26 +120,44 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	}
 	else if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
-		HandleIncomingDamage(Data.EffectSpec.GetContext().GetSourceObject(), Data.EffectSpec.GetEffectContext());
+		HandleIncomingDamage(Data.EffectSpec);
+	}
+	else if (Data.EvaluatedData.Attribute == GetXPAttribute())
+	{
+		HandlePlayerXPGain();
 	}
 }
 
-void UAuraAttributeSet::HandleIncomingDamage(UObject* SourceObject, const FGameplayEffectContextHandle& EffectContextHandle)
+void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSpec)
 {
 	const float LocalIncomingDamage = GetIncomingDamage();
 	if (LocalIncomingDamage > 0.f)
 	{
+		AActor* AvatarActor = GetActorInfo() && GetActorInfo()->AvatarActor.IsValid() ? GetActorInfo()->AvatarActor.Get() : nullptr;
+
+		const FAuraGameplayEffectContext* AuraEffectContext = FAuraGameplayEffectContext::ExtractEffectContext(EffectSpec.GetEffectContext());
+        check(AuraEffectContext);
+
+		// Update Health
 		const float NewHealth = FMath::Clamp(GetHealth() - LocalIncomingDamage, 0.f, GetMaxHealth());
 		SetHealth(NewHealth);
 
 		if (NewHealth <= 0.f)
 		{
 			// Dead
-			if (GetActorInfo() && GetActorInfo()->AvatarActor.IsValid())
+			if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(AvatarActor))
 			{
-				if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetActorInfo()->AvatarActor.Get()))
+				CombatInterface->Die();
+
+				// if player kill enemy
+				if (CombatInterface->GetRoleTag().MatchesTagExact(FAuraGameplayTags::Get().Role_Enemy))
 				{
-					CombatInterface->Die();
+					// Enemy Dead, Reward XP to Player
+					const int32 XPReward = CombatInterface->GetXPReward();
+					if (UAuraAbilitySystemComponent* InstigatorASC = Cast<UAuraAbilitySystemComponent>(AuraEffectContext->GetInstigatorAbilitySystemComponent()))
+					{
+						InstigatorASC->ApplyXPGainEffect(XPReward);
+					}
 				}
 			}
 		}
@@ -146,17 +169,59 @@ void UAuraAttributeSet::HandleIncomingDamage(UObject* SourceObject, const FGamep
 		}
 
 		// Damage Indicator 표시
-		if (GetActorInfo() && GetActorInfo()->AvatarActor.IsValid())
+		if (AvatarActor)
 		{
-			if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(SourceObject))
+			if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(AuraEffectContext->GetEffectCauser()))
 			{
-				const FAuraGameplayEffectContext* AuraEffectContext = FAuraGameplayEffectContext::ExtractEffectContext(EffectContextHandle);
-				check(AuraEffectContext);
-				
-				PlayerInterface->IndicateDamage(LocalIncomingDamage, AuraEffectContext->IsBlockedHit(), AuraEffectContext->IsCriticalHit(), GetActorInfo()->AvatarActor->GetActorLocation());
+				PlayerInterface->IndicateDamage(LocalIncomingDamage, AuraEffectContext->IsBlockedHit(), AuraEffectContext->IsCriticalHit(), AvatarActor->GetActorLocation());
 			}
 		}
 	}
+}
+
+void UAuraAttributeSet::HandlePlayerXPGain()
+{
+	AActor* AvatarActor = GetActorInfo() && GetActorInfo()->AvatarActor.IsValid() ? GetActorInfo()->AvatarActor.Get() : nullptr;
+	IPlayerInterface* PlayerInterface = CastChecked<IPlayerInterface>(AvatarActor);
+
+	int32 LocalXP = GetXP();
+	while (LocalXP)
+	{
+		const int32 NextPlayerLevel = GetLevel() + 1;
+		const int32 XPRequirement = PlayerInterface->GetLevelUpXpRequirement(NextPlayerLevel);
+		
+		// LevelUp
+		if (LocalXP >= XPRequirement)
+		{
+			LocalXP -= XPRequirement;
+			
+			// Add Attribute Points, Spell Points
+			const int32 AttributePointsAward = PlayerInterface->GetLevelUpAttributePointsAward(NextPlayerLevel);
+			PlayerInterface->AddToAttributePoints(AttributePointsAward);
+			const int32 SpellPointsAward = PlayerInterface->GetLevelUpSpellPointsAward(NextPlayerLevel);
+			PlayerInterface->AddToSpellPoints(SpellPointsAward);
+
+			// Increment Level, will calculate new MaxHealth, MaxMana value (by MMC_MaxHealth, MMC_MaxMana)
+			SetLevel(NextPlayerLevel);
+
+			// fill Health, Mana
+			SetHealth(GetMaxHealth());
+			SetMana(GetMaxMana());
+
+			// 플레이어 기기에서 NonReplicated LevelUp Effect GameplayCue 실행
+			if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetOwningAbilitySystemComponent()))
+			{
+				AuraASC->ClientExecuteGameplayCue(FAuraGameplayTags::Get().GameplayCue_LevelUp);
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	// Update Excess XP
+	SetXP(LocalXP);
 }
 
 void UAuraAttributeSet::OnRep_Strength(const FGameplayAttributeData& OldStrength) const
@@ -257,4 +322,14 @@ void UAuraAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) co
 void UAuraAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldMana) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Mana, OldMana);
+}
+
+void UAuraAttributeSet::OnRep_Level(const FGameplayAttributeData& OldLevel) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Level, OldLevel);
+}
+
+void UAuraAttributeSet::OnRep_XP(const FGameplayAttributeData& OldXP) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, XP, OldXP);	
 }

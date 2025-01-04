@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ScalableFloat.h"
 #include "Character/BaseCharacter.h"
 #include "Interaction/TargetInterface.h"
 #include "Types/EnemyClassType.h"
@@ -37,11 +38,11 @@ public:
 	FOnAttributeChangedSignature OnMaxHealthChangedDelegate;
 	
 	/* Begin CombatInterface */
-	virtual int32 GetCharacterLevel() override { return Level; }
 	virtual void SetCombatTarget(AActor* InCombatTarget) override { CombatTarget = InCombatTarget; }
 	virtual TWeakObjectPtr<AActor> GetCombatTarget() const override { return CombatTarget; }
 	virtual void GetAttackCheckRange(float& OutRadius, float& OutHalfHeight) const override;
 	virtual void Die() override;
+	virtual int32 GetXPReward() override;
 	/* End CombatInterface */
 
 	/* Begin TargetInterface */
@@ -59,9 +60,6 @@ protected:
 	// ============================================================================
 	// Combat
 	// ============================================================================
-
-	UPROPERTY(EditAnywhere, Category="Aura|Combat")
-	int32 Level;
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
 	EEnemyClassType EnemyClassType;
@@ -133,4 +131,12 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<AAuraAIController> AuraAIController;
+
+	// ============================================================================
+	// Reward
+	// ============================================================================
+
+	// 해당 Enemy를 죽일 때 플레이어가 얻는 XP Reward
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Reward")
+	FScalableFloat XPRewardCurve;
 };

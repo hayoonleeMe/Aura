@@ -25,18 +25,19 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 
-	/* Begin CombatInterface */
-	virtual int32 GetCharacterLevel() override;
-	/* End CombatInterface */
-
 	/* Begin PlayerInterface */
 	virtual int32 GetAttributePoints() const override;
+	virtual void AddToAttributePoints(int32 Points) override;
 	virtual void IncrementAttributePoints() override;
 	virtual void DecrementAttributePoints() override;
 	virtual int32 GetSpellPoints() const override;
+	virtual void AddToSpellPoints(int32 Points) override;
 	virtual void IncrementSpellPoints() override;
 	virtual void DecrementSpellPoints() override;
 	virtual void IndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const override;
+	virtual int32 GetLevelUpXpRequirement(int32 Level) const override;
+	virtual int32 GetLevelUpAttributePointsAward(int32 Level) const override;
+	virtual int32 GetLevelUpSpellPointsAward(int32 Level) const override;
 	/* End PlayerInterface */
 	
 protected:
@@ -60,6 +61,6 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
 	
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UCameraComponent> CameraComponent;
 };

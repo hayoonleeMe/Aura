@@ -19,7 +19,6 @@ AAuraPlayerState::AAuraPlayerState()
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>(TEXT("Attribute Set"));
 
 	/* Combat */
-	Level = 1;
 	AttributePoints = 0;
 	SpellPoints = 0;
 }
@@ -28,13 +27,8 @@ void AAuraPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(AAuraPlayerState, Level);
 	DOREPLIFETIME(AAuraPlayerState, AttributePoints);
 	DOREPLIFETIME(AAuraPlayerState, SpellPoints);
-}
-
-void AAuraPlayerState::OnRep_Level(int32 OldLevel)
-{
 }
 
 void AAuraPlayerState::OnRep_AttributePoints() const
@@ -57,4 +51,22 @@ void AAuraPlayerState::AddToSpellPoints(int32 InValue)
 {
 	SpellPoints += InValue;
 	OnSpellPointsChangedDelegate.Broadcast(SpellPoints);
+}
+
+int32 AAuraPlayerState::GetLevelUpXPRequirement(int32 Level) const
+{
+	const int32 RetValue = XPRequirementCurve.GetValueAtLevel(Level); 
+	return RetValue;
+}
+
+int32 AAuraPlayerState::GetLevelUpAttributePointsAward(int32 Level) const
+{
+	const int32 RetValue = AttributePointsAwardCurve.GetValueAtLevel(Level); 
+	return RetValue;
+}
+
+int32 AAuraPlayerState::GetLevelUpSpellPointsAward(int32 Level) const
+{
+	const int32 RetValue = SpellPointsAwardCurve.GetValueAtLevel(Level); 
+	return RetValue;
 }

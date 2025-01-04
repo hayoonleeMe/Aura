@@ -69,6 +69,13 @@ struct FAuraGameplayTags
 	FGameplayTag Attributes_Vital_Mana;
 
 	// ============================================================================
+	// Meta Attributes
+	// ============================================================================
+
+	FGameplayTag Attributes_Meta_Level;
+	FGameplayTag Attributes_Meta_XP;
+
+	// ============================================================================
 	// Damage Types
 	// ============================================================================
 
@@ -137,6 +144,7 @@ struct FAuraGameplayTags
 	FGameplayTag GameplayCue_FireBoltImpact;
 	FGameplayTag GameplayCue_EnemyMeleeImpact;
 	FGameplayTag GameplayCue_RockImpact;
+	FGameplayTag GameplayCue_LevelUp;
 	
 private:
 	static FAuraGameplayTags GameplayTags;

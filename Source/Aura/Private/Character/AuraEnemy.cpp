@@ -29,7 +29,6 @@ AAuraEnemy::AAuraEnemy()
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>(TEXT("Attribute Set"));
 
 	/* Combat */
-	Level = 1;
 	AttackEffectiveRange = 120.f;
 	AttackRangeRadius = 10.f;
 	AttackRangeHalfHeight = 30.f;
@@ -102,6 +101,7 @@ void AAuraEnemy::InitializeAttributes()
 	// EnemyClassConfig에 정의된 데이터에 따라, EnemyClassType에 맞는 GameplayEffect로 Attributes를 초기화
 	if (HasAuthority())
 	{
+		const int32 Level = UAuraBlueprintLibrary::GetLevelAttributeValue(this);
 		if (const UEnemyClassConfig* EnemyClassConfig = UAuraBlueprintLibrary::GetEnemyClassConfig(this))
 		{
 			if (const FEnemyClassInfo* EnemyClassInfo = EnemyClassConfig->GetInfoByType(EnemyClassType))
@@ -186,6 +186,13 @@ void AAuraEnemy::Die()
 	{
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("Dead"), bDead);
 	}
+}
+
+int32 AAuraEnemy::GetXPReward()
+{
+	checkf(XPRewardCurve.IsValid(), TEXT("Need to set XPRewardCurve"));
+	const int32 XPReward = XPRewardCurve.GetValueAtLevel(UAuraBlueprintLibrary::GetLevelAttributeValue(this));
+	return XPReward;
 }
 
 void AAuraEnemy::HighlightActor()

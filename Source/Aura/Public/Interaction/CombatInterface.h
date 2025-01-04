@@ -43,9 +43,6 @@ class AURA_API ICombatInterface
 	GENERATED_BODY()
 
 public:
-	// Character Level을 반환
-	virtual int32 GetCharacterLevel() { return 0; }
-
 	// Character의 RoleTag 반환
 	// Role.Player, Role.Enemy
 	virtual FGameplayTag GetRoleTag() const { return FGameplayTag(); }
@@ -80,4 +77,7 @@ public:
 	virtual TWeakObjectPtr<AActor> GetCombatTarget() const { return nullptr; }
 
 	virtual FOnCharacterDeadSignature* GetOnCharacterDeadDelegate() { return nullptr; }
+
+	// 해당 Enemy를 죽일 때 얻을 수 있는 XP 값을 반환 
+	virtual int32 GetXPReward() { return 0; }
 };

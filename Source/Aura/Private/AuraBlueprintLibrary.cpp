@@ -6,12 +6,15 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayEffectTypes.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/AuraAttributeSet.h"
 #include "Game/AuraGameModeBase.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerController.h"
+#include "Player/AuraPlayerState.h"
 #include "Types/DamageEffectParams.h"
 #include "UI/HUD/AuraHUD.h"
 
@@ -29,11 +32,7 @@ UCurveTable* UAuraBlueprintLibrary::GetDamageCalculationCoefficients(const UObje
 
 void UAuraBlueprintLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
 {
-	const AActor* SourceAvatarActor = Params.SourceAbilitySystemComponent->GetAvatarActor();
-	FGameplayEffectContextHandle EffectContextHandle = Params.SourceAbilitySystemComponent->MakeEffectContext();
-	EffectContextHandle.AddSourceObject(SourceAvatarActor);
-	
-	const FGameplayEffectSpecHandle EffectSpecHandle = Params.SourceAbilitySystemComponent->MakeOutgoingSpec(Params.DamageEffectClass, Params.AbilityLevel, EffectContextHandle);
+	const FGameplayEffectSpecHandle EffectSpecHandle = Params.SourceAbilitySystemComponent->MakeOutgoingSpec(Params.DamageEffectClass, Params.AbilityLevel, Params.SourceAbilitySystemComponent->MakeEffectContext());
 	// DamageTypeTag에 BaseDamage를 SetByCaller로 등록한다.
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, Params.DamageTypeTag, Params.BaseDamage);
 	
@@ -98,6 +97,30 @@ void UAuraBlueprintLibrary::SetUIInputMode(const UObject* WorldContextObject)
 			AuraPC->SetUIInputMode();
 		}
 	}
+}
+
+int32 UAuraBlueprintLibrary::GetLevelAttributeValue(AActor* Actor)
+{
+	if (const UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Actor)))
+	{
+		if (const UAuraAttributeSet* AuraAS = Cast<UAuraAttributeSet>(AuraASC->GetAttributeSet(UAuraAttributeSet::StaticClass())))
+		{
+			return AuraAS->GetLevel();
+		}
+	}
+	return 0;
+}
+
+int32 UAuraBlueprintLibrary::GetLevelUpXPRequirement(const APlayerController* OwningController, int32 Level)
+{
+	if (OwningController)
+	{
+		if (const AAuraPlayerState* AuraPS = OwningController->GetPlayerState<AAuraPlayerState>())
+		{
+			return AuraPS->GetLevelUpXPRequirement(Level);
+		}
+	}
+	return 0;
 }
 
 UOverlayWidgetController* UAuraBlueprintLibrary::GetOverlayWidgetController(const APlayerController* OwningController)

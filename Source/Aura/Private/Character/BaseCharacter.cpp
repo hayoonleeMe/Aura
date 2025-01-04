@@ -99,9 +99,7 @@ void ABaseCharacter::ApplyEffectSpecToSelf(const TSubclassOf<UGameplayEffect>& E
 {
 	if (EffectClass)
 	{
-		FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
-		ContextHandle.AddSourceObject(this);
-		const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(EffectClass, InLevel, ContextHandle);
+		const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(EffectClass, InLevel, GetAbilitySystemComponent()->MakeEffectContext());
 		GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data);
 	}
 }

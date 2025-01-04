@@ -7,7 +7,6 @@
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/AuraGameplayEffectContext.h"
-#include "Interaction/CombatInterface.h"
 
 // 구조체로 Capture할 Attribute 관리 및 설정
 struct AuraDamageStatics
@@ -98,12 +97,9 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		return;
 	}
 
-	ICombatInterface* SourceCombatInterface = Cast<ICombatInterface>(SourceASC->GetAvatarActor());
-	ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(TargetASC->GetAvatarActor());
-	if (!SourceCombatInterface || !TargetCombatInterface)
-	{
-		return;
-	}
+	// Character Level
+	const int32 SourceCharacterLevel = UAuraBlueprintLibrary::GetLevelAttributeValue(SourceASC->GetAvatarActor());
+	const int32 TargetCharacterLevel = UAuraBlueprintLibrary::GetLevelAttributeValue(TargetASC->GetAvatarActor());
 
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 
@@ -117,10 +113,6 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// Gameplay Effect Context 
 	FAuraGameplayEffectContext* AuraEffectContext = FAuraGameplayEffectContext::ExtractEffectContext(Spec.GetEffectContext());
     check(AuraEffectContext);
-
-	// Player Level
-	const int32 SourceCharacterLevel = SourceCombatInterface->GetCharacterLevel();
-	const int32 TargetCharacterLevel = TargetCombatInterface->GetCharacterLevel();
 
 	// Get Damage SetByCaller Magnitude
 	float Damage = 0.f;

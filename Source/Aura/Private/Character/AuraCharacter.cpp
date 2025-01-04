@@ -50,17 +50,16 @@ void AAuraCharacter::OnRep_PlayerState()
 	InitAbilityActorInfo();
 }
 
-int32 AAuraCharacter::GetCharacterLevel()
-{
-	const AAuraPlayerState* AuraPS = GetPlayerState<AAuraPlayerState>();
-	check(AuraPS);
-	return AuraPS->GetCharacterLevel();
-}
-
 int32 AAuraCharacter::GetAttributePoints() const
 {
 	const AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
 	return AuraPS->GetAttributePoints();
+}
+
+void AAuraCharacter::AddToAttributePoints(int32 Points)
+{
+	AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
+	AuraPS->AddToAttributePoints(Points);
 }
 
 void AAuraCharacter::IncrementAttributePoints()
@@ -81,6 +80,12 @@ int32 AAuraCharacter::GetSpellPoints() const
 	return AuraPS->GetSpellPoints();
 }
 
+void AAuraCharacter::AddToSpellPoints(int32 Points)
+{
+	AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
+	AuraPS->AddToSpellPoints(Points);
+}
+
 void AAuraCharacter::IncrementSpellPoints()
 {
 	AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
@@ -99,6 +104,24 @@ void AAuraCharacter::IndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCr
 	{
 		AuraPC->ClientIndicateDamage(Damage, bIsBlockedHit, bIsCriticalHit, TargetLocation);
 	}
+}
+
+int32 AAuraCharacter::GetLevelUpXpRequirement(int32 Level) const
+{
+	const AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
+	return AuraPS->GetLevelUpXPRequirement(Level);
+}
+
+int32 AAuraCharacter::GetLevelUpAttributePointsAward(int32 Level) const
+{
+	const AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
+	return AuraPS->GetLevelUpAttributePointsAward(Level);
+}
+
+int32 AAuraCharacter::GetLevelUpSpellPointsAward(int32 Level) const
+{
+	const AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
+	return AuraPS->GetLevelUpSpellPointsAward(Level);
 }
 
 void AAuraCharacter::InitAbilityActorInfo()

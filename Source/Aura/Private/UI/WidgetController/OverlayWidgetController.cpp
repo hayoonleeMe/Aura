@@ -15,6 +15,8 @@ void UOverlayWidgetController::BroadcastInitialValues()
 	OnMaxHealthChangedDelegate.Broadcast(AuraAS->GetMaxHealth());
 	OnManaChangedDelegate.Broadcast(AuraAS->GetMana());
 	OnMaxManaChangedDelegate.Broadcast(AuraAS->GetMaxMana());
+	OnXPChangedDelegate.Broadcast(AuraAS->GetXP());
+	OnLevelChangedDelegate.Broadcast(AuraAS->GetLevel());
 
 	UpdateStartupSpells();
 }
@@ -40,6 +42,14 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	AuraASC->GetGameplayAttributeValueChangeDelegate(AuraAS->GetMaxManaAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
 	{
 		OnMaxManaChangedDelegate.Broadcast(Data.NewValue);
+	});
+	AuraASC->GetGameplayAttributeValueChangeDelegate(AuraAS->GetXPAttribute()).AddWeakLambda(this, [this](const FOnAttributeChangeData& Data)
+	{
+		OnXPChangedDelegate.Broadcast(Data.NewValue);
+	});
+	AuraASC->GetGameplayAttributeValueChangeDelegate(AuraAS->GetLevelAttribute()).AddWeakLambda(this, [this](const FOnAttributeChangeData& Data)
+	{
+		OnLevelChangedDelegate.Broadcast(Data.NewValue);
 	});
 
 	// Spell의 장착 상황 변경을 전달

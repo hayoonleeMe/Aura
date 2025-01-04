@@ -4,6 +4,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
 #include "AuraGameplayTags.h"
+#include "GameplayCueManager.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "Interaction/PlayerInterface.h"
@@ -231,6 +232,33 @@ void UAuraAbilitySystemComponent::ClientBroadcastSpellChange_Implementation(cons
 void UAuraAbilitySystemComponent::ClientBroadcastEquippedSpellChange_Implementation(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag)
 {
 	OnEquippedSpellAbilityChangedDelegate.Broadcast(bEquipped, InputTag, SpellTag);
+}
+
+void UAuraAbilitySystemComponent::ApplyXPGainEffect(int32 XPAmount)
+{
+	const FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext();
+
+	// Make Instant Additive GameplayEffect
+	if (UGameplayEffect* EffectDef = NewObject<UGameplayEffect>(GetTransientPackage(), TEXT("XPGainEffect")))
+	{
+		FGameplayModifierInfo ModifierInfo;
+		ModifierInfo.Attribute = UAuraAttributeSet::GetXPAttribute();
+		ModifierInfo.ModifierOp = EGameplayModOp::Additive;
+		ModifierInfo.ModifierMagnitude = FScalableFloat(XPAmount);
+		EffectDef->Modifiers.Add(ModifierInfo);
+		EffectDef->DurationPolicy = EGameplayEffectDurationType::Instant;
+		
+		const FGameplayEffectSpec EffectSpec(EffectDef, EffectContextHandle, 1.f);
+		ApplyGameplayEffectSpecToSelf(EffectSpec);		
+	}
+}
+
+void UAuraAbilitySystemComponent::ClientExecuteGameplayCue_Implementation(const FGameplayTag& CueTag)
+{
+	if (GetAvatarActor())
+	{
+		UGameplayCueManager::ExecuteGameplayCue_NonReplicated(GetAvatarActor(), CueTag, FGameplayCueParameters());
+	}
 }
 
 FGameplayAbilitySpec* UAuraAbilitySystemComponent::GetSpellSpecForSpellTag(const FGameplayTag& SpellTag)

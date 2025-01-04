@@ -43,6 +43,12 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="Aura|Overlay")
 	FOnAttributeChangedSignature OnMaxManaChangedDelegate;
 
+	UPROPERTY(BlueprintAssignable, Category="Aura|Overlay")
+	FOnAttributeChangedSignature OnXPChangedDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category="Aura|Overlay")
+	FOnAttributeChangedSignature OnLevelChangedDelegate;
+
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category="Aura|Overlay")
 	FShowMenuWidgetSwitcherSignature ShowMenuWidgetSwitcherDelegate;
 
