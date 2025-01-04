@@ -61,11 +61,7 @@ int32 UAuraBlueprintLibrary::GetLevelUpSpellPointsAward(const UObject* WorldCont
 
 void UAuraBlueprintLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
 {
-	const AActor* SourceAvatarActor = Params.SourceAbilitySystemComponent->GetAvatarActor();
-	FGameplayEffectContextHandle EffectContextHandle = Params.SourceAbilitySystemComponent->MakeEffectContext();
-	EffectContextHandle.AddSourceObject(SourceAvatarActor);
-	
-	const FGameplayEffectSpecHandle EffectSpecHandle = Params.SourceAbilitySystemComponent->MakeOutgoingSpec(Params.DamageEffectClass, Params.AbilityLevel, EffectContextHandle);
+	const FGameplayEffectSpecHandle EffectSpecHandle = Params.SourceAbilitySystemComponent->MakeOutgoingSpec(Params.DamageEffectClass, Params.AbilityLevel, Params.SourceAbilitySystemComponent->MakeEffectContext());
 	// DamageTypeTag에 BaseDamage를 SetByCaller로 등록한다.
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, Params.DamageTypeTag, Params.BaseDamage);
 	
