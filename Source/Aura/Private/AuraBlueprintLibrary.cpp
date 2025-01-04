@@ -14,6 +14,7 @@
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerController.h"
+#include "Player/AuraPlayerState.h"
 #include "Types/DamageEffectParams.h"
 #include "UI/HUD/AuraHUD.h"
 
@@ -105,6 +106,18 @@ int32 UAuraBlueprintLibrary::GetLevelAttributeValue(AActor* Actor)
 		if (const UAuraAttributeSet* AuraAS = Cast<UAuraAttributeSet>(AuraASC->GetAttributeSet(UAuraAttributeSet::StaticClass())))
 		{
 			return AuraAS->GetLevel();
+		}
+	}
+	return 0;
+}
+
+int32 UAuraBlueprintLibrary::GetLevelUpXPRequirement(const APlayerController* OwningController, int32 Level)
+{
+	if (OwningController)
+	{
+		if (const AAuraPlayerState* AuraPS = OwningController->GetPlayerState<AAuraPlayerState>())
+		{
+			return AuraPS->GetLevelUpXPRequirement(Level);
 		}
 	}
 	return 0;

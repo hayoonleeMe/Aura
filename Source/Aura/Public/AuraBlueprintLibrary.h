@@ -60,6 +60,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static int32 GetLevelAttributeValue(AActor* Actor);
 
+	// Level에 도달하는 데 필요한 XP 값을 반환
+	UFUNCTION(BlueprintPure)
+	static int32 GetLevelUpXPRequirement(const APlayerController* OwningController, int32 Level);
+
 	// ============================================================================
 	// UI
 	// ============================================================================
