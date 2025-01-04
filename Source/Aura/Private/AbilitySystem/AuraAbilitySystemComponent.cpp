@@ -4,6 +4,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
 #include "AuraGameplayTags.h"
+#include "GameplayCueManager.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "Interaction/PlayerInterface.h"
@@ -249,6 +250,14 @@ void UAuraAbilitySystemComponent::ApplyXPGainEffect(int32 XPAmount)
 		
 		const FGameplayEffectSpec EffectSpec(EffectDef, EffectContextHandle, 1.f);
 		ApplyGameplayEffectSpecToSelf(EffectSpec);		
+	}
+}
+
+void UAuraAbilitySystemComponent::ClientExecuteGameplayCue_Implementation(const FGameplayTag& CueTag)
+{
+	if (GetAvatarActor())
+	{
+		UGameplayCueManager::ExecuteGameplayCue_NonReplicated(GetAvatarActor(), CueTag, FGameplayCueParameters());
 	}
 }
 

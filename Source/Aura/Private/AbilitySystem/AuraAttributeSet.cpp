@@ -207,6 +207,12 @@ void UAuraAttributeSet::HandlePlayerXPGain()
 			// fill Health, Mana
 			SetHealth(GetMaxHealth());
 			SetMana(GetMaxMana());
+
+			// 플레이어 기기에서 NonReplicated LevelUp Effect GameplayCue 실행
+			if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetOwningAbilitySystemComponent()))
+			{
+				AuraASC->ClientExecuteGameplayCue(FAuraGameplayTags::Get().GameplayCue_LevelUp);
+			}
 		}
 		else
 		{

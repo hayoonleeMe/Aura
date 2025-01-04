@@ -70,6 +70,10 @@ public:
 	// XP Attribute에 XPAmount를 더하는 GameplayEffect를 생성해 적용한다.
 	void ApplyXPGainEffect(int32 XPAmount);
 
+	// NonReplicated GameplayCue를 실행한다.
+	UFUNCTION(Client, Reliable)
+	void ClientExecuteGameplayCue(const FGameplayTag& CueTag);
+
 	// ============================================================================
 	// Helper
 	// ============================================================================
