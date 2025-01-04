@@ -27,6 +27,9 @@ public:
 	
 	// PlayerState의 Attribute Points 반환
 	virtual int32 GetAttributePoints() const { return 0; }
+
+	// PlayerState의 AttributePoints를 Points만큼 증가
+	virtual void AddToAttributePoints(int32 Points) {}
 	
 	// PlayerState의 Attribute Points를 1 증가
 	virtual void IncrementAttributePoints() {}
@@ -41,6 +44,9 @@ public:
 	// PlayerState의 Spell Points 반환
 	virtual int32 GetSpellPoints() const { return 0; }
 
+	// PlayerState의 SpellPoints를 Points만큼 증가
+	virtual void AddToSpellPoints(int32 Points) {}
+
 	// PlayerState의 SpellPoints를 1 증가
 	virtual void IncrementSpellPoints() {}
 
@@ -51,6 +57,7 @@ public:
 	// Combat
 	// ============================================================================
 
+	// Damage Indicator Widget을 표시
 	virtual void IndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const {}
 
 	// AuraPlayerController에서 Caching한 Target HitResult를 반환한다.

@@ -37,11 +37,15 @@ public:
 	void IncrementAttributePoints() { AddToAttributePoints(1); }
 	// AttributePoints를 1 감소
 	void DecrementAttributePoints() { AddToAttributePoints(-1); }
+	// AttributePoints 값을 업데이트하고 델레게이트 Broadcast
+	void AddToAttributePoints(int32 InValue);
 
 	// SpellPoints를 1 증가
 	void IncrementSpellPoints() { AddToSpellPoints(1); }
 	// SpellPoints를 1 감소
 	void DecrementSpellPoints() { AddToSpellPoints(-1); }
+	// SpellPoints 값을 업데이트하고 델레게이트 Broadcast
+	void AddToSpellPoints(int32 InValue);
 
 	FOnStatChangedSignature OnAttributePointsChangedDelegate;
 	FOnStatChangedSignature OnSpellPointsChangedDelegate;
@@ -68,16 +72,10 @@ private:
 	UFUNCTION()
 	void OnRep_AttributePoints() const;
 
-	// AttributePoints 값을 업데이트하고 델레게이트 Broadcast
-	void AddToAttributePoints(int32 InValue);
-
 	// Spell을 Upgrade하는 데 사용하는 Point
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_SpellPoints)
 	int32 SpellPoints;
 
 	UFUNCTION()
 	void OnRep_SpellPoints() const;
-
-	// SpellPoints 값을 업데이트하고 델레게이트 Broadcast
-	void AddToSpellPoints(int32 InValue);
 };

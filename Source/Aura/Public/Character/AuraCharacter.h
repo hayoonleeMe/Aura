@@ -27,9 +27,11 @@ public:
 
 	/* Begin PlayerInterface */
 	virtual int32 GetAttributePoints() const override;
+	virtual void AddToAttributePoints(int32 Points) override;
 	virtual void IncrementAttributePoints() override;
 	virtual void DecrementAttributePoints() override;
 	virtual int32 GetSpellPoints() const override;
+	virtual void AddToSpellPoints(int32 Points) override;
 	virtual void IncrementSpellPoints() override;
 	virtual void DecrementSpellPoints() override;
 	virtual void IndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const override;

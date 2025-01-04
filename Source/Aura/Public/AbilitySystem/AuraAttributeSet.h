@@ -211,4 +211,5 @@ public:
 
 private:
 	void HandleIncomingDamage(const FGameplayEffectSpec& EffectSpec);
+	void HandlePlayerXPGain();
 };

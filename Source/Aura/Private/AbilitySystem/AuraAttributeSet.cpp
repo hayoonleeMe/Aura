@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/AuraAttributeSet.h"
 
+#include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "GameplayEffectExtension.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
@@ -122,6 +123,10 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	{
 		HandleIncomingDamage(Data.EffectSpec);
 	}
+	else if (Data.EvaluatedData.Attribute == GetXPAttribute())
+	{
+		HandlePlayerXPGain();
+	}
 }
 
 void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSpec)
@@ -173,6 +178,45 @@ void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSp
 			}
 		}
 	}
+}
+
+void UAuraAttributeSet::HandlePlayerXPGain()
+{
+	AActor* AvatarActor = GetActorInfo() && GetActorInfo()->AvatarActor.IsValid() ? GetActorInfo()->AvatarActor.Get() : nullptr;
+	IPlayerInterface* PlayerInterface = CastChecked<IPlayerInterface>(AvatarActor);
+
+	int32 LocalXP = GetXP();
+	while (LocalXP)
+	{
+		const int32 NextPlayerLevel = GetLevel() + 1;
+		const int32 XPRequirement = UAuraBlueprintLibrary::GetLevelUpXpRequirement(AvatarActor, NextPlayerLevel);
+		
+		// LevelUp
+		if (LocalXP >= XPRequirement)
+		{
+			LocalXP -= XPRequirement;
+			
+			// Add Attribute Points, Spell Points
+			const int32 AttributePointsAward = UAuraBlueprintLibrary::GetLevelUpAttributePointsAward(AvatarActor, NextPlayerLevel);
+			PlayerInterface->AddToAttributePoints(AttributePointsAward);
+			const int32 SpellPointsAward = UAuraBlueprintLibrary::GetLevelUpSpellPointsAward(AvatarActor, NextPlayerLevel);
+			PlayerInterface->AddToSpellPoints(SpellPointsAward);
+
+			// Increment Level, will calculate new MaxHealth, MaxMana value (by MMC_MaxHealth, MMC_MaxMana)
+			SetLevel(NextPlayerLevel);
+
+			// fill Health, Mana
+			SetHealth(GetMaxHealth());
+			SetMana(GetMaxMana());
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	// Update Excess XP
+	SetXP(LocalXP);
 }
 
 void UAuraAttributeSet::OnRep_Strength(const FGameplayAttributeData& OldStrength) const

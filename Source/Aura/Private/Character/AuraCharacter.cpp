@@ -56,6 +56,12 @@ int32 AAuraCharacter::GetAttributePoints() const
 	return AuraPS->GetAttributePoints();
 }
 
+void AAuraCharacter::AddToAttributePoints(int32 Points)
+{
+	AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
+	AuraPS->AddToAttributePoints(Points);
+}
+
 void AAuraCharacter::IncrementAttributePoints()
 {
 	AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
@@ -72,6 +78,12 @@ int32 AAuraCharacter::GetSpellPoints() const
 {
 	const AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
 	return AuraPS->GetSpellPoints();
+}
+
+void AAuraCharacter::AddToSpellPoints(int32 Points)
+{
+	AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
+	AuraPS->AddToSpellPoints(Points);
 }
 
 void AAuraCharacter::IncrementSpellPoints()
