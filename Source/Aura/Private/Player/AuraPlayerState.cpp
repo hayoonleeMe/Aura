@@ -52,3 +52,21 @@ void AAuraPlayerState::AddToSpellPoints(int32 InValue)
 	SpellPoints += InValue;
 	OnSpellPointsChangedDelegate.Broadcast(SpellPoints);
 }
+
+int32 AAuraPlayerState::GetLevelUpXpRequirement(int32 Level) const
+{
+	const int32 RetValue = XPRequirementCurve.GetValueAtLevel(Level); 
+	return RetValue;
+}
+
+int32 AAuraPlayerState::GetLevelUpAttributePointsAward(int32 Level) const
+{
+	const int32 RetValue = AttributePointsAwardCurve.GetValueAtLevel(Level); 
+	return RetValue;
+}
+
+int32 AAuraPlayerState::GetLevelUpSpellPointsAward(int32 Level) const
+{
+	const int32 RetValue = SpellPointsAwardCurve.GetValueAtLevel(Level); 
+	return RetValue;
+}

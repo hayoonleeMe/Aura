@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "ScalableFloat.h"
 #include "GameFramework/PlayerState.h"
 #include "AuraPlayerState.generated.h"
 
@@ -35,17 +36,30 @@ public:
 
 	// AttributePoints를 1 증가
 	void IncrementAttributePoints() { AddToAttributePoints(1); }
+	
 	// AttributePoints를 1 감소
 	void DecrementAttributePoints() { AddToAttributePoints(-1); }
+	
 	// AttributePoints 값을 업데이트하고 델레게이트 Broadcast
 	void AddToAttributePoints(int32 InValue);
 
 	// SpellPoints를 1 증가
 	void IncrementSpellPoints() { AddToSpellPoints(1); }
+	
 	// SpellPoints를 1 감소
 	void DecrementSpellPoints() { AddToSpellPoints(-1); }
+	
 	// SpellPoints 값을 업데이트하고 델레게이트 Broadcast
 	void AddToSpellPoints(int32 InValue);
+
+	// Level에 도달하는 데 필요한 XP 값을 반환
+	int32 GetLevelUpXpRequirement(int32 Level) const;
+	
+	// Level에 도달했을 때 얻을 수 있는 Attribute Points 값을 반환
+	int32 GetLevelUpAttributePointsAward(int32 Level) const;
+	
+	// Level에 도달했을 때 얻을 수 있는 Spell Points 값을 반환
+	int32 GetLevelUpSpellPointsAward(int32 Level) const;
 
 	FOnStatChangedSignature OnAttributePointsChangedDelegate;
 	FOnStatChangedSignature OnSpellPointsChangedDelegate;
@@ -78,4 +92,16 @@ private:
 
 	UFUNCTION()
 	void OnRep_SpellPoints() const;
+
+	// LevelUp에 필요한 XP 값을 저장하는 Curve
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
+	FScalableFloat XPRequirementCurve;
+
+	// LevelUp 시 얻을 수 있는 Attribute Points 값을 저장하는 Curve
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
+	FScalableFloat AttributePointsAwardCurve;
+
+	// LevelUp 시 얻을 수 있는 Spell Points 값을 저장하는 Curve
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
+	FScalableFloat SpellPointsAwardCurve;
 };

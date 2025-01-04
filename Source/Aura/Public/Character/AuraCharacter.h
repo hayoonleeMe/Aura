@@ -35,6 +35,9 @@ public:
 	virtual void IncrementSpellPoints() override;
 	virtual void DecrementSpellPoints() override;
 	virtual void IndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const override;
+	virtual int32 GetLevelUpXpRequirement(int32 Level) const override;
+	virtual int32 GetLevelUpAttributePointsAward(int32 Level) const override;
+	virtual int32 GetLevelUpSpellPointsAward(int32 Level) const override;
 	/* End PlayerInterface */
 	
 protected:

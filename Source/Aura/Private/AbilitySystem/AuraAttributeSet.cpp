@@ -3,7 +3,6 @@
 
 #include "AbilitySystem/AuraAttributeSet.h"
 
-#include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "GameplayEffectExtension.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
@@ -189,7 +188,7 @@ void UAuraAttributeSet::HandlePlayerXPGain()
 	while (LocalXP)
 	{
 		const int32 NextPlayerLevel = GetLevel() + 1;
-		const int32 XPRequirement = UAuraBlueprintLibrary::GetLevelUpXpRequirement(AvatarActor, NextPlayerLevel);
+		const int32 XPRequirement = PlayerInterface->GetLevelUpXpRequirement(NextPlayerLevel);
 		
 		// LevelUp
 		if (LocalXP >= XPRequirement)
@@ -197,9 +196,9 @@ void UAuraAttributeSet::HandlePlayerXPGain()
 			LocalXP -= XPRequirement;
 			
 			// Add Attribute Points, Spell Points
-			const int32 AttributePointsAward = UAuraBlueprintLibrary::GetLevelUpAttributePointsAward(AvatarActor, NextPlayerLevel);
+			const int32 AttributePointsAward = PlayerInterface->GetLevelUpAttributePointsAward(NextPlayerLevel);
 			PlayerInterface->AddToAttributePoints(AttributePointsAward);
-			const int32 SpellPointsAward = UAuraBlueprintLibrary::GetLevelUpSpellPointsAward(AvatarActor, NextPlayerLevel);
+			const int32 SpellPointsAward = PlayerInterface->GetLevelUpSpellPointsAward(NextPlayerLevel);
 			PlayerInterface->AddToSpellPoints(SpellPointsAward);
 
 			// Increment Level, will calculate new MaxHealth, MaxMana value (by MMC_MaxHealth, MMC_MaxMana)

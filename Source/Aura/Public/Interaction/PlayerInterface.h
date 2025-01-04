@@ -62,4 +62,13 @@ public:
 
 	// AuraPlayerController에서 Caching한 Target HitResult를 반환한다.
 	virtual FHitResult GetTargetHitResult() const { return FHitResult(); }
+
+	// Level에 도달하는 데 필요한 XP 값을 반환
+	virtual int32 GetLevelUpXpRequirement(int32 Level) const { return 0; }
+	
+	// Level에 도달했을 때 얻을 수 있는 Attribute Points 값을 반환
+	virtual int32 GetLevelUpAttributePointsAward(int32 Level) const { return 0; }
+	
+	// Level에 도달했을 때 얻을 수 있는 Spell Points 값을 반환
+	virtual int32 GetLevelUpSpellPointsAward(int32 Level) const { return 0; }
 };
