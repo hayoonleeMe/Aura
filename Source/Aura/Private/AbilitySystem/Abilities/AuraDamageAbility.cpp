@@ -6,7 +6,15 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Types/DamageEffectParams.h"
+
+UAuraDamageAbility::UAuraDamageAbility()
+{
+	bFinishMontage = false;
+	bFinishAttack = false;
+	bShouldClearTargetActor = false;
+}
 
 void UAuraDamageAbility::MakeDamageEffectParams(FDamageEffectParams& OutParams, AActor* TargetActor) const
 {
@@ -24,6 +32,12 @@ void UAuraDamageAbility::MakeDamageEffectParams(FDamageEffectParams& OutParams, 
 float UAuraDamageAbility::GetDamageByLevel(int32 Level) const
 {
 	return DamageCurve.GetValueAtLevel(Level);
+}
+
+void UAuraDamageAbility::InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo)
+{
+	bShouldClearTargetActor = true;
 }
 
 void UAuraDamageAbility::PlayAttackMontage(UAnimMontage* MontageToPlay, bool bEndOnBlendOut)
@@ -69,4 +83,19 @@ void UAuraDamageAbility::TryEndAbility()
 	{
 		K2_EndAbility();
 	}
+}
+
+void UAuraDamageAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+{
+	// Ability 실행 중에 InputReleased()가 호출된 상태, 다음 실행부터 TargetActor를 다시 결정하도록 초기화해준다. 
+	if (bShouldClearTargetActor)
+	{
+		if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo()))
+		{
+			AuraASC->CursorTargetWeakPtr = nullptr;
+		}
+	}
+	
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
