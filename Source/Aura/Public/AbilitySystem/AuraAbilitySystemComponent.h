@@ -25,6 +25,10 @@ class AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
 
 public:
 	virtual void OnRep_ActivateAbilities() override;
+
+	// ============================================================================
+	// Ability
+	// ============================================================================
 	
 	// Abilities의 Ability Class의 AbilitySpec을 생성해 GiveAbility를 수행하는 함수 
 	void AddAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities);
@@ -35,6 +39,10 @@ public:
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 	void AbilityInputTagHeld(const FGameplayTag& InputTag);
+
+	// HitResultUnderMouse의 Hit Actor를 저장하는 Weak Ptr
+	// Damage Ability (Offensive Spell) 에 의해 설정, 초기화
+	TWeakObjectPtr<AActor> CursorTargetWeakPtr;
 
 	// ============================================================================
 	// Attribute

@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AbilityTasks/AbilityTask_TargetDataUnderMouse.h"
 #include "Actor/AuraProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -94,65 +95,96 @@ void UAuraAbility_FireBolt::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	{
 		return;
 	}
-	
-	if (UAbilityTask_TargetDataUnderMouse* AbilityTask = UAbilityTask_TargetDataUnderMouse::CreateTask(this))
-	{
-		AbilityTask->TargetDataUnderMouseSetDelegate.BindUObject(this, &ThisClass::OnTargetDataUnderMouseSet);
-		AbilityTask->ReadyForActivation();
-	}
-}
 
-void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
-{
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
-	if (!CombatInterface)
+	const UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo());
+	if (!AuraASC)
 	{
 		return;
 	}
 
-	// Caching
-	const FHitResult& HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
-	CachedTargetLocation = HitResult.ImpactPoint;
-	CachedTargetActor = HitResult.GetActor();
+	const ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(AuraASC->CursorTargetWeakPtr);
+	if (AuraASC->CursorTargetWeakPtr.IsValid() && TargetCombatInterface && !TargetCombatInterface->IsDead())
+	{
+		// CursorTarget이 유효하면 계속해서 공격 수행
+		ProcessAttack();
+	}
+	else
+	{
+		// 유효하지 않거나 죽었으면 TargetActor 결정
+		if (UAbilityTask_TargetDataUnderMouse* AbilityTask = UAbilityTask_TargetDataUnderMouse::CreateTask(this))
+		{
+			AbilityTask->TargetDataUnderMouseSetDelegate.BindUObject(this, &ThisClass::OnTargetDataUnderMouseSet);
+			AbilityTask->ReadyForActivation();
+		}
+	}
+}
+
+void UAuraAbility_FireBolt::ProcessAttack()
+{
+	const UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo());
+	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
+	if (!AuraASC || !CombatInterface)
+	{
+		return;
+	}
 	
 	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(FAuraGameplayTags::Get().Abilities_Offensive_FireBolt);
 	check(TaggedCombatInfo.AnimMontage);
 	CachedCombatSocketName = TaggedCombatInfo.CombatSocketName;
 
 	// for Anim Montage Motion Warping
-	CombatInterface->SetFacingTarget(CachedTargetLocation);
+	const FVector TargetLocation = AuraASC->CursorTargetWeakPtr.IsValid() ? AuraASC->CursorTargetWeakPtr->GetActorLocation() : CachedImpactPoint;
+	CombatInterface->SetFacingTarget(TargetLocation);
 
 	PlayAttackMontage(TaggedCombatInfo.AnimMontage, true);
 	WaitGameplayEvent(FAuraGameplayTags::Get().Event_Montage_FireBolt);
 }
 
+void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
+{
+	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo());
+	if (!AuraASC)
+	{
+		return;
+	}
+
+	// CursorTarget Caching
+	const FHitResult& HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
+	AuraASC->CursorTargetWeakPtr = HitResult.GetActor() && HitResult.GetActor()->Implements<UCombatInterface>() ? HitResult.GetActor() : nullptr;
+	CachedImpactPoint = HitResult.ImpactPoint;
+	
+	ProcessAttack();
+}
+
 void UAuraAbility_FireBolt::OnEventReceived(FGameplayEventData Payload)
 {
+	SpawnFireBolts();
+	FinishAttack();
+}
+
+void UAuraAbility_FireBolt::SpawnFireBolts() const
+{
+	check(ProjectileClass);
+
+	const UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo());
+	const AActor* AvatarActor = GetAvatarActorFromActorInfo();
+	if (!AuraASC || !IsValid(AvatarActor) || !AvatarActor->HasAuthority())	// Only Spawn in Server
+	{
+		return;
+	}
+	
 	const ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
 	if (!CombatInterface)
 	{
 		return;
 	}
-	
 	const FVector CombatSocketLocation = CombatInterface->GetCombatSocketLocation(CachedCombatSocketName);
-	SpawnFireBolts(CachedTargetLocation, CombatSocketLocation);
-
-	FinishAttack();
-}
-
-void UAuraAbility_FireBolt::SpawnFireBolts(const FVector& TargetLocation, const FVector& CombatSocketLocation) const
-{
-	const AActor* AvatarActor = GetAvatarActorFromActorInfo();
-	if (!IsValid(AvatarActor) || !AvatarActor->HasAuthority())	// Only Spawn in Server
-	{
-		return;
-	}
-	check(ProjectileClass);
 
 	checkf(NumFireBoltsCurve, TEXT("Need to set NumFireBoltsCurve"));
 	const int32 NumFireBolts = NumFireBoltsCurve->GetFloatValue(GetAbilityLevel());
 
 	// Projectile 발사 방향 계산
+	const FVector TargetLocation = AuraASC->CursorTargetWeakPtr.IsValid() ? AuraASC->CursorTargetWeakPtr->GetActorLocation() : CachedImpactPoint;
 	const FVector StartLocation = AvatarActor->GetActorLocation();
 	const FVector CentralDirection = TargetLocation - StartLocation;
 	TArray<FVector> Directions;
@@ -180,16 +212,16 @@ void UAuraAbility_FireBolt::SpawnFireBolts(const FVector& TargetLocation, const 
 			MakeDamageEffectParams(AuraProjectile->DamageEffectParams, nullptr);
 
 			// Cursor로 선택한 TargetActor가 있다면 Homing
-			if (CachedTargetActor.IsValid() && CachedTargetActor->Implements<UCombatInterface>())
+			if (AuraASC->CursorTargetWeakPtr.IsValid())
 			{
 				AuraProjectile->ProjectileMovementComponent->bIsHomingProjectile = true;
 				AuraProjectile->ProjectileMovementComponent->HomingAccelerationMagnitude = FMath::RandRange(MinHomingAcceleration, MaxHomingAcceleration);
-				AuraProjectile->ProjectileMovementComponent->HomingTargetComponent = CachedTargetActor->GetRootComponent();
+				AuraProjectile->ProjectileMovementComponent->HomingTargetComponent = AuraASC->CursorTargetWeakPtr->GetRootComponent();
 
 				// Target이 죽으면 FireBolt Self Destroy 
-				if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(CachedTargetActor))
+				if (ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(AuraASC->CursorTargetWeakPtr))
 				{
-					CombatInterface->GetOnCharacterDeadDelegate()->AddDynamic(AuraProjectile, &AAuraProjectile::OnHomingTargetDead);
+					TargetCombatInterface->GetOnCharacterDeadDelegate()->AddDynamic(AuraProjectile, &AAuraProjectile::OnHomingTargetDead);
 				}
 			}
 			

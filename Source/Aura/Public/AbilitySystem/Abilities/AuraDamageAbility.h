@@ -17,11 +17,15 @@ class AURA_API UAuraDamageAbility : public UAuraGameplayAbility
 	GENERATED_BODY()
 
 public:
+	UAuraDamageAbility();
+	
 	UFUNCTION(BlueprintCallable)
 	void MakeDamageEffectParams(FDamageEffectParams& OutParams, AActor* TargetActor) const;
 
 	// DamageCurve에서 Level에 따른 Damage Value를 반환한다.
 	float GetDamageByLevel(int32 Level) const;
+
+	virtual void InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Damage")
@@ -58,4 +62,9 @@ protected:
 
 	// Montage 재생과 GameplayEvent를 받은 후 공격 작업을 모두 수행해야 EndAbility
 	void TryEndAbility();
+
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
+
+	// UAuraAbilitySystemComponent의 TargetActorWeakPtr를 초기화해야 하는 지를 나타냄 
+	uint8 bShouldClearTargetActor : 1;
 };
