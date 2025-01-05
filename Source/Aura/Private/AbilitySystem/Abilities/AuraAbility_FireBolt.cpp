@@ -101,19 +101,21 @@ void UAuraAbility_FireBolt::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	{
 		return;
 	}
-	
-	if (!AuraASC->CursorTargetWeakPtr.IsValid())
+
+	const ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(AuraASC->CursorTargetWeakPtr);
+	if (AuraASC->CursorTargetWeakPtr.IsValid() && TargetCombatInterface && !TargetCombatInterface->IsDead())
 	{
-		// TargetActor를 결정
+		// CursorTarget이 유효하면 계속해서 공격 수행
+		ProcessAttack();
+	}
+	else
+	{
+		// 유효하지 않거나 죽었으면 TargetActor 결정
 		if (UAbilityTask_TargetDataUnderMouse* AbilityTask = UAbilityTask_TargetDataUnderMouse::CreateTask(this))
 		{
 			AbilityTask->TargetDataUnderMouseSetDelegate.BindUObject(this, &ThisClass::OnTargetDataUnderMouseSet);
 			AbilityTask->ReadyForActivation();
 		}
-	}
-	else
-	{
-		ProcessAttack();
 	}
 }
 
@@ -146,12 +148,9 @@ void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTarg
 		return;
 	}
 
-	// Caching
+	// CursorTarget Caching
 	const FHitResult& HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
-	if (HitResult.GetActor() && HitResult.GetActor()->Implements<UCombatInterface>())
-	{
-		AuraASC->CursorTargetWeakPtr = HitResult.GetActor();
-	}
+	AuraASC->CursorTargetWeakPtr = HitResult.GetActor() && HitResult.GetActor()->Implements<UCombatInterface>() ? HitResult.GetActor() : nullptr;
 	CachedImpactPoint = HitResult.ImpactPoint;
 	
 	ProcessAttack();
@@ -213,7 +212,7 @@ void UAuraAbility_FireBolt::SpawnFireBolts() const
 			MakeDamageEffectParams(AuraProjectile->DamageEffectParams, nullptr);
 
 			// Cursor로 선택한 TargetActor가 있다면 Homing
-			if (AuraASC->CursorTargetWeakPtr.IsValid() && AuraASC->CursorTargetWeakPtr->Implements<UCombatInterface>())
+			if (AuraASC->CursorTargetWeakPtr.IsValid())
 			{
 				AuraProjectile->ProjectileMovementComponent->bIsHomingProjectile = true;
 				AuraProjectile->ProjectileMovementComponent->HomingAccelerationMagnitude = FMath::RandRange(MinHomingAcceleration, MaxHomingAcceleration);
