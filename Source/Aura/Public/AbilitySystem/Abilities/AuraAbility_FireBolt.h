@@ -20,7 +20,11 @@ public:
 	virtual FText GetDescription(int32 Level) const override;
 
 protected:
+	// ActivateAbility -> (UAbilityTask_TargetDataUnderMouse -> OnTargetDataUnderMouseSet) -> ProcessAttack -> OnEventReceived -> SpawnFireBolts
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+
+	// TargetActor가 결정된 이후 계속해서 Attack Logic을 수행한다.
+	void ProcessAttack();
 
 	// UAbilityTask_TargetDataUnderMouse::TargetDataUnderMouseSetDelegate 델레게이트의 Callback 함수
 	void OnTargetDataUnderMouseSet(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
@@ -28,10 +32,7 @@ protected:
 	virtual void OnEventReceived(FGameplayEventData Payload) override;
 
 private:
-	// UAbilityTask_TargetDataUnderMouse 결과 저장
-	FVector CachedTargetLocation;
-	TWeakObjectPtr<AActor> CachedTargetActor;
-
+	FVector CachedImpactPoint;
 	FName CachedCombatSocketName;
 
 	// FireBolt Spell의 레벨에 따른 발사할 FireBolt 개수를 저장하는 Curve
@@ -39,7 +40,7 @@ private:
 	TObjectPtr<UCurveFloat> NumFireBoltsCurve;
 
 	// 여러 개의 FireBolt를 Target을 향해 발사한다.
-	void SpawnFireBolts(const FVector& TargetLocation, const FVector& CombatSocketLocation) const;
+	void SpawnFireBolts() const;
 
 	// FireBolt를 발사하는 방향을 계산할 때 사용할 퍼지는 정도를 나타내는 각도
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
