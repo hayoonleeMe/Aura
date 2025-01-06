@@ -150,7 +150,8 @@ void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTarg
 
 	// CursorTarget Caching
 	const FHitResult& HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
-	AuraASC->CursorTargetWeakPtr = HitResult.GetActor() && HitResult.GetActor()->Implements<UCombatInterface>() ? HitResult.GetActor() : nullptr;
+	const ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(HitResult.GetActor());
+	AuraASC->CursorTargetWeakPtr = TargetCombatInterface && !TargetCombatInterface->IsDead() ? HitResult.GetActor() : nullptr;
 	CachedImpactPoint = HitResult.ImpactPoint;
 	
 	ProcessAttack();
