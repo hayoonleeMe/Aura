@@ -98,6 +98,7 @@ struct FAuraGameplayTags
 	// ============================================================================
 
 	FGameplayTag Event_Montage_FireBolt;
+	FGameplayTag Event_Montage_ChainLightning;
 	FGameplayTag Event_Montage_EnemyAttack;
 	
 	// ============================================================================
@@ -115,6 +116,7 @@ struct FAuraGameplayTags
 
 	FGameplayTag Abilities_Offensive;
 	FGameplayTag Abilities_Offensive_FireBolt;
+	FGameplayTag Abilities_Offensive_ChainLightning;
 
 	// ============================================================================
 	// Abilities.Passive
@@ -145,6 +147,7 @@ struct FAuraGameplayTags
 	FGameplayTag GameplayCue_EnemyMeleeImpact;
 	FGameplayTag GameplayCue_RockImpact;
 	FGameplayTag GameplayCue_LevelUp;
+	FGameplayTag GameplayCue_LightningBeam;
 	
 private:
 	static FAuraGameplayTags GameplayTags;
