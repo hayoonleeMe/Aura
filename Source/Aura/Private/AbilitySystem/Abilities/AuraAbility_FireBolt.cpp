@@ -26,64 +26,38 @@ FText UAuraAbility_FireBolt::GetDescription(int32 Level) const
 
 	const int32 NumFireBolts = GetNumFireBoltsByLevel(Level);
 
-	FString RetStr;
-	if (Level == 1)
+	FString PartStr = TEXT("<Default>Launches a bolt of fire, ");
+	if (Level != 1)
 	{
-		RetStr = FString::Printf(TEXT(
-			// Title
-			"<Title>FIRE BOLT</>\n\n"
-
-			// Level
-			"<Small>Level: </><Level>%d</>\n"
-			// ManaCost
-			"<Small>ManaCost: </><ManaCost>%.1f</>\n"
-			// Cooldown
-			"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
-
-			"<Default>Launches a bolt of fire, "
-			"exploding on impact and dealing: </>"
-
-			// Damage
-			"<Damage>%.1f</><Default> fire damage with"
-			" a chance to burn</>"),
-
-			// Values
-			Level,
-			ManaCost,
-			Cooldown,
-			ScaledDamage
-		);
+		PartStr = FString::Printf(TEXT("<Default>Launches </><Damage>%d </><Default>bolts of fire, "), NumFireBolts);
 	}
-	else
-	{
-		RetStr = FString::Printf(TEXT(
-			// Title
-			"<Title>FIRE BOLT</>\n\n"
+	
+	const FString RetStr = FString::Printf(TEXT(
+		// Title
+		"<Title>FIRE BOLT</>\n\n"
 
-			// Level
-			"<Small>Level: </><Level>%d</>\n"
-			// ManaCost
-			"<Small>ManaCost: </><ManaCost>%.1f</>\n"
-			// Cooldown
-			"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
+		// Level
+		"<Small>Level: </><Level>%d</>\n"
+		// ManaCost
+		"<Small>ManaCost: </><ManaCost>%.1f</>\n"
+		// Cooldown
+		"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
 
-			// NumProjectiles
-			"<Default>Launches %d bolts of fire, "
-			"exploding on impact and dealing: </>"
+		// NumProjectiles
+		"%s"
+		"exploding on impact and dealing: </>"
 
-			// Damage
-			"<Damage>%.1f</><Default> fire damage with"
-			" a chance to burn</>"),
+		// Damage
+		"<Damage>%.1f</><Default> fire damage with a chance to burn</>"),
 
-			// Values
-			Level,
-			ManaCost,
-			Cooldown,
-			NumFireBolts,
-			ScaledDamage
-		);
-	}
-
+		// Values
+		Level,
+		ManaCost,
+		Cooldown,
+		*PartStr,
+		ScaledDamage
+	);
+	
 	return FText::FromString(RetStr);
 }
 
