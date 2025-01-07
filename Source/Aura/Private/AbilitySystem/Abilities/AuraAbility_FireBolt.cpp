@@ -24,8 +24,7 @@ FText UAuraAbility_FireBolt::GetDescription(int32 Level) const
 	const float ManaCost = GetManaCost(Level);
 	const float Cooldown = GetCooldown(Level);
 
-	checkf(NumFireBoltsCurve, TEXT("Need to set NumFireBoltsCurve"));
-	const int32 NumFireBolts = NumFireBoltsCurve->GetFloatValue(Level);
+	const int32 NumFireBolts = GetNumFireBoltsByLevel(Level);
 
 	FString RetStr;
 	if (Level == 1)
@@ -163,6 +162,11 @@ void UAuraAbility_FireBolt::OnEventReceived(FGameplayEventData Payload)
 	FinishAttack();
 }
 
+int32 UAuraAbility_FireBolt::GetNumFireBoltsByLevel(float Level) const
+{
+	return NumFireBoltsCurve.GetValueAtLevel(Level);
+}
+
 void UAuraAbility_FireBolt::SpawnFireBolts() const
 {
 	check(ProjectileClass);
@@ -181,8 +185,7 @@ void UAuraAbility_FireBolt::SpawnFireBolts() const
 	}
 	const FVector CombatSocketLocation = CombatInterface->GetCombatSocketLocation(CachedCombatSocketName);
 
-	checkf(NumFireBoltsCurve, TEXT("Need to set NumFireBoltsCurve"));
-	const int32 NumFireBolts = NumFireBoltsCurve->GetFloatValue(GetAbilityLevel());
+	const int32 NumFireBolts = GetNumFireBoltsByLevel(GetAbilityLevel());
 
 	// Projectile 발사 방향 계산
 	const FVector TargetLocation = AuraASC->CursorTargetWeakPtr.IsValid() ? AuraASC->CursorTargetWeakPtr->GetActorLocation() : CachedImpactPoint;
