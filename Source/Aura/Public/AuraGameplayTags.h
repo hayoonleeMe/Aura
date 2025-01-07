@@ -133,7 +133,6 @@ struct FAuraGameplayTags
 	// Cooldown
 	// ============================================================================
 
-	FGameplayTag Cooldown_FireBolt;
 	FGameplayTag Cooldown_ArcaneSpike;
 	
 	FGameplayTag Cooldown_Melee_GoblinSpear;
