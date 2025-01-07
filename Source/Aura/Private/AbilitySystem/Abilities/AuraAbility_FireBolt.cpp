@@ -45,10 +45,10 @@ FText UAuraAbility_FireBolt::GetDescription(int32 Level) const
 
 		// NumProjectiles
 		"%s"
-		"exploding on impact and dealing: </>"
+		"exploding on impact and dealing </>"
 
 		// Damage
-		"<Damage>%.1f</><Default> fire damage with a chance to burn</>"),
+		"<Damage>%.1f</><Default> fire damage with a chance to burn.</>"),
 
 		// Values
 		Level,
