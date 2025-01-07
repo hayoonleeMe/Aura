@@ -16,6 +16,49 @@ UAuraAbility_ArcaneSpike::UAuraAbility_ArcaneSpike()
 	CachedTargetLocation = FVector::ZeroVector;
 }
 
+FText UAuraAbility_ArcaneSpike::GetDescription(int32 Level) const
+{
+	const float ScaledDamage = GetDamageByLevel(Level);
+	const float ManaCost = GetManaCost(Level);
+	const float Cooldown = GetCooldown(Level);
+
+	const int32 NumArcaneShards = GetNumArcaneShardsByLevel(Level);
+
+	FString PartStr = TEXT("<Default>Summon a shard of arcane energy, ");
+	if (Level != 1)
+	{
+		PartStr = FString::Printf(TEXT("<Default>Summon </><Damage>%d </><Default>shards of arcane energy, "), NumArcaneShards);
+	}
+	
+	const FString RetStr = FString::Printf(TEXT(
+		// Title
+		"<Title>ARCANE SPIKE</>\n\n"
+
+		// Level
+		"<Small>Level: </><Level>%d</>\n"
+		// ManaCost
+		"<Small>ManaCost: </><ManaCost>%.1f</>\n"
+		// Cooldown
+		"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
+
+		// NumArcaneShards
+		"%s"
+		"causing radial arcane damage of </>"
+
+		// Damage
+		"<Damage>%.1f</><Default>.</>"),
+
+		// Values
+		Level,
+		ManaCost,
+		Cooldown,
+		*PartStr,
+		ScaledDamage
+	);
+	
+	return FText::FromString(RetStr);
+}
+
 void UAuraAbility_ArcaneSpike::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                                const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
