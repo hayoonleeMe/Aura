@@ -14,6 +14,9 @@ class AURA_API UAuraAbility_ArcaneSpike : public UAuraDamageAbility
 {
 	GENERATED_BODY()
 
+public:
+	UAuraAbility_ArcaneSpike();
+	
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	
@@ -23,7 +26,28 @@ protected:
 	virtual void OnEventReceived(FGameplayEventData Payload) override;
 
 private:
-	FVector CachedImpactPoint;
+	FVector CachedTargetLocation;
 
-	void SpawnArcaneShard();
+	void SpawnArcaneShard() const;
+
+	// 하나의 Arcane Shard의 유효 범위
+	static constexpr float EffectiveRadius = 100.f;
+	
+	// Spell의 최대 시전 사거리
+	UPROPERTY(EditDefaultsOnly, Category="Aura|ArcaneSpike")
+	float MaxCastRange;
+
+	// EffectiveRadius에 곱해져 크기를 결정하는 ScaleRate를 저장하는 Curve 
+	UPROPERTY(EditDefaultsOnly, Category="Aura|ArcaneSpike")
+	FScalableFloat ScaleRateCurve;
+
+	// Level에 따른 ScaleRate 값 반환
+	float GetScaleRateByLevel(float Level) const;
+
+	// 소환할 ArcaneShard 개수를 저장하는 Curve
+	UPROPERTY(EditDefaultsOnly, Category="Aura|ArcaneSpike")
+	FScalableFloat NumArcaneShardsCurve;
+
+	// Level에 따른 NumArcaneShards 값 반환
+	int32 GetNumArcaneShardsByLevel(float Level) const;
 };

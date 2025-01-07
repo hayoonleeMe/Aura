@@ -60,6 +60,11 @@ public:
 	// TraceChannel에 Overlap된 Enemy를 반환한다.
 	static void GetEnemiesOverlappedByChannel(const UWorld* World, TArray<AActor*>& OutEnemies, const FVector& Pos, const FQuat& Rot, ECollisionChannel TraceChannel, const FCollisionShape& CollisionShape);
 
+	// Actor의 최하단 위치를 반환한다.
+	// 구할 수 없다면 ZeroVector를 반환한다.
+	UFUNCTION(BlueprintCallable)
+	static FVector GetActorFeetLocation(const AActor* Actor);
+
 	// 게임에서 기본으로 사용하는 Input Mode로 설정
 	UFUNCTION(BlueprintCallable)
 	static void SetInGameInputMode(const UObject* WorldContextObject);

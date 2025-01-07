@@ -10,6 +10,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Game/AuraGameModeBase.h"
+#include "GameFramework/Character.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
 #include "Interaction/CombatInterface.h"
@@ -120,6 +121,15 @@ void UAuraBlueprintLibrary::GetEnemiesOverlappedByChannel(const UWorld* World, T
 			}
 		}
 	}
+}
+
+FVector UAuraBlueprintLibrary::GetActorFeetLocation(const AActor* Actor)
+{
+	if (const ACharacter* Character = Cast<ACharacter>(Actor))
+	{
+		return Character->GetNavAgentLocation();
+	}
+	return FVector::ZeroVector;
 }
 
 void UAuraBlueprintLibrary::SetInGameInputMode(const UObject* WorldContextObject)
