@@ -99,6 +99,7 @@ struct FAuraGameplayTags
 
 	FGameplayTag Event_Montage_FireBolt;
 	FGameplayTag Event_Montage_ChainLightning;
+	FGameplayTag Event_Montage_ArcaneSpike;
 	FGameplayTag Event_Montage_EnemyAttack;
 	
 	// ============================================================================
@@ -117,6 +118,7 @@ struct FAuraGameplayTags
 	FGameplayTag Abilities_Offensive;
 	FGameplayTag Abilities_Offensive_FireBolt;
 	FGameplayTag Abilities_Offensive_ChainLightning;
+	FGameplayTag Abilities_Offensive_ArcaneSpike;
 
 	// ============================================================================
 	// Abilities.Passive
@@ -132,6 +134,8 @@ struct FAuraGameplayTags
 	// ============================================================================
 
 	FGameplayTag Cooldown_FireBolt;
+	FGameplayTag Cooldown_ArcaneSpike;
+	
 	FGameplayTag Cooldown_Melee_GoblinSpear;
 	FGameplayTag Cooldown_Melee_DemonWarrior;
 	FGameplayTag Cooldown_Melee_Ghoul;
@@ -148,6 +152,7 @@ struct FAuraGameplayTags
 	FGameplayTag GameplayCue_RockImpact;
 	FGameplayTag GameplayCue_LevelUp;
 	FGameplayTag GameplayCue_LightningBeam;
+	FGameplayTag GameplayCue_ArcaneShard;
 	
 private:
 	static FAuraGameplayTags GameplayTags;

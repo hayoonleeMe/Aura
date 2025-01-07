@@ -74,6 +74,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	/* Event */
 	GameplayTags.Event_Montage_FireBolt = Manager.AddNativeGameplayTag(TEXT("Event.Montage.FireBolt"), TEXT("FireBolt Montage Event Tag"));
 	GameplayTags.Event_Montage_ChainLightning = Manager.AddNativeGameplayTag(TEXT("Event.Montage.ChainLightning"), TEXT("ChainLightning Montage Event Tag"));
+	GameplayTags.Event_Montage_ArcaneSpike = Manager.AddNativeGameplayTag(TEXT("Event.Montage.ArcaneSpike"), TEXT("ArcaneSpike Montage Event Tag"));
 	GameplayTags.Event_Montage_EnemyAttack = Manager.AddNativeGameplayTag(TEXT("Event.Montage.EnemyAttack"), TEXT("EnemyAttack Montage Event Tag"));
 
 	/* Abilities */
@@ -85,6 +86,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Abilities_Offensive = Manager.AddNativeGameplayTag(TEXT("Abilities.Offensive"), TEXT("Offensive Ability Tag"));
 	GameplayTags.Abilities_Offensive_FireBolt = Manager.AddNativeGameplayTag(TEXT("Abilities.Offensive.FireBolt"), TEXT("FireBolt Offensive Ability Tag"));
 	GameplayTags.Abilities_Offensive_ChainLightning = Manager.AddNativeGameplayTag(TEXT("Abilities.Offensive.ChainLightning"), TEXT("ChainLightning Offensive Ability Tag"));
+	GameplayTags.Abilities_Offensive_ArcaneSpike = Manager.AddNativeGameplayTag(TEXT("Abilities.Offensive.ArcaneSpike"), TEXT("ArcaneSpike Offensive Ability Tag"));
 
 	/* Abilities.Passive */
 	GameplayTags.Abilities_Passive = Manager.AddNativeGameplayTag(TEXT("Abilities.Passive"), TEXT("Passive Ability Tag"));
@@ -92,6 +94,8 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 
 	/* Cooldown */
 	GameplayTags.Cooldown_FireBolt = Manager.AddNativeGameplayTag(TEXT("Cooldown.FireBolt"), TEXT("FireBolt Cooldown Tag"));
+	GameplayTags.Cooldown_ArcaneSpike = Manager.AddNativeGameplayTag(TEXT("Cooldown.ArcaneSpike"), TEXT("ArcaneSpike Cooldown Tag"));
+	
 	GameplayTags.Cooldown_Melee_GoblinSpear = Manager.AddNativeGameplayTag(TEXT("Cooldown.Melee.GoblinSpear"), TEXT("GoblinSpear Melee Cooldown Tag"));
 	GameplayTags.Cooldown_Melee_DemonWarrior = Manager.AddNativeGameplayTag(TEXT("Cooldown.Melee.DemonWarrior"), TEXT("DemonWarrior Melee Cooldown Tag"));
 	GameplayTags.Cooldown_Melee_Ghoul = Manager.AddNativeGameplayTag(TEXT("Cooldown.Melee.Ghoul"), TEXT("Ghoul Melee Cooldown Tag"));
@@ -105,4 +109,5 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.GameplayCue_RockImpact = Manager.AddNativeGameplayTag(TEXT("GameplayCue.RockImpact"), TEXT("RockImpact GameplayCue Tag"));
 	GameplayTags.GameplayCue_LevelUp = Manager.AddNativeGameplayTag(TEXT("GameplayCue.LevelUp"), TEXT("LevelUp GameplayCue Tag"));
 	GameplayTags.GameplayCue_LightningBeam = Manager.AddNativeGameplayTag(TEXT("GameplayCue.LightningBeam"), TEXT("LightningBeam GameplayCue Tag"));
+	GameplayTags.GameplayCue_ArcaneShard = Manager.AddNativeGameplayTag(TEXT("GameplayCue.ArcaneShard"), TEXT("ArcaneShard GameplayCue Tag"));
 }
