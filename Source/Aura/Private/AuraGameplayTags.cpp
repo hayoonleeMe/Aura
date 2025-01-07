@@ -73,6 +73,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 
 	/* Event */
 	GameplayTags.Event_Montage_FireBolt = Manager.AddNativeGameplayTag(TEXT("Event.Montage.FireBolt"), TEXT("FireBolt Montage Event Tag"));
+	GameplayTags.Event_Montage_ChainLightning = Manager.AddNativeGameplayTag(TEXT("Event.Montage.ChainLightning"), TEXT("ChainLightning Montage Event Tag"));
 	GameplayTags.Event_Montage_EnemyAttack = Manager.AddNativeGameplayTag(TEXT("Event.Montage.EnemyAttack"), TEXT("EnemyAttack Montage Event Tag"));
 
 	/* Abilities */
@@ -83,6 +84,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	/* Abilities.Offensive */
 	GameplayTags.Abilities_Offensive = Manager.AddNativeGameplayTag(TEXT("Abilities.Offensive"), TEXT("Offensive Ability Tag"));
 	GameplayTags.Abilities_Offensive_FireBolt = Manager.AddNativeGameplayTag(TEXT("Abilities.Offensive.FireBolt"), TEXT("FireBolt Offensive Ability Tag"));
+	GameplayTags.Abilities_Offensive_ChainLightning = Manager.AddNativeGameplayTag(TEXT("Abilities.Offensive.ChainLightning"), TEXT("ChainLightning Offensive Ability Tag"));
 
 	/* Abilities.Passive */
 	GameplayTags.Abilities_Passive = Manager.AddNativeGameplayTag(TEXT("Abilities.Passive"), TEXT("Passive Ability Tag"));
@@ -102,4 +104,5 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.GameplayCue_EnemyMeleeImpact = Manager.AddNativeGameplayTag(TEXT("GameplayCue.EnemyMeleeImpact"), TEXT("EnemyMeleeImpact GameplayCue Tag"));
 	GameplayTags.GameplayCue_RockImpact = Manager.AddNativeGameplayTag(TEXT("GameplayCue.RockImpact"), TEXT("RockImpact GameplayCue Tag"));
 	GameplayTags.GameplayCue_LevelUp = Manager.AddNativeGameplayTag(TEXT("GameplayCue.LevelUp"), TEXT("LevelUp GameplayCue Tag"));
+	GameplayTags.GameplayCue_LightningBeam = Manager.AddNativeGameplayTag(TEXT("GameplayCue.LightningBeam"), TEXT("LightningBeam GameplayCue Tag"));
 }

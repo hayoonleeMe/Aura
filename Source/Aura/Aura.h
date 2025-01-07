@@ -18,7 +18,7 @@
 // ============================================================================
 
 // Projectile을 나타내는 Object Channel
-// Default Response Overlap, Ignore BaseCharacter's Capsule
+// Default Response Block, Ignore BaseCharacter's Capsule
 #define ECC_Projectile ECollisionChannel::ECC_GameTraceChannel1
 
 // AI Enemy에서 Environment Query System을 이용해 공격 위치를 결정할 때 사용할 Trace Channel

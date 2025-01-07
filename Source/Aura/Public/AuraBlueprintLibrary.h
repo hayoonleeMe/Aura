@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Interaction/CombatInterface.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AuraBlueprintLibrary.generated.h"
 
+struct FGameplayCueParameters;
 class USpellMenuWidgetController;
 class UOverlayWidgetController;
 struct FWidgetControllerParams;
@@ -43,6 +45,13 @@ public:
 	// CueLocation을 GameplayCueParameters로 전달하고 Replicate되는 GameplayCueNotify_Static을 실행
 	UFUNCTION(BlueprintCallable)
 	static void ExecuteGameplayCue(AActor* OwnerActor, const FGameplayTag& CueTag, const FVector& CueLocation);
+
+	UFUNCTION(BlueprintCallable)
+	static void ExecuteGameplayCueWithParams(AActor* OwnerActor, const FGameplayTag& CueTag, const FGameplayCueParameters& CueParameters);
+
+	// InTag에 해당하는 TaggedCombatInfo의 CombatSocketName을 이용해 OwnerActor의 CombatSocketLocation을 반환
+	UFUNCTION(BlueprintCallable)
+	static FVector GetCombatSocketLocationForTag(AActor* OwnerActor, const FGameplayTag& InTag);
 
 	// 현재 월드에서 모든 살아 있는 PlayerState가 컨트롤하는 Pawn을 가져온다.
 	UFUNCTION(BlueprintCallable)

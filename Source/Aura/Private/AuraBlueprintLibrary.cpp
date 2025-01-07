@@ -62,6 +62,24 @@ void UAuraBlueprintLibrary::ExecuteGameplayCue(AActor* OwnerActor, const FGamepl
 	}
 }
 
+void UAuraBlueprintLibrary::ExecuteGameplayCueWithParams(AActor* OwnerActor, const FGameplayTag& CueTag, const FGameplayCueParameters& CueParameters)
+{
+	if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OwnerActor))
+	{
+		ASC->ExecuteGameplayCue(CueTag, CueParameters);
+	}
+}
+
+FVector UAuraBlueprintLibrary::GetCombatSocketLocationForTag(AActor* OwnerActor, const FGameplayTag& InTag)
+{
+	if (const ICombatInterface* CombatInterface = Cast<ICombatInterface>(OwnerActor))
+	{
+		const FName CombatSocketName = CombatInterface->GetTaggedCombatInfo(InTag).CombatSocketName;
+		return CombatInterface->GetCombatSocketLocation(CombatSocketName);
+	}
+	return FVector::ZeroVector;
+}
+
 void UAuraBlueprintLibrary::GetAlivePawnsFromPlayers(const UObject* WorldContextObject, TArray<AActor*>& OutPlayers)
 {
 	if (AGameStateBase* GameState = WorldContextObject->GetWorld()->GetGameState())
