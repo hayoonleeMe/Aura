@@ -93,7 +93,6 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Abilities_Passive_Test = Manager.AddNativeGameplayTag(TEXT("Abilities.Passive.Test"), TEXT("Test Passive Ability Tag"));
 
 	/* Cooldown */
-	GameplayTags.Cooldown_FireBolt = Manager.AddNativeGameplayTag(TEXT("Cooldown.FireBolt"), TEXT("FireBolt Cooldown Tag"));
 	GameplayTags.Cooldown_ArcaneSpike = Manager.AddNativeGameplayTag(TEXT("Cooldown.ArcaneSpike"), TEXT("ArcaneSpike Cooldown Tag"));
 	
 	GameplayTags.Cooldown_Melee_GoblinSpear = Manager.AddNativeGameplayTag(TEXT("Cooldown.Melee.GoblinSpear"), TEXT("GoblinSpear Melee Cooldown Tag"));
