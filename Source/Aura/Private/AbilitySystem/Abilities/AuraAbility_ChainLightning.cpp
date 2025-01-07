@@ -17,6 +17,44 @@ UAuraAbility_ChainLightning::UAuraAbility_ChainLightning()
 	MaxCastRange = 600.f;
 }
 
+FText UAuraAbility_ChainLightning::GetDescription(int32 Level) const
+{
+	const float ScaledDamage = GetDamageByLevel(Level);
+	const float ManaCost = GetManaCost(Level);
+	const float Cooldown = GetCooldown(Level);
+	const int32 MaxChainCount = GetMaxChainCountByLevel(Level);
+	const float ChainDamageRate = GetChainDamageRateByLevel(Level);
+	const int32 ChainDamagePercent = ChainDamageRate * 100.f;
+
+	FString RetStr = FString::Printf(TEXT(
+		// Title
+		"<Title>CHAIN LIGHTNING</>\n\n"
+
+		// Level
+		"<Default>Level: </><Level>%d</>\n"
+		// ManaCost
+		"<Default>ManaCost: </><ManaCost>%.1f</>\n"
+		// Cooldown
+		"<Default>Cooldown: </><Cooldown>%.1f</>\n\n"
+
+		// Description
+		"<Default>Fires a bolt of lightning that strikes a target and nearby enemies, "
+		"dealing </><Damage>%.1f</><Default> lightning damage with a chance to stun. "
+		"The lightning chains up to </><Damage>%d</><Default> nearby enemies, "
+		"dealing </><Percent>%d%%</><Default> of the previous damage to each chain.</>"),
+
+		// Values
+		Level,
+		ManaCost,
+		Cooldown,
+		ScaledDamage,
+		MaxChainCount,
+		ChainDamagePercent
+	);
+
+	return FText::FromString(RetStr);
+}
+
 void UAuraAbility_ChainLightning::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                                   const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
