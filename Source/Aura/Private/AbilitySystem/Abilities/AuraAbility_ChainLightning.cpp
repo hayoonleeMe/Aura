@@ -187,24 +187,10 @@ void UAuraAbility_ChainLightning::CastLightningBeam() const
 		return;
 	}
 
-	// 첫 Target 주변 Enemy
-	TArray<FOverlapResult> OverlapResults;
-	const float InitialChainRadius = GetInitialChainRadiusByLevel(GetAbilityLevel());
-	GetWorld()->OverlapMultiByChannel(OverlapResults, FirstTargetActor->GetActorLocation(), FQuat::Identity, ECC_Target, FCollisionShape::MakeSphere(InitialChainRadius));
-
-	const FGameplayTag EnemyRoleTag = FAuraGameplayTags::Get().Role_Enemy;
+	// 첫 Target 주변 Enemy 선택
 	TArray<AActor*> PossibleEnemies;
-	for (const FOverlapResult& Result : OverlapResults)
-	{
-		if (const ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(Result.GetActor()))
-		{
-			// 살아있는 Enemy를 Check Array에 추가
-			if (!TargetCombatInterface->IsDead() && TargetCombatInterface->GetRoleTag().MatchesTagExact(EnemyRoleTag))
-			{
-				PossibleEnemies.Add(Result.GetActor());
-			}
-		}
-	}
+	const float InitialChainRadius = GetInitialChainRadiusByLevel(GetAbilityLevel());
+	UAuraBlueprintLibrary::GetEnemiesOverlappedByChannel(GetWorld(), PossibleEnemies, FirstTargetActor->GetActorLocation(), FQuat::Identity, ECC_Target, FCollisionShape::MakeSphere(InitialChainRadius));
 
 	AActor* CurrentTarget = FirstTargetActor;
 	TArray<AActor*> SelectedActors;

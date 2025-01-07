@@ -5,6 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "AuraGameplayTags.h"
 #include "GameplayEffectTypes.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
@@ -90,6 +91,32 @@ void UAuraBlueprintLibrary::GetAlivePawnsFromPlayers(const UObject* WorldContext
 			if (PS && IsValid(PS->GetPawn()) && CombatInterface && !CombatInterface->IsDead())
 			{
 				OutPlayers.Add(PS->GetPawn());
+			}
+		}
+	}
+}
+
+void UAuraBlueprintLibrary::GetEnemiesOverlappedByChannel(const UWorld* World, TArray<AActor*>& OutEnemies, const FVector& Pos, const FQuat& Rot,
+	ECollisionChannel TraceChannel, const FCollisionShape& CollisionShape)
+{
+	if (!World)
+	{
+		return;
+	}
+	
+	const FGameplayTag EnemyRoleTag = FAuraGameplayTags::Get().Role_Enemy;
+	
+	TArray<FOverlapResult> OverlapResults;
+	World->OverlapMultiByChannel(OverlapResults, Pos, Rot, TraceChannel, CollisionShape);
+
+	for (const FOverlapResult& Result : OverlapResults)
+	{
+		if (const ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(Result.GetActor()))
+		{
+			// 살아있는 Enemy를 Array에 추가
+			if (!TargetCombatInterface->IsDead() && TargetCombatInterface->GetRoleTag().MatchesTagExact(EnemyRoleTag))
+			{
+				OutEnemies.Add(Result.GetActor());
 			}
 		}
 	}
