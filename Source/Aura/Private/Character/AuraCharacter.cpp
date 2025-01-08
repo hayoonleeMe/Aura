@@ -147,17 +147,25 @@ int32 AAuraCharacter::GetLevelUpSpellPointsAward(int32 Level) const
 
 void AAuraCharacter::MulticastActivatePassiveSpellNiagaraComponent_Implementation(const FGameplayTag& SpellTag) const
 {
-	if (HaloOfProtectionComponent && SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_HaloOfProtection))
+	if (SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_HaloOfProtection))
 	{
 		HaloOfProtectionComponent->Activate();
+	}
+	else if (SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_HealthSiphon))
+	{
+		HealthSiphonComponent->Activate();
 	}
 }
 
 void AAuraCharacter::MulticastDeactivatePassiveSpellNiagaraComponent_Implementation(const FGameplayTag& SpellTag) const
 {
-	if (HaloOfProtectionComponent && SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_HaloOfProtection))
+	if (SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_HaloOfProtection))
 	{
 		HaloOfProtectionComponent->DeactivateImmediate();
+	}
+	else if (SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_HealthSiphon))
+	{
+		HealthSiphonComponent->DeactivateImmediate();
 	}
 }
 
