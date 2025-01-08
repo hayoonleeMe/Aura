@@ -159,6 +159,10 @@ void AAuraCharacter::MulticastActivatePassiveSpellNiagaraComponent_Implementatio
 	{
 		HealthSiphonComponent->Activate();
 	}
+	else if (SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_ManaSiphon))
+	{
+		ManaSiphonComponent->Activate();
+	}
 }
 
 void AAuraCharacter::MulticastDeactivatePassiveSpellNiagaraComponent_Implementation(const FGameplayTag& SpellTag) const
@@ -170,6 +174,10 @@ void AAuraCharacter::MulticastDeactivatePassiveSpellNiagaraComponent_Implementat
 	else if (SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_HealthSiphon))
 	{
 		HealthSiphonComponent->DeactivateImmediate();
+	}
+	else if (SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_ManaSiphon))
+	{
+		ManaSiphonComponent->DeactivateImmediate();
 	}
 }
 
