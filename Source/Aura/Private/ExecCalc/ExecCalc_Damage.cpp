@@ -3,6 +3,7 @@
 
 #include "ExecCalc/ExecCalc_Damage.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
@@ -203,6 +204,18 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// Double damage plus a bonus if critical hit
 	Damage = bCriticalHit ? Damage * 2.f + SourceCriticalHitDamage : Damage; 
 	AuraEffectContext->SetIsCriticalHit(bCriticalHit);	
+	
+	// Health recovery from Damage
+	if (SourceASC->HasMatchingGameplayTag(GameplayTags.Abilities_Passive_HealthSiphon))
+	{
+		if (AActor* SourceAvatarActor = SourceASC->GetAvatarActor())
+		{
+			FGameplayEventData Payload;
+			Payload.EventMagnitude = Damage;
+			// Will receive this event in AuraAbility_HealthSiphon, then recovery health
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(SourceAvatarActor, GameplayTags.Abilities_Passive_HealthSiphon, Payload);
+		}
+	}
 
 	// 최종 Damage를 IncomingDamage Attribute에 Override 적용 
 	const FGameplayModifierEvaluatedData EvaluatedData(UAuraAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Override, Damage);
