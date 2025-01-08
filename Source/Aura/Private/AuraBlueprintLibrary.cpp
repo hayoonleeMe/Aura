@@ -72,11 +72,11 @@ void UAuraBlueprintLibrary::ExecuteGameplayCueWithParams(AActor* OwnerActor, con
 	}
 }
 
-FVector UAuraBlueprintLibrary::GetCombatSocketLocationForTag(AActor* OwnerActor, const FGameplayTag& InTag)
+FVector UAuraBlueprintLibrary::GetCombatSocketLocationForTag(AActor* OwnerActor, FGameplayTag Tag)
 {
 	if (const ICombatInterface* CombatInterface = Cast<ICombatInterface>(OwnerActor))
 	{
-		const FName CombatSocketName = CombatInterface->GetTaggedCombatInfo(InTag).CombatSocketName;
+		const FName CombatSocketName = CombatInterface->GetTaggedCombatInfo(Tag).CombatSocketName;
 		return CombatInterface->GetCombatSocketLocation(CombatSocketName);
 	}
 	return FVector::ZeroVector;

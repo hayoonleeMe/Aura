@@ -49,9 +49,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static void ExecuteGameplayCueWithParams(AActor* OwnerActor, const FGameplayTag& CueTag, const FGameplayCueParameters& CueParameters);
 
-	// InTag에 해당하는 TaggedCombatInfo의 CombatSocketName을 이용해 OwnerActor의 CombatSocketLocation을 반환
+	// Tag에 해당하는 TaggedCombatInfo의 CombatSocketName을 이용해 OwnerActor의 CombatSocketLocation을 반환
 	UFUNCTION(BlueprintCallable)
-	static FVector GetCombatSocketLocationForTag(AActor* OwnerActor, const FGameplayTag& InTag);
+	static FVector GetCombatSocketLocationForTag(AActor* OwnerActor, FGameplayTag Tag);
 
 	// 현재 월드에서 모든 살아 있는 PlayerState가 컨트롤하는 Pawn을 가져온다.
 	UFUNCTION(BlueprintCallable)
