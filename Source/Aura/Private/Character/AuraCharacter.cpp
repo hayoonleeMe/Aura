@@ -38,6 +38,10 @@ AAuraCharacter::AAuraCharacter()
 	HaloOfProtectionComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Halo Of Protection Component"));
 	HaloOfProtectionComponent->SetupAttachment(GetRootComponent());
 	HaloOfProtectionComponent->bAutoActivate = false;
+
+	HealthSiphonComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Health Siphon Component"));
+	HealthSiphonComponent->SetupAttachment(GetRootComponent());
+	HealthSiphonComponent->bAutoActivate = false;
 }
 
 void AAuraCharacter::PossessedBy(AController* NewController)
@@ -57,12 +61,12 @@ void AAuraCharacter::OnRep_PlayerState()
 	InitAbilityActorInfo();
 }
 
-void AAuraCharacter::OnActivatedPassiveSpell(const FGameplayTag& SpellTag) const
+void AAuraCharacter::OnPassiveSpellActivated(const FGameplayTag& SpellTag) const
 {
 	MulticastActivatePassiveSpellNiagaraComponent(SpellTag);
 }
 
-void AAuraCharacter::OnDeactivatedPassiveSpell(const FGameplayTag& SpellTag) const
+void AAuraCharacter::OnPassiveSpellDeactivated(const FGameplayTag& SpellTag) const
 {
 	MulticastDeactivatePassiveSpellNiagaraComponent(SpellTag);
 }
@@ -143,17 +147,25 @@ int32 AAuraCharacter::GetLevelUpSpellPointsAward(int32 Level) const
 
 void AAuraCharacter::MulticastActivatePassiveSpellNiagaraComponent_Implementation(const FGameplayTag& SpellTag) const
 {
-	if (HaloOfProtectionComponent && SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_HaloOfProtection))
+	if (SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_HaloOfProtection))
 	{
 		HaloOfProtectionComponent->Activate();
+	}
+	else if (SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_HealthSiphon))
+	{
+		HealthSiphonComponent->Activate();
 	}
 }
 
 void AAuraCharacter::MulticastDeactivatePassiveSpellNiagaraComponent_Implementation(const FGameplayTag& SpellTag) const
 {
-	if (HaloOfProtectionComponent && SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_HaloOfProtection))
+	if (SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_HaloOfProtection))
 	{
 		HaloOfProtectionComponent->DeactivateImmediate();
+	}
+	else if (SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_HealthSiphon))
+	{
+		HealthSiphonComponent->DeactivateImmediate();
 	}
 }
 

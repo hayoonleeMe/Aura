@@ -27,8 +27,8 @@ public:
 	virtual void OnRep_PlayerState() override;
 
 	/* Begin CombatInterface */
-	virtual void OnActivatedPassiveSpell(const FGameplayTag& SpellTag) const override;
-	virtual void OnDeactivatedPassiveSpell(const FGameplayTag& SpellTag) const override;
+	virtual void OnPassiveSpellActivated(const FGameplayTag& SpellTag) const override;
+	virtual void OnPassiveSpellDeactivated(const FGameplayTag& SpellTag) const override;
 	/* End CombatInterface */
 
 	/* Begin PlayerInterface */
@@ -76,6 +76,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UNiagaraComponent> HaloOfProtectionComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UNiagaraComponent> HealthSiphonComponent;
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastActivatePassiveSpellNiagaraComponent(const FGameplayTag& SpellTag) const;

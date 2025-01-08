@@ -82,8 +82,8 @@ public:
 	virtual int32 GetXPReward() { return 0; }
 
 	// SpellTag에 해당하는 Passive Spell이 활성화 됐음을 알림
-	virtual void OnActivatedPassiveSpell(const FGameplayTag& SpellTag) const {}
+	virtual void OnPassiveSpellActivated(const FGameplayTag& SpellTag) const {}
 
 	// SpellTag에 해당하는 Passive Spell이 비활성화 됐음을 알림
-	virtual void OnDeactivatedPassiveSpell(const FGameplayTag& SpellTag) const {}
+	virtual void OnPassiveSpellDeactivated(const FGameplayTag& SpellTag) const {}
 };
