@@ -17,6 +17,7 @@ class AURA_API UAuraAbility_ManaSiphon : public UAuraGameplayAbility
 
 public:
 	UAuraAbility_ManaSiphon();
+	virtual FText GetDescription(int32 Level) const override;
 
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
