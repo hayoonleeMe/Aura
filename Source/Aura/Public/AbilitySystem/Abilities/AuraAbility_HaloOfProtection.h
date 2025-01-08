@@ -16,6 +16,7 @@ class AURA_API UAuraAbility_HaloOfProtection : public UAuraGameplayAbility
 
 public:
 	UAuraAbility_HaloOfProtection();
+	virtual FText GetDescription(int32 Level) const override;
 
 	// 현재 Ability Level에 따른 DamageReductionRate 값 반환
 	float GetDamageReductionRate() const { return GetDamageReductionRateByLevel(GetAbilityLevel()); }
