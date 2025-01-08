@@ -26,7 +26,7 @@ FText UAuraAbility_ChainLightning::GetDescription(int32 Level) const
 	const float ChainDamageRate = GetChainDamageRateByLevel(Level);
 	const int32 ChainDamagePercent = ChainDamageRate * 100.f;
 
-	FString RetStr = FString::Printf(TEXT(
+	const FString RetStr = FString::Printf(TEXT(
 		// Title
 		"<Title>CHAIN LIGHTNING</>\n\n"
 
@@ -176,10 +176,7 @@ void UAuraAbility_ChainLightning::CastLightningBeam() const
 	}
 
 	// Spawn Beam from Player to Target
-	FGameplayCueParameters MainCueParameters;
-	MainCueParameters.Location = TargetLocation;
-	MainCueParameters.OriginalTag = FAuraGameplayTags::Get().Abilities_Offensive_ChainLightning; // for retrieve combat socket location in GameplayCue blueprint
-	UAuraBlueprintLibrary::ExecuteGameplayCueWithParams(AvatarActor, GameplayTags.GameplayCue_LightningBeam, MainCueParameters);
+	UAuraBlueprintLibrary::ExecuteGameplayCue(AvatarActor, GameplayTags.GameplayCue_LightningBeam, TargetLocation);
 
 	// First Target이 없다면 Damage를 입히지 않기 위해 Early Return
 	if (!IsValid(FirstTargetActor))
