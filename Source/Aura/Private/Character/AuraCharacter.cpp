@@ -4,6 +4,8 @@
 #include "Character/AuraCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "AuraGameplayTags.h"
+#include "NiagaraComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -31,6 +33,11 @@ AAuraCharacter::AAuraCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 500.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;         // 이동을 평면에 제한
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;       // 시작 시 캐릭터가 평면에 부착됨
+
+	/* Passive Niagara Effect Component */
+	HaloOfProtectionComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Halo Of Protection Component"));
+	HaloOfProtectionComponent->SetupAttachment(GetRootComponent());
+	HaloOfProtectionComponent->bAutoActivate = false;
 }
 
 void AAuraCharacter::PossessedBy(AController* NewController)
@@ -48,6 +55,16 @@ void AAuraCharacter::OnRep_PlayerState()
 
 	// for client
 	InitAbilityActorInfo();
+}
+
+void AAuraCharacter::OnActivatedPassiveSpell(const FGameplayTag& SpellTag) const
+{
+	MulticastActivatePassiveSpellNiagaraComponent(SpellTag);
+}
+
+void AAuraCharacter::OnDeactivatedPassiveSpell(const FGameplayTag& SpellTag) const
+{
+	MulticastDeactivatePassiveSpellNiagaraComponent(SpellTag);
 }
 
 int32 AAuraCharacter::GetAttributePoints() const
@@ -122,6 +139,22 @@ int32 AAuraCharacter::GetLevelUpSpellPointsAward(int32 Level) const
 {
 	const AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
 	return AuraPS->GetLevelUpSpellPointsAward(Level);
+}
+
+void AAuraCharacter::MulticastActivatePassiveSpellNiagaraComponent_Implementation(const FGameplayTag& SpellTag) const
+{
+	if (HaloOfProtectionComponent && SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_HaloOfProtection))
+	{
+		HaloOfProtectionComponent->Activate();
+	}
+}
+
+void AAuraCharacter::MulticastDeactivatePassiveSpellNiagaraComponent_Implementation(const FGameplayTag& SpellTag) const
+{
+	if (HaloOfProtectionComponent && SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_HaloOfProtection))
+	{
+		HaloOfProtectionComponent->DeactivateImmediate();
+	}
 }
 
 void AAuraCharacter::InitAbilityActorInfo()

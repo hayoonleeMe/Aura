@@ -8,6 +8,7 @@
 #include "Interaction/PlayerInterface.h"
 #include "AuraCharacter.generated.h"
 
+class UNiagaraComponent;
 class UCameraComponent;
 class USpringArmComponent;
 class UGameplayEffect;
@@ -24,6 +25,11 @@ public:
 	AAuraCharacter();
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
+
+	/* Begin CombatInterface */
+	virtual void OnActivatedPassiveSpell(const FGameplayTag& SpellTag) const override;
+	virtual void OnDeactivatedPassiveSpell(const FGameplayTag& SpellTag) const override;
+	/* End CombatInterface */
 
 	/* Begin PlayerInterface */
 	virtual int32 GetAttributePoints() const override;
@@ -63,4 +69,17 @@ private:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UCameraComponent> CameraComponent;
+
+	// ============================================================================
+	// Passive Spell Niagara Component
+	// ============================================================================
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UNiagaraComponent> HaloOfProtectionComponent;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastActivatePassiveSpellNiagaraComponent(const FGameplayTag& SpellTag) const;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastDeactivatePassiveSpellNiagaraComponent(const FGameplayTag& SpellTag) const;
 };
