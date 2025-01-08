@@ -128,6 +128,7 @@ struct FAuraGameplayTags
 	FGameplayTag Abilities_Passive;
 	FGameplayTag Abilities_Passive_HaloOfProtection;
 	FGameplayTag Abilities_Passive_HealthSiphon;
+	FGameplayTag Abilities_Passive_ManaSiphon;
 
 	// ============================================================================
 	// Cooldown
