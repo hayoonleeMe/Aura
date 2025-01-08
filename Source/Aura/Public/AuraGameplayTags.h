@@ -126,8 +126,6 @@ struct FAuraGameplayTags
 	// ============================================================================
 
 	FGameplayTag Abilities_Passive;
-	// TODO : for Debug & Test, Need to delete
-	FGameplayTag Abilities_Passive_Test;
 	FGameplayTag Abilities_Passive_HaloOfProtection;
 
 	// ============================================================================
