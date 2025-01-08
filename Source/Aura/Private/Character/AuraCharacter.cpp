@@ -57,12 +57,12 @@ void AAuraCharacter::OnRep_PlayerState()
 	InitAbilityActorInfo();
 }
 
-void AAuraCharacter::OnActivatedPassiveSpell(const FGameplayTag& SpellTag) const
+void AAuraCharacter::OnPassiveSpellActivated(const FGameplayTag& SpellTag) const
 {
 	MulticastActivatePassiveSpellNiagaraComponent(SpellTag);
 }
 
-void AAuraCharacter::OnDeactivatedPassiveSpell(const FGameplayTag& SpellTag) const
+void AAuraCharacter::OnPassiveSpellDeactivated(const FGameplayTag& SpellTag) const
 {
 	MulticastDeactivatePassiveSpellNiagaraComponent(SpellTag);
 }
