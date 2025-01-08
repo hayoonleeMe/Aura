@@ -5,8 +5,10 @@
 
 #include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/AuraGameplayEffectContext.h"
+#include "AbilitySystem/Abilities/AuraAbility_HaloOfProtection.h"
 
 // 구조체로 Capture할 Attribute 관리 및 설정
 struct AuraDamageStatics
@@ -91,7 +93,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	const TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition>& TagToCaptureDefMap = GetTagToCaptureDefMap();
 
 	const UAbilitySystemComponent* SourceASC = ExecutionParams.GetSourceAbilitySystemComponent();
-	const UAbilitySystemComponent* TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
+	UAuraAbilitySystemComponent* TargetASC = Cast<UAuraAbilitySystemComponent>(ExecutionParams.GetTargetAbilitySystemComponent());
 	if (!SourceASC || !TargetASC)
 	{
 		return;
@@ -136,6 +138,17 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 			DamageTypeValue *= (100.f - ResistanceValue) / 100.f;
 			Damage += DamageTypeValue;
 		}
+	}
+
+	// Damage Reduction by Halo Of Protection Passive Spell
+	if (FGameplayAbilitySpec* AbilitySpec = TargetASC->GetSpellSpecForSpellTag(GameplayTags.Abilities_Passive_HaloOfProtection))
+	{
+		float DamageReductionRate = 0.f;
+		if (UAuraAbility_HaloOfProtection* HaloOfProtection = Cast<UAuraAbility_HaloOfProtection>(AbilitySpec->GetPrimaryInstance()))
+		{
+			DamageReductionRate = HaloOfProtection->GetDamageReductionRate();
+		}
+		Damage *= (1.f - DamageReductionRate);
 	}
 
 	// Target BlockChance
