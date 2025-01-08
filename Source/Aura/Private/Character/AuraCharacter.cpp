@@ -42,6 +42,10 @@ AAuraCharacter::AAuraCharacter()
 	HealthSiphonComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Health Siphon Component"));
 	HealthSiphonComponent->SetupAttachment(GetRootComponent());
 	HealthSiphonComponent->bAutoActivate = false;
+	
+	ManaSiphonComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Mana Siphon Component"));
+	ManaSiphonComponent->SetupAttachment(GetRootComponent());
+	ManaSiphonComponent->bAutoActivate = false;
 }
 
 void AAuraCharacter::PossessedBy(AController* NewController)
