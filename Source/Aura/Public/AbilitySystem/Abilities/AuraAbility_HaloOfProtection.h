@@ -21,6 +21,11 @@ public:
 	// 현재 Ability Level에 따른 DamageReductionRate 값 반환
 	float GetDamageReductionRate() const { return GetDamageReductionRateByLevel(GetAbilityLevel()); }
 
+protected:
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
+	
 private:
 	// 받는 Damage의 경감 비율을 저장하는 Curve 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|HaloOfProtection")

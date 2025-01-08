@@ -26,6 +26,11 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 
+	/* Begin CombatInterface */
+	virtual void OnActivatedPassiveSpell(const FGameplayTag& SpellTag) const override;
+	virtual void OnDeactivatedPassiveSpell(const FGameplayTag& SpellTag) const override;
+	/* End CombatInterface */
+
 	/* Begin PlayerInterface */
 	virtual int32 GetAttributePoints() const override;
 	virtual void AddToAttributePoints(int32 Points) override;
@@ -71,4 +76,10 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UNiagaraComponent> HaloOfProtectionComponent;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastActivatePassiveSpellNiagaraComponent(const FGameplayTag& SpellTag) const;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastDeactivatePassiveSpellNiagaraComponent(const FGameplayTag& SpellTag) const;
 };
