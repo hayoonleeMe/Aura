@@ -12,8 +12,27 @@ UAuraAbility_HealthSiphon::UAuraAbility_HealthSiphon()
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 }
 
+FText UAuraAbility_HealthSiphon::GetDescription(int32 Level) const
+{
+	const float DrainRate = GetDrainRateByLevel(Level);
+	const int32 DrainPercent = DrainRate * 100.f;
+
+	const FString RetStr = FString::Printf(TEXT(
+		// Title
+		"<Title>HEALTH SIPHON</>\n\n"
+
+		// Description
+		"<Default>Restores </><Percent>%d%%</><Default> of the damage dealt as health.</>"),
+
+		// Values
+		DrainPercent
+	);
+
+	return FText::FromString(RetStr);
+}
+
 void UAuraAbility_HealthSiphon::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-	const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+                                                const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	if (UAbilityTask_WaitGameplayEvent* WaitGameplayEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, FAuraGameplayTags::Get().Abilities_Passive_HealthSiphon))
 	{
