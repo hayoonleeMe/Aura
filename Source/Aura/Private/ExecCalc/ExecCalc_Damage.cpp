@@ -217,6 +217,18 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		}
 	}
 
+	// Mana recovery from Damage
+	if (SourceASC->HasMatchingGameplayTag(GameplayTags.Abilities_Passive_ManaSiphon))
+	{
+		if (AActor* SourceAvatarActor = SourceASC->GetAvatarActor())
+		{
+			FGameplayEventData Payload;
+			Payload.EventMagnitude = Damage;
+			// Will receive this event in AuraAbility_ManaSiphon, then recovery mana
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(SourceAvatarActor, GameplayTags.Abilities_Passive_ManaSiphon, Payload);
+		}
+	}
+
 	// 최종 Damage를 IncomingDamage Attribute에 Override 적용 
 	const FGameplayModifierEvaluatedData EvaluatedData(UAuraAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Override, Damage);
 	OutExecutionOutput.AddOutputModifier(EvaluatedData);

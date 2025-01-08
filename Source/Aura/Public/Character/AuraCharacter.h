@@ -80,6 +80,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UNiagaraComponent> HealthSiphonComponent;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UNiagaraComponent> ManaSiphonComponent;
+
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastActivatePassiveSpellNiagaraComponent(const FGameplayTag& SpellTag) const;
 
