@@ -8,6 +8,7 @@
 #include "Interaction/PlayerInterface.h"
 #include "AuraCharacter.generated.h"
 
+class UNiagaraComponent;
 class UCameraComponent;
 class USpringArmComponent;
 class UGameplayEffect;
@@ -63,4 +64,11 @@ private:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UCameraComponent> CameraComponent;
+
+	// ============================================================================
+	// Passive Spell Niagara Component
+	// ============================================================================
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UNiagaraComponent> HaloOfProtectionComponent;
 };

@@ -4,6 +4,7 @@
 #include "Character/AuraCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "NiagaraComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -31,6 +32,11 @@ AAuraCharacter::AAuraCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 500.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;         // 이동을 평면에 제한
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;       // 시작 시 캐릭터가 평면에 부착됨
+
+	/* Passive Niagara Effect Component */
+	HaloOfProtectionComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Halo Of Protection Component"));
+	HaloOfProtectionComponent->SetupAttachment(GetRootComponent());
+	HaloOfProtectionComponent->bAutoActivate = false;
 }
 
 void AAuraCharacter::PossessedBy(AController* NewController)
