@@ -35,18 +35,18 @@ FText UAuraAbility_ArcaneSpike::GetDescription(int32 Level) const
 		"<Title>ARCANE SPIKE</>\n\n"
 
 		// Level
-		"<Small>Level: </><Level>%d</>\n"
+		"<Default>Level: </><Level>%d</>\n"
 		// ManaCost
-		"<Small>ManaCost: </><ManaCost>%.1f</>\n"
+		"<Default>ManaCost: </><ManaCost>%.1f</>\n"
 		// Cooldown
-		"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
+		"<Default>Cooldown: </><Cooldown>%.1f</>\n\n"
 
 		// NumArcaneShards
 		"%s"
 		"causing radial arcane damage of </>"
 
 		// Damage
-		"<Damage>%.1f</><Default>.</>"),
+		"<Damage>%.1f</>"),
 
 		// Values
 		Level,

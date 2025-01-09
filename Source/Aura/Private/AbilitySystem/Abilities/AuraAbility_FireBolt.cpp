@@ -37,11 +37,11 @@ FText UAuraAbility_FireBolt::GetDescription(int32 Level) const
 		"<Title>FIRE BOLT</>\n\n"
 
 		// Level
-		"<Small>Level: </><Level>%d</>\n"
+		"<Default>Level: </><Level>%d</>\n"
 		// ManaCost
-		"<Small>ManaCost: </><ManaCost>%.1f</>\n"
+		"<Default>ManaCost: </><ManaCost>%.1f</>\n"
 		// Cooldown
-		"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
+		"<Default>Cooldown: </><Cooldown>%.1f</>\n\n"
 
 		// NumProjectiles
 		"%s"

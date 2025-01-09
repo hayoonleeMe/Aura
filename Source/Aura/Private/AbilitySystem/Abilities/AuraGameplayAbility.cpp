@@ -7,13 +7,18 @@
 
 UAuraGameplayAbility::UAuraGameplayAbility()
 {
-	LevelRequirement = 1;
+	UnlockRequiredLevel = 1;
 	MaxSpellLevel = 4;
 }
 
 FText UAuraGameplayAbility::GetLockedDescription() const
 {
-	return FText::FromString(FString::Printf(TEXT("<Default>Spell Locked Until Level: %d</>"), LevelRequirement));
+	return FText::FromString(FString::Printf(TEXT("<Default>Requires Level </><Level>%d </><Default>to unlock.</>"), UnlockRequiredLevel));
+}
+
+FText UAuraGameplayAbility::GetMaxLevelDescription()
+{
+	return FText::FromString(TEXT("<Default>Max Level Reached.</>"));
 }
 
 float UAuraGameplayAbility::GetManaCost(int32 Level) const

@@ -81,7 +81,7 @@ bool USpellMenuWidgetController::CanSpendPoint() const
 			{
 				// 현재 플레이어의 레벨이 Spell을 Unlock 할 수 있는 레벨인지 반환
 				const int32 PlayerLevel = GetAuraAttributeSetChecked()->GetLevel();
-				return PlayerLevel >= AuraAbilityCDO->LevelRequirement;
+				return PlayerLevel >= AuraAbilityCDO->UnlockRequiredLevel;
 			}
 		}
 	}
@@ -212,7 +212,7 @@ void USpellMenuWidgetController::UpdateDescription(bool bSelected) const
 			if (const UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(SpellSpec->Ability))
 			{
 				// Spell이 최대 레벨이면 Next Level Description은 표시 X
-				const FText NextLevelDescriptionText = SpellSpec->Level < AuraAbility->MaxSpellLevel ? AuraAbility->GetDescription(SpellSpec->Level + 1) : FText();
+				const FText NextLevelDescriptionText = SpellSpec->Level < AuraAbility->MaxSpellLevel ? AuraAbility->GetDescription(SpellSpec->Level + 1) : AuraAbility->GetMaxLevelDescription();
 				const FText DescriptionText = AuraAbility->GetDescription(SpellSpec->Level);
 				OnDescriptionUpdatedDelegate.Broadcast(DescriptionText, NextLevelDescriptionText);
 			}
@@ -226,7 +226,7 @@ void USpellMenuWidgetController::UpdateDescription(bool bSelected) const
 					if (const UAuraGameplayAbility* AuraAbilityCDO = Cast<UAuraGameplayAbility>(SpellAbilityClass.GetDefaultObject()))
 					{
 						// Locked Description
-						OnDescriptionUpdatedDelegate.Broadcast(AuraAbilityCDO->GetLockedDescription(), FText());
+						OnDescriptionUpdatedDelegate.Broadcast(AuraAbilityCDO->GetLockedDescription(), AuraAbilityCDO->GetDescription(1));
 					}
 				}
 			}
