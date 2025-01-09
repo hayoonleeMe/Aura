@@ -22,7 +22,7 @@ FText UAuraAbility_HaloOfProtection::GetDescription(int32 Level) const
 
 		// Description
 		"<Default>Reduces incoming damage by </>"
-		"<Percent>%d%%</><Default>.</>"),
+		"<Percent>%d%%</>"),
 		
 		// Values
 		DamageReductionPercent
