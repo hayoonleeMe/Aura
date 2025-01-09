@@ -7,6 +7,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AuraBlueprintLibrary.generated.h"
 
+struct FGameplayAbilityTargetDataHandle;
 struct FGameplayCueParameters;
 class USpellMenuWidgetController;
 class UOverlayWidgetController;
@@ -80,6 +81,9 @@ public:
 	// Level에 도달하는 데 필요한 XP 값을 반환
 	UFUNCTION(BlueprintPure)
 	static int32 GetLevelUpXPRequirement(const APlayerController* OwningController, int32 Level);
+
+	// Returns the Cursor Target for a given index if it exists
+	static TWeakObjectPtr<AActor> GetCursorTargetFromTargetData(const FGameplayAbilityTargetDataHandle& TargetData, int32 Index);
 
 	// ============================================================================
 	// UI

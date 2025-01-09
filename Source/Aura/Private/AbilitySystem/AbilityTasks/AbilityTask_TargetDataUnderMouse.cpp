@@ -4,6 +4,10 @@
 #include "AbilitySystem/AbilityTasks/AbilityTask_TargetDataUnderMouse.h"
 
 #include "AbilitySystemComponent.h"
+#include "AuraBlueprintLibrary.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/AuraGameplayAbilityTargetData_SingleTargetHit.h"
+#include "Interaction/CombatInterface.h"
 #include "Interaction/PlayerInterface.h"
 
 UAbilityTask_TargetDataUnderMouse* UAbilityTask_TargetDataUnderMouse::CreateTask(UGameplayAbility* OwningAbility)
@@ -47,9 +51,23 @@ void UAbilityTask_TargetDataUnderMouse::SendTargetDataToServer()
 	{
 		// Retrieve Cached Target HitResult
 		FHitResult HitResult = PlayerInterface->GetTargetHitResult();
+		
+		FAuraGameplayAbilityTargetData_SingleTargetHit* NewTargetData = new FAuraGameplayAbilityTargetData_SingleTargetHit(HitResult); 
+
+		if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+		{
+			// 클라이언트에서 CursorTarget이 Invalid 해졌으면 새로운 Cursor 좌표에 대해 다시 CursorTarget을 결정한다.
+			if (!AuraASC->CursorTargetWeakPtr.IsValid())
+			{
+				const ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(HitResult.GetActor());
+				AuraASC->CursorTargetWeakPtr = TargetCombatInterface && !TargetCombatInterface->IsDead() ? HitResult.GetActor() : nullptr;
+			}
+			// 클라이언트에서의 CursorTarget을 전달해준다.
+			NewTargetData->CursorTarget = AuraASC->CursorTargetWeakPtr;
+		}
 
 		// FGameplayAbilityTargetData_SingleTargetHit 포인터는 FGameplayAbilityTargetDataHandle 내부에서 TSharedPtr로 괸리됨
-		const FGameplayAbilityTargetDataHandle TargetDataHandle(new FGameplayAbilityTargetData_SingleTargetHit(HitResult));
+		const FGameplayAbilityTargetDataHandle TargetDataHandle(NewTargetData);
 
 		// Valid한 TargetData를 Server로 전송
 		AbilitySystemComponent->ServerSetReplicatedTargetData(GetAbilitySpecHandle(), GetActivationPredictionKey(), TargetDataHandle, FGameplayTag(), AbilitySystemComponent->ScopedPredictionKey);
@@ -67,6 +85,12 @@ void UAbilityTask_TargetDataUnderMouse::OnAbilityTargetDataSet(const FGameplayAb
 {
 	// Client에 전송받은 TargetData를 Clear
 	AbilitySystemComponent->ConsumeClientReplicatedTargetData(GetAbilitySpecHandle(), GetActivationPredictionKey());
+
+	// 서버의 CursorTarget을 클라이언트의 CursorTarget으로 업데이트
+	if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		AuraASC->CursorTargetWeakPtr = UAuraBlueprintLibrary::GetCursorTargetFromTargetData(TargetDataHandle, 0);
+	}
 	
 	// AbilityTask를 실행한 Ability가 유효하고 Active한지 체크하고 Broadcast
 	if (ShouldBroadcastAbilityTaskDelegates())

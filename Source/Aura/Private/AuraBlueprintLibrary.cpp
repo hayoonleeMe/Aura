@@ -9,6 +9,7 @@
 #include "GameplayEffectTypes.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "AbilitySystem/AuraGameplayAbilityTargetData_SingleTargetHit.h"
 #include "Game/AuraGameModeBase.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/GameStateBase.h"
@@ -176,6 +177,19 @@ int32 UAuraBlueprintLibrary::GetLevelUpXPRequirement(const APlayerController* Ow
 		}
 	}
 	return 0;
+}
+
+TWeakObjectPtr<AActor> UAuraBlueprintLibrary::GetCursorTargetFromTargetData(const FGameplayAbilityTargetDataHandle& TargetData, int32 Index)
+{
+	if (TargetData.Data.IsValidIndex(Index))
+	{
+		if (const FAuraGameplayAbilityTargetData_SingleTargetHit* Data = static_cast<FAuraGameplayAbilityTargetData_SingleTargetHit*>(TargetData.Data[Index].Get()))
+		{
+			return Data->CursorTarget;
+		}
+	}
+
+	return nullptr;
 }
 
 UOverlayWidgetController* UAuraBlueprintLibrary::GetOverlayWidgetController(const APlayerController* OwningController)
