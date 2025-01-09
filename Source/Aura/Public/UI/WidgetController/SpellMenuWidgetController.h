@@ -107,11 +107,8 @@ private:
 	void UpdateStartupSpells() const;
 
 	// 서버에서 Spell이 Give되어 ASC의 ActivatableAbilities가 Replicated 될 때 호출할 Callback 함수
-	void OnSpellGiven();
+	void OnSpellGiven() const;
 
-	// 클라이언트가 초기화되었는지
-	uint8 bClientInitialized : 1;
-	
 	// 현재 Spell Menu에서 선택 중인 Spell Globe의 Spell Tag 캐싱
 	UPROPERTY()
 	FGameplayTag SelectedSpellTag;

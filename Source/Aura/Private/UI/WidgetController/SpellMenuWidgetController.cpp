@@ -14,7 +14,6 @@ USpellMenuWidgetController::USpellMenuWidgetController()
 {
 	bWaitSelectGlobe = false;
 	bHasSpellPoints = false;
-	bClientInitialized = false;
 }
 
 void USpellMenuWidgetController::BroadcastInitialValues()
@@ -175,19 +174,10 @@ void USpellMenuWidgetController::UpdateEquippedSpellChange(bool bEquipped, const
 	}
 }
 
-void USpellMenuWidgetController::OnSpellGiven()
+void USpellMenuWidgetController::OnSpellGiven() const
 {
-	// 초기에 Spell이 Give되어 ActivatableAbilities가 Replicate되기 전에 클라이언트의 BroadcastInitialValues()가 호출되기 때문에
-	// 클라이언트의 Spell Menu에 StartupSpell들이 업데이트되지 않으므로 OnSpellGiven에서 한번만 업데이트해준다.
-	if (!bClientInitialized)
-	{
-		bClientInitialized = true;
-		UpdateStartupSpells();
-	}
-
 	// Spell Menu에 전달
 	OnSpellGivenDelegate.Broadcast();
-
 	UpdateDescription(true);
 }
 
