@@ -10,8 +10,8 @@ DECLARE_DELEGATE_OneParam(FTargetDataUnderMouseSetSignature, const FGameplayAbil
 
 /**
  * 마우스 커서의 HitResult를 얻는 AbilityTask
- * Locally Controlled Owner인 경우, 해당 기기의 월드에서 수행한 Trace 결과를 반환하도록 구현
- * 서버(Non Locally Controlled Owner)에서는 클라이언트에서의 데이터를 전송받아 반환하도록 구현
+ * Locally Controlled Owner인 경우, 해당 기기의 월드에서 수행한 Cursor Trace HitResult와 CursorTarget을 서버로 전송하고 반환하도록 구현
+ * 서버(Non Locally Controlled Owner)에서는 클라이언트에서의 데이터를 전송받아 CursorTarget을 업데이트하고 반환하도록 구현
  */
 UCLASS()
 class AURA_API UAbilityTask_TargetDataUnderMouse : public UAbilityTask
