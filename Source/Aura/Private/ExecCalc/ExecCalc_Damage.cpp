@@ -161,10 +161,6 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	Damage = bBlocked ? Damage * 0.5f : Damage;
 	AuraEffectContext->SetIsBlockedHit(bBlocked);
 
-	// Damage 계산식에 사용되는 계수를 Level에 따른 Curve로 저장하는 CurveTable
-	const UCurveTable* DamageCalculationCoefficients = UAuraBlueprintLibrary::GetDamageCalculationCoefficients(SourceASC->GetAvatarActor());
-	check(DamageCalculationCoefficients);
-
 	// Target Armor & Source ArmorPenetration
 	float TargetArmor = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics.ArmorDef, EvaluateParameters, TargetArmor);
@@ -173,16 +169,12 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics.ArmorPenetrationDef, EvaluateParameters, SourceArmorPenetration);
 
 	// ArmorPenetration ignores a percentage of the Target's Armor
-	const FRealCurve* ArmorPenetrationCurve = DamageCalculationCoefficients->FindCurve(TEXT("ArmorPenetration"), FString());
-	check(ArmorPenetrationCurve);
-	const float ArmorPenetrationCoefficient = ArmorPenetrationCurve->Eval(SourceCharacterLevel);
-	const float EffectiveArmor = TargetArmor * (100 - SourceArmorPenetration * ArmorPenetrationCoefficient) / 100.f;
+	const float SourceArmorPenetrationCoefficient = UAuraBlueprintLibrary::GetArmorPenetrationCoefficientByLevel(SourceASC->GetAvatarActor(), SourceCharacterLevel);
+	const float TargetEffectiveArmor = TargetArmor * (100 - SourceArmorPenetration * SourceArmorPenetrationCoefficient) / 100.f;
 
 	// Armor ignores a percentage of incoming Damage
-	const FRealCurve* EffectiveArmorCurve = DamageCalculationCoefficients->FindCurve(TEXT("EffectiveArmor"), FString());
-	check(EffectiveArmorCurve);
-	const float EffectiveArmorCoefficient = EffectiveArmorCurve->Eval(TargetCharacterLevel);
-	Damage *= (100 - EffectiveArmor * EffectiveArmorCoefficient) / 100.f;
+	const float TargetEffectiveArmorCoefficient = UAuraBlueprintLibrary::GetEffectiveArmorCoefficientByLevel(TargetASC->GetAvatarActor(), TargetCharacterLevel);
+	Damage *= (100 - TargetEffectiveArmor * TargetEffectiveArmorCoefficient) / 100.f;
 
 	// Critical Hit
 	float SourceCriticalHitChance = 0.f;
@@ -194,13 +186,11 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	float TargetCriticalHitResistance = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics.CriticalHitResistanceDef, EvaluateParameters, TargetCriticalHitResistance);
 
-	const FRealCurve* CriticalHitResistanceCurve = DamageCalculationCoefficients->FindCurve(TEXT("CriticalHitResistance"), FString());
-	check(CriticalHitResistanceCurve);
-	const float CriticalHitResistanceCoefficient = CriticalHitResistanceCurve->Eval(TargetCharacterLevel);
+	const float TargetCriticalHitResistanceCoefficient = UAuraBlueprintLibrary::GetCriticalHitResistanceCoefficientByLevel(TargetASC->GetAvatarActor(), TargetCharacterLevel);
 
 	// Critical Hit Resistance reduces Critical Hit Chance by a certain percentage
-	const float EffectiveCriticalHitChance = SourceCriticalHitChance - TargetCriticalHitResistance * CriticalHitResistanceCoefficient;
-	const bool bCriticalHit = FMath::RandRange(1, 100) <= EffectiveCriticalHitChance;
+	const float SourceEffectiveCriticalHitChance = SourceCriticalHitChance - TargetCriticalHitResistance * TargetCriticalHitResistanceCoefficient;
+	const bool bCriticalHit = FMath::RandRange(1, 100) <= SourceEffectiveCriticalHitChance;
 	// Double damage plus a bonus if critical hit
 	Damage = bCriticalHit ? Damage * 2.f + SourceCriticalHitDamage : Damage; 
 	AuraEffectContext->SetIsCriticalHit(bCriticalHit);	

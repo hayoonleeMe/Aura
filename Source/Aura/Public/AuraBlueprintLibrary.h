@@ -33,8 +33,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static UEnemyClassConfig* GetEnemyClassConfig(const UObject* WorldContextObject);
 
+	// Level에 해당하는 ArmorPenetrationCoefficient 값을 반환
 	UFUNCTION(BlueprintCallable)
-	static UCurveTable* GetDamageCalculationCoefficients(const UObject* WorldContextObject);
+	static float GetArmorPenetrationCoefficientByLevel(const UObject* WorldContextObject, float Level);
+
+	// Level에 해당하는 EffectiveArmorCoefficient 값을 반환
+	UFUNCTION(BlueprintCallable)
+	static float GetEffectiveArmorCoefficientByLevel(const UObject* WorldContextObject, float Level);
+
+	// Level에 해당하는 CriticalHitResistanceCoefficient 값을 반환
+	UFUNCTION(BlueprintCallable)
+	static float GetCriticalHitResistanceCoefficientByLevel(const UObject* WorldContextObject, float Level);
 
 	UFUNCTION(BlueprintCallable)
 	static void ApplyDamageEffect(const FDamageEffectParams& Params);
