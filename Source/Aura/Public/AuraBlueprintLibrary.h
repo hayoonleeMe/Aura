@@ -76,11 +76,11 @@ public:
 	static FVector GetActorFeetLocation(const AActor* Actor);
 
 	// 게임에서 기본으로 사용하는 Input Mode로 설정
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"))
 	static void SetInGameInputMode(const UObject* WorldContextObject);
 
 	// UI 전용 Input Mode로 설정
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"))
 	static void SetUIInputMode(const UObject* WorldContextObject);
 
 	// Actor의 Level Attribute 값을 반환

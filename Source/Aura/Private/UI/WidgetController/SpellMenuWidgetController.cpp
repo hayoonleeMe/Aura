@@ -196,7 +196,10 @@ void USpellMenuWidgetController::UpdateStartupSpells() const
 	for (const TTuple<FGameplayTag, FGameplayTag>& Tuple : StartupSpells)
 	{
 		UpdateSpellChange(Tuple.Key);
-		UpdateEquippedSpellChange(true, Tuple.Value, Tuple.Key, false);
+		if (Tuple.Value.IsValid())
+		{
+			UpdateEquippedSpellChange(true, Tuple.Value, Tuple.Key, false);
+		}
 	}
 }
 
