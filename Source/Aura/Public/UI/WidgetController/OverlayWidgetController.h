@@ -7,10 +7,22 @@
 #include "SpellMenuWidgetController.h"
 #include "OverlayWidgetController.generated.h"
 
+/**
+ * WBP_Overlay에서 생성해 연 Menu를 나타내는 enum
+ */
+UENUM(BlueprintType)
+enum class EMenuType : uint8
+{
+	SpellMenu
+};
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, NewValue);
 
 // WBP_Overlay의 Menu Widget Switcher를 표시하거나 숨기는 델레게이트
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FShowMenuWidgetSwitcherSignature, bool, bVisible);
+
+// WBP_Overlay에서 생성해 연 Menu Widget이 닫혔음을 알리는 델레게이트
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMenuClosedSignature, EMenuType, MenuType);
 
 // InputTag에 등록된 Spell의 Cooldown이 시작됨을 알리는 델레게이트
 // Spell의 Cooldown을 전달
@@ -51,6 +63,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category="Aura|Overlay")
 	FShowMenuWidgetSwitcherSignature ShowMenuWidgetSwitcherDelegate;
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category="Aura|Overlay")
+	FOnMenuClosedSignature OnMenuClosedDelegate;
 
 	UPROPERTY(BlueprintAssignable, Category="Aura|Overlay")
 	FOnEquippedSpellChangedSignature OnEquippedSpellChangedDelegate;
