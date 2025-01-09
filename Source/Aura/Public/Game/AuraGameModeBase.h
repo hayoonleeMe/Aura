@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "ScalableFloat.h"
 #include "AuraGameModeBase.generated.h"
 
 class UEnemyClassConfig;
@@ -24,7 +25,20 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
 	TObjectPtr<UEnemyClassConfig> EnemyClassConfig;
 
-	// Damage 계산식에 사용되는 계수 By Level
-	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
-	TObjectPtr<UCurveTable> DamageCalculationCoefficients;
+	// ============================================================================
+	// Damage Calculation Coefficients
+	// Damage 계산식에 사용되는 Level 별 계수
+	// ============================================================================
+
+	// ArmorPenetrationCoefficient 값을 저장하는 Curve
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Damage Calculation Coefficients")
+	FScalableFloat ArmorPenetrationCoefficientCurve;
+
+	// EffectiveArmorCoefficient 값을 저장하는 Curve
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Damage Calculation Coefficients")
+	FScalableFloat EffectiveArmorCoefficientCurve;
+
+	// CriticalHitResistanceCoefficient 값을 저장하는 Curve
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Damage Calculation Coefficients")
+	FScalableFloat CriticalHitResistanceCoefficientCurve;
 };

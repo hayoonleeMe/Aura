@@ -27,10 +27,31 @@ UEnemyClassConfig* UAuraBlueprintLibrary::GetEnemyClassConfig(const UObject* Wor
 	return IsValid(AuraGameModeBase) ? AuraGameModeBase->EnemyClassConfig : nullptr;
 }
 
-UCurveTable* UAuraBlueprintLibrary::GetDamageCalculationCoefficients(const UObject* WorldContextObject)
+float UAuraBlueprintLibrary::GetArmorPenetrationCoefficientByLevel(const UObject* WorldContextObject, float Level)
 {
-	const AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
-	return IsValid(AuraGameModeBase) ? AuraGameModeBase->DamageCalculationCoefficients : nullptr;
+	if (const AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject)))
+	{
+		return AuraGameModeBase->ArmorPenetrationCoefficientCurve.GetValueAtLevel(Level);
+	}
+	return 0.f;
+}
+
+float UAuraBlueprintLibrary::GetEffectiveArmorCoefficientByLevel(const UObject* WorldContextObject, float Level)
+{
+	if (const AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject)))
+	{
+		return AuraGameModeBase->EffectiveArmorCoefficientCurve.GetValueAtLevel(Level);
+	}
+	return 0.f;
+}
+
+float UAuraBlueprintLibrary::GetCriticalHitResistanceCoefficientByLevel(const UObject* WorldContextObject, float Level)
+{
+	if (const AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject)))
+	{
+		return AuraGameModeBase->CriticalHitResistanceCoefficientCurve.GetValueAtLevel(Level);
+	}
+	return 0.f;
 }
 
 void UAuraBlueprintLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
