@@ -32,7 +32,10 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 	AuraASC->OnSpellAbilityChangedDelegate.AddUObject(this, &ThisClass::UpdateSpellChange);
 
 	// Spell의 장착 상황 변경을 전달
-	AuraASC->OnEquippedSpellAbilityChangedDelegate.AddUObject(this, &ThisClass::UpdateEquippedSpellChange);
+	AuraASC->OnEquippedSpellAbilityChangedDelegate.AddWeakLambda(this, [this](bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag)
+	{
+		UpdateEquippedSpellChange(bEquipped, InputTag, SpellTag, true);
+	});
 
 	// 클라이언트에서 Spell을 Unlock할 때 Equip Button을 올바르게 활성화하기 위해 바인딩
 	AuraASC->OnActivatableAbilitiesReplicatedDelegate.AddUObject(this, &ThisClass::OnSpellGiven);
@@ -165,12 +168,12 @@ void USpellMenuWidgetController::UpdateSpellChange(const FGameplayTag& SpellTag)
 	}
 }
 
-void USpellMenuWidgetController::UpdateEquippedSpellChange(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag) const
+void USpellMenuWidgetController::UpdateEquippedSpellChange(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag, bool bPlayEquipSound) const
 {
 	if (SpellConfig)
 	{
 		const FSpellInfo SpellInfo = SpellConfig->GetSpellInfoByTag(SpellTag);
-		OnEquippedSpellChangedDelegate.Broadcast(bEquipped, InputTag, SpellInfo);
+		OnEquippedSpellChangedDelegate.Broadcast(bEquipped, InputTag, SpellInfo, bPlayEquipSound);
 	}
 }
 
@@ -193,7 +196,7 @@ void USpellMenuWidgetController::UpdateStartupSpells() const
 	for (const TTuple<FGameplayTag, FGameplayTag>& Tuple : StartupSpells)
 	{
 		UpdateSpellChange(Tuple.Key);
-		UpdateEquippedSpellChange(true, Tuple.Value, Tuple.Key);
+		UpdateEquippedSpellChange(true, Tuple.Value, Tuple.Key, false);
 	}
 }
 
