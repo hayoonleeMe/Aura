@@ -68,31 +68,16 @@ void UAuraAbility_FireBolt::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	{
 		return;
 	}
-
-	const UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo());
-	if (!AuraASC)
+	
+	// 클라이언트의 Cursor HitResult와 CursorTarget을 항상 서버로 전달하기 위해 UAbilityTask_TargetDataUnderMouse 수행 
+	if (UAbilityTask_TargetDataUnderMouse* AbilityTask = UAbilityTask_TargetDataUnderMouse::CreateTask(this))
 	{
-		return;
-	}
-
-	const ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(AuraASC->CursorTargetWeakPtr);
-	if (AuraASC->CursorTargetWeakPtr.IsValid() && TargetCombatInterface && !TargetCombatInterface->IsDead())
-	{
-		// CursorTarget이 유효하면 계속해서 공격 수행
-		ProcessAttack();
-	}
-	else
-	{
-		// 유효하지 않거나 죽었으면 TargetActor 결정
-		if (UAbilityTask_TargetDataUnderMouse* AbilityTask = UAbilityTask_TargetDataUnderMouse::CreateTask(this))
-		{
-			AbilityTask->TargetDataUnderMouseSetDelegate.BindUObject(this, &ThisClass::OnTargetDataUnderMouseSet);
-			AbilityTask->ReadyForActivation();
-		}
+		AbilityTask->TargetDataUnderMouseSetDelegate.BindUObject(this, &ThisClass::OnTargetDataUnderMouseSet);
+		AbilityTask->ReadyForActivation();
 	}
 }
 
-void UAuraAbility_FireBolt::ProcessAttack()
+void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
 	const UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo());
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
@@ -100,6 +85,10 @@ void UAuraAbility_FireBolt::ProcessAttack()
 	{
 		return;
 	}
+	
+	// UAbilityTask_TargetDataUnderMouse에서 Cursor HitResult를 구하고 CursorTarget을 설정한다.
+	const FHitResult& HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
+	CachedImpactPoint = HitResult.ImpactPoint;
 	
 	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(FAuraGameplayTags::Get().Abilities_Offensive_FireBolt);
 	check(TaggedCombatInfo.AnimMontage);
@@ -111,23 +100,6 @@ void UAuraAbility_FireBolt::ProcessAttack()
 
 	PlayAttackMontage(TaggedCombatInfo.AnimMontage, true);
 	WaitGameplayEvent(FAuraGameplayTags::Get().Event_Montage_FireBolt);
-}
-
-void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
-{
-	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo());
-	if (!AuraASC)
-	{
-		return;
-	}
-
-	// CursorTarget Caching
-	const FHitResult& HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
-	const ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(HitResult.GetActor());
-	AuraASC->CursorTargetWeakPtr = TargetCombatInterface && !TargetCombatInterface->IsDead() ? HitResult.GetActor() : nullptr;
-	CachedImpactPoint = HitResult.ImpactPoint;
-	
-	ProcessAttack();
 }
 
 void UAuraAbility_FireBolt::OnEventReceived(FGameplayEventData Payload)
@@ -157,8 +129,8 @@ void UAuraAbility_FireBolt::SpawnFireBolts() const
 	{
 		return;
 	}
+	
 	const FVector CombatSocketLocation = CombatInterface->GetCombatSocketLocation(CachedCombatSocketName);
-
 	const int32 NumFireBolts = GetNumFireBoltsByLevel(GetAbilityLevel());
 
 	// Projectile 발사 방향 계산
