@@ -328,11 +328,9 @@ void UAuraAbilitySystemComponent::GetSpellAndInputTagPairs(TArray<TTuple<FGamepl
 		const FGameplayTag SpellTag = GetSpellTagForSpellSpec(&SpellSpec);
 		if (SpellTag.IsValid())
 		{
+			// 등록하지 않은 Spell은 InputTag가 없으므로 유효한지 체크하지 않고 Add
 			const FGameplayTag InputTag = GetInputTagForSpellSpec(&SpellSpec);
-			if (InputTag.IsValid())
-			{
-				OutArray.Add({ SpellTag, InputTag });
-			}
+			OutArray.Add({ SpellTag, InputTag });
 		}
 	}
 }
