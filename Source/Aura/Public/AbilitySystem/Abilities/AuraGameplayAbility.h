@@ -35,6 +35,9 @@ public:
 	// Locked Spell의 Description Text를 반환한다.
 	FText GetLockedDescription() const;
 
+	// Max Spell Level에 도달한 Spell의 Description Text를 반환한다.
+	static FText GetMaxLevelDescription();
+
 	// CostGameplayEffect의 Mana Attribute에 대한 Modifier의 Level에 따른 Magnitude를 반환한다.
 	// 값을 구할 수 없으면 0.f를 반환한다.
 	float GetManaCost(int32 Level) const;

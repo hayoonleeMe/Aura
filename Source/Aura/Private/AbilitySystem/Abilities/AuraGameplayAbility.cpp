@@ -16,6 +16,11 @@ FText UAuraGameplayAbility::GetLockedDescription() const
 	return FText::FromString(FString::Printf(TEXT("<Default>Spell Locked Until Level: %d</>"), LevelRequirement));
 }
 
+FText UAuraGameplayAbility::GetMaxLevelDescription()
+{
+	return FText::FromString(TEXT("<Default>Max Level Reached.</>"));
+}
+
 float UAuraGameplayAbility::GetManaCost(int32 Level) const
 {
 	float ManaCost = 0.f;

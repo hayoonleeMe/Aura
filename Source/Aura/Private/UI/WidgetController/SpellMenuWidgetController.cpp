@@ -212,7 +212,7 @@ void USpellMenuWidgetController::UpdateDescription(bool bSelected) const
 			if (const UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(SpellSpec->Ability))
 			{
 				// Spell이 최대 레벨이면 Next Level Description은 표시 X
-				const FText NextLevelDescriptionText = SpellSpec->Level < AuraAbility->MaxSpellLevel ? AuraAbility->GetDescription(SpellSpec->Level + 1) : FText();
+				const FText NextLevelDescriptionText = SpellSpec->Level < AuraAbility->MaxSpellLevel ? AuraAbility->GetDescription(SpellSpec->Level + 1) : AuraAbility->GetMaxLevelDescription();
 				const FText DescriptionText = AuraAbility->GetDescription(SpellSpec->Level);
 				OnDescriptionUpdatedDelegate.Broadcast(DescriptionText, NextLevelDescriptionText);
 			}
