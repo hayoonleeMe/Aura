@@ -19,7 +19,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FSelectSpellGlobeSignature, bool,
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSpellChangedSignature, const FSpellInfo&, SpellInfo);
 
 // Spell의 장착 상태 변경을 전달하는 델레게이트
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnEquippedSpellChangedSignature, bool, bEquipped, const FGameplayTag&, InputTag, const FSpellInfo&, SpellInfo);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnEquippedSpellChangedSignature, bool, bEquipped, const FGameplayTag&, InputTag, const FSpellInfo&, SpellInfo, bool, bPlayEquipSound);
 
 // 서버의 ASC에서 ActivatableAbilities가 변경되어 클라이언트에서 OnRep_ActivateAbilities이 호출될 때를 전달하는 델레게이트
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSpellGivenSignature);
@@ -98,7 +98,7 @@ private:
 	void UpdateSpellChange(const FGameplayTag& SpellTag) const;
 
 	// Spell의 장착 상태 변경을 Spell Menu에 업데이트
-	void UpdateEquippedSpellChange(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag) const;
+	void UpdateEquippedSpellChange(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag, bool bPlayEquipSound) const;
 
 	// Spell Points의 변경을 Spell Menu에 업데이트
 	void UpdateSpellPoints(int32 SpellPoints);
@@ -107,11 +107,8 @@ private:
 	void UpdateStartupSpells() const;
 
 	// 서버에서 Spell이 Give되어 ASC의 ActivatableAbilities가 Replicated 될 때 호출할 Callback 함수
-	void OnSpellGiven();
+	void OnSpellGiven() const;
 
-	// 클라이언트가 초기화되었는지
-	uint8 bClientInitialized : 1;
-	
 	// 현재 Spell Menu에서 선택 중인 Spell Globe의 Spell Tag 캐싱
 	UPROPERTY()
 	FGameplayTag SelectedSpellTag;

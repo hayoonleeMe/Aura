@@ -13,8 +13,14 @@ void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
 {
 	Super::OnRep_ActivateAbilities();
 
-	// 클라이언트의 Spell Menu Widget에서 Spell을 Unlock한 뒤 Equip Button을 올바르게 활성화하기 위함
-	OnActivatableAbilitiesReplicatedDelegate.Broadcast();
+	const int32 NewNum = GetActivatableAbilities().Num();
+	if (NumActivatableAbilities != NewNum)
+	{
+		// 클라이언트의 Spell Menu Widget에서 Spell을 Unlock한 뒤 Equip Button을 올바르게 활성화하기 위해 Broadcast
+		// 실제 ActivatableAbilities 수가 변경됐을 때만 수행
+		NumActivatableAbilities = NewNum;
+		OnActivatableAbilitiesReplicatedDelegate.Broadcast();
+	}
 }
 
 void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities)

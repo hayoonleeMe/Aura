@@ -61,7 +61,7 @@ void UOverlayWidgetController::UpdateEquippedSpellChange(bool bEquipped, const F
 	if (SpellConfig)
 	{
 		const FSpellInfo SpellInfo = SpellConfig->GetSpellInfoByTag(SpellTag);
-		OnEquippedSpellChangedDelegate.Broadcast(bEquipped, InputTag, SpellInfo);
+		OnEquippedSpellChangedDelegate.Broadcast(bEquipped, InputTag, SpellInfo, false); 
 	}
 
 	// Overlay에 Equipped Spell의 Cooldown Update
