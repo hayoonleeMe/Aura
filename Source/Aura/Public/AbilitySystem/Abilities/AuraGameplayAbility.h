@@ -23,7 +23,7 @@ public:
 
 	// 해당 Spell을 Unlock할 수 있는 Character의 필요 레벨
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
-	int32 LevelRequirement;
+	int32 UnlockRequiredLevel;
 
 	// Spell의 최대 레벨
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
