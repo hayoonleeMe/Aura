@@ -130,4 +130,7 @@ private:
 	// 항상 서버에서 작업을 처리하므로 Client RPC를 이용해 기존 클라이언트에서 OnEquippedSpellAbilityChangedDelegate 실행한다. 
 	UFUNCTION(Client, Reliable)
 	void ClientBroadcastEquippedSpellChange(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag);
+
+	// 클라이언트의 ActivatableAbilities 원소 수 Caching
+	int32 NumActivatableAbilities = 0;
 };

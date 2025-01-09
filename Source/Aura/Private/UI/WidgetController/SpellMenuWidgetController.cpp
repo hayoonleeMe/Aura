@@ -176,6 +176,9 @@ void USpellMenuWidgetController::UpdateEquippedSpellChange(bool bEquipped, const
 
 void USpellMenuWidgetController::OnSpellGiven() const
 {
+	// 서버에서 Spell을 Unlock, GiveAbility를 수행해 ActivatableAbilities의 원소 수가 변경됐을 때 호출된다.
+	// 따라서 새로운 Spell을 Unlock했음을 클라이언트에서 감지할 수 있다.
+	
 	// Spell Menu에 전달
 	OnSpellGivenDelegate.Broadcast();
 	UpdateDescription(true);
