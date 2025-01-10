@@ -15,14 +15,20 @@ struct FAuraGameplayEffectContext : public FGameplayEffectContext
 
 public:
 	FAuraGameplayEffectContext()
-		: bIsBlockedHit(false), bIsCriticalHit(false)
+		: bIsBlockedHit(false), bCanBlockedHit(true), bIsCriticalHit(false), bCanCriticalHit(true), bShouldActivateHitReact(true)
 	{}
 	
 	bool IsBlockedHit() const { return bIsBlockedHit; }
+	bool CanBlockedHit() const { return bCanBlockedHit; }
 	bool IsCriticalHit() const { return bIsCriticalHit; }
+	bool CanCriticalHit() const { return bCanCriticalHit; }
+	bool ShouldActivateHitReact() const { return bShouldActivateHitReact; }
 
 	void SetIsBlockedHit(bool bInIsBlockedHit) { bIsBlockedHit = bInIsBlockedHit; }
+	void SetCanBlockedHit(bool bInCanBlockedHit) { bCanBlockedHit = bInCanBlockedHit; }
 	void SetIsCriticalHit(bool bInIsCriticalHit) { bIsCriticalHit = bInIsCriticalHit; }
+	void SetCanCriticalHit(bool bInCanCriticalHit) { bCanCriticalHit = bInCanCriticalHit; }
+	void SetShouldActivateHitReact(bool bShouldActivate) { bShouldActivateHitReact = bShouldActivate; }
 
 	// Handle로부터 FAuraGameplayEffectContext 포인터를 반환한다.
 	// 구할 수 없으면 nullptr를 반환한다.
@@ -52,9 +58,21 @@ protected:
 	UPROPERTY()
 	bool bIsBlockedHit;
 
+	// Blocked Hit이 발생할 수 있는지를 나타냄
+	UPROPERTY()
+	bool bCanBlockedHit;
+
 	// Source의 Critical Hit Chance에 의해 데미지가 증가됐는지를 나타냄
 	UPROPERTY()
 	bool bIsCriticalHit;
+
+	// Critical Hit이 발생할 수 있는지를 나타냄
+	UPROPERTY()
+	bool bCanCriticalHit;
+
+	// HitReact를 실행하는지 여부를 나타냄
+	UPROPERTY()
+	bool bShouldActivateHitReact;
 };
 
 template<>

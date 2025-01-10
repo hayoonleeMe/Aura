@@ -163,8 +163,11 @@ void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSp
 		else
 		{
 			// HitReact
-			const FGameplayTagContainer TagContainer(FAuraGameplayTags::Get().Abilities_HitReact);
-			GetOwningAbilitySystemComponentChecked()->TryActivateAbilitiesByTag(TagContainer);
+			if (AuraEffectContext->ShouldActivateHitReact())
+			{
+				GetOwningAbilitySystemComponentChecked()->TryActivateAbilitiesByTag(FAuraGameplayTags::Get().Abilities_HitReact.GetSingleTagContainer());
+			}
+
 		}
 
 		// Damage Indicator 표시
