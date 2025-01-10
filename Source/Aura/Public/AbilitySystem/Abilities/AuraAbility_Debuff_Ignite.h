@@ -8,7 +8,7 @@
 
 /**
  * 4초 동안 매 초마다 활성화된 대상에게 Fire Type Damage를 입히는 Ignite Debuff
- * 이 Debuff를 유발한 Spell의 최종 Damage의 10%에 해당하는 Damage를 매 초마다 주고, 중첩될 수 있다.
+ * 이 Debuff를 유발한 Spell의 Damage의 10%에 해당하는 Damage를 매 초마다 주고, 중첩될 수 있다.
  */
 UCLASS()
 class AURA_API UAuraAbility_Debuff_Ignite : public UAuraGameplayAbility
