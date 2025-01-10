@@ -182,7 +182,11 @@ void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSp
 void UAuraAttributeSet::HandlePlayerXPGain()
 {
 	AActor* AvatarActor = GetActorInfo() && GetActorInfo()->AvatarActor.IsValid() ? GetActorInfo()->AvatarActor.Get() : nullptr;
-	IPlayerInterface* PlayerInterface = CastChecked<IPlayerInterface>(AvatarActor);
+	IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(AvatarActor);
+	if (!PlayerInterface)
+	{
+		return;
+	}
 
 	int32 LocalXP = GetXP();
 	while (LocalXP)
