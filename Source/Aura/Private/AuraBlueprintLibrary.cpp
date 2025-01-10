@@ -10,6 +10,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/AuraGameplayAbilityTargetData_SingleTargetHit.h"
+#include "AbilitySystem/AuraGameplayEffectContext.h"
 #include "Game/AuraGameModeBase.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/GameStateBase.h"
@@ -56,7 +57,15 @@ float UAuraBlueprintLibrary::GetCriticalHitResistanceCoefficientByLevel(const UO
 
 void UAuraBlueprintLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
 {
-	const FGameplayEffectSpecHandle EffectSpecHandle = Params.SourceAbilitySystemComponent->MakeOutgoingSpec(Params.DamageEffectClass, Params.AbilityLevel, Params.SourceAbilitySystemComponent->MakeEffectContext());
+	// Set Debuff Parameters
+	const FGameplayEffectContextHandle EffectContextHandle = Params.SourceAbilitySystemComponent->MakeEffectContext();
+	if (FAuraGameplayEffectContext* AuraEffectContext = FAuraGameplayEffectContext::ExtractEffectContext(EffectContextHandle))
+	{
+		AuraEffectContext->SetDebuffTag(Params.DebuffTag);
+		AuraEffectContext->SetDebuffChance(Params.DebuffChance);
+	}
+	const FGameplayEffectSpecHandle EffectSpecHandle = Params.SourceAbilitySystemComponent->MakeOutgoingSpec(Params.DamageEffectClass, Params.AbilityLevel, EffectContextHandle);
+	
 	// DamageTypeTag에 BaseDamage를 SetByCaller로 등록한다.
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, Params.DamageTypeTag, Params.BaseDamage);
 	
