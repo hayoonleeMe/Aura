@@ -13,7 +13,8 @@
 UENUM(BlueprintType)
 enum class EMenuType : uint8
 {
-	SpellMenu
+	SpellMenu,
+	AttributeMenu
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, NewValue);
