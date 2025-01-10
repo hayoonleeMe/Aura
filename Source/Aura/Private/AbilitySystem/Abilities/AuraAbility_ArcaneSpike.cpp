@@ -24,6 +24,8 @@ FText UAuraAbility_ArcaneSpike::GetDescription(int32 Level) const
 
 	const int32 NumArcaneShards = GetNumArcaneShardsByLevel(Level);
 
+	const int32 DebuffChance = GetDebuffChanceByLevel(Level);
+	
 	FString PartStr = TEXT("<Default>Summon a shard of arcane energy, ");
 	if (Level != 1)
 	{
@@ -46,14 +48,19 @@ FText UAuraAbility_ArcaneSpike::GetDescription(int32 Level) const
 		"causing radial arcane damage of </>"
 
 		// Damage
-		"<Damage>%.1f</>"),
+		"<Damage>%.1f</><Default>. "
+
+		// Debuff
+		"This spell has a </><Percent>%d%% </><Default>chance to enfeeble the target on hit. "
+		"Enfeeble reduces the target's damage by </><Percent>20%% </><Default>for </><Time>10 </><Default>seconds. Can't stack.</>"),
 
 		// Values
 		Level,
 		ManaCost,
 		Cooldown,
 		*PartStr,
-		ScaledDamage
+		ScaledDamage,
+		DebuffChance
 	);
 	
 	return FText::FromString(RetStr);
