@@ -94,6 +94,9 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Abilities_Passive_HealthSiphon = Manager.AddNativeGameplayTag(TEXT("Abilities.Passive.HealthSiphon"), TEXT("HealthSiphon Passive Ability Tag"));
 	GameplayTags.Abilities_Passive_ManaSiphon = Manager.AddNativeGameplayTag(TEXT("Abilities.Passive.ManaSiphon"), TEXT("ManaSiphon Passive Ability Tag"));
 
+	/* Debuff */
+	GameplayTags.Debuff_Ignite = Manager.AddNativeGameplayTag(TEXT("Debuff.Ignite"), TEXT("Ignite Debuff Tag"));
+
 	/* Cooldown */
 	GameplayTags.Cooldown_ArcaneSpike = Manager.AddNativeGameplayTag(TEXT("Cooldown.ArcaneSpike"), TEXT("ArcaneSpike Cooldown Tag"));
 	
