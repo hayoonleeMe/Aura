@@ -9,6 +9,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/AuraGameplayEffectContext.h"
+#include "AbilitySystem/Abilities/AuraAbility_Debuff_Enfeeble.h"
 #include "AbilitySystem/Abilities/AuraAbility_HaloOfProtection.h"
 
 // 구조체로 Capture할 Attribute 관리 및 설정
@@ -224,6 +225,12 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 			// Will receive this event in AuraAbility_ManaSiphon, then recovery mana
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(SourceAvatarActor, GameplayTags.Abilities_Passive_ManaSiphon, Payload);
 		}
+	}
+
+	// Damage Reduction by Enfeeble Debuff
+	if (SourceASC->HasMatchingGameplayTag(FAuraGameplayTags::Get().Debuff_Enfeeble))
+	{
+		Damage *= (1.f - UAuraAbility_Debuff_Enfeeble::GetDamageReductionRate());
 	}
 
 	// 최종 Damage를 IncomingDamage Attribute에 Override 적용 
