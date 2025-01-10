@@ -5,6 +5,7 @@
 
 #include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
+#include "NiagaraComponent.h"
 #include "AI/AuraAIController.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
@@ -42,6 +43,11 @@ AAuraEnemy::AAuraEnemy()
 
 	/* Movement */
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+
+	/* Debuff Niagara Component */
+	EnfeebleDebuffComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Enfeeble Debuff Component"));
+	EnfeebleDebuffComponent->SetupAttachment(GetMesh(), TEXT("DebuffSocket"));
+	EnfeebleDebuffComponent->bAutoActivate = false;
 }
 
 void AAuraEnemy::PossessedBy(AController* NewController)
@@ -94,6 +100,9 @@ void AAuraEnemy::InitAbilityActorInfo()
 
 	// Abilities.HitReact Tag의 Added, Removed Event에 Binding
 	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Abilities_HitReact).AddUObject(this, &ThisClass::OnHitReactTagChanged);
+
+	// Debuff.Enfeeble Tag의 Added, Removed Event에 Binding
+	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_Enfeeble).AddUObject(this, &ThisClass::OnDebuffEnfeebleTagChanged);
 }
 
 void AAuraEnemy::InitializeAttributes()
@@ -224,3 +233,20 @@ void AAuraEnemy::HandleDeathLocally()
 
 	Dissolve();
 }
+
+void AAuraEnemy::OnDebuffEnfeebleTagChanged(const FGameplayTag Tag, int32 Count) const
+{
+	// 모든 기기에서 호출되어 로컬에서 수행
+	if (Count > 0)
+	{
+		if (!EnfeebleDebuffComponent->IsActive())
+		{
+			EnfeebleDebuffComponent->Activate();
+		}
+	}
+	else
+	{
+		EnfeebleDebuffComponent->DeactivateImmediate();	
+	}
+}
+
