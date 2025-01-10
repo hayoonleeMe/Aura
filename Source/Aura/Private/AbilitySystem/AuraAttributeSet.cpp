@@ -132,6 +132,8 @@ void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSp
 	const float LocalIncomingDamage = GetIncomingDamage();
 	if (LocalIncomingDamage > 0.f)
 	{
+		const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
+		
 		AActor* AvatarActor = GetActorInfo() && GetActorInfo()->AvatarActor.IsValid() ? GetActorInfo()->AvatarActor.Get() : nullptr;
 
 		const FAuraGameplayEffectContext* AuraEffectContext = FAuraGameplayEffectContext::ExtractEffectContext(EffectSpec.GetEffectContext());
@@ -149,7 +151,7 @@ void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSp
 				CombatInterface->Die();
 
 				// if player kill enemy
-				if (CombatInterface->GetRoleTag().MatchesTagExact(FAuraGameplayTags::Get().Role_Enemy))
+				if (CombatInterface->GetRoleTag().MatchesTagExact(GameplayTags.Role_Enemy))
 				{
 					// Enemy Dead, Reward XP to Player
 					const int32 XPReward = CombatInterface->GetXPReward();
@@ -165,11 +167,18 @@ void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSp
 			// HitReact
 			if (AuraEffectContext->ShouldActivateHitReact())
 			{
-				GetOwningAbilitySystemComponentChecked()->TryActivateAbilitiesByTag(FAuraGameplayTags::Get().Abilities_HitReact.GetSingleTagContainer());
+				GetOwningAbilitySystemComponentChecked()->TryActivateAbilitiesByTag(GameplayTags.Abilities_HitReact.GetSingleTagContainer());
 			}
 
 			// Debuff
-			HandleDebuff(AuraEffectContext, LocalIncomingDamage);
+			if (FMath::RandRange(1, 100) <= AuraEffectContext->GetDebuffChance())
+			{
+				const FGameplayTag DebuffTag = AuraEffectContext->GetDebuffTag();
+				if (DebuffTag.MatchesTagExact(GameplayTags.Debuff_Ignite))
+				{
+					ActivateIgniteDebuff(AuraEffectContext, LocalIncomingDamage);
+				}
+			}
 		}
 
 		// Damage Indicator 표시
@@ -230,23 +239,20 @@ void UAuraAttributeSet::HandlePlayerXPGain()
 	SetXP(LocalXP);
 }
 
-void UAuraAttributeSet::HandleDebuff(const FAuraGameplayEffectContext* AuraEffectContext, float LocalIncomingDamage)
+void UAuraAttributeSet::ActivateIgniteDebuff(const FAuraGameplayEffectContext* AuraEffectContext, float LocalIncomingDamage)
 {
-	if (FMath::RandRange(1, 100) <= AuraEffectContext->GetDebuffChance())
+	if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetOwningAbilitySystemComponentChecked()))
 	{
-		if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetOwningAbilitySystemComponentChecked()))
+		if (FGameplayAbilitySpec* AbilitySpec = AuraASC->GetSpellSpecForSpellTag(AuraEffectContext->GetDebuffTag()))
 		{
-			if (FGameplayAbilitySpec* AbilitySpec = AuraASC->GetSpellSpecForSpellTag(AuraEffectContext->GetDebuffTag()))
-			{
-				// 데미지를 입히는 Instigator를 SourceObject로 등록
-				// Debuff Ability에서 이 Instigator를 이용해 Debuff Effect 적용
-				AbilitySpec->SourceObject = AuraEffectContext->GetInstigator();
+			// 데미지를 입히는 Instigator를 SourceObject로 등록
+			// Debuff Ability에서 이 Instigator를 이용해 Debuff Effect 적용
+			AbilitySpec->SourceObject = AuraEffectContext->GetInstigator();
 
-				// Incoming Damage를 전달하기 위해 SetByCallerTagMagnitudes 사용 
-				AbilitySpec->SetByCallerTagMagnitudes.Add(FAuraGameplayTags::Get().Damage_Type_Fire, LocalIncomingDamage);
+			// Incoming Damage를 전달하기 위해 SetByCallerTagMagnitudes 사용 
+			AbilitySpec->SetByCallerTagMagnitudes.Add(FAuraGameplayTags::Get().Damage_Type_Fire, LocalIncomingDamage);
 						
-				AuraASC->TryActivateAbility(AbilitySpec->Handle);
-			}
+			AuraASC->TryActivateAbility(AbilitySpec->Handle);
 		}
 	}
 }

@@ -214,5 +214,5 @@ public:
 private:
 	void HandleIncomingDamage(const FGameplayEffectSpec& EffectSpec);
 	void HandlePlayerXPGain();
-	void HandleDebuff(const FAuraGameplayEffectContext* AuraEffectContext, float LocalIncomingDamage);
+	void ActivateIgniteDebuff(const FAuraGameplayEffectContext* AuraEffectContext, float LocalIncomingDamage);
 };
