@@ -168,6 +168,8 @@ void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSp
 				GetOwningAbilitySystemComponentChecked()->TryActivateAbilitiesByTag(FAuraGameplayTags::Get().Abilities_HitReact.GetSingleTagContainer());
 			}
 
+			// Debuff
+			HandleDebuff(AuraEffectContext, LocalIncomingDamage);
 		}
 
 		// Damage Indicator 표시
@@ -226,6 +228,27 @@ void UAuraAttributeSet::HandlePlayerXPGain()
 
 	// Update Excess XP
 	SetXP(LocalXP);
+}
+
+void UAuraAttributeSet::HandleDebuff(const FAuraGameplayEffectContext* AuraEffectContext, float LocalIncomingDamage)
+{
+	if (FMath::RandRange(1, 100) <= AuraEffectContext->GetDebuffChance())
+	{
+		if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetOwningAbilitySystemComponentChecked()))
+		{
+			if (FGameplayAbilitySpec* AbilitySpec = AuraASC->GetSpellSpecForSpellTag(AuraEffectContext->GetDebuffTag()))
+			{
+				// 데미지를 입히는 Instigator를 SourceObject로 등록
+				// Debuff Ability에서 이 Instigator를 이용해 Debuff Effect 적용
+				AbilitySpec->SourceObject = AuraEffectContext->GetInstigator();
+
+				// Incoming Damage를 전달하기 위해 SetByCallerTagMagnitudes 사용 
+				AbilitySpec->SetByCallerTagMagnitudes.Add(FAuraGameplayTags::Get().Damage_Type_Fire, LocalIncomingDamage);
+						
+				AuraASC->TryActivateAbility(AbilitySpec->Handle);
+			}
+		}
+	}
 }
 
 void UAuraAttributeSet::OnRep_Strength(const FGameplayAttributeData& OldStrength) const

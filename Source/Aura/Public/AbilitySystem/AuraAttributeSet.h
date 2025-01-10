@@ -14,6 +14,8 @@
 	GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+struct FAuraGameplayEffectContext;
+
 /**
  * 
  */
@@ -212,4 +214,5 @@ public:
 private:
 	void HandleIncomingDamage(const FGameplayEffectSpec& EffectSpec);
 	void HandlePlayerXPGain();
+	void HandleDebuff(const FAuraGameplayEffectContext* AuraEffectContext, float LocalIncomingDamage);
 };
