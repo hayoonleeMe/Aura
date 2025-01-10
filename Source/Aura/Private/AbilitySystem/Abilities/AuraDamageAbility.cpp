@@ -99,3 +99,8 @@ void UAuraDamageAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, con
 	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
+
+float UAuraDamageAbility::GetDebuffChanceByLevel(float Level) const
+{
+	return DebuffChanceCurve.GetValueAtLevel(Level);
+}

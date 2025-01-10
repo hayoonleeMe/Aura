@@ -67,4 +67,19 @@ protected:
 
 	// UAuraAbilitySystemComponent의 TargetActorWeakPtr를 초기화해야 하는 지를 나타냄 
 	uint8 bShouldClearTargetActor : 1;
+
+	// ============================================================================
+	// Debuff
+	// ============================================================================
+
+	// 적용할 Debuff를 나타내는 Tag
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Debuff")
+	FGameplayTag DebuffTag;
+	
+	// Debuff를 적용할 확률 Percent를 저장하는 Curve
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Debuff")
+	FScalableFloat DebuffChanceCurve;
+
+	// Level에 따른 DebuffChance 값을 반환
+	float GetDebuffChanceByLevel(float Level) const;
 };
