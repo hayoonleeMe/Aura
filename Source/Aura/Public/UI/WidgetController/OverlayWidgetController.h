@@ -19,9 +19,6 @@ enum class EMenuType : uint8
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, NewValue);
 
-// WBP_Overlay의 Menu Widget Switcher를 표시하거나 숨기는 델레게이트
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FShowMenuWidgetSwitcherSignature, bool, bVisible);
-
 // WBP_Overlay에서 생성해 연 Menu Widget이 닫혔음을 알리는 델레게이트
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMenuClosedSignature, EMenuType, MenuType);
 
@@ -61,9 +58,6 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="Aura|Overlay")
 	FOnAttributeChangedSignature OnLevelChangedDelegate;
-
-	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category="Aura|Overlay")
-	FShowMenuWidgetSwitcherSignature ShowMenuWidgetSwitcherDelegate;
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category="Aura|Overlay")
 	FOnMenuClosedSignature OnMenuClosedDelegate;
