@@ -178,6 +178,10 @@ void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSp
 				{
 					ActivateIgniteDebuff(AuraEffectContext, LocalIncomingDamage);
 				}
+				else if (DebuffTag.MatchesTagExact(GameplayTags.Debuff_Enfeeble))
+				{
+					ActivateEnfeebleDebuff();
+				}
 			}
 		}
 
@@ -255,6 +259,11 @@ void UAuraAttributeSet::ActivateIgniteDebuff(const FAuraGameplayEffectContext* A
 			AuraASC->TryActivateAbility(AbilitySpec->Handle);
 		}
 	}
+}
+
+void UAuraAttributeSet::ActivateEnfeebleDebuff()
+{
+	GetOwningAbilitySystemComponentChecked()->TryActivateAbilitiesByTag(FAuraGameplayTags::Get().Debuff_Enfeeble.GetSingleTagContainer());
 }
 
 void UAuraAttributeSet::OnRep_Strength(const FGameplayAttributeData& OldStrength) const
