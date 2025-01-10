@@ -7,7 +7,6 @@
 #include "GameplayEffectExtension.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraGameplayEffectContext.h"
-#include "Aura/Aura.h"
 #include "Interaction/CombatInterface.h"
 #include "Interaction/PlayerInterface.h"
 #include "Net/UnrealNetwork.h"
@@ -169,12 +168,10 @@ void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSp
 		}
 
 		// Damage Indicator 표시
-		if (AvatarActor)
+		const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(AuraEffectContext->GetEffectCauser());
+		if (AvatarActor && PlayerInterface)
 		{
-			if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(AuraEffectContext->GetEffectCauser()))
-			{
-				PlayerInterface->IndicateDamage(LocalIncomingDamage, AuraEffectContext->IsBlockedHit(), AuraEffectContext->IsCriticalHit(), AvatarActor->GetActorLocation());
-			}
+			PlayerInterface->IndicateDamage(LocalIncomingDamage, AuraEffectContext->IsBlockedHit(), AuraEffectContext->IsCriticalHit(), AvatarActor->GetActorLocation());
 		}
 	}
 }
