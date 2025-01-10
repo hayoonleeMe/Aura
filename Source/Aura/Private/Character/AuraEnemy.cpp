@@ -48,6 +48,10 @@ AAuraEnemy::AAuraEnemy()
 	EnfeebleDebuffComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Enfeeble Debuff Component"));
 	EnfeebleDebuffComponent->SetupAttachment(GetMesh(), TEXT("DebuffSocket"));
 	EnfeebleDebuffComponent->bAutoActivate = false;
+	
+	IgniteDebuffComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Ignite Debuff Component"));
+	IgniteDebuffComponent->SetupAttachment(GetMesh(), TEXT("DebuffSocket"));
+	IgniteDebuffComponent->bAutoActivate = false;
 }
 
 void AAuraEnemy::PossessedBy(AController* NewController)
@@ -103,6 +107,9 @@ void AAuraEnemy::InitAbilityActorInfo()
 
 	// Debuff.Enfeeble Tag의 Added, Removed Event에 Binding
 	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_Enfeeble).AddUObject(this, &ThisClass::OnDebuffEnfeebleTagChanged);
+	
+	// Debuff.Ignite Tag의 Added, Removed Event에 Binding
+	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_Ignite).AddUObject(this, &ThisClass::OnDebuffIgniteTagChanged);
 }
 
 void AAuraEnemy::InitializeAttributes()
@@ -250,3 +257,18 @@ void AAuraEnemy::OnDebuffEnfeebleTagChanged(const FGameplayTag Tag, int32 Count)
 	}
 }
 
+void AAuraEnemy::OnDebuffIgniteTagChanged(const FGameplayTag Tag, int32 Count) const
+{
+	// 모든 기기에서 호출되어 로컬에서 수행
+	if (Count > 0)
+	{
+		if (!IgniteDebuffComponent->IsActive())
+		{
+			IgniteDebuffComponent->Activate();
+		}
+	}
+	else
+	{
+		IgniteDebuffComponent->DeactivateImmediate();	
+	}
+}

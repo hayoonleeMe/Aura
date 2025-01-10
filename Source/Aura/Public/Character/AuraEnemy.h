@@ -152,4 +152,11 @@ private:
 
 	// Debuff.Enfeeble Tag가 추가, 제거될 때 호출됨
 	void OnDebuffEnfeebleTagChanged(const FGameplayTag Tag, int32 Count) const;
+
+	// Ignite Debuff가 활성화됐을 때 표시할 Niagara Component
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UNiagaraComponent> IgniteDebuffComponent;
+
+	// Debuff.Ignite Tag가 추가, 제거될 때 호출됨
+	void OnDebuffIgniteTagChanged(const FGameplayTag Tag, int32 Count) const;
 };
