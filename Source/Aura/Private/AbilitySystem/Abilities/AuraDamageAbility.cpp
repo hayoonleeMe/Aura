@@ -25,8 +25,8 @@ void UAuraDamageAbility::MakeDamageEffectParams(FDamageEffectParams& OutParams, 
 	OutParams.BaseDamage = GetDamageByLevel(GetAbilityLevel());
 	OutParams.DamageTypeTag = DamageTypeTag;
 	OutParams.AbilityLevel = GetAbilityLevel();
-
-	// TODO : Knockback, Debuff, etc..
+	OutParams.DebuffTag = DebuffTag;
+	OutParams.DebuffChance = GetDebuffChanceByLevel(GetAbilityLevel());
 }
 
 float UAuraDamageAbility::GetDamageByLevel(int32 Level) const
