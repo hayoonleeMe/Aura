@@ -16,8 +16,8 @@ struct FDamageEffectParams
 	GENERATED_BODY()
 
 	FDamageEffectParams()
-		: BaseDamage(0.f), AbilityLevel(0.f)
-	{}
+		: BaseDamage(0.f), AbilityLevel(0.f), DebuffChance(0.f)
+	{ }
 
 	UPROPERTY()
 	TObjectPtr<UObject> WorldContextObject;
@@ -39,4 +39,10 @@ struct FDamageEffectParams
 
 	UPROPERTY()
 	float AbilityLevel;
+
+	UPROPERTY()
+	FGameplayTag DebuffTag;
+
+	UPROPERTY()
+	float DebuffChance;
 };

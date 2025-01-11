@@ -25,8 +25,8 @@ void UAuraDamageAbility::MakeDamageEffectParams(FDamageEffectParams& OutParams, 
 	OutParams.BaseDamage = GetDamageByLevel(GetAbilityLevel());
 	OutParams.DamageTypeTag = DamageTypeTag;
 	OutParams.AbilityLevel = GetAbilityLevel();
-
-	// TODO : Knockback, Debuff, etc..
+	OutParams.DebuffTag = DebuffTag;
+	OutParams.DebuffChance = GetDebuffChanceByLevel(GetAbilityLevel());
 }
 
 float UAuraDamageAbility::GetDamageByLevel(int32 Level) const
@@ -98,4 +98,9 @@ void UAuraDamageAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, con
 	}
 	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
+float UAuraDamageAbility::GetDebuffChanceByLevel(float Level) const
+{
+	return DebuffChanceCurve.GetValueAtLevel(Level);
 }

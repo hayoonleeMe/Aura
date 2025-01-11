@@ -26,6 +26,8 @@ FText UAuraAbility_FireBolt::GetDescription(int32 Level) const
 
 	const int32 NumFireBolts = GetNumFireBoltsByLevel(Level);
 
+	const int32 DebuffChance = GetDebuffChanceByLevel(Level);
+
 	FString PartStr = TEXT("<Default>Launches a bolt of fire, ");
 	if (Level != 1)
 	{
@@ -48,14 +50,20 @@ FText UAuraAbility_FireBolt::GetDescription(int32 Level) const
 		"exploding on impact and dealing </>"
 
 		// Damage
-		"<Damage>%.1f</><Default> fire damage with a chance to burn.</>"),
+		"<Damage>%.1f</><Default> fire damage. </>"
+
+		// Debuff
+		"<Default>This spell has a </><Percent>%d%% </><Default>chance to ignite the target on hit. "
+		"Ignite burns the target for </><Time>4 </><Default>seconds, dealing fire damage every second "
+		"equal to </><Percent>10%% </><Default>of this spell's damage. Can stack.</>"),
 
 		// Values
 		Level,
 		ManaCost,
 		Cooldown,
 		*PartStr,
-		ScaledDamage
+		ScaledDamage,
+		DebuffChance
 	);
 	
 	return FText::FromString(RetStr);

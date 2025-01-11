@@ -44,17 +44,29 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 		{
 			RepBits |= 1 << 6;
 		}
-		if (bIsBlockedHit)
+		if (bCanBlockedHit && bIsBlockedHit)
 		{
 			RepBits |= 1 << 7;
 		}
-		if (bIsCriticalHit)
+		if (!bCanBlockedHit)
 		{
 			RepBits |= 1 << 8;
 		}
+		if (bCanCriticalHit && bIsCriticalHit)
+		{
+			RepBits |= 1 << 9;
+		}
+		if (!bCanCriticalHit)
+		{
+			RepBits |= 1 << 10;
+		}
+		if (!bShouldActivateHitReact)
+		{
+			RepBits |= 1 << 11;
+		}
 	}
 
-	Ar.SerializeBits(&RepBits, 9);
+	Ar.SerializeBits(&RepBits, 12);
 
 	if (RepBits & (1 << 0))
 	{
@@ -101,10 +113,25 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 	{
 		Ar << bIsBlockedHit;
 	}
-	// bIsCriticalHit
+	// bCanBlockedHit
 	if (RepBits & (1 << 8))
 	{
+		Ar << bCanBlockedHit;
+	}
+	// bIsCriticalHit
+	if (RepBits & (1 << 9))
+	{
 		Ar << bIsCriticalHit;
+	}
+	// bCanCriticalHit
+	if (RepBits & (1 << 10))
+	{
+		Ar << bCanCriticalHit;
+	}
+	// bShouldActivateHitReact
+	if (RepBits & (1 << 11))
+	{
+		Ar << bShouldActivateHitReact;
 	}
 
 	if (Ar.IsLoading())

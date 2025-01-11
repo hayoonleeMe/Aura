@@ -10,6 +10,7 @@
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "AuraEnemy.generated.h"
 
+class UNiagaraComponent;
 class AAuraAIController;
 class UBehaviorTree;
 class UWidgetComponent;
@@ -64,7 +65,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Combat")
 	EEnemyClassType EnemyClassType;
 
-	// Abilities.HitReact Tag가 추가, 제거 될 때 호출됨
+	// Abilities.HitReact Tag가 추가, 제거될 때 호출됨
 	// Count=0: Removed, Count=1: Added
 	void OnHitReactTagChanged(const FGameplayTag Tag, int32 Count) const;
 
@@ -139,4 +140,30 @@ protected:
 	// 해당 Enemy를 죽일 때 플레이어가 얻는 XP Reward
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Reward")
 	FScalableFloat XPRewardCurve;
+
+private:
+	// ============================================================================
+	// Debuff Niagara Component
+	// ============================================================================
+
+	// Enfeeble Debuff가 활성화됐을 때 표시할 Niagara Component
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UNiagaraComponent> EnfeebleDebuffComponent;
+
+	// Debuff.Enfeeble Tag가 추가, 제거될 때 호출됨
+	void OnDebuffEnfeebleTagChanged(const FGameplayTag Tag, int32 Count) const;
+
+	// Ignite Debuff가 활성화됐을 때 표시할 Niagara Component
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UNiagaraComponent> IgniteDebuffComponent;
+
+	// Debuff.Ignite Tag가 추가, 제거될 때 호출됨
+	void OnDebuffIgniteTagChanged(const FGameplayTag Tag, int32 Count) const;
+
+	// Stun Debuff가 활성화됐을 때 표시할 Niagara Component
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UNiagaraComponent> StunDebuffComponent;
+	
+	// Debuff.Stun Tag가 추가, 제거될 때 호출됨
+	void OnDebuffStunTagChanged(const FGameplayTag Tag, int32 Count) const;
 };

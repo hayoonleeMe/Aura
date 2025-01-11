@@ -26,6 +26,8 @@ FText UAuraAbility_ChainLightning::GetDescription(int32 Level) const
 	const float ChainDamageRate = GetChainDamageRateByLevel(Level);
 	const int32 ChainDamagePercent = ChainDamageRate * 100.f;
 
+	const int32 DebuffChance = GetDebuffChanceByLevel(Level);
+
 	const FString RetStr = FString::Printf(TEXT(
 		// Title
 		"<Title>CHAIN LIGHTNING</>\n\n"
@@ -41,7 +43,11 @@ FText UAuraAbility_ChainLightning::GetDescription(int32 Level) const
 		"<Default>Fires a bolt of lightning that strikes a target and nearby enemies, "
 		"dealing </><Damage>%.1f</><Default> lightning damage with a chance to stun. "
 		"The lightning chains up to </><Damage>%d</><Default> nearby enemies, "
-		"dealing </><Percent>%d%%</><Default> of the previous damage to each chain.</>"),
+		"dealing </><Percent>%d%%</><Default> of the previous damage to each chain. </>"
+
+		// Debuff
+		"<Default>This spell has a </><Percent>%d%% </><Default>chance to stun the target on hit. "
+		"Stun disables the target, preventing all actions for </><Time>3 </><Default>seconds.</>"),
 
 		// Values
 		Level,
@@ -49,7 +55,8 @@ FText UAuraAbility_ChainLightning::GetDescription(int32 Level) const
 		Cooldown,
 		ScaledDamage,
 		MaxChainCount,
-		ChainDamagePercent
+		ChainDamagePercent,
+		DebuffChance
 	);
 
 	return FText::FromString(RetStr);

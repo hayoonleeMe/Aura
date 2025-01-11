@@ -5,6 +5,7 @@
 
 #include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
+#include "NiagaraComponent.h"
 #include "AI/AuraAIController.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
@@ -42,6 +43,19 @@ AAuraEnemy::AAuraEnemy()
 
 	/* Movement */
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+
+	/* Debuff Niagara Component */
+	EnfeebleDebuffComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Enfeeble Debuff Component"));
+	EnfeebleDebuffComponent->SetupAttachment(GetMesh(), TEXT("DebuffSocket"));
+	EnfeebleDebuffComponent->bAutoActivate = false;
+	
+	IgniteDebuffComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Ignite Debuff Component"));
+	IgniteDebuffComponent->SetupAttachment(GetMesh(), TEXT("DebuffSocket"));
+	IgniteDebuffComponent->bAutoActivate = false;
+
+	StunDebuffComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Stun Debuff Component"));
+	StunDebuffComponent->SetupAttachment(GetRootComponent());
+	StunDebuffComponent->bAutoActivate = false;
 }
 
 void AAuraEnemy::PossessedBy(AController* NewController)
@@ -94,6 +108,15 @@ void AAuraEnemy::InitAbilityActorInfo()
 
 	// Abilities.HitReact Tag의 Added, Removed Event에 Binding
 	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Abilities_HitReact).AddUObject(this, &ThisClass::OnHitReactTagChanged);
+
+	// Debuff.Enfeeble Tag의 Added, Removed Event에 Binding
+	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_Enfeeble).AddUObject(this, &ThisClass::OnDebuffEnfeebleTagChanged);
+	
+	// Debuff.Ignite Tag의 Added, Removed Event에 Binding
+	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_Ignite).AddUObject(this, &ThisClass::OnDebuffIgniteTagChanged);
+
+	// Debuff.Stun Tag의 Added, Removed Event에 Binding
+	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_Stun).AddUObject(this, &ThisClass::OnDebuffStunTagChanged);
 }
 
 void AAuraEnemy::InitializeAttributes()
@@ -223,4 +246,69 @@ void AAuraEnemy::HandleDeathLocally()
     }
 
 	Dissolve();
+}
+
+void AAuraEnemy::OnDebuffEnfeebleTagChanged(const FGameplayTag Tag, int32 Count) const
+{
+	// 모든 기기에서 호출되어 로컬에서 수행
+	if (Count > 0)
+	{
+		if (!EnfeebleDebuffComponent->IsActive())
+		{
+			EnfeebleDebuffComponent->Activate();
+		}
+	}
+	else
+	{
+		EnfeebleDebuffComponent->DeactivateImmediate();	
+	}
+}
+
+void AAuraEnemy::OnDebuffIgniteTagChanged(const FGameplayTag Tag, int32 Count) const
+{
+	// 모든 기기에서 호출되어 로컬에서 수행
+	if (Count > 0)
+	{
+		if (!IgniteDebuffComponent->IsActive())
+		{
+			IgniteDebuffComponent->Activate();
+		}
+	}
+	else
+	{
+		IgniteDebuffComponent->DeactivateImmediate();	
+	}
+}
+
+void AAuraEnemy::OnDebuffStunTagChanged(const FGameplayTag Tag, int32 Count) const
+{
+	// 모든 기기에서 호출되어 로컬에서 수행
+	const bool bStun = Count > 0;
+	if (bStun)
+	{
+		const FTaggedCombatInfo TaggedCombatInfo = GetTaggedCombatInfo(FAuraGameplayTags::Get().Debuff_Stun);
+		check(TaggedCombatInfo.AnimMontage);
+
+		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+		{
+			AnimInstance->Montage_Play(TaggedCombatInfo.AnimMontage);
+		}
+
+		StunDebuffComponent->Activate();
+	}
+	else
+	{
+		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+		{
+			AnimInstance->Montage_Stop(0.2f);
+		}
+
+		StunDebuffComponent->DeactivateImmediate();
+	}
+
+	if (IsValid(AuraAIController) && AuraAIController->GetBlackboardComponent())
+	{
+		// AIController server only
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("Stun"), bStun);
+	}
 }

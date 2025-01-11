@@ -9,6 +9,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/AuraGameplayEffectContext.h"
+#include "AbilitySystem/Abilities/AuraAbility_Debuff_Enfeeble.h"
 #include "AbilitySystem/Abilities/AuraAbility_HaloOfProtection.h"
 
 // 구조체로 Capture할 Attribute 관리 및 설정
@@ -152,14 +153,18 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		Damage *= (1.f - DamageReductionRate);
 	}
 
-	// Target BlockChance
-	float TargetBlockChance = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics.BlockChanceDef, EvaluateParameters, TargetBlockChance);
+	// Block Hit
+	if (AuraEffectContext->CanBlockedHit())
+	{
+		// Target BlockChance
+		float TargetBlockChance = 0.f;
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics.BlockChanceDef, EvaluateParameters, TargetBlockChance);
 	
-	// If Block, halve the Damage
-	const bool bBlocked = FMath::RandRange(1, 100) <= TargetBlockChance;
-	Damage = bBlocked ? Damage * 0.5f : Damage;
-	AuraEffectContext->SetIsBlockedHit(bBlocked);
+		// If Block, halve the Damage
+		const bool bBlocked = FMath::RandRange(1, 100) <= TargetBlockChance;
+		Damage = bBlocked ? Damage * 0.5f : Damage;
+		AuraEffectContext->SetIsBlockedHit(bBlocked);
+	}
 
 	// Target Armor & Source ArmorPenetration
 	float TargetArmor = 0.f;
@@ -177,23 +182,26 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	Damage *= (100 - TargetEffectiveArmor * TargetEffectiveArmorCoefficient) / 100.f;
 
 	// Critical Hit
-	float SourceCriticalHitChance = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics.CriticalHitChanceDef, EvaluateParameters, SourceCriticalHitChance);
+	if (AuraEffectContext->CanCriticalHit())
+	{
+		float SourceCriticalHitChance = 0.f;
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics.CriticalHitChanceDef, EvaluateParameters, SourceCriticalHitChance);
 
-	float SourceCriticalHitDamage = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics.CriticalHitDamageDef, EvaluateParameters, SourceCriticalHitDamage);
+		float SourceCriticalHitDamage = 0.f;
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics.CriticalHitDamageDef, EvaluateParameters, SourceCriticalHitDamage);
 
-	float TargetCriticalHitResistance = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics.CriticalHitResistanceDef, EvaluateParameters, TargetCriticalHitResistance);
+		float TargetCriticalHitResistance = 0.f;
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics.CriticalHitResistanceDef, EvaluateParameters, TargetCriticalHitResistance);
 
-	const float TargetCriticalHitResistanceCoefficient = UAuraBlueprintLibrary::GetCriticalHitResistanceCoefficientByLevel(TargetASC->GetAvatarActor(), TargetCharacterLevel);
+		const float TargetCriticalHitResistanceCoefficient = UAuraBlueprintLibrary::GetCriticalHitResistanceCoefficientByLevel(TargetASC->GetAvatarActor(), TargetCharacterLevel);
 
-	// Critical Hit Resistance reduces Critical Hit Chance by a certain percentage
-	const float SourceEffectiveCriticalHitChance = SourceCriticalHitChance - TargetCriticalHitResistance * TargetCriticalHitResistanceCoefficient;
-	const bool bCriticalHit = FMath::RandRange(1, 100) <= SourceEffectiveCriticalHitChance;
-	// Double damage plus a bonus if critical hit
-	Damage = bCriticalHit ? Damage * 2.f + SourceCriticalHitDamage : Damage; 
-	AuraEffectContext->SetIsCriticalHit(bCriticalHit);	
+		// Critical Hit Resistance reduces Critical Hit Chance by a certain percentage
+		const float SourceEffectiveCriticalHitChance = SourceCriticalHitChance - TargetCriticalHitResistance * TargetCriticalHitResistanceCoefficient;
+		const bool bCriticalHit = FMath::RandRange(1, 100) <= SourceEffectiveCriticalHitChance;
+		// Double damage plus a bonus if critical hit
+		Damage = bCriticalHit ? Damage * 2.f + SourceCriticalHitDamage : Damage; 
+		AuraEffectContext->SetIsCriticalHit(bCriticalHit);	
+	}
 	
 	// Health recovery from Damage
 	if (SourceASC->HasMatchingGameplayTag(GameplayTags.Abilities_Passive_HealthSiphon))
@@ -217,6 +225,12 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 			// Will receive this event in AuraAbility_ManaSiphon, then recovery mana
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(SourceAvatarActor, GameplayTags.Abilities_Passive_ManaSiphon, Payload);
 		}
+	}
+
+	// Damage Reduction by Enfeeble Debuff
+	if (SourceASC->HasMatchingGameplayTag(FAuraGameplayTags::Get().Debuff_Enfeeble))
+	{
+		Damage *= (1.f - UAuraAbility_Debuff_Enfeeble::GetDamageReductionRate());
 	}
 
 	// 최종 Damage를 IncomingDamage Attribute에 Override 적용 
