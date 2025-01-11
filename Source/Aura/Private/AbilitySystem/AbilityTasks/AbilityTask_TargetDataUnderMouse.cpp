@@ -56,11 +56,20 @@ void UAbilityTask_TargetDataUnderMouse::SendTargetDataToServer()
 
 		if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
 		{
-			// 클라이언트에서 CursorTarget이 Invalid 해졌으면 새로운 Cursor 좌표에 대해 다시 CursorTarget을 결정한다.
 			if (!AuraASC->CursorTargetWeakPtr.IsValid())
 			{
+				// 클라이언트에서 CursorTarget이 Invalid 해졌으면 새로운 Cursor 좌표에 대해 다시 CursorTarget을 결정한다.
 				const ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(HitResult.GetActor());
 				AuraASC->CursorTargetWeakPtr = TargetCombatInterface && !TargetCombatInterface->IsDead() ? HitResult.GetActor() : nullptr;
+			}
+			else
+			{
+				// 한번 지정한 CursorTarget이 유효하더라도 죽었는지 체크
+				const ICombatInterface* CursorTargetCombatInterface = Cast<ICombatInterface>(AuraASC->CursorTargetWeakPtr.Get());
+				if (!CursorTargetCombatInterface || CursorTargetCombatInterface->IsDead())
+				{
+					AuraASC->CursorTargetWeakPtr = nullptr;
+				}
 			}
 			// 클라이언트에서의 CursorTarget을 전달해준다.
 			NewTargetData->CursorTarget = AuraASC->CursorTargetWeakPtr;
