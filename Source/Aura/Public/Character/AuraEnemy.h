@@ -159,4 +159,7 @@ private:
 
 	// Debuff.Ignite Tag가 추가, 제거될 때 호출됨
 	void OnDebuffIgniteTagChanged(const FGameplayTag Tag, int32 Count) const;
+	
+	// Debuff.Stun Tag가 추가, 제거될 때 호출됨
+	void OnDebuffStunTagChanged(const FGameplayTag Tag, int32 Count) const;
 };

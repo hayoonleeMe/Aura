@@ -110,6 +110,9 @@ void AAuraEnemy::InitAbilityActorInfo()
 	
 	// Debuff.Ignite Tag의 Added, Removed Event에 Binding
 	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_Ignite).AddUObject(this, &ThisClass::OnDebuffIgniteTagChanged);
+
+	// Debuff.Stun Tag의 Added, Removed Event에 Binding
+	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_Stun).AddUObject(this, &ThisClass::OnDebuffStunTagChanged);
 }
 
 void AAuraEnemy::InitializeAttributes()
@@ -270,5 +273,28 @@ void AAuraEnemy::OnDebuffIgniteTagChanged(const FGameplayTag Tag, int32 Count) c
 	else
 	{
 		IgniteDebuffComponent->DeactivateImmediate();	
+	}
+}
+
+void AAuraEnemy::OnDebuffStunTagChanged(const FGameplayTag Tag, int32 Count) const
+{
+	// 모든 기기에서 호출되어 로컬에서 수행
+	const bool bStun = Count > 0;
+	if (bStun)
+	{
+		const FTaggedCombatInfo TaggedCombatInfo = GetTaggedCombatInfo(FAuraGameplayTags::Get().Debuff_Stun);
+		check(TaggedCombatInfo.AnimMontage);
+
+		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+		{
+			AnimInstance->Montage_Play(TaggedCombatInfo.AnimMontage);
+		}
+	}
+	else
+	{
+		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+		{
+			AnimInstance->Montage_Stop(0.2f);
+		}
 	}
 }

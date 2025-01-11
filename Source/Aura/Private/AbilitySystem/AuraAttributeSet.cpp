@@ -164,12 +164,8 @@ void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSp
 		}
 		else
 		{
-			// HitReact
-			if (AuraEffectContext->ShouldActivateHitReact())
-			{
-				GetOwningAbilitySystemComponentChecked()->TryActivateAbilitiesByTag(GameplayTags.Abilities_HitReact.GetSingleTagContainer());
-			}
-
+			UAbilitySystemComponent* ASC = GetOwningAbilitySystemComponentChecked();
+			
 			// Debuff
 			if (FMath::RandRange(1, 100) <= AuraEffectContext->GetDebuffChance())
 			{
@@ -178,10 +174,16 @@ void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSp
 				{
 					ActivateIgniteDebuff(AuraEffectContext, LocalIncomingDamage);
 				}
-				else if (DebuffTag.MatchesTagExact(GameplayTags.Debuff_Enfeeble))
+				else
 				{
-					ActivateEnfeebleDebuff();
+					ASC->TryActivateAbilitiesByTag(DebuffTag.GetSingleTagContainer());
 				}
+			}
+
+			// HitReact
+			if (AuraEffectContext->ShouldActivateHitReact() && !ASC->HasMatchingGameplayTag(GameplayTags.Debuff_Stun))
+			{
+				ASC->TryActivateAbilitiesByTag(GameplayTags.Abilities_HitReact.GetSingleTagContainer());
 			}
 		}
 
@@ -259,11 +261,6 @@ void UAuraAttributeSet::ActivateIgniteDebuff(const FAuraGameplayEffectContext* A
 			AuraASC->TryActivateAbility(AbilitySpec->Handle);
 		}
 	}
-}
-
-void UAuraAttributeSet::ActivateEnfeebleDebuff()
-{
-	GetOwningAbilitySystemComponentChecked()->TryActivateAbilitiesByTag(FAuraGameplayTags::Get().Debuff_Enfeeble.GetSingleTagContainer());
 }
 
 void UAuraAttributeSet::OnRep_Strength(const FGameplayAttributeData& OldStrength) const
