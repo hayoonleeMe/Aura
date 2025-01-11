@@ -126,31 +126,20 @@ void UAuraAbility_ChainLightning::CastLightningBeam() const
 
 	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
 
-	AActor* FirstTargetActor = AuraASC->CursorTargetWeakPtr.Get();
-	FVector TargetLocation = FirstTargetActor ? FirstTargetActor->GetActorLocation() : CachedImpactPoint;
-	const FVector CombatSocketLocation = CombatInterface->GetCombatSocketLocation(CachedCombatSocketName);
-	const FVector StartLocation = FirstTargetActor ? CombatSocketLocation : AvatarActor->GetActorLocation();
-
-	FRotator Rotation = (TargetLocation - StartLocation).GetSafeNormal().Rotation();
-	Rotation.Roll = 0.f;
-	if (!FirstTargetActor)
-	{
-		// CursorTarget이 없다면 바닥과 평행하게 발사
-		Rotation.Pitch = 0.f;
-	}
-	// Spell의 최대 시전 사거리 적용
+	FVector TargetLocation = AuraASC->CursorTargetWeakPtr.IsValid() ? AuraASC->CursorTargetWeakPtr->GetActorLocation() : CachedImpactPoint;
+	const FVector StartLocation = UAuraBlueprintLibrary::GetActorFeetLocation(AvatarActor) + FVector(0.f, 0.f, 35.f);
+	const FVector Direction = (TargetLocation - StartLocation).GetSafeNormal();
+	const FRotator Rotation = { 0.f, Direction.Rotation().Yaw, 0.f };
 	TargetLocation = StartLocation + Rotation.Vector() * MaxCastRange;
 
+	AActor* FirstTargetActor = nullptr;
 	FHitResult HitResult;
-	if (GetWorld()->LineTraceSingleByChannel(HitResult, CombatSocketLocation, TargetLocation, ECC_Projectile))
+	
+	if (GetWorld()->SweepSingleByChannel(HitResult, StartLocation, TargetLocation, FQuat::Identity, ECC_Target, FCollisionShape::MakeBox(SweepBox)))
 	{
-		// 처음 플레이어 무기에서 발사되는 Beam의 막히는 경우 고려
-		if (HitResult.GetActor() != FirstTargetActor)
-		{
-			const ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(HitResult.GetActor());
-			FirstTargetActor = TargetCombatInterface && !TargetCombatInterface->IsDead() ? HitResult.GetActor() : nullptr;
-		}
-		// 최종 Target 결정
+		// 플레이어 무기에서 발사되는 Beam이 막히는 경우 고려해 최종 Target 결정
+		const ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(HitResult.GetActor());
+		FirstTargetActor = TargetCombatInterface && !TargetCombatInterface->IsDead() ? HitResult.GetActor() : nullptr;
 		TargetLocation = FirstTargetActor ? FirstTargetActor->GetActorLocation() : HitResult.ImpactPoint;
 	}
 
