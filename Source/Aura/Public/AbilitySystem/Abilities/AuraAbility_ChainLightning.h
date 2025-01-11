@@ -32,6 +32,9 @@ private:
 
 	void CastLightningBeam() const;
 
+	// Target을 결정할 때 Sweep을 수행할 FCollisionShape을 정의하기 위한 FVector 
+	inline static FVector SweepBox = FVector(8.f, 8.f, 25.f);
+	
 	// Spell의 최대 시전 사거리
 	UPROPERTY(EditDefaultsOnly, Category="Aura|ChainLightning")
 	float MaxCastRange;
