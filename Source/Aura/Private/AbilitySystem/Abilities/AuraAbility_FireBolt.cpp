@@ -9,13 +9,10 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AbilityTasks/AbilityTask_TargetDataUnderMouse.h"
 #include "Actor/AuraProjectile.h"
-#include "GameFramework/ProjectileMovementComponent.h"
 
 UAuraAbility_FireBolt::UAuraAbility_FireBolt()
 {
-	SpreadAngle = 20.f;
-	MinHomingAcceleration = 1000.f;
-	MaxHomingAcceleration = 3200.f;
+	SpreadAngle = 10.f;
 }
 
 FText UAuraAbility_FireBolt::GetDescription(int32 Level) const
@@ -168,21 +165,6 @@ void UAuraAbility_FireBolt::SpawnFireBolts() const
 		{
 			// Projectile로 데미지를 입히기 위해 설정
 			MakeDamageEffectParams(AuraProjectile->DamageEffectParams, nullptr);
-
-			// Cursor로 선택한 TargetActor가 있다면 Homing
-			if (AuraASC->CursorTargetWeakPtr.IsValid())
-			{
-				AuraProjectile->ProjectileMovementComponent->bIsHomingProjectile = true;
-				AuraProjectile->ProjectileMovementComponent->HomingAccelerationMagnitude = FMath::RandRange(MinHomingAcceleration, MaxHomingAcceleration);
-				AuraProjectile->ProjectileMovementComponent->HomingTargetComponent = AuraASC->CursorTargetWeakPtr->GetRootComponent();
-
-				// Target이 죽으면 FireBolt Self Destroy 
-				if (ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(AuraASC->CursorTargetWeakPtr))
-				{
-					TargetCombatInterface->GetOnCharacterDeadDelegate()->AddDynamic(AuraProjectile, &AAuraProjectile::OnHomingTargetDead);
-				}
-			}
-			
 			AuraProjectile->FinishSpawning(SpawnTransform);
 		}	
 	}

@@ -22,15 +22,8 @@ class AURA_API AAuraProjectile : public AActor
 public:
 	AAuraProjectile();
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
-
 	// for Apply Damage Effect
 	FDamageEffectParams DamageEffectParams;
-
-	// Homing 중인 Target이 죽으면 호출되는 Callback
-	UFUNCTION()
-	void OnHomingTargetDead();
 
 protected:
 	virtual void BeginPlay() override;
@@ -42,8 +35,8 @@ protected:
 	// Projectile의 Overlap이 발생할 수 있는지 판별
 	bool IsValidOverlap(const AActor* TargetActor) const;
 
-	UPROPERTY()
-	TObjectPtr<UAudioComponent> LoopingSoundComponent;
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
 
 private:
 	// 충돌 감지 Component
@@ -52,14 +45,13 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="Aura")
 	TObjectPtr<USoundBase> LoopingSound;
+	
+	UPROPERTY()
+    TObjectPtr<UAudioComponent> LoopingSoundComponent;
 
 	// Actor의 수명
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	float LifeSpan;
-
-	// Homing Target이 죽을 때의 수명
-	UPROPERTY(EditDefaultsOnly, Category="Aura")
-	float LifeSpanWhenHomingTargetDead;
 
 	// Projectile의 Impact Effect를 표시하고 Impact Sound를 재생하는 GameplayCue의 GameplayTag
 	UPROPERTY(EditDefaultsOnly, Category="Aura")

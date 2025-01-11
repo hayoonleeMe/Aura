@@ -6,7 +6,6 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AuraBlueprintLibrary.h"
-#include "NiagaraFunctionLibrary.h"
 #include "Aura/Aura.h"
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
@@ -37,12 +36,6 @@ AAuraProjectile::AAuraProjectile()
 	ProjectileMovementComponent->ProjectileGravityScale = 0.f;
 	
 	LifeSpan = 15.f;
-	LifeSpanWhenHomingTargetDead = 1.5f;
-}
-
-void AAuraProjectile::OnHomingTargetDead()
-{
-	SetLifeSpan(LifeSpanWhenHomingTargetDead);
 }
 
 void AAuraProjectile::BeginPlay()
