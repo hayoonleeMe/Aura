@@ -97,6 +97,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	/* Debuff */
 	GameplayTags.Debuff_Ignite = Manager.AddNativeGameplayTag(TEXT("Debuff.Ignite"), TEXT("Ignite Debuff Tag"));
 	GameplayTags.Debuff_Enfeeble = Manager.AddNativeGameplayTag(TEXT("Debuff.Enfeeble"), TEXT("Enfeeble Debuff Tag"));
+	GameplayTags.Debuff_Stun = Manager.AddNativeGameplayTag(TEXT("Debuff.Stun"), TEXT("Stun Debuff Tag"));
 
 	/* Cooldown */
 	GameplayTags.Cooldown_ArcaneSpike = Manager.AddNativeGameplayTag(TEXT("Cooldown.ArcaneSpike"), TEXT("ArcaneSpike Cooldown Tag"));

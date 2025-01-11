@@ -136,6 +136,7 @@ struct FAuraGameplayTags
 
 	FGameplayTag Debuff_Ignite;
 	FGameplayTag Debuff_Enfeeble;
+	FGameplayTag Debuff_Stun;
 
 	// ============================================================================
 	// Cooldown
