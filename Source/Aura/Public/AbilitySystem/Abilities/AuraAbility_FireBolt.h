@@ -44,12 +44,4 @@ private:
 	// FireBolt를 발사하는 방향을 계산할 때 사용할 퍼지는 정도를 나타내는 각도
 	UPROPERTY(EditDefaultsOnly, Category="Aura|FireBolt")
 	float SpreadAngle;
-
-	// FireBolt의 HomingAccelerationMagnitude의 최소값
-	UPROPERTY(EditDefaultsOnly, Category="Aura|FireBolt")
-	float MinHomingAcceleration;
-
-	// FireBolt의 HomingAccelerationMagnitude의 최대값
-	UPROPERTY(EditDefaultsOnly, Category="Aura|FireBolt")
-	float MaxHomingAcceleration;
 };
