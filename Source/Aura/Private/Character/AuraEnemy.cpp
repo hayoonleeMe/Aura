@@ -297,4 +297,10 @@ void AAuraEnemy::OnDebuffStunTagChanged(const FGameplayTag Tag, int32 Count) con
 			AnimInstance->Montage_Stop(0.2f);
 		}
 	}
+
+	if (IsValid(AuraAIController) && AuraAIController->GetBlackboardComponent())
+	{
+		// AIController server only
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("Stun"), bStun);
+	}
 }
