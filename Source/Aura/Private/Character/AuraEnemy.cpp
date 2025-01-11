@@ -52,6 +52,10 @@ AAuraEnemy::AAuraEnemy()
 	IgniteDebuffComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Ignite Debuff Component"));
 	IgniteDebuffComponent->SetupAttachment(GetMesh(), TEXT("DebuffSocket"));
 	IgniteDebuffComponent->bAutoActivate = false;
+
+	StunDebuffComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Stun Debuff Component"));
+	StunDebuffComponent->SetupAttachment(GetRootComponent());
+	StunDebuffComponent->bAutoActivate = false;
 }
 
 void AAuraEnemy::PossessedBy(AController* NewController)
@@ -289,6 +293,8 @@ void AAuraEnemy::OnDebuffStunTagChanged(const FGameplayTag Tag, int32 Count) con
 		{
 			AnimInstance->Montage_Play(TaggedCombatInfo.AnimMontage);
 		}
+
+		StunDebuffComponent->Activate();
 	}
 	else
 	{
@@ -296,6 +302,8 @@ void AAuraEnemy::OnDebuffStunTagChanged(const FGameplayTag Tag, int32 Count) con
 		{
 			AnimInstance->Montage_Stop(0.2f);
 		}
+
+		StunDebuffComponent->DeactivateImmediate();
 	}
 
 	if (IsValid(AuraAIController) && AuraAIController->GetBlackboardComponent())
