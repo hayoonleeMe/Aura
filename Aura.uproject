@@ -30,6 +30,11 @@
 		{
 			"Name": "MotionWarping",
 			"Enabled": true
+		},
+		{
+			"Name": "MultiplayerSessions",
+			"Enabled": true
+		},
 		}
 	]
 }

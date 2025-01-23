@@ -22,7 +22,8 @@ public class Aura : ModuleRules
 			"Niagara", 
 			"MotionWarping",
 			"UMG",
-			"AIModule"
+			"AIModule",
+			"MultiplayerSessions",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
