@@ -24,6 +24,7 @@ public class Aura : ModuleRules
 			"UMG",
 			"AIModule",
 			"MultiplayerSessions",
+			"OnlineSubsystem"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
