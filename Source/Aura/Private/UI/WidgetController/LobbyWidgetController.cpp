@@ -62,6 +62,29 @@ void ULobbyWidgetController::SendInvite(int32 FriendIndex)
 	}
 }
 
+void ULobbyWidgetController::OnNewPlayerAdded(const FString& PlayerName)
+{
+	++NumLobbyPlayer;
+
+	if (NumLobbyPlayer == 1)
+	{
+		HostPlayerNameDelegate.Broadcast(PlayerName);
+	}
+	else if (NumLobbyPlayer == 2)
+	{
+		ClientPlayerNameDelegate.Broadcast(PlayerName);
+	}
+}
+
+void ULobbyWidgetController::OnPlayerLeft()
+{
+	if (NumLobbyPlayer == 2)
+	{
+		ClientPlayerNameDelegate.Broadcast(FString());
+	}
+	--NumLobbyPlayer;
+}
+
 void ULobbyWidgetController::ReturnToMainMenu()
 {
 	if (MultiplayerSessionsSubsystem)
