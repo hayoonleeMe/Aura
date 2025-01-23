@@ -32,6 +32,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void RequestInvitableFriendsList();
 
+	// Lobby Widget에서 선택한 친구 유저에게 게임 초대를 전송한다.
+	UFUNCTION(BlueprintCallable)
+	void SendInvite(int32 FriendIndex);
+
 
 	// 로비를 나가 MainMenu로 이동
 	UFUNCTION(BlueprintCallable)

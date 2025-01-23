@@ -54,6 +54,14 @@ void ULobbyWidgetController::InvitableFriendsListArrived(bool bWasSuccessful, TA
 	}
 }
 
+void ULobbyWidgetController::SendInvite(int32 FriendIndex)
+{
+	if (CachedFriendsList.IsValidIndex(FriendIndex))
+	{
+		UMultiplayerSessionsSubsystem::SendSessionInvite(*CachedFriendsList[FriendIndex]->GetUserId());
+	}
+}
+
 void ULobbyWidgetController::ReturnToMainMenu()
 {
 	if (MultiplayerSessionsSubsystem)
