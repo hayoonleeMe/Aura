@@ -7,6 +7,7 @@
 
 void ULobbyWidgetController::BroadcastInitialValues()
 {
+	RequestInvitableFriendsList();
 }
 
 void ULobbyWidgetController::BindCallbacksToDependencies()
@@ -22,10 +23,37 @@ void ULobbyWidgetController::BindCallbacksToDependencies()
 
 	if (MultiplayerSessionsSubsystem)
 	{
+		// 초대할 수 있는 친구 목록을 요청할 때의 결과를 받을 콜백 함수를 연동
+		MultiplayerSessionsSubsystem->InvitableFriendsListDelegate.AddUObject(this, &ThisClass::InvitableFriendsListArrived);
+
 		// DestroySession이 종료되면 호출할 콜백 함수 등록
 		MultiplayerSessionsSubsystem->AuraOnDestroySessionCompleteDelegate.AddUObject(this, &ThisClass::OnDestroySessionComplete);
 	}
 }
+
+void ULobbyWidgetController::RequestInvitableFriendsList()
+{
+	if (MultiplayerSessionsSubsystem)
+	{
+		MultiplayerSessionsSubsystem->RequestInvitableFriendsList();
+	}
+}
+
+void ULobbyWidgetController::InvitableFriendsListArrived(bool bWasSuccessful, TArray<TSharedRef<FOnlineFriend>> FriendsList)
+{
+	if (!bWasSuccessful)
+	{
+		return;
+	}
+	
+	CachedFriendsList = MoveTemp(FriendsList);
+	for (int32 Index = 0; Index < CachedFriendsList.Num(); ++Index)
+	{
+		const FOnlineFriend& Friend = *CachedFriendsList[Index];
+		OnInvitableFriendDelegate.Broadcast(Index, *Friend.GetDisplayName());
+	}
+}
+
 void ULobbyWidgetController::ReturnToMainMenu()
 {
 	if (MultiplayerSessionsSubsystem)
