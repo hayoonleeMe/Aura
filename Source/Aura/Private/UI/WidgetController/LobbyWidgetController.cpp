@@ -114,4 +114,8 @@ void ULobbyWidgetController::OnDestroySessionComplete(bool bWasSuccessful) const
 			GameInstance->ReturnToMainMenu();
 		}
 	}
+	else
+	{
+		EnableExitButtonDelegate.Broadcast();
+	}
 }

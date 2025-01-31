@@ -21,6 +21,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FClientPlayerNameSignature, const FS
 // 친구 목록의 초대 버튼을 활성화할 것인지를 전달하는 델레게이트
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEnableInviteButtonSignature, bool, bEnableInvite);
 
+// Exit Button을 활성화하는 델레게이트
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEnableExitButtonSignature);
+
 /**
  * 
  */
@@ -44,6 +47,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FEnableInviteButtonSignature EnableInviteButtonDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FEnableExitButtonSignature EnableExitButtonDelegate;
 
 	// OnlineSubsystem Steam Interface를 이용해 초대할 수 있는 스팀 친구 목록을 불러온다.
 	UFUNCTION(BlueprintCallable)
