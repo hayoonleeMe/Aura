@@ -73,6 +73,8 @@ void ULobbyWidgetController::OnNewPlayerAdded(const FString& PlayerName)
 	else if (NumLobbyPlayer == 2)
 	{
 		ClientPlayerNameDelegate.Broadcast(PlayerName);
+
+		EnableInviteButtonDelegate.Broadcast(false);
 	}
 }
 
@@ -81,6 +83,8 @@ void ULobbyWidgetController::OnPlayerLeft()
 	if (NumLobbyPlayer == 2)
 	{
 		ClientPlayerNameDelegate.Broadcast(FString());
+
+		EnableInviteButtonDelegate.Broadcast(true);
 	}
 	--NumLobbyPlayer;
 }

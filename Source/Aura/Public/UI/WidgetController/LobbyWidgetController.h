@@ -18,6 +18,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHostPlayerNameSignature, const FStr
 // Client 플레이어의 이름을 전달하는 델레게이트
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FClientPlayerNameSignature, const FString&, PlayerName);
 
+// 친구 목록의 초대 버튼을 활성화할 것인지를 전달하는 델레게이트
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEnableInviteButtonSignature, bool, bEnableInvite);
+
 /**
  * 
  */
@@ -38,6 +41,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FClientPlayerNameSignature ClientPlayerNameDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FEnableInviteButtonSignature EnableInviteButtonDelegate;
 
 	// OnlineSubsystem Steam Interface를 이용해 초대할 수 있는 스팀 친구 목록을 불러온다.
 	UFUNCTION(BlueprintCallable)
