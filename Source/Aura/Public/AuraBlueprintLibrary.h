@@ -117,12 +117,4 @@ public:
 	// CentralDirection을 기준으로 SpreadAngle만큼의 간격으로 NumDirections개의 방향을 계산한다.
 	UFUNCTION(BlueprintCallable)	
 	static void GetSpreadDirections(TArray<FVector>& OutDirections, int32 NumDirections, float SpreadAngle, const FVector& CentralDirection);
-
-	// ============================================================================
-	// Multiplayer
-	// ============================================================================
-
-	// OnlineSubsystem Steam Interface를 이용해 게임 세션 생성
-	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"))
-	static void CreateSession(const UObject* WorldContextObject);
 };

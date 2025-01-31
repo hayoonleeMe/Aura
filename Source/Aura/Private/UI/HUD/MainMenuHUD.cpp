@@ -3,7 +3,19 @@
 
 #include "UI/HUD/MainMenuHUD.h"
 
+#include "MultiplayerSessionsSubsystem.h"
 #include "Blueprint/UserWidget.h"
+
+void AMainMenuHUD::CreateSession() const
+{
+	if (const UGameInstance* GameInstance = GetGameInstance())
+	{
+		if (UMultiplayerSessionsSubsystem* MultiplayerSessionsSubsystem = GameInstance->GetSubsystem<UMultiplayerSessionsSubsystem>())
+		{
+			MultiplayerSessionsSubsystem->CreateSession();
+		}
+	}
+}
 
 void AMainMenuHUD::BeginPlay()
 {
@@ -21,5 +33,20 @@ void AMainMenuHUD::BeginPlay()
 	if (MainMenuOverlay)
 	{
 		MainMenuOverlay->AddToViewport();
+	}
+
+	if (const UGameInstance* GameInstance = GetGameInstance())
+	{
+		if (UMultiplayerSessionsSubsystem* MultiplayerSessionsSubsystem = GameInstance->GetSubsystem<UMultiplayerSessionsSubsystem>())
+		{
+			// 세션 생성에 실패하면 Start Button 다시 활성화
+			MultiplayerSessionsSubsystem->AuraOnCreateSessionCompleteDelegate.AddWeakLambda(this, [this](bool bWasSuccessful)
+			{
+				if (!bWasSuccessful)
+				{
+					EnableStartButtonDelegate.Broadcast();
+				}
+			});
+		}
 	}
 }

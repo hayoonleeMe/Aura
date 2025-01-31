@@ -7,7 +7,6 @@
 #include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
 #include "GameplayEffectTypes.h"
-#include "MultiplayerSessionsSubsystem.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/AuraGameplayAbilityTargetData_SingleTargetHit.h"
@@ -285,17 +284,5 @@ void UAuraBlueprintLibrary::GetSpreadDirections(TArray<FVector>& OutDirections, 
 		const float Angle = Index * SpreadAngle * (NumDirections % 2 == 0 && Index == 1 ? 0.5f : 1.f);
 		const FVector Rotated = CentralDirection.RotateAngleAxis(Angle, FVector::UpVector);
 		OutDirections.Add(Rotated.GetSafeNormal());
-	}
-}
-
-void UAuraBlueprintLibrary::CreateSession(const UObject* WorldContextObject)
-{
-	const UWorld* World = WorldContextObject ? WorldContextObject->GetWorld() : nullptr;
-	if (const UGameInstance* GameInstance = World ? World->GetGameInstance() : nullptr)
-	{
-		if (UMultiplayerSessionsSubsystem* MultiplayerSessionsSubsystem = GameInstance->GetSubsystem<UMultiplayerSessionsSubsystem>())
-		{
-			MultiplayerSessionsSubsystem->CreateSession();
-		}
 	}
 }
