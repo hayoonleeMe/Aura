@@ -3,6 +3,7 @@
 
 #include "UI/HUD/LobbyHUD.h"
 
+#include "Game/AuraGameInstance.h"
 #include "UI/Widget/AuraUserWidget.h"
 #include "UI/WidgetController/LobbyWidgetController.h"
 
@@ -30,5 +31,11 @@ void ALobbyHUD::BeginPlay()
 			LobbyWidgetController->BindCallbacksToDependencies();
 			LobbyOverlay->SetWidgetController(LobbyWidgetController);
 		}
+	}
+
+	// Loading Overlay 숨김
+	if (UAuraGameInstance* AuraGameInstance = GetGameInstance<UAuraGameInstance>())
+	{
+		AuraGameInstance->DisplayLoadingOverlay(false);
 	}
 }
