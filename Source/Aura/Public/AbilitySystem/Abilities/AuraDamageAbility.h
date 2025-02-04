@@ -28,6 +28,10 @@ public:
 	virtual void InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
 
 protected:
+	// 매 실행마다 초기화되어야 하는 내부 변수 초기화
+	// 하위 클래스의 InstancingPolicy가 InstancedPerActor인 경우에는 해당 함수 호출 필요
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+	
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Damage")
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
 

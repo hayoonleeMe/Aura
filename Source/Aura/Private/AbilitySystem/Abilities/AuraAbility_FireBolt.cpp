@@ -12,6 +12,7 @@
 
 UAuraAbility_FireBolt::UAuraAbility_FireBolt()
 {
+	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	SpreadAngle = 10.f;
 }
 
@@ -73,6 +74,8 @@ void UAuraAbility_FireBolt::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	{
 		return;
 	}
+
+	UAuraDamageAbility::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
 	// 클라이언트의 Cursor HitResult와 CursorTarget을 항상 서버로 전달하기 위해 UAbilityTask_TargetDataUnderMouse 수행 
 	if (UAbilityTask_TargetDataUnderMouse* AbilityTask = UAbilityTask_TargetDataUnderMouse::CreateTask(this))
