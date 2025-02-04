@@ -12,6 +12,7 @@
 
 UAuraAbility_ArcaneSpike::UAuraAbility_ArcaneSpike()
 {
+	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	MaxCastRange = 1400.f;
 	CachedTargetLocation = FVector::ZeroVector;
 }
@@ -73,6 +74,8 @@ void UAuraAbility_ArcaneSpike::ActivateAbility(const FGameplayAbilitySpecHandle 
 	{
 		return;
 	}
+
+	UAuraDamageAbility::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
 	if (UAbilityTask_TargetDataUnderMouse* AbilityTask = UAbilityTask_TargetDataUnderMouse::CreateTask(this))
 	{

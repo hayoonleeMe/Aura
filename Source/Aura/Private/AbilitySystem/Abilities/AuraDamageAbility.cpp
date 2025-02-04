@@ -40,6 +40,14 @@ void UAuraDamageAbility::InputReleased(const FGameplayAbilitySpecHandle Handle, 
 	bShouldClearTargetActor = true;
 }
 
+void UAuraDamageAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+{
+	bFinishMontage = false;
+	bFinishAttack = false;
+	bShouldClearTargetActor = false;
+}
+
 void UAuraDamageAbility::PlayAttackMontage(UAnimMontage* MontageToPlay, bool bEndOnBlendOut)
 {
 	if (UAbilityTask_PlayMontageAndWait* AbilityTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, FName(), MontageToPlay, 1.f, NAME_None, false))

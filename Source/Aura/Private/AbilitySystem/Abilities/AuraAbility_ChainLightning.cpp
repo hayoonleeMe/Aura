@@ -14,6 +14,7 @@
 
 UAuraAbility_ChainLightning::UAuraAbility_ChainLightning()
 {
+	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	MaxCastRange = 600.f;
 }
 
@@ -69,6 +70,8 @@ void UAuraAbility_ChainLightning::ActivateAbility(const FGameplayAbilitySpecHand
 	{
 		return;
 	}
+
+	UAuraDamageAbility::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	// 클라이언트의 Cursor HitResult와 CursorTarget을 항상 서버로 전달하기 위해 UAbilityTask_TargetDataUnderMouse 수행 
 	if (UAbilityTask_TargetDataUnderMouse* AbilityTask = UAbilityTask_TargetDataUnderMouse::CreateTask(this))
