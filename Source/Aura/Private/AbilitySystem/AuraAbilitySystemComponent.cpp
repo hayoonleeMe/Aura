@@ -7,6 +7,8 @@
 #include "GameplayCueManager.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
+#include "Data/AuraInputConfig.h"
+#include "Game/AuraGameStateBase.h"
 #include "Interaction/PlayerInterface.h"
 
 void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
@@ -25,12 +27,19 @@ void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
 
 void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities)
 {
+	const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr;
+	check(AuraGameStateBase && AuraGameStateBase->AuraInputConfig);
+	
 	for (const TSubclassOf<UGameplayAbility>& AbilityClass : Abilities)
 	{
 		FGameplayAbilitySpec AbilitySpec(AbilityClass, 1);
 		if (const UAuraGameplayAbility* AuraGameplayAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
 		{
-			AbilitySpec.DynamicAbilityTags.AddTag(AuraGameplayAbility->StartupInputTag);
+			AbilitySpec.DynamicAbilityTags.AddTag(AuraGameplayAbility->StartupInputTag);	// TODO : Remove
+			if (AuraGameplayAbility->StartupInputTag.IsValid())
+			{
+				AbilitySpec.InputID = AuraGameStateBase->AuraInputConfig->GetInputIDForInputTag(AuraGameplayAbility->StartupInputTag);
+			}
 			GiveAbility(AbilitySpec);
 		}
 	}

@@ -63,12 +63,6 @@ private:
 	// Input
 	// ============================================================================
 
-	UPROPERTY(EditAnywhere, Category="Aura|Input")
-	TObjectPtr<UInputMappingContext> AuraContext;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
-	TObjectPtr<UAuraInputConfig> AuraInputConfig;
-
 	void AbilityInputTagPressed(FGameplayTag InputTag);
 	void AbilityInputTagReleased(FGameplayTag InputTag);
 	void AbilityInputTagHeld(FGameplayTag InputTag);
