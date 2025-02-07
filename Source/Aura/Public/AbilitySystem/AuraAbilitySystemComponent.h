@@ -90,14 +90,6 @@ public:
 	// 존재하지 않으면 nullptr를 반환한다.
 	FGameplayAbilitySpec* GetSpellSpecForSpellTag(const FGameplayTag& SpellTag);
 
-	// InputTag가 추가된 Spell Ability Spec Pointer를 반환한다.
-	// 존재하지 않으면 nullptr를 반환한다.
-	FGameplayAbilitySpec* GetSpellSpecForInputTag(const FGameplayTag& InputTag);
-
-	// Spell Ability가 장착 중인 InputTag를 반환한다.
-	// 존재하지 않으면 EmptyTag를 반환한다.
-	static FGameplayTag GetInputTagForSpellSpec(FGameplayAbilitySpec* SpellSpec);
-
 	// Spell Ability의 Spell Tag를 반환한다.
 	// 존재하지 않으면 EmptyTag를 반환한다.
 	static FGameplayTag GetSpellTagForSpellSpec(const FGameplayAbilitySpec* SpellSpec);

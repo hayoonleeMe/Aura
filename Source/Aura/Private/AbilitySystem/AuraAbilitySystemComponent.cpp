@@ -35,7 +35,6 @@ void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGamepla
 		FGameplayAbilitySpec AbilitySpec(AbilityClass, 1);
 		if (const UAuraGameplayAbility* AuraGameplayAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
 		{
-			AbilitySpec.DynamicAbilityTags.AddTag(AuraGameplayAbility->StartupInputTag);	// TODO : Remove
 			if (AuraGameplayAbility->StartupInputTag.IsValid())
 			{
 				AbilitySpec.InputID = AuraGameStateBase->AuraInputConfig->GetInputIDForInputTag(AuraGameplayAbility->StartupInputTag);
@@ -182,8 +181,12 @@ void UAuraAbilitySystemComponent::ServerHandleEquipSpell_Implementation(const FG
 		return;
 	}
 
+	const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr;
+	check(AuraGameStateBase && AuraGameStateBase->AuraInputConfig);
+
 	// Input에 이미 Spell이 장착되어 있다면
-	if (FGameplayAbilitySpec* EquippedSpellSpec = GetSpellSpecForInputTag(InputTag))
+	const int32 EquippedInputID = AuraGameStateBase->AuraInputConfig->GetInputIDForInputTag(InputTag);
+	if (FGameplayAbilitySpec* EquippedSpellSpec = FindAbilitySpecFromInputID(EquippedInputID))
 	{
 		// Input의 이미 장착된 Spell을 장착 해제
 		UnEquipSpell(EquippedSpellSpec, InputTag, true);
@@ -196,14 +199,14 @@ void UAuraAbilitySystemComponent::ServerHandleEquipSpell_Implementation(const FG
 	}
 
 	// 장착하고자 하는 Spell이 다른 Input에 장착되어 있다면, 그 Input에서 장착 해제
-	const FGameplayTag PrevInputTag = GetInputTagForSpellSpec(SpellSpecToEquip);
+	const FGameplayTag PrevInputTag = AuraGameStateBase->AuraInputConfig->GetInputTagForInputID(SpellSpecToEquip->InputID);
 	if (PrevInputTag.IsValid())
 	{
 		UnEquipSpell(SpellSpecToEquip, PrevInputTag, false);
 	}
 	
 	// InputTag를 추가해 장착
-	SpellSpecToEquip->DynamicAbilityTags.AddTag(InputTag);
+	SpellSpecToEquip->InputID = AuraGameStateBase->AuraInputConfig->GetInputIDForInputTag(InputTag);
 
 	// InputTag에 Spell을 장착했음을 전달
 	ClientBroadcastEquippedSpellChange(true, InputTag, SpellTagToEquip);
@@ -221,8 +224,7 @@ void UAuraAbilitySystemComponent::UnEquipSpell(FGameplayAbilitySpec* SpellSpecTo
 {
 	if (SpellSpecToUnEquip)
 	{
-		// InputTag 제거
-		SpellSpecToUnEquip->DynamicAbilityTags.RemoveTag(InputTagToRemove);
+		SpellSpecToUnEquip->InputID = INDEX_NONE;
 		MarkAbilitySpecDirty(*SpellSpecToUnEquip);
 
 		// InputTagToRemove이 나타내는 Input에 대한 UnEquip을 전달한다.
@@ -288,33 +290,6 @@ FGameplayAbilitySpec* UAuraAbilitySystemComponent::GetSpellSpecForSpellTag(const
 	return nullptr;
 }
 
-FGameplayAbilitySpec* UAuraAbilitySystemComponent::GetSpellSpecForInputTag(const FGameplayTag& InputTag)
-{
-	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
-	{
-		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
-		{
-			return &AbilitySpec;
-		}
-	}
-	return nullptr;
-}
-
-FGameplayTag UAuraAbilitySystemComponent::GetInputTagForSpellSpec(FGameplayAbilitySpec* SpellSpec)
-{
-	if (SpellSpec)
-	{
-		for (const FGameplayTag& Tag : SpellSpec->DynamicAbilityTags)
-		{
-			if (Tag.MatchesTag(FAuraGameplayTags::Get().InputTag))
-			{
-				return Tag;
-			}
-		}
-	}
-	return FGameplayTag::EmptyTag;
-}
-
 FGameplayTag UAuraAbilitySystemComponent::GetSpellTagForSpellSpec(const FGameplayAbilitySpec* SpellSpec)
 {
 	if (SpellSpec)
@@ -332,13 +307,16 @@ FGameplayTag UAuraAbilitySystemComponent::GetSpellTagForSpellSpec(const FGamepla
 
 void UAuraAbilitySystemComponent::GetSpellAndInputTagPairs(TArray<TTuple<FGameplayTag, FGameplayTag>>& OutArray)
 {
+	const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr;
+	check(AuraGameStateBase && AuraGameStateBase->AuraInputConfig);
+	
 	for (FGameplayAbilitySpec& SpellSpec : GetActivatableAbilities())
 	{
 		const FGameplayTag SpellTag = GetSpellTagForSpellSpec(&SpellSpec);
 		if (SpellTag.IsValid())
 		{
 			// 등록하지 않은 Spell은 InputTag가 없으므로 유효한지 체크하지 않고 Add
-			const FGameplayTag InputTag = GetInputTagForSpellSpec(&SpellSpec);
+			const FGameplayTag InputTag = AuraGameStateBase->AuraInputConfig->GetInputTagForInputID(SpellSpec.InputID);
 			OutArray.Add({ SpellTag, InputTag });
 		}
 	}
