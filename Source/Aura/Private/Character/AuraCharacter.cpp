@@ -22,7 +22,7 @@ AAuraCharacter::AAuraCharacter()
 	SpringArmComponent->bDoCollisionTest = false;
 	SpringArmComponent->SetUsingAbsoluteRotation(true);
 	SpringArmComponent->SetWorldRotation(FRotator(-55.f, 0.f, 0.f));
-	SpringArmComponent->TargetArmLength = 800.f;
+	SpringArmComponent->TargetArmLength = 1000.f;
 	
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera Component"));
 	CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
