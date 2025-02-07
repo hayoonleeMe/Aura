@@ -17,7 +17,7 @@ struct FAbilityInputMapping
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<const UInputAction> InputAction;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, meta=(Categories="InputTag"))
 	FGameplayTag InputTag;
 };
 
