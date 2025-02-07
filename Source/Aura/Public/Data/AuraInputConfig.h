@@ -19,6 +19,9 @@ struct FAbilityInputMapping
 
 	UPROPERTY(EditDefaultsOnly, meta=(Categories="InputTag"))
 	FGameplayTag InputTag;
+
+	UPROPERTY(EditDefaultsOnly)
+	int32 InputID{INDEX_NONE};
 };
 
 /**
@@ -32,4 +35,7 @@ class AURA_API UAuraInputConfig : public UDataAsset
 public:
 	UPROPERTY(EditDefaultsOnly)
 	TArray<FAbilityInputMapping> AbilityInputActions;
+
+	int32 GetInputIDForInputTag(const FGameplayTag& InputTag);
+	FGameplayTag GetInputTagForInputID(int32 InputID);
 };
