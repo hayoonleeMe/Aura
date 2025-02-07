@@ -94,12 +94,27 @@ void AAuraPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr;
-	check(AuraGameStateBase && AuraGameStateBase->AuraInputConfig);
-	
-	/* Bind Action */
-	UAuraInputComponent* AuraInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
-	AuraInputComponent->BindAbilityActions(AuraGameStateBase->AuraInputConfig, this, &ThisClass::AbilityInputPressed, &ThisClass::AbilityInputReleased, &ThisClass::AbilityInputHeld);
+	if (HasAuthority())
+	{
+		BindAbilityInput();
+	}
+	else
+	{
+		GetWorldTimerManager().SetTimer(PollingTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::PollInit), 0.1f,true);
+	}
+}
+
+void AAuraPlayerController::PollInit()
+{
+	if (!HasAuthority() && !bValidGameStateBaseInClient)
+	{
+		if (GetWorld() && GetWorld()->GetGameState())
+		{
+			bValidGameStateBaseInClient = true;
+			BindAbilityInput();
+			GetWorldTimerManager().ClearTimer(PollingTimerHandle);
+		}
+	}
 }
 
 void AAuraPlayerController::AbilityInputPressed(int32 InputID)
@@ -123,6 +138,17 @@ void AAuraPlayerController::AbilityInputHeld(int32 InputID)
 	if (GetAuraAbilitySystemComponent())
 	{
 		AuraAbilitySystemComponent->AbilityInputHeld(InputID);
+	}
+}
+
+void AAuraPlayerController::BindAbilityInput()
+{
+	const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr;
+	if (AuraGameStateBase && AuraGameStateBase->AuraInputConfig)
+	{
+		/* Bind Action */
+		UAuraInputComponent* AuraInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
+		AuraInputComponent->BindAbilityActions(AuraGameStateBase->AuraInputConfig, this, &ThisClass::AbilityInputPressed, &ThisClass::AbilityInputReleased, &ThisClass::AbilityInputHeld);
 	}
 }
 

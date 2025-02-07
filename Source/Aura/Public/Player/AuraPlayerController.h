@@ -67,6 +67,14 @@ private:
 	void AbilityInputReleased(int32 InputID);
 	void AbilityInputHeld(int32 InputID);
 
+	// Input Event와 Ability 연동
+	void BindAbilityInput();
+
+	// 클라이언트에서 BindAbilityInput()를 수행하기 위해 Polling
+	void PollInit();
+	bool bValidGameStateBaseInClient = false;
+	FTimerHandle PollingTimerHandle;
+
 	// ============================================================================
 	// GAS
 	// ============================================================================
