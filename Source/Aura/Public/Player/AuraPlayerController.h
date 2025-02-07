@@ -63,9 +63,9 @@ private:
 	// Input
 	// ============================================================================
 
-	void AbilityInputTagPressed(FGameplayTag InputTag);
-	void AbilityInputTagReleased(FGameplayTag InputTag);
-	void AbilityInputTagHeld(FGameplayTag InputTag);
+	void AbilityInputPressed(int32 InputID);
+	void AbilityInputReleased(int32 InputID);
+	void AbilityInputHeld(int32 InputID);
 
 	// ============================================================================
 	// GAS

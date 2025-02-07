@@ -33,12 +33,14 @@ public:
 	// Abilities의 Ability Class의 AbilitySpec을 생성해 GiveAbility를 수행하는 함수 
 	void AddAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities);
 
-	/**
-	 * Input Tag에 해당하는 Ability에 해당 Key의 Trigger Event를 발생시키는 함수
-	 */
-	void AbilityInputTagPressed(const FGameplayTag& InputTag);
-	void AbilityInputTagReleased(const FGameplayTag& InputTag);
-	void AbilityInputTagHeld(const FGameplayTag& InputTag);
+	// InputID에 해당하는 Ability의 Press Event를 발생시키는 함수
+	void AbilityInputPressed(int32 InputID);
+
+	// InputID에 해당하는 Ability의 Release Event를 발생시키는 함수
+	void AbilityInputReleased(int32 InputID);
+
+	// InputID에 해당하는 Ability의 Hold Event를 발생시키는 함수
+	void AbilityInputHeld(int32 InputID);
 
 	// HitResultUnderMouse의 Hit Actor를 저장하는 Weak Ptr
 	// Damage Ability (Offensive Spell) 에 의해 설정, 초기화

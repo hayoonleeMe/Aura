@@ -44,61 +44,34 @@ void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGamepla
 	}
 }
 
-void UAuraAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
+void UAuraAbilitySystemComponent::AbilityInputPressed(int32 InputID)
 {
-	if (!InputTag.IsValid())
+	if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromInputID(InputID))
 	{
-		return;
-	}
-	
-	ABILITYLIST_SCOPE_LOCK()
-	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
-	{
-		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+		if (!AbilitySpec->IsActive())
 		{
-			if (!AbilitySpec.IsActive())
-			{
-				TryActivateAbility(AbilitySpec.Handle);
-			}
-			AbilitySpecInputPressed(AbilitySpec);
+			TryActivateAbility(AbilitySpec->Handle);
 		}
+		AbilitySpecInputPressed(*AbilitySpec);
 	}
 }
 
-void UAuraAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& InputTag)
+void UAuraAbilitySystemComponent::AbilityInputReleased(int32 InputID)
 {
-	if (!InputTag.IsValid())
+	if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromInputID(InputID))
 	{
-		return;
-	}
-	
-	ABILITYLIST_SCOPE_LOCK()
-	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
-	{
-		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
-		{
-			AbilitySpecInputReleased(AbilitySpec);
-		}
+		AbilitySpecInputReleased(*AbilitySpec);
 	}
 }
 
-void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputTag)
+void UAuraAbilitySystemComponent::AbilityInputHeld(int32 InputID)
 {
-	if (!InputTag.IsValid())
+	if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromInputID(InputID))
 	{
-		return;
-	}
-	
-	ABILITYLIST_SCOPE_LOCK()
-	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
-	{
-		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+		AbilitySpecInputPressed(*AbilitySpec);
+		if (!AbilitySpec->IsActive())
 		{
-			AbilitySpecInputPressed(AbilitySpec);
-			if (!AbilitySpec.IsActive())
-			{
-				TryActivateAbility(AbilitySpec.Handle);
-			}
+			TryActivateAbility(AbilitySpec->Handle);
 		}
 	}
 }
@@ -205,7 +178,7 @@ void UAuraAbilitySystemComponent::ServerHandleEquipSpell_Implementation(const FG
 		UnEquipSpell(SpellSpecToEquip, PrevInputTag, false);
 	}
 	
-	// InputTag를 추가해 장착
+	// InputID를 설정해 장착
 	SpellSpecToEquip->InputID = AuraGameStateBase->AuraInputConfig->GetInputIDForInputTag(InputTag);
 
 	// InputTag에 Spell을 장착했음을 전달
