@@ -15,10 +15,11 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.InputTag = Manager.AddNativeGameplayTag(TEXT("InputTag"), TEXT("Input Tag"));
 	GameplayTags.InputTag_LMB = Manager.AddNativeGameplayTag(TEXT("InputTag.LMB"), TEXT("Input Tag for Left Mouse Button"));
 	GameplayTags.InputTag_RMB = Manager.AddNativeGameplayTag(TEXT("InputTag.RMB"), TEXT("Input Tag for Right Mouse Button"));
-	GameplayTags.InputTag_1 = Manager.AddNativeGameplayTag(TEXT("InputTag.1"), TEXT("Input Tag for 1 key"));
-	GameplayTags.InputTag_2 = Manager.AddNativeGameplayTag(TEXT("InputTag.2"), TEXT("Input Tag for 2 key"));
-	GameplayTags.InputTag_3 = Manager.AddNativeGameplayTag(TEXT("InputTag.3"), TEXT("Input Tag for 3 key"));
-	GameplayTags.InputTag_4 = Manager.AddNativeGameplayTag(TEXT("InputTag.4"), TEXT("Input Tag for 4 key"));
+	GameplayTags.InputTag_MMB = Manager.AddNativeGameplayTag(TEXT("InputTag.MMB"), TEXT("Input Tag for Middle Mouse Button"));
+	GameplayTags.InputTag_Q = Manager.AddNativeGameplayTag(TEXT("InputTag.Q"), TEXT("Input Tag for Q key"));
+	GameplayTags.InputTag_W = Manager.AddNativeGameplayTag(TEXT("InputTag.W"), TEXT("Input Tag for W key"));
+	GameplayTags.InputTag_E = Manager.AddNativeGameplayTag(TEXT("InputTag.E"), TEXT("Input Tag for E key"));
+	GameplayTags.InputTag_R = Manager.AddNativeGameplayTag(TEXT("InputTag.R"), TEXT("Input Tag for R key"));
 
 	/* Passive Input */
 	GameplayTags.InputTag_Passive_1 = Manager.AddNativeGameplayTag(TEXT("InputTag.Passive.1"), TEXT("Passive Input Tag for first slot"));
