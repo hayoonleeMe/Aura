@@ -33,12 +33,14 @@ public:
 	// Abilities의 Ability Class의 AbilitySpec을 생성해 GiveAbility를 수행하는 함수 
 	void AddAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities);
 
-	/**
-	 * Input Tag에 해당하는 Ability에 해당 Key의 Trigger Event를 발생시키는 함수
-	 */
-	void AbilityInputTagPressed(const FGameplayTag& InputTag);
-	void AbilityInputTagReleased(const FGameplayTag& InputTag);
-	void AbilityInputTagHeld(const FGameplayTag& InputTag);
+	// InputID에 해당하는 Ability의 Press Event를 발생시키는 함수
+	void AbilityInputPressed(int32 InputID);
+
+	// InputID에 해당하는 Ability의 Release Event를 발생시키는 함수
+	void AbilityInputReleased(int32 InputID);
+
+	// InputID에 해당하는 Ability의 Hold Event를 발생시키는 함수
+	void AbilityInputHeld(int32 InputID);
 
 	// HitResultUnderMouse의 Hit Actor를 저장하는 Weak Ptr
 	// Damage Ability (Offensive Spell) 에 의해 설정, 초기화
@@ -89,14 +91,6 @@ public:
 	// SpellTag를 가지는 Spell Ability Spec Pointer를 반환한다.
 	// 존재하지 않으면 nullptr를 반환한다.
 	FGameplayAbilitySpec* GetSpellSpecForSpellTag(const FGameplayTag& SpellTag);
-
-	// InputTag가 추가된 Spell Ability Spec Pointer를 반환한다.
-	// 존재하지 않으면 nullptr를 반환한다.
-	FGameplayAbilitySpec* GetSpellSpecForInputTag(const FGameplayTag& InputTag);
-
-	// Spell Ability가 장착 중인 InputTag를 반환한다.
-	// 존재하지 않으면 EmptyTag를 반환한다.
-	static FGameplayTag GetInputTagForSpellSpec(FGameplayAbilitySpec* SpellSpec);
 
 	// Spell Ability의 Spell Tag를 반환한다.
 	// 존재하지 않으면 EmptyTag를 반환한다.

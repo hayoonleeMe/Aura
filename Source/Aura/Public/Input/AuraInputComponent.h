@@ -8,6 +8,7 @@
 #include "AuraInputComponent.generated.h"
 
 class UAuraInputConfig;
+
 /**
  *
  */
@@ -25,23 +26,21 @@ public:
 template <class UserClass, typename PressedFunction, typename ReleasedFunction, typename HeldFunction>
 void UAuraInputComponent::BindAbilityActions(UAuraInputConfig* InputConfig, UserClass* Object, PressedFunction PressedFunc, ReleasedFunction ReleasedFunc, HeldFunction HeldFunc)
 {
-	check(InputConfig);
-	
 	for (const FAbilityInputMapping& Mapping : InputConfig->AbilityInputActions)
 	{
-		if (IsValid(Mapping.InputAction) && Mapping.InputTag.IsValid())
+		if (IsValid(Mapping.InputAction) && Mapping.InputTag.IsValid() && Mapping.InputID != INDEX_NONE)
 		{
 			if (PressedFunc)
 			{
-				BindAction(Mapping.InputAction, ETriggerEvent::Started, Object, PressedFunc, Mapping.InputTag);
+				BindAction(Mapping.InputAction, ETriggerEvent::Started, Object, PressedFunc, Mapping.InputID);
 			}
 			if (ReleasedFunc)
 			{
-				BindAction(Mapping.InputAction, ETriggerEvent::Completed, Object, ReleasedFunc, Mapping.InputTag);
+				BindAction(Mapping.InputAction, ETriggerEvent::Completed, Object, ReleasedFunc, Mapping.InputID);
 			}
 			if (HeldFunc)
 			{
-				BindAction(Mapping.InputAction, ETriggerEvent::Triggered, Object, HeldFunc, Mapping.InputTag);
+				BindAction(Mapping.InputAction, ETriggerEvent::Triggered, Object, HeldFunc, Mapping.InputID);
 			}
 		}
 	}

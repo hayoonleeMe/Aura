@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Aura/Aura.h"
+#include "Game/AuraGameStateBase.h"
 #include "Input/AuraInputComponent.h"
 #include "Interaction/TargetInterface.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -77,12 +78,12 @@ void AAuraPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	/* Input */
-	check(AuraContext);
+	const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr;
+	check(AuraGameStateBase && AuraGameStateBase->AuraContext);
 	
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
-		Subsystem->AddMappingContext(AuraContext, 0);
+		Subsystem->AddMappingContext(AuraGameStateBase->AuraContext, 0);
 	}
 
 	bShowMouseCursor = true;
@@ -93,32 +94,35 @@ void AAuraPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
+	const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr;
+	check(AuraGameStateBase && AuraGameStateBase->AuraInputConfig);
+	
 	/* Bind Action */
 	UAuraInputComponent* AuraInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
-	AuraInputComponent->BindAbilityActions(AuraInputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
+	AuraInputComponent->BindAbilityActions(AuraGameStateBase->AuraInputConfig, this, &ThisClass::AbilityInputPressed, &ThisClass::AbilityInputReleased, &ThisClass::AbilityInputHeld);
 }
 
-void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
+void AAuraPlayerController::AbilityInputPressed(int32 InputID)
 {
 	if (GetAuraAbilitySystemComponent())
 	{
-		AuraAbilitySystemComponent->AbilityInputTagPressed(InputTag);
+		AuraAbilitySystemComponent->AbilityInputPressed(InputID);
 	}
 }
 
-void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
+void AAuraPlayerController::AbilityInputReleased(int32 InputID)
 {
 	if (GetAuraAbilitySystemComponent())
 	{
-		AuraAbilitySystemComponent->AbilityInputTagReleased(InputTag);
+		AuraAbilitySystemComponent->AbilityInputReleased(InputID);
 	}
 }
 
-void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
+void AAuraPlayerController::AbilityInputHeld(int32 InputID)
 {
 	if (GetAuraAbilitySystemComponent())
 	{
-		AuraAbilitySystemComponent->AbilityInputTagHeld(InputTag);
+		AuraAbilitySystemComponent->AbilityInputHeld(InputID);
 	}
 }
 
