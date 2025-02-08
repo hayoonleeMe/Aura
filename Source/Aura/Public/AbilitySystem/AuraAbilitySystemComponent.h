@@ -29,6 +29,10 @@ public:
 	// ============================================================================
 	// Ability
 	// ============================================================================
+
+	// AbilityFailedCallbacks 콜백 함수
+	// Cost 또는 Cooldown 때문에 실패한 경우 화면에 위젯을 표시해 플레이어에게 알림
+	void OnAbilityFailed(const UGameplayAbility* Ability, const FGameplayTagContainer& FailureTags);
 	
 	// Abilities의 Ability Class의 AbilitySpec을 생성해 GiveAbility를 수행하는 함수 
 	void AddAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities);

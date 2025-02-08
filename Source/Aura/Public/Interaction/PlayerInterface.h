@@ -71,4 +71,10 @@ public:
 	
 	// Level에 도달했을 때 얻을 수 있는 Spell Points 값을 반환
 	virtual int32 GetLevelUpSpellPointsAward(int32 Level) const { return 0; }
+
+	// Cost 때문에 어빌리티 실행에 실패했음을 UI에 표시
+	virtual void IndicateAbilityActivateCostFail() {}
+
+	// Cooldown 때문에 어빌리티 실행에 실패했음을 UI에 표시
+	virtual void IndicateAbilityActivateCooldownFail() {}
 };

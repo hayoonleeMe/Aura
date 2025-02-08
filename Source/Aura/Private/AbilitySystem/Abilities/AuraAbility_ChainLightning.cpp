@@ -66,10 +66,7 @@ FText UAuraAbility_ChainLightning::GetDescription(int32 Level) const
 void UAuraAbility_ChainLightning::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                                   const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	if (!K2_CommitAbility())
-	{
-		return;
-	}
+	K2_CommitAbility();
 
 	UAuraDamageAbility::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 

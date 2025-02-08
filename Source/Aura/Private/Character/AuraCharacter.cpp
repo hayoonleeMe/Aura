@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
 #include "NiagaraComponent.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -190,6 +191,12 @@ void AAuraCharacter::InitAbilityActorInfo()
 
 	// Overlay Widget 생성 전에 Startup Ability 추가
 	AddStartupAbilities(StartupAbilities);
+	
+	// 어빌리티 실행에 실패할 때 콜백 함수 등록
+	if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		AuraASC->AbilityFailedCallbacks.AddUObject(AuraASC, &UAuraAbilitySystemComponent::OnAbilityFailed);
+	}
 	
 	// Overlay Widget 초기화
 	if (AAuraPlayerController* AuraPC = GetController<AAuraPlayerController>())

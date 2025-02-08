@@ -11,6 +11,10 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 {
 	UGameplayTagsManager& Manager = UGameplayTagsManager::Get();
 
+	/* Activate Fail */
+	GameplayTags.Activate_Fail_Cost = Manager.AddNativeGameplayTag(TEXT("Activate.Fail.Cost"), TEXT("Ability Activate Fail Cost Tag"));
+	GameplayTags.Activate_Fail_Cooldown = Manager.AddNativeGameplayTag(TEXT("Activate.Fail.Cooldown"), TEXT("Ability Activate Fail Cooldown Tag"));
+	
 	/* Input */
 	GameplayTags.InputTag = Manager.AddNativeGameplayTag(TEXT("InputTag"), TEXT("Input Tag"));
 	GameplayTags.InputTag_LMB = Manager.AddNativeGameplayTag(TEXT("InputTag.LMB"), TEXT("Input Tag for Left Mouse Button"));

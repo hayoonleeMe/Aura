@@ -8,6 +8,7 @@
 #include "Interaction/PlayerInterface.h"
 #include "AuraPlayerController.generated.h"
 
+class UWidgetComponent;
 class UDamageIndicatorComponent;
 class USplineComponent;
 class UAuraAbilitySystemComponent;
@@ -27,6 +28,8 @@ public:
 
 	/* Begin PlayerInterface */
 	virtual FHitResult GetTargetHitResult() const override { return TargetHitResult; }
+	virtual void IndicateAbilityActivateCostFail() override;
+	virtual void IndicateAbilityActivateCooldownFail() override;
 	/* End PlayerInterface */
 	
 	// 게임에서 기본으로 사용하는 Input Mode로 설정
@@ -91,4 +94,21 @@ private:
 	// Damage Indicator를 표시하는 데 사용할 WidgetComponent Class
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Damage Indicator")
 	TSubclassOf<UDamageIndicatorComponent> DamageIndicatorComponentClass;
+
+	// ============================================================================
+	// Cast Fail Indicator
+	// ============================================================================
+
+	// Damage Indicator를 표시하는 데 사용할 WidgetComponent Class
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Cast Fail Indicator")
+	TSubclassOf<UWidgetComponent> CostCastFailIndicatorComponentClass;
+
+	UPROPERTY()
+	TObjectPtr<UWidgetComponent> CostCastFailIndicatorComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Cast Fail Indicator")
+	TSubclassOf<UWidgetComponent> CooldownCastFailIndicatorComponentClass;
+
+	UPROPERTY()
+	TObjectPtr<UWidgetComponent> CooldownCastFailIndicatorComponent;
 };

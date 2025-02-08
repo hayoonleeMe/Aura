@@ -18,10 +18,7 @@ UAuraAbility_EnemyMelee::UAuraAbility_EnemyMelee()
 void UAuraAbility_EnemyMelee::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                               const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	if (!K2_CommitAbility())
-	{
-		return;
-	}
+	K2_CommitAbility();
 	
 	// Activated only in server by AI (BTTask)
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
