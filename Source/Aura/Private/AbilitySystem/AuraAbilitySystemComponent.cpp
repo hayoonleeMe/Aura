@@ -25,6 +25,41 @@ void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
 	}
 }
 
+void UAuraAbilitySystemComponent::OnAbilityFailed(const UGameplayAbility* Ability, const FGameplayTagContainer& FailureTags)
+{
+	const bool bFailDueToCost = FailureTags.HasTagExact(FAuraGameplayTags::Get().Activate_Fail_Cost); 
+	const bool bFailDueToCooldown = FailureTags.HasTagExact(FAuraGameplayTags::Get().Activate_Fail_Cooldown);
+	if (!bFailDueToCost && !bFailDueToCooldown)
+	{
+		return;
+	}
+
+	// Cost, Cooldown을 제외하고 실제 어빌리티를 사용할 수 있을 때만 화면에 표시
+	if (!Ability || !Ability->DoesAbilitySatisfyTagRequirements(*this))
+	{
+		return;
+	}
+	
+	const APawn* Pawn = Cast<APawn>(GetAvatarActor());
+	if (AController* Controller = Pawn ? Pawn->GetController() : nullptr)
+	{
+		if (Controller->IsLocalPlayerController())
+		{
+			if (IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(Controller))
+			{
+				if (bFailDueToCost)
+				{
+					PlayerInterface->IndicateAbilityActivateCostFail();
+				}
+				else if (bFailDueToCooldown)
+				{
+					PlayerInterface->IndicateAbilityActivateCooldownFail();
+				}
+			}
+		}
+	}
+}
+
 void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities)
 {
 	const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr;
