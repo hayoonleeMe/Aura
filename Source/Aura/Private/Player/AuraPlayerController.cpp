@@ -21,6 +21,40 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	CursorTrace();
 }
 
+void AAuraPlayerController::IndicateAbilityActivateCostFail()
+{
+	// 생성된 WidgetComponent가 없을 때 다시 생성해 표시
+	if (IsValid(CostCastFailIndicatorComponent) || !CostCastFailIndicatorComponentClass || !IsValid(GetPawn()))
+	{
+		return;
+	}
+
+	CostCastFailIndicatorComponent = NewObject<UWidgetComponent>(GetPawn(), CostCastFailIndicatorComponentClass);
+	if (CostCastFailIndicatorComponent)
+	{
+		CostCastFailIndicatorComponent->SetupAttachment(GetPawn()->GetRootComponent());
+		CostCastFailIndicatorComponent->SetRelativeLocation(FVector(0.f, 0.f, GetPawn()->GetDefaultHalfHeight() + 10.f));
+		CostCastFailIndicatorComponent->RegisterComponent();
+	}
+}
+
+void AAuraPlayerController::IndicateAbilityActivateCooldownFail()
+{
+	// 생성된 WidgetComponent가 없을 때 다시 생성해 표시
+	if (IsValid(CooldownCastFailIndicatorComponent) || !CooldownCastFailIndicatorComponentClass || !IsValid(GetPawn()))
+	{
+		return;
+	}
+
+	CooldownCastFailIndicatorComponent = NewObject<UWidgetComponent>(GetPawn(), CooldownCastFailIndicatorComponentClass);
+	if (CooldownCastFailIndicatorComponent)
+	{
+		CooldownCastFailIndicatorComponent->SetupAttachment(GetPawn()->GetRootComponent());
+		CooldownCastFailIndicatorComponent->SetRelativeLocation(FVector(0.f, 0.f, GetPawn()->GetDefaultHalfHeight() + 10.f));
+		CooldownCastFailIndicatorComponent->RegisterComponent();
+	}
+}
+
 void AAuraPlayerController::CursorTrace()
 {
 	// Caching Target HitResult
