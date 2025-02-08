@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AuraAbility_HealthSiphon.h"
+#include "AbilitySystem/Abilities/AuraAbility_HealthSiphon.h"
 
 #include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
