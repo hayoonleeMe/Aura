@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "ScalableFloat.h"
 #include "Character/BaseCharacter.h"
-#include "Interface/TargetInterface.h"
+#include "Interface/InteractionInterface.h"
 #include "Types/EnemyClassType.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "AuraEnemy.generated.h"
@@ -20,7 +20,7 @@ class UEnemyClassConfig;
  * 
  */
 UCLASS()
-class AURA_API AAuraEnemy : public ABaseCharacter, public ITargetInterface
+class AURA_API AAuraEnemy : public ABaseCharacter, public IInteractionInterface
 {
 	GENERATED_BODY()
 
@@ -46,10 +46,10 @@ public:
 	virtual int32 GetXPReward() override;
 	/* End CombatInterface */
 
-	/* Begin TargetInterface */
+	/* Begin InteractionInterface */
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
-	/* End TargetInterface */
+	/* End InteractionInterface */
 
 protected:
 	virtual void BeginPlay() override;

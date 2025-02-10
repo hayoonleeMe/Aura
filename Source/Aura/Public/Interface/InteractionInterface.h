@@ -4,26 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "TargetInterface.generated.h"
+#include "InteractionInterface.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE()
-class UTargetInterface : public UInterface
+class UInteractionInterface : public UInterface
 {
 	GENERATED_BODY()
 };
 
 /**
- * Cursor로 선택할 수 있는 Target Actor가 구현할 수 있는 Interface
+ * Cursor로 선택할 수 있는 Actor와의 상호작용을 구현하는 인터페이스
  */
-class AURA_API ITargetInterface
+class AURA_API IInteractionInterface
 {
 	GENERATED_BODY()
 
 public:
-	// Highlight Target Actor
+	// Highlight Actor
 	virtual void HighlightActor() {}
 
-	// UnHighlight Target Actor
+	// UnHighlight Actor
 	virtual void UnHighlightActor() {}
 };
