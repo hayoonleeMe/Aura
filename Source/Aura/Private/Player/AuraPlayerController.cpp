@@ -9,7 +9,7 @@
 #include "Aura/Aura.h"
 #include "Game/AuraGameStateBase.h"
 #include "Input/AuraInputComponent.h"
-#include "Interaction/TargetInterface.h"
+#include "Interface/InteractionInterface.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "UI/Widget/DamageIndicatorComponent.h"
 
@@ -62,16 +62,16 @@ void AAuraPlayerController::CursorTrace()
 
 	// Highlight Target
 	TargetFromPrevFrame = TargetFromCurrentFrame;
-	TargetFromCurrentFrame = IsValid(TargetHitResult.GetActor()) && TargetHitResult.GetActor()->Implements<UTargetInterface>() ? TargetHitResult.GetActor() : nullptr;
+	TargetFromCurrentFrame = IsValid(TargetHitResult.GetActor()) && TargetHitResult.GetActor()->Implements<UInteractionInterface>() ? TargetHitResult.GetActor() : nullptr;
 	if (TargetFromPrevFrame != TargetFromCurrentFrame)
 	{
-		if (ITargetInterface* PrevTargetInterface = Cast<ITargetInterface>(TargetFromPrevFrame))
+		if (IInteractionInterface* PrevInteractionInterface = Cast<IInteractionInterface>(TargetFromPrevFrame))
 		{
-			PrevTargetInterface->UnHighlightActor();
+			PrevInteractionInterface->UnHighlightActor();
 		}
-		if (ITargetInterface* CurrentTargetInterface = Cast<ITargetInterface>(TargetFromCurrentFrame))
+		if (IInteractionInterface* CurrentInteractionInterface = Cast<IInteractionInterface>(TargetFromCurrentFrame))
 		{
-			CurrentTargetInterface->HighlightActor();
+			CurrentInteractionInterface->HighlightActor();
 		}		
 	}
 }

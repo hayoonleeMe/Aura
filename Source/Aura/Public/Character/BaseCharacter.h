@@ -6,7 +6,7 @@
 #include "AbilitySystemInterface.h"
 #include "GameplayTagContainer.h"
 #include "GameFramework/Character.h"
-#include "Interaction/CombatInterface.h"
+#include "Interface/CombatInterface.h"
 #include "BaseCharacter.generated.h"
 
 class UMotionWarpingComponent;

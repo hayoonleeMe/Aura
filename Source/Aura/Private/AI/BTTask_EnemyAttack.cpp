@@ -8,7 +8,7 @@
 #include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Interaction/CombatInterface.h"
+#include "Interface/CombatInterface.h"
 
 UBTTask_EnemyAttack::UBTTask_EnemyAttack()
 {

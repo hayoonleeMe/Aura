@@ -6,7 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
-#include "Interaction/CombatInterface.h"
+#include "Interface/CombatInterface.h"
 #include "Types/DamageEffectParams.h"
 
 UAuraAbility_EnemyMelee::UAuraAbility_EnemyMelee()

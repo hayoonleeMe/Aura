@@ -7,8 +7,8 @@
 #include "AuraBlueprintLibrary.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraGameplayAbilityTargetData_SingleTargetHit.h"
-#include "Interaction/CombatInterface.h"
-#include "Interaction/PlayerInterface.h"
+#include "Interface/CombatInterface.h"
+#include "Interface/PlayerInterface.h"
 
 UAbilityTask_TargetDataUnderMouse* UAbilityTask_TargetDataUnderMouse::CreateTask(UGameplayAbility* OwningAbility)
 {

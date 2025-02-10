@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AuraProjectileAbility.h"
-#include "Interaction/CombatInterface.h"
+#include "Interface/CombatInterface.h"
 #include "AuraAbility_FireBolt.generated.h"
 
 /**

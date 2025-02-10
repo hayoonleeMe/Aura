@@ -4,7 +4,7 @@
 #include "AbilitySystem/Abilities/AuraAbility_HaloOfProtection.h"
 
 #include "AuraGameplayTags.h"
-#include "Interaction/CombatInterface.h"
+#include "Interface/CombatInterface.h"
 
 UAuraAbility_HaloOfProtection::UAuraAbility_HaloOfProtection()
 {

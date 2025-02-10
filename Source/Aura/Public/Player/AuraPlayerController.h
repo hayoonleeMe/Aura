@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "GameFramework/PlayerController.h"
-#include "Interaction/PlayerInterface.h"
+#include "Interface/PlayerInterface.h"
 #include "AuraPlayerController.generated.h"
 
 class UWidgetComponent;

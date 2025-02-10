@@ -4,7 +4,7 @@
 #include "AbilitySystem/Abilities/AuraAbility_EnemyRange.h"
 
 #include "AuraGameplayTags.h"
-#include "Interaction/CombatInterface.h"
+#include "Interface/CombatInterface.h"
 
 UAuraAbility_EnemyRange::UAuraAbility_EnemyRange()
 {
