@@ -9,7 +9,7 @@
 #include "Aura/Aura.h"
 #include "Game/AuraGameStateBase.h"
 #include "Input/AuraInputComponent.h"
-#include "Interaction/TargetInterface.h"
+#include "Interface/TargetInterface.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "UI/Widget/DamageIndicatorComponent.h"
 

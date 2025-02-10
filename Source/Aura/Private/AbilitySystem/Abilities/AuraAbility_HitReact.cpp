@@ -5,7 +5,7 @@
 
 #include "AuraGameplayTags.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
-#include "Interaction/CombatInterface.h"
+#include "Interface/CombatInterface.h"
 
 
 UAuraAbility_HitReact::UAuraAbility_HitReact()

@@ -9,7 +9,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AbilityTasks/AbilityTask_TargetDataUnderMouse.h"
 #include "Aura/Aura.h"
-#include "Interaction/CombatInterface.h"
+#include "Interface/CombatInterface.h"
 #include "Types/DamageEffectParams.h"
 
 UAuraAbility_ChainLightning::UAuraAbility_ChainLightning()

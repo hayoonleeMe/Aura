@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "ScalableFloat.h"
 #include "Character/BaseCharacter.h"
-#include "Interaction/TargetInterface.h"
+#include "Interface/TargetInterface.h"
 #include "Types/EnemyClassType.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "AuraEnemy.generated.h"

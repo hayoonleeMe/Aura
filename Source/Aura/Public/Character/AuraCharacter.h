@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Character/BaseCharacter.h"
-#include "Interaction/CombatInterface.h"
-#include "Interaction/PlayerInterface.h"
+#include "Interface/CombatInterface.h"
+#include "Interface/PlayerInterface.h"
 #include "AuraCharacter.generated.h"
 
 class UNiagaraComponent;

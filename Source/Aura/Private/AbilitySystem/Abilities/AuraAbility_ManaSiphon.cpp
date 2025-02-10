@@ -6,7 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
-#include "Interaction/CombatInterface.h"
+#include "Interface/CombatInterface.h"
 
 UAuraAbility_ManaSiphon::UAuraAbility_ManaSiphon()
 {

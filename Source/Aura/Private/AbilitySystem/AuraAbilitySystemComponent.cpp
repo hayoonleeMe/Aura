@@ -9,7 +9,7 @@
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "Data/AuraInputConfig.h"
 #include "Game/AuraGameStateBase.h"
-#include "Interaction/PlayerInterface.h"
+#include "Interface/PlayerInterface.h"
 
 void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
 {

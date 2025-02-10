@@ -7,8 +7,8 @@
 #include "GameplayEffectExtension.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraGameplayEffectContext.h"
-#include "Interaction/CombatInterface.h"
-#include "Interaction/PlayerInterface.h"
+#include "Interface/CombatInterface.h"
+#include "Interface/PlayerInterface.h"
 #include "Net/UnrealNetwork.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
