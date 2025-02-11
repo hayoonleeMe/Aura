@@ -18,6 +18,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	/* Input */
 	GameplayTags.InputTag = Manager.AddNativeGameplayTag(TEXT("InputTag"), TEXT("Input Tag"));
 	GameplayTags.InputTag_LMB = Manager.AddNativeGameplayTag(TEXT("InputTag.LMB"), TEXT("Input Tag for Left Mouse Button"));
+	GameplayTags.InputTag_Interact = Manager.AddNativeGameplayTag(TEXT("InputTag.Interact"), TEXT("Input Tag for Interact"));
 	GameplayTags.InputTag_RMB = Manager.AddNativeGameplayTag(TEXT("InputTag.RMB"), TEXT("Input Tag for Right Mouse Button"));
 	GameplayTags.InputTag_MMB = Manager.AddNativeGameplayTag(TEXT("InputTag.MMB"), TEXT("Input Tag for Middle Mouse Button"));
 	GameplayTags.InputTag_Q = Manager.AddNativeGameplayTag(TEXT("InputTag.Q"), TEXT("Input Tag for Q key"));

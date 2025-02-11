@@ -27,6 +27,7 @@ struct FAuraGameplayTags
 
 	FGameplayTag InputTag;
 	FGameplayTag InputTag_LMB;
+	FGameplayTag InputTag_Interact;
 	FGameplayTag InputTag_RMB;
 	FGameplayTag InputTag_MMB;
 	FGameplayTag InputTag_Q;
