@@ -116,6 +116,7 @@ struct FAuraGameplayTags
 	// ============================================================================
 
 	FGameplayTag Abilities_ClickToMove;
+	FGameplayTag Abilities_TryInteract;
 	FGameplayTag Abilities_HitReact;
 	FGameplayTag Abilities_EnemyAttack;
 

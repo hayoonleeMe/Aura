@@ -84,6 +84,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 
 	/* Abilities */
 	GameplayTags.Abilities_ClickToMove = Manager.AddNativeGameplayTag(TEXT("Abilities.ClickToMove"), TEXT("ClickToMove Ability Tag"));
+	GameplayTags.Abilities_TryInteract = Manager.AddNativeGameplayTag(TEXT("Abilities.TryInteract"), TEXT("TryInteract Ability Tag"));
 	GameplayTags.Abilities_HitReact = Manager.AddNativeGameplayTag(TEXT("Abilities.HitReact"), TEXT("HitReact Ability Tag"));
 	GameplayTags.Abilities_EnemyAttack = Manager.AddNativeGameplayTag(TEXT("Abilities.EnemyAttack"), TEXT("EnemyAttack Ability Tag"));
 

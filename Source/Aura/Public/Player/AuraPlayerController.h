@@ -31,6 +31,8 @@ public:
 	virtual void IndicateAbilityActivateCostFail() override;
 	virtual void IndicateAbilityActivateCooldownFail() override;
 	/* End PlayerInterface */
+
+	AActor* GetTargetActorFromCursor() const { return TargetFromCurrentFrame.Get(); }
 	
 	// 게임에서 기본으로 사용하는 Input Mode로 설정
 	void SetInGameInputMode();
