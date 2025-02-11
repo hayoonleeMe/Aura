@@ -134,8 +134,10 @@ void UAuraAbility_ChainLightning::CastLightningBeam() const
 
 	AActor* FirstTargetActor = nullptr;
 	FHitResult HitResult;
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(AvatarActor);
 	
-	if (GetWorld()->SweepSingleByChannel(HitResult, StartLocation, TargetLocation, FQuat::Identity, ECC_Target, FCollisionShape::MakeBox(SweepBox)))
+	if (GetWorld()->SweepSingleByChannel(HitResult, StartLocation, TargetLocation, FQuat::Identity, ECC_Projectile, FCollisionShape::MakeBox(SweepBox), QueryParams))
 	{
 		// 플레이어 무기에서 발사되는 Beam이 막히는 경우 고려해 최종 Target 결정
 		const ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(HitResult.GetActor());

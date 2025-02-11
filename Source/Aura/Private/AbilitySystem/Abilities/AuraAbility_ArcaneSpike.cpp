@@ -136,6 +136,9 @@ void UAuraAbility_ArcaneSpike::SpawnArcaneShard() const
 	// 범위 결정
 	const float ScaleRate = GetScaleRateByLevel(GetAbilityLevel());
 	const float FinalEffectiveRadius = EffectiveRadius * ScaleRate;
+
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(GetAvatarActorFromActorInfo());
 	
 	FGameplayCueParameters CueParameters;
 	CueParameters.RawMagnitude = ScaleRate;
@@ -145,8 +148,9 @@ void UAuraAbility_ArcaneSpike::SpawnArcaneShard() const
 	TArray<FVector> TargetLocations;
 	if (NumArcaneShards == 1)
 	{
-		TargetLocations.Add(TargetLocation);
-		CueParameters.Location = TargetLocation;
+		const FVector FinalTargetLocation = GetAdjustedTargetLocation(StartLocation, TargetLocation, QueryParams);
+		TargetLocations.Add(FinalTargetLocation);
+		CueParameters.Location = FinalTargetLocation;
 		UAuraBlueprintLibrary::ExecuteGameplayCueWithParams(AvatarActor, FAuraGameplayTags::Get().GameplayCue_ArcaneShard, CueParameters);
 	}
 	else
@@ -157,7 +161,8 @@ void UAuraAbility_ArcaneSpike::SpawnArcaneShard() const
 		for (int32 Index = 0; Index < NumArcaneShards; ++Index)
 		{
 			FVector Offset = FVector::ForwardVector * FMath::RandRange(EffectiveRadius, FinalEffectiveRadius);
-			const FVector FinalTargetLocation = TargetLocation + Offset.RotateAngleAxis(RandAngle + Angle * Index, FVector::UpVector);
+			FVector FinalTargetLocation = TargetLocation + Offset.RotateAngleAxis(RandAngle + Angle * Index, FVector::UpVector);
+			FinalTargetLocation = GetAdjustedTargetLocation(StartLocation, FinalTargetLocation, QueryParams);
 			TargetLocations.Add(FinalTargetLocation);
 			CueParameters.Location = FinalTargetLocation;
 			UAuraBlueprintLibrary::ExecuteGameplayCueWithParams(AvatarActor, FAuraGameplayTags::Get().GameplayCue_ArcaneShard, CueParameters);
@@ -183,6 +188,16 @@ void UAuraAbility_ArcaneSpike::SpawnArcaneShard() const
 		MakeDamageEffectParams(DamageEffectParams, Enemy);
 		UAuraBlueprintLibrary::ApplyDamageEffect(DamageEffectParams);
 	}
+}
+
+FVector UAuraAbility_ArcaneSpike::GetAdjustedTargetLocation(const FVector& StartLocation,  const FVector& TargetLocation, const FCollisionQueryParams& QueryParams) const
+{
+	FHitResult HitResult;
+	if (GetWorld()->SweepSingleByChannel(HitResult, StartLocation, TargetLocation, FQuat::Identity, ECC_OnlyWall, FCollisionShape::MakeSphere(EffectiveRadius), QueryParams))
+	{
+		return HitResult.ImpactPoint + HitResult.ImpactNormal * EffectiveRadius;
+	}
+	return TargetLocation;
 }
 
 float UAuraAbility_ArcaneSpike::GetScaleRateByLevel(float Level) const

@@ -33,6 +33,10 @@
 // Default Response Block, Ignore BaseCharacter's Mesh and Capsule, Block Enemy's Mesh
 #define ECC_Target ECollisionChannel::ECC_GameTraceChannel4
 
+// 레벨의 벽 메시만 Block하는 Trace Channel
+// Default Response Ignore, Only Block Wall Mesh in Level
+#define ECC_OnlyWall ECollisionChannel::ECC_GameTraceChannel5
+
 // ============================================================================
 // Custom Log Macro
 // ============================================================================
