@@ -31,6 +31,9 @@ private:
 
 	void SpawnArcaneShard() const;
 
+	// ECC_OnlyWall Trace Channel 사용해 ArcaneShard가 벽을 넘어가지 않을 유효한 위치를 계산해 반환
+	FVector GetAdjustedTargetLocation(const FVector& StartLocation, const FVector& TargetLocation, const FCollisionQueryParams& QueryParams) const;
+
 	// 하나의 Arcane Shard의 유효 범위
 	static constexpr float EffectiveRadius = 100.f;
 	
