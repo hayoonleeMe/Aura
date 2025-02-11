@@ -68,9 +68,8 @@ private:
 	// Input
 	// ============================================================================
 
-	void AbilityInputPressed(int32 InputID);
-	void AbilityInputReleased(int32 InputID);
-	void AbilityInputHeld(int32 InputID);
+	void AbilityInputPressed(FGameplayTag InputTag, int32 InputID);
+	void AbilityInputReleased(FGameplayTag InputTag, int32 InputID);
 
 	// Input Event와 Ability 연동
 	void BindAbilityInput();
