@@ -43,9 +43,6 @@ public:
 	// InputID에 해당하는 Ability의 Release Event를 발생시키는 함수
 	void AbilityInputReleased(int32 InputID);
 
-	// InputID에 해당하는 Ability의 Hold Event를 발생시키는 함수
-	void AbilityInputHeld(int32 InputID);
-
 	// HitResultUnderMouse의 Hit Actor를 저장하는 Weak Ptr
 	// Damage Ability (Offensive Spell) 에 의해 설정, 초기화
 	TWeakObjectPtr<AActor> CursorTargetWeakPtr;

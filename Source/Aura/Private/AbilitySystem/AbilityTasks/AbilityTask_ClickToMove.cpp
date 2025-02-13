@@ -3,14 +3,14 @@
 
 #include "AbilitySystem/AbilityTasks/AbilityTask_ClickToMove.h"
 
-#include "AbilitySystem/Abilities/AuraAbility_ClickToMove.h"
+#include "AbilitySystem/Abilities/AuraAbility_MoveAlongNavPathBase.h"
 
 UAbilityTask_ClickToMove::UAbilityTask_ClickToMove()
 {
 	bTickingTask = true;
 }
 
-UAbilityTask_ClickToMove* UAbilityTask_ClickToMove::CreateTask(UAuraAbility_ClickToMove* OwningAbility)
+UAbilityTask_ClickToMove* UAbilityTask_ClickToMove::CreateTask(UAuraAbility_MoveAlongNavPathBase* OwningAbility)
 {
 	UAbilityTask_ClickToMove* Task = NewAbilityTask<UAbilityTask_ClickToMove>(OwningAbility);
 	if (Task)
