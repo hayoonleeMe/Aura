@@ -26,4 +26,7 @@ public:
 
 	// UnHighlight Actor
 	virtual void UnHighlightActor() {}
+
+	// Interact with Actor
+	virtual void Interact() {}
 };
