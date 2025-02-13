@@ -158,6 +158,9 @@ void AAuraPlayerController::PollInit()
 			bValidGameStateBaseInClient = true;
 			BindAbilityInput();
 			GetWorldTimerManager().ClearTimer(PollingTimerHandle);
+
+			// Notify for client
+			OnGameStateBaseValidInClientDelegate.Broadcast();
 		}
 	}
 }

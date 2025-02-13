@@ -6,6 +6,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Data/SpellConfig.h"
+#include "Player/AuraPlayerController.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
@@ -18,7 +19,14 @@ void UOverlayWidgetController::BroadcastInitialValues()
 	OnXPChangedDelegate.Broadcast(AuraAS->GetXP());
 	OnLevelChangedDelegate.Broadcast(AuraAS->GetLevel());
 
-	UpdateStartupSpells();
+	if (GetAuraPlayerControllerChecked()->HasAuthority())
+	{
+		UpdateStartupSpells();
+	}
+	else
+	{
+		GetAuraPlayerControllerChecked()->OnGameStateBaseValidInClientDelegate.AddUObject(this, &ThisClass::UpdateStartupSpells);
+	}
 }
 
 void UOverlayWidgetController::BindCallbacksToDependencies()

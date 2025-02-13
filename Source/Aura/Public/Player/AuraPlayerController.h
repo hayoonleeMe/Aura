@@ -16,6 +16,9 @@ class UAuraAbilitySystemComponent;
 class UInputMappingContext;
 class UAuraInputConfig;
 
+// 클라이언트에서 GameStateBase가 유효해질 때 Broadcast
+DECLARE_MULTICAST_DELEGATE(FOnGameStateBaseValidInClientSignature);
+
 /**
  * 
  */
@@ -47,6 +50,8 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastOnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds);
+
+	FOnGameStateBaseValidInClientSignature OnGameStateBaseValidInClientDelegate;
 
 protected:
 	virtual void BeginPlay() override;
