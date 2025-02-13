@@ -8,8 +8,7 @@
 
 DECLARE_DELEGATE(FOnArrivedSignature);
 
-class UAuraAbility_MoveAlongNavPathBase;
-
+class UAuraAbility_ClickToMove;
 /**
  * 
  */
@@ -20,7 +19,7 @@ class AURA_API UAbilityTask_ClickToMove : public UAbilityTask
 
 public:
 	UAbilityTask_ClickToMove();
-	static UAbilityTask_ClickToMove* CreateTask(UAuraAbility_MoveAlongNavPathBase* OwningAbility);
+	static UAbilityTask_ClickToMove* CreateTask(UAuraAbility_ClickToMove* OwningAbility);
 	virtual void TickTask(float DeltaTime) override;
 
 	// 캐릭터가 목적지에 도착하면 실행되는 델레게이트
@@ -28,5 +27,5 @@ public:
 	
 private:
 	UPROPERTY()
-	TObjectPtr<UAuraAbility_MoveAlongNavPathBase> OwningAbility;
+	TObjectPtr<UAuraAbility_ClickToMove> OwningAbility;
 };
