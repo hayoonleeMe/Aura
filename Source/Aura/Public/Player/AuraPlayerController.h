@@ -6,6 +6,7 @@
 #include "GameplayTagContainer.h"
 #include "GameFramework/PlayerController.h"
 #include "Interface/PlayerInterface.h"
+#include "Types/StageStatus.h"
 #include "AuraPlayerController.generated.h"
 
 class UWidgetComponent;
@@ -43,6 +44,9 @@ public:
 	// Damage를 나타내는 DamageIndicator Widget을 화면에 표시한다.
 	UFUNCTION(Client, Reliable)
 	void ClientIndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastOnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds);
 
 protected:
 	virtual void BeginPlay() override;

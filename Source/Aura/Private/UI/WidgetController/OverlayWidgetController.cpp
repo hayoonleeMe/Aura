@@ -56,6 +56,11 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	AuraASC->OnEquippedSpellAbilityChangedDelegate.AddUObject(this, &ThisClass::UpdateEquippedSpellChange);
 }
 
+void UOverlayWidgetController::OnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds) const
+{
+	OnStageStatusChangedDelegate.Broadcast(StageStatus, StageNumber, WaitingTimerEndSeconds);
+}
+
 void UOverlayWidgetController::UpdateEquippedSpellChange(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag) const
 {
 	if (SpellConfig)

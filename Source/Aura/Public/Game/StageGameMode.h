@@ -80,6 +80,9 @@ private:
 	// SimulatedProxy의 Auth Player Controller 반환
 	APlayerController* GetSimulatedPlayerController() const;
 
+	// 모든 로컬 플레이어의 UI에 StageStatus를 표시
+	void BroadcastStageStatusChangeToAllLocalPlayers() const;
+
 	// 모든 플레이어가 각 기기에서 유효한지 체크하기 위해 Polling
 	void PollInit();
 	FTimerHandle PollingTimerHandle;

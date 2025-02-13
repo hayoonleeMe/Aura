@@ -46,6 +46,7 @@ void AStageGameMode::PostSeamlessTravel()
 
 void AStageGameMode::WaitStageStart()
 {
+	BroadcastStageStatusChangeToAllLocalPlayers();
 	SpawnStartStageBeacon();
 	StartWaitingTimer();
 }
@@ -55,6 +56,7 @@ void AStageGameMode::StartStage()
 	StageStatus = EStageStatus::Started;
 
 	GetWorldTimerManager().ClearTimer(WaitingTimerHandle);
+	BroadcastStageStatusChangeToAllLocalPlayers();
 	// TODO : Spawn Enemy
 }
 
@@ -123,4 +125,21 @@ APlayerController* AStageGameMode::GetSimulatedPlayerController() const
 		}
 	}
 	return nullptr;
+}
+
+void AStageGameMode::BroadcastStageStatusChangeToAllLocalPlayers() const
+{
+	if (GetWorld())
+	{
+		const double WaitingTimerEndSeconds = StageStatus == EStageStatus::Waiting ? GetWorld()->GetTimeSeconds() + WaitingTime : 0.0;
+
+		// 모든 Player Controller의 Multicast RPC를 호출해 로컬 플레이어의 화면에 표시
+		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+		{
+			if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(It->Get()))
+			{
+				AuraPC->MulticastOnStageStatusChanged(StageStatus, StageNumber, WaitingTimerEndSeconds);
+			}
+		}
+	}
 }

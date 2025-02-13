@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AuraWidgetController.h"
 #include "SpellMenuWidgetController.h"
+#include "Types/StageStatus.h"
 #include "OverlayWidgetController.generated.h"
 
 /**
@@ -28,6 +29,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnEquippedSpellCooldownStartSignat
 
 // InputTag에 등록된 Spell의 Cooldown이 끝남을 알리는 델레게이트
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEquippedSpellCooldownEndSignature, const FGameplayTag&, InputTag);
+
+// 현재 Stage Status가 변경됨을 알리는 델레게이트
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnStageStatusChangedSignature, EStageStatus, StageStatus, int32, StageNumber, double, WaitingTimerEndSeconds);
 
 /**
  * Overlay Widget에서 사용할 WidgetController
@@ -70,6 +74,12 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="Aura|Overlay")
 	FOnEquippedSpellCooldownEndSignature OnEquippedSpellCooldownEndDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category="Aura|Overlay")
+	FOnStageStatusChangedSignature OnStageStatusChangedDelegate;
+
+	// 현재 변경된 StageStatus 전달
+	void OnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds) const;
 
 private:
 	// Spell의 장착 상태 변경을 업데이트

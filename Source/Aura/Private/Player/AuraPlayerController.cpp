@@ -13,6 +13,7 @@
 #include "Input/AuraInputComponent.h"
 #include "Interface/InteractionInterface.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "UI/HUD/AuraHUD.h"
 #include "UI/Widget/DamageIndicatorComponent.h"
 
 void AAuraPlayerController::PlayerTick(float DeltaTime)
@@ -90,6 +91,14 @@ void AAuraPlayerController::SetUIInputMode()
 {
 	const FInputModeUIOnly InputMode;
 	SetInputMode(InputMode);
+}
+
+void AAuraPlayerController::MulticastOnStageStatusChanged_Implementation(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds)
+{
+	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())
+	{
+		AuraHUD->OnStageStatusChanged(StageStatus, StageNumber, WaitingTimerEndSeconds);
+	}
 }
 
 void AAuraPlayerController::ClientIndicateDamage_Implementation(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const

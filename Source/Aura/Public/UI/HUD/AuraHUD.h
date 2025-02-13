@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "Types/StageStatus.h"
 #include "AuraHUD.generated.h"
 
 class USpellMenuWidgetController;
@@ -29,6 +30,9 @@ public:
 	UOverlayWidgetController* GetOverlayWidgetController() const { return OverlayWidgetController; }
 	UAttributeMenuWidgetController* GetAttributeMenuWidgetController() const { return AttributeMenuWidgetController; }
 	USpellMenuWidgetController* GetSpellMenuWidgetController() const { return SpellMenuWidgetController; }
+
+	// 현재 변경된 StageStatus 전달
+	void OnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds) const;
 
 private:
 	// ============================================================================
