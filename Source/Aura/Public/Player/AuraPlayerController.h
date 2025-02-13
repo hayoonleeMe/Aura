@@ -31,8 +31,6 @@ public:
 	virtual void IndicateAbilityActivateCostFail() override;
 	virtual void IndicateAbilityActivateCooldownFail() override;
 	/* End PlayerInterface */
-
-	AActor* GetTargetActorFromCursor() const { return TargetFromCurrentFrame.Get(); }
 	
 	// 게임에서 기본으로 사용하는 Input Mode로 설정
 	void SetInGameInputMode();
@@ -68,8 +66,9 @@ private:
 	// Input
 	// ============================================================================
 
-	void AbilityInputPressed(FGameplayTag InputTag, int32 InputID);
-	void AbilityInputReleased(FGameplayTag InputTag, int32 InputID);
+	void AbilityInputPressed(int32 InputID);
+	void AbilityInputReleased(int32 InputID);
+	void AbilityInputHeld(int32 InputID);
 
 	// Input Event와 Ability 연동
 	void BindAbilityInput();

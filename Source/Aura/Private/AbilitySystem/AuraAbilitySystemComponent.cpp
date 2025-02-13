@@ -99,6 +99,18 @@ void UAuraAbilitySystemComponent::AbilityInputReleased(int32 InputID)
 	}
 }
 
+void UAuraAbilitySystemComponent::AbilityInputHeld(int32 InputID)
+{
+	if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromInputID(InputID))
+	{
+		AbilitySpecInputPressed(*AbilitySpec);
+		if (!AbilitySpec->IsActive())
+		{
+			TryActivateAbility(AbilitySpec->Handle);
+		}
+	}
+}
+
 void UAuraAbilitySystemComponent::ServerUpgradeAttribute_Implementation(const FGameplayTag& AttributeTag)
 {
 	// Attribute Points가 있을 때, 1만큼 소모해 진행

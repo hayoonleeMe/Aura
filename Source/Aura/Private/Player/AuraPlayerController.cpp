@@ -4,11 +4,9 @@
 #include "Player/AuraPlayerController.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
-#include "AuraGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Aura/Aura.h"
-#include "Character/AuraEnemy.h"
 #include "Game/AuraGameStateBase.h"
 #include "Input/AuraInputComponent.h"
 #include "Interface/InteractionInterface.h"
@@ -153,36 +151,27 @@ void AAuraPlayerController::PollInit()
 	}
 }
 
-void AAuraPlayerController::AbilityInputPressed(FGameplayTag InputTag, int32 InputID)
+void AAuraPlayerController::AbilityInputPressed(int32 InputID)
 {
-	if (InputTag == FAuraGameplayTags::Get().InputTag_LMB)
-	{
-		// TargetActor가 Enemy가 아니면 InputTag_LMB Abort
-		if (TargetFromCurrentFrame.IsValid() && !TargetFromCurrentFrame->IsA<AAuraEnemy>())
-		{
-			return;
-		}
-	}
-	else if (InputTag == FAuraGameplayTags::Get().InputTag_Interact)
-	{
-		// TargetActor가 없거나 Enemy면 InputTag_Interact Abort
-		if (!TargetFromCurrentFrame.IsValid() && TargetFromCurrentFrame->IsA<AAuraEnemy>())
-		{
-			return;
-		}
-	}
-	
 	if (GetAuraAbilitySystemComponent())
 	{
 		AuraAbilitySystemComponent->AbilityInputPressed(InputID);
 	}
 }
 
-void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag, int32 InputID)
+void AAuraPlayerController::AbilityInputReleased(int32 InputID)
 {
 	if (GetAuraAbilitySystemComponent())
 	{
 		AuraAbilitySystemComponent->AbilityInputReleased(InputID);
+	}
+}
+
+void AAuraPlayerController::AbilityInputHeld(int32 InputID)
+{
+	if (GetAuraAbilitySystemComponent())
+	{
+		AuraAbilitySystemComponent->AbilityInputHeld(InputID);
 	}
 }
 
@@ -193,7 +182,7 @@ void AAuraPlayerController::BindAbilityInput()
 	{
 		/* Bind Action */
 		UAuraInputComponent* AuraInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
-		AuraInputComponent->BindAbilityActions(AuraGameStateBase->AuraInputConfig, this, &ThisClass::AbilityInputPressed, &ThisClass::AbilityInputReleased);
+		AuraInputComponent->BindAbilityActions(AuraGameStateBase->AuraInputConfig, this, &ThisClass::AbilityInputPressed, &ThisClass::AbilityInputReleased, &ThisClass::AbilityInputHeld);
 	}
 }
 

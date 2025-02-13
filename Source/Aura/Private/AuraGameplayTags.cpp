@@ -18,7 +18,6 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	/* Input */
 	GameplayTags.InputTag = Manager.AddNativeGameplayTag(TEXT("InputTag"), TEXT("Input Tag"));
 	GameplayTags.InputTag_LMB = Manager.AddNativeGameplayTag(TEXT("InputTag.LMB"), TEXT("Input Tag for Left Mouse Button"));
-	GameplayTags.InputTag_Interact = Manager.AddNativeGameplayTag(TEXT("InputTag.Interact"), TEXT("Input Tag for Interact"));
 	GameplayTags.InputTag_RMB = Manager.AddNativeGameplayTag(TEXT("InputTag.RMB"), TEXT("Input Tag for Right Mouse Button"));
 	GameplayTags.InputTag_MMB = Manager.AddNativeGameplayTag(TEXT("InputTag.MMB"), TEXT("Input Tag for Middle Mouse Button"));
 	GameplayTags.InputTag_Q = Manager.AddNativeGameplayTag(TEXT("InputTag.Q"), TEXT("Input Tag for Q key"));
@@ -85,7 +84,6 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 
 	/* Abilities */
 	GameplayTags.Abilities_ClickToMove = Manager.AddNativeGameplayTag(TEXT("Abilities.ClickToMove"), TEXT("ClickToMove Ability Tag"));
-	GameplayTags.Abilities_TryInteract = Manager.AddNativeGameplayTag(TEXT("Abilities.TryInteract"), TEXT("TryInteract Ability Tag"));
 	GameplayTags.Abilities_HitReact = Manager.AddNativeGameplayTag(TEXT("Abilities.HitReact"), TEXT("HitReact Ability Tag"));
 	GameplayTags.Abilities_EnemyAttack = Manager.AddNativeGameplayTag(TEXT("Abilities.EnemyAttack"), TEXT("EnemyAttack Ability Tag"));
 
