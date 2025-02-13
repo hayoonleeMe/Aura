@@ -38,5 +38,9 @@ void ABeacon_StartStage::Interact()
 
 void ABeacon_StartStage::ServerInteract_Implementation()
 {
+	if (AStageGameMode* StageGameMode = GetWorld() ? GetWorld()->GetAuthGameMode<AStageGameMode>() : nullptr)
+	{
+		StageGameMode->StartStage();
+	}
 	Destroy();
 }
