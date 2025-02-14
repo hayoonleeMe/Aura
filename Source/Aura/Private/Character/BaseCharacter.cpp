@@ -115,6 +115,12 @@ void ABaseCharacter::AddStartupAbilities(const TArray<TSubclassOf<UGameplayAbili
 
 void ABaseCharacter::Die()
 {
+	// 중복 호출 방지
+	if (bDead)
+	{
+		return;
+	}
+	
 	/* Called on server */
 	bDead = true;
 	HandleDeathLocally();
@@ -136,6 +142,9 @@ void ABaseCharacter::Die()
 
 void ABaseCharacter::OnRep_Dead()
 {
-	// Rep Notify로 Multicast RPC를 대신함
-	HandleDeathLocally();
+	if (bDead)
+	{
+		// Rep Notify로 Multicast RPC를 대신함
+		HandleDeathLocally();
+	}
 }
