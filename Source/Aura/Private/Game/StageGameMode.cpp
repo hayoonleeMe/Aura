@@ -22,6 +22,10 @@ AStageGameMode::AStageGameMode()
 	/* Waiting Timer */
 	WaitingTime = 10.f;
 	WaitingTimerDelegate = FTimerDelegate::CreateUObject(this, &ThisClass::OnWaitingTimeFinished);
+	
+	/* End Stage Delay Timer */
+	EndStageDelay = 4.f;
+	EndStageDelayTimerDelegate = FTimerDelegate::CreateUObject(this, &ThisClass::EndStage);
 
 	/* Spawn Enemy */
 	SpawnWaitTime = 2.f;
@@ -205,8 +209,8 @@ void AStageGameMode::OnEnemyDead()
 	++NumDeadEnemies;
 	if (bFinishSpawn && NumSpawnedEnemies == NumDeadEnemies)
 	{
-		// 모든 Enemy를 소환하고, 모든 Enemy가 죽으면 스테이지 종료
-		EndStage();
+		// 모든 Enemy를 소환하고, 모든 Enemy가 죽으면 EndStageDelay가 지난 뒤 스테이지 종료
+		GetWorldTimerManager().SetTimer(EndStageDelayTimerHandle, EndStageDelayTimerDelegate, EndStageDelay, false);
 	}
 }
 

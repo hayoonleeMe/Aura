@@ -66,6 +66,20 @@ private:
 	void StartWaitingTimer();
 
 	// ============================================================================
+	// End Stage Delay Timer
+	// ============================================================================
+
+	// EndStage를 수행하기 전에 기다리는 시간
+	UPROPERTY(EditDefaultsOnly, Category="Aura|End Stage Delay Timer")
+	float EndStageDelay;
+
+	// EndStageDelay를 기다리기 위한 Timer
+	FTimerHandle EndStageDelayTimerHandle;
+
+	// EndStageDelayTimerHandle Delegate, EndStage 연동
+	FTimerDelegate EndStageDelayTimerDelegate;
+
+	// ============================================================================
 	// Beacon
 	// ============================================================================
 
