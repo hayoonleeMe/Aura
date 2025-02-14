@@ -12,9 +12,8 @@
 
 AStageGameMode::AStageGameMode()
 {
-	StageStatus = EStageStatus::Waiting;
-	StageNumber = 1;
 	WaitingTime = 5.f;	// TODO : Need to set proper value
+	/* Waiting Timer */
 	WaitingTimerDelegate = FTimerDelegate::CreateUObject(this, &ThisClass::OnWaitingTimeFinished);
 }
 

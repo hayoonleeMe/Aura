@@ -36,12 +36,12 @@ private:
 	// Stage
 	// ============================================================================
 
-	UPROPERTY()
-	EStageStatus StageStatus;
+
+	// 현재 상태
+	EStageStatus StageStatus = EStageStatus::Waiting;
 
 	// 현재 몇번 째 Stage인지 나타내는 수
-	UPROPERTY()
-	int32 StageNumber;
+	int32 StageNumber = 1;
 
 	// ============================================================================
 	// Waiting Timer
@@ -55,7 +55,7 @@ private:
 	FTimerDelegate WaitingTimerDelegate;
 
 	// Stage Start를 기다리는 시간
-	UPROPERTY(EditDefaultsOnly, Category="Waiting Timer")
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Waiting Timer")
 	float WaitingTime;
 
 	void StartWaitingTimer();
@@ -65,7 +65,7 @@ private:
 	// ============================================================================
 
 	// Stage를 시작하는 Beacon Actor
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Beacon")
 	TSubclassOf<AActor> StartStageBeaconClass;
 
 	UPROPERTY()
