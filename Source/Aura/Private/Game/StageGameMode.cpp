@@ -3,6 +3,13 @@
 
 #include "Game/StageGameMode.h"
 
+#include "Actor/SpawnEnemyVolume.h"
+#include "Algo/RandomShuffle.h"
+#include "Character/AuraEnemy.h"
+#include "Components/BoxComponent.h"
+#include "Data/StageConfig.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Player/AuraPlayerController.h"
 
 // For Test in PIE
@@ -12,9 +19,15 @@
 
 AStageGameMode::AStageGameMode()
 {
-	WaitingTime = 5.f;	// TODO : Need to set proper value
 	/* Waiting Timer */
+	WaitingTime = 10.f;
 	WaitingTimerDelegate = FTimerDelegate::CreateUObject(this, &ThisClass::OnWaitingTimeFinished);
+
+	/* Spawn Enemy */
+	SpawnWaitTime = 2.f;
+	RandomDeviation = 1.f;
+	MaxSpawnCount = 3;
+	SpawnDelayTimerDelegate = FTimerDelegate::CreateUObject(this, &ThisClass::AsyncSpawnEnemies);
 }
 
 #if WITH_EDITOR
@@ -56,7 +69,8 @@ void AStageGameMode::StartStage()
 
 	GetWorldTimerManager().ClearTimer(WaitingTimerHandle);
 	BroadcastStageStatusChangeToAllLocalPlayers();
-	// TODO : Spawn Enemy
+	PrepareEnemySpawn();
+	AsyncSpawnEnemies();
 }
 
 void AStageGameMode::EndStage()
@@ -66,7 +80,36 @@ void AStageGameMode::EndStage()
 	StageStatus = EStageStatus::Waiting;
 	StageNumber++;
 
-	WaitStageStart();
+	if (StageNumber >= MaxStageNumber)
+	{
+		// TODO : 게임 종료
+		UE_LOG(LogTemp, Warning, TEXT("게임 종료"));
+	}
+	else
+	{
+		WaitStageStart();
+	}
+}
+
+void AStageGameMode::InitData()
+{
+	// Caching MaxStageNumber
+	check(StageConfig);
+	MaxStageNumber = StageConfig->GetMaxStageNumber();
+	check(MaxStageNumber > 0);
+
+	// Caching SpawnEnemyVolumeExtent
+	if (const ASpawnEnemyVolume* Volume = Cast<ASpawnEnemyVolume>(UGameplayStatics::GetActorOfClass(GetWorld(), ASpawnEnemyVolume::StaticClass())))
+	{
+		const FVector Location = Volume->BoxComponent->GetComponentLocation();
+		const FVector BoxExtent = Volume->BoxComponent->GetScaledBoxExtent();
+		SpawnEnemyVolumeBox = FBox(Location - BoxExtent, Location + BoxExtent);
+	}
+	
+	// Caching SpawnParams for spawning enemies, beacons
+	// Actor의 Ownership 설정을 위해 SimulatedProxy가 사용하는 PlayerController를 Owner로 설정
+	SpawnParams.Owner = GetSimulatedPlayerController();
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 }
 
 void AStageGameMode::PollInit()
@@ -79,6 +122,8 @@ void AStageGameMode::PollInit()
 		}
 	}
 	GetWorldTimerManager().ClearTimer(PollingTimerHandle);
+
+	InitData();
 	WaitStageStart();
 }
 
@@ -105,10 +150,81 @@ void AStageGameMode::SpawnStartStageBeacon()
 
 	check(StartStageBeaconClass);
 
-	// Beacon의 Ownership 설정을 위해 SimulatedProxy가 사용하는 PlayerController를 Owner로 설정 
-	FActorSpawnParameters Params;
-	Params.Owner = GetSimulatedPlayerController();
-	StartStageBeacon = GetWorld()->SpawnActor<AActor>(StartStageBeaconClass, FTransform::Identity, Params);
+	StartStageBeacon = GetWorld()->SpawnActor<AActor>(StartStageBeaconClass, SpawnParams);
+}
+
+void AStageGameMode::AsyncSpawnEnemies()
+{
+	check(StageConfig);
+
+	if (NumSpawnedEnemies < RandomEnemyInfos.Num())
+	{
+		// 소환할 수 결정
+		const int32 RandCount = FMath::RandRange(1, MaxSpawnCount);
+		const int32 SpawnCount = FMath::Min(RandomEnemyInfos.Num() - NumSpawnedEnemies, RandCount);
+		const int32 TotalCount = NumSpawnedEnemies + SpawnCount;
+
+		// SpawnCount 만큼 소환
+		for (; NumSpawnedEnemies < TotalCount; ++NumSpawnedEnemies)
+		{
+			const TSubclassOf<AAuraEnemy>& EnemyClass = EnemyClassTable[RandomEnemyInfos[NumSpawnedEnemies]];
+			SpawnEnemies(EnemyClass);
+		}
+
+		// RandomDelay가 지난 뒤 다시 소환
+		GetWorldTimerManager().SetTimer(SpawnDelayTimerHandle, SpawnDelayTimerDelegate, GetRandomDelay(), false);
+	}
+	else
+	{
+		// 모든 Enemy를 소환하면 스테이지를 종료할 수 있도록 설정
+		bFinishSpawn = true;
+	}
+}
+
+void AStageGameMode::SpawnEnemies(TSubclassOf<AAuraEnemy> Class)
+{
+	check(Class);
+
+	// Find Random Point
+	const FVector RandomPoint = UKismetMathLibrary::RandomPointInBoundingBox_Box(SpawnEnemyVolumeBox);
+
+	if (AAuraEnemy* Enemy = GetWorld()->SpawnActor<AAuraEnemy>(Class, RandomPoint, FRotator::ZeroRotator, SpawnParams))
+	{
+		Enemy->SpawnDefaultController();
+		Enemy->OnCharacterDeadDelegate.AddDynamic(this, &ThisClass::OnEnemyDead);
+	}
+}
+
+void AStageGameMode::OnEnemyDead()
+{
+	++NumDeadEnemies;
+	if (bFinishSpawn && NumSpawnedEnemies == NumDeadEnemies)
+	{
+		// 모든 Enemy를 소환하고, 모든 Enemy가 죽으면 스테이지 종료
+		EndStage();
+	}
+}
+
+void AStageGameMode::PrepareEnemySpawn()
+{
+	bFinishSpawn = false;
+	NumSpawnedEnemies = NumDeadEnemies = 0;
+	
+	RandomEnemyInfos.Empty();
+	EnemyClassTable.Empty();
+
+	// 소환해야 할 모든 Enemy 정보를 하나의 배열에 저장하고 Shuffle
+	const TArray<FSpawnEnemyInfo>& SpawnEnemyInfoArray = StageConfig->GetSpawnEnemyInfosForStageNumberChecked(StageNumber);
+	for (uint8 Index = 0; Index < SpawnEnemyInfoArray.Num(); ++Index)
+	{
+		// SpawnEnemyInfoArray의 Index를 해당 EnemyClass를 나타내는 uint8 값으로 사용한다.
+		EnemyClassTable.Add(Index, SpawnEnemyInfoArray[Index].EnemyClass);
+		for (int32 Count = 0; Count < SpawnEnemyInfoArray[Index].SpawnCount; ++Count)
+		{
+			RandomEnemyInfos.Add(Index);
+		}
+	}
+	Algo::RandomShuffle(RandomEnemyInfos);
 }
 
 APlayerController* AStageGameMode::GetSimulatedPlayerController() const
