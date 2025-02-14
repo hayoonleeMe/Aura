@@ -22,6 +22,10 @@ AStageGameMode::AStageGameMode()
 	/* Waiting Timer */
 	WaitingTime = 10.f;
 	WaitingTimerDelegate = FTimerDelegate::CreateUObject(this, &ThisClass::OnWaitingTimeFinished);
+	
+	/* End Stage Delay Timer */
+	EndStageDelay = 4.f;
+	EndStageDelayTimerDelegate = FTimerDelegate::CreateUObject(this, &ThisClass::EndStage);
 
 	/* Spawn Enemy */
 	SpawnWaitTime = 2.f;
@@ -68,8 +72,8 @@ void AStageGameMode::StartStage()
 	StageStatus = EStageStatus::Started;
 
 	GetWorldTimerManager().ClearTimer(WaitingTimerHandle);
-	BroadcastStageStatusChangeToAllLocalPlayers();
 	PrepareEnemySpawn();
+	BroadcastStageStatusChangeToAllLocalPlayers();
 	AsyncSpawnEnemies();
 }
 
@@ -80,7 +84,7 @@ void AStageGameMode::EndStage()
 	StageStatus = EStageStatus::Waiting;
 	StageNumber++;
 
-	if (StageNumber >= MaxStageNumber)
+	if (StageNumber > MaxStageNumber)
 	{
 		// TODO : 게임 종료
 		UE_LOG(LogTemp, Warning, TEXT("게임 종료"));
@@ -149,7 +153,8 @@ void AStageGameMode::SpawnStartStageBeacon()
 	}
 
 	check(StartStageBeaconClass);
-
+	
+	SpawnParams.bDeferConstruction = false;
 	StartStageBeacon = GetWorld()->SpawnActor<AActor>(StartStageBeaconClass, SpawnParams);
 }
 
@@ -168,7 +173,7 @@ void AStageGameMode::AsyncSpawnEnemies()
 		for (; NumSpawnedEnemies < TotalCount; ++NumSpawnedEnemies)
 		{
 			const TSubclassOf<AAuraEnemy>& EnemyClass = EnemyClassTable[RandomEnemyInfos[NumSpawnedEnemies]];
-			SpawnEnemies(EnemyClass);
+			SpawnEnemy(EnemyClass);
 		}
 
 		// RandomDelay가 지난 뒤 다시 소환
@@ -181,17 +186,21 @@ void AStageGameMode::AsyncSpawnEnemies()
 	}
 }
 
-void AStageGameMode::SpawnEnemies(TSubclassOf<AAuraEnemy> Class)
+void AStageGameMode::SpawnEnemy(TSubclassOf<AAuraEnemy> Class)
 {
 	check(Class);
 
+	SpawnParams.bDeferConstruction = true;
+	
 	// Find Random Point
 	const FVector RandomPoint = UKismetMathLibrary::RandomPointInBoundingBox_Box(SpawnEnemyVolumeBox);
+	const FTransform SpawnTransform(RandomPoint);
 
-	if (AAuraEnemy* Enemy = GetWorld()->SpawnActor<AAuraEnemy>(Class, RandomPoint, FRotator::ZeroRotator, SpawnParams))
+	if (AAuraEnemy* Enemy = GetWorld()->SpawnActor<AAuraEnemy>(Class, SpawnTransform, SpawnParams))
 	{
 		Enemy->SpawnDefaultController();
 		Enemy->OnCharacterDeadDelegate.AddDynamic(this, &ThisClass::OnEnemyDead);
+		Enemy->FinishSpawning(SpawnTransform);
 	}
 }
 
@@ -200,8 +209,8 @@ void AStageGameMode::OnEnemyDead()
 	++NumDeadEnemies;
 	if (bFinishSpawn && NumSpawnedEnemies == NumDeadEnemies)
 	{
-		// 모든 Enemy를 소환하고, 모든 Enemy가 죽으면 스테이지 종료
-		EndStage();
+		// 모든 Enemy를 소환하고, 모든 Enemy가 죽으면 EndStageDelay가 지난 뒤 스테이지 종료
+		GetWorldTimerManager().SetTimer(EndStageDelayTimerHandle, EndStageDelayTimerDelegate, EndStageDelay, false);
 	}
 }
 
@@ -253,7 +262,7 @@ void AStageGameMode::BroadcastStageStatusChangeToAllLocalPlayers() const
 		{
 			if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(It->Get()))
 			{
-				AuraPC->MulticastOnStageStatusChanged(StageStatus, StageNumber, WaitingTimerEndSeconds);
+				AuraPC->MulticastOnStageStatusChanged(StageStatus, StageNumber, WaitingTimerEndSeconds, RandomEnemyInfos.Num());
 			}
 		}
 	}

@@ -34,6 +34,7 @@ public:
 	virtual FHitResult GetTargetHitResult() const override { return TargetHitResult; }
 	virtual void IndicateAbilityActivateCostFail() override;
 	virtual void IndicateAbilityActivateCooldownFail() override;
+	virtual void NotifyEnemyDead() override;
 	/* End PlayerInterface */
 
 	AActor* GetTargetActorFromCursor() const { return TargetFromCurrentFrame.Get(); }
@@ -49,7 +50,7 @@ public:
 	void ClientIndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const;
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastOnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds);
+	void MulticastOnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount);
 
 	FOnGameStateBaseValidInClientSignature OnGameStateBaseValidInClientDelegate;
 

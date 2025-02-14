@@ -29,11 +29,19 @@ void AAuraHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySyst
 	}
 }
 
-void AAuraHUD::OnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds) const
+void AAuraHUD::OnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount) const
 {
 	if (OverlayWidgetController)
 	{
-		OverlayWidgetController->OnStageStatusChanged(StageStatus, StageNumber, WaitingTimerEndSeconds);
+		OverlayWidgetController->OnStageStatusChanged(StageStatus, StageNumber, WaitingTimerEndSeconds, TotalEnemyCount);
+	}
+}
+
+void AAuraHUD::OnEnemyDead() const
+{
+	if (OverlayWidgetController)
+	{
+		OverlayWidgetController->OnEnemyDead();
 	}
 }
 

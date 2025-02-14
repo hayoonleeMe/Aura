@@ -18,6 +18,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Interface/PlayerInterface.h"
 #include "Materials/MaterialInstance.h"
 #include "UI/Widget/AuraUserWidget.h"
 
@@ -244,6 +245,12 @@ void AAuraEnemy::HandleDeathLocally()
 	Container.SetResponse(ECC_WorldDynamic, ECR_Block);
 	GetCapsuleComponent()->SetCollisionResponseToChannels(Container);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	// Enemy 죽음을 UI에 업데이트
+	if (IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(GetWorld()->GetFirstPlayerController()))
+	{
+		PlayerInterface->NotifyEnemyDead();
+	}
 	
 	// 로컬에서 죽었음을 알림 (Will hide enemy health bar)
 	OnCharacterDeadDelegate.Broadcast();
