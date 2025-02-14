@@ -5,6 +5,7 @@
 
 #include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
+#include "GameplayCueManager.h"
 #include "NiagaraComponent.h"
 #include "AI/AuraAIController.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
@@ -87,6 +88,11 @@ void AAuraEnemy::BeginPlay()
 	InitAbilityActorInfo();
 	InitializeAttributes();
 	InitializeForHealthBar();
+
+	// Execute SummonEffect GameplayCue
+	FGameplayCueParameters CueParams;
+	CueParams.Location = GetNavAgentLocation();
+	UGameplayCueManager::ExecuteGameplayCue_NonReplicated(this, FAuraGameplayTags::Get().GameplayCue_SummonEffect, CueParams);
 }
 
 void AAuraEnemy::InitAbilityActorInfo()

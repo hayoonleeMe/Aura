@@ -172,6 +172,7 @@ struct FAuraGameplayTags
 	FGameplayTag GameplayCue_LevelUp;
 	FGameplayTag GameplayCue_LightningBeam;
 	FGameplayTag GameplayCue_ArcaneShard;
+	FGameplayTag GameplayCue_SummonEffect;
 	
 private:
 	static FAuraGameplayTags GameplayTags;
