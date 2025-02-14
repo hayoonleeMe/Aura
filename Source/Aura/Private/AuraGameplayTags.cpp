@@ -123,4 +123,5 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.GameplayCue_LevelUp = Manager.AddNativeGameplayTag(TEXT("GameplayCue.LevelUp"), TEXT("LevelUp GameplayCue Tag"));
 	GameplayTags.GameplayCue_LightningBeam = Manager.AddNativeGameplayTag(TEXT("GameplayCue.LightningBeam"), TEXT("LightningBeam GameplayCue Tag"));
 	GameplayTags.GameplayCue_ArcaneShard = Manager.AddNativeGameplayTag(TEXT("GameplayCue.ArcaneShard"), TEXT("ArcaneShard GameplayCue Tag"));
+	GameplayTags.GameplayCue_SummonEffect = Manager.AddNativeGameplayTag(TEXT("GameplayCue.SummonEffect"), TEXT("SummonEffect GameplayCue Tag"));
 }
