@@ -33,6 +33,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEquippedSpellCooldownEndSignature
 // 현재 Stage Status가 변경됨을 알리는 델레게이트
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnStageStatusChangedSignature, EStageStatus, StageStatus, int32, StageNumber, double, WaitingTimerEndSeconds, int32, TotalEnemyCount);
 
+// Enemy 죽음을 알리는 델레게이트
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEnemyDeadSignature);
 
 /**
  * Overlay Widget에서 사용할 WidgetController
@@ -78,10 +80,15 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="Aura|Overlay")
 	FOnStageStatusChangedSignature OnStageStatusChangedDelegate;
+	
+	UPROPERTY(BlueprintAssignable, Category="Aura|Overlay")
+	FOnEnemyDeadSignature OnEnemyDeadDelegate;
 
 	// 현재 변경된 StageStatus 전달
 	void OnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount) const;
 
+	// Enemy 죽음을 전달
+	void OnEnemyDead() const;
 
 private:
 	// Spell의 장착 상태 변경을 업데이트

@@ -58,6 +58,14 @@ void AAuraPlayerController::IndicateAbilityActivateCooldownFail()
 	}
 }
 
+void AAuraPlayerController::NotifyEnemyDead()
+{
+	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())
+	{
+		AuraHUD->OnEnemyDead();
+	}
+}
+
 void AAuraPlayerController::CursorTrace()
 {
 	// Caching Target HitResult

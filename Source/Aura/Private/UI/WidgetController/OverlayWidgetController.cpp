@@ -69,6 +69,9 @@ void UOverlayWidgetController::OnStageStatusChanged(EStageStatus StageStatus, in
 	OnStageStatusChangedDelegate.Broadcast(StageStatus, StageNumber, WaitingTimerEndSeconds, TotalEnemyCount);
 }
 
+void UOverlayWidgetController::OnEnemyDead() const
+{
+	OnEnemyDeadDelegate.Broadcast();
 }
 
 void UOverlayWidgetController::UpdateEquippedSpellChange(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag) const

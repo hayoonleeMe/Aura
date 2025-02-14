@@ -34,6 +34,7 @@ public:
 	virtual FHitResult GetTargetHitResult() const override { return TargetHitResult; }
 	virtual void IndicateAbilityActivateCostFail() override;
 	virtual void IndicateAbilityActivateCooldownFail() override;
+	virtual void NotifyEnemyDead() override;
 	/* End PlayerInterface */
 
 	AActor* GetTargetActorFromCursor() const { return TargetFromCurrentFrame.Get(); }

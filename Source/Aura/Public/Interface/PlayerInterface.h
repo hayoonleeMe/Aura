@@ -77,4 +77,7 @@ public:
 
 	// Cooldown 때문에 어빌리티 실행에 실패했음을 UI에 표시
 	virtual void IndicateAbilityActivateCooldownFail() {}
+
+	// Enemy 죽음을 알림
+	virtual void NotifyEnemyDead() {}
 };

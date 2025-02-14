@@ -37,6 +37,11 @@ void AAuraHUD::OnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber,
 	}
 }
 
+void AAuraHUD::OnEnemyDead() const
+{
+	if (OverlayWidgetController)
+	{
+		OverlayWidgetController->OnEnemyDead();
 	}
 }
 
