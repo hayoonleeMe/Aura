@@ -80,7 +80,7 @@ void AStageGameMode::EndStage()
 	StageStatus = EStageStatus::Waiting;
 	StageNumber++;
 
-	if (StageNumber >= MaxStageNumber)
+	if (StageNumber > MaxStageNumber)
 	{
 		// TODO : 게임 종료
 		UE_LOG(LogTemp, Warning, TEXT("게임 종료"));
