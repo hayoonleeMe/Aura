@@ -29,7 +29,7 @@ void AStageGameMode::PostLogin(APlayerController* NewPlayer)
 
 	if (GetWorld()->GetNumPlayerControllers() == PlayNumberOfClients)
 	{
-		WaitStageStart();
+		GetWorldTimerManager().SetTimer(PollingTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::PollInit), 0.1f, true);
 	}
 }
 #endif
