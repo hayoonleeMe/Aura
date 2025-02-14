@@ -49,7 +49,7 @@ public:
 	void ClientIndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const;
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastOnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds);
+	void MulticastOnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount);
 
 	FOnGameStateBaseValidInClientSignature OnGameStateBaseValidInClientDelegate;
 

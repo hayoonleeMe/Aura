@@ -93,11 +93,11 @@ void AAuraPlayerController::SetUIInputMode()
 	SetInputMode(InputMode);
 }
 
-void AAuraPlayerController::MulticastOnStageStatusChanged_Implementation(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds)
+void AAuraPlayerController::MulticastOnStageStatusChanged_Implementation(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount)
 {
 	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())
 	{
-		AuraHUD->OnStageStatusChanged(StageStatus, StageNumber, WaitingTimerEndSeconds);
+		AuraHUD->OnStageStatusChanged(StageStatus, StageNumber, WaitingTimerEndSeconds, TotalEnemyCount);
 	}
 }
 

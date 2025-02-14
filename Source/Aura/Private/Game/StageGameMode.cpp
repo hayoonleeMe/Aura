@@ -68,8 +68,8 @@ void AStageGameMode::StartStage()
 	StageStatus = EStageStatus::Started;
 
 	GetWorldTimerManager().ClearTimer(WaitingTimerHandle);
-	BroadcastStageStatusChangeToAllLocalPlayers();
 	PrepareEnemySpawn();
+	BroadcastStageStatusChangeToAllLocalPlayers();
 	AsyncSpawnEnemies();
 }
 
@@ -253,7 +253,7 @@ void AStageGameMode::BroadcastStageStatusChangeToAllLocalPlayers() const
 		{
 			if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(It->Get()))
 			{
-				AuraPC->MulticastOnStageStatusChanged(StageStatus, StageNumber, WaitingTimerEndSeconds);
+				AuraPC->MulticastOnStageStatusChanged(StageStatus, StageNumber, WaitingTimerEndSeconds, RandomEnemyInfos.Num());
 			}
 		}
 	}

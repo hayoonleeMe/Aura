@@ -31,7 +31,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnEquippedSpellCooldownStartSignat
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEquippedSpellCooldownEndSignature, const FGameplayTag&, InputTag);
 
 // 현재 Stage Status가 변경됨을 알리는 델레게이트
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnStageStatusChangedSignature, EStageStatus, StageStatus, int32, StageNumber, double, WaitingTimerEndSeconds);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnStageStatusChangedSignature, EStageStatus, StageStatus, int32, StageNumber, double, WaitingTimerEndSeconds, int32, TotalEnemyCount);
+
 
 /**
  * Overlay Widget에서 사용할 WidgetController
@@ -79,7 +80,8 @@ public:
 	FOnStageStatusChangedSignature OnStageStatusChangedDelegate;
 
 	// 현재 변경된 StageStatus 전달
-	void OnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds) const;
+	void OnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount) const;
+
 
 private:
 	// Spell의 장착 상태 변경을 업데이트
