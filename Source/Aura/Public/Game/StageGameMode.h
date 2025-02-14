@@ -119,7 +119,7 @@ private:
 	int32 MaxSpawnCount;
 
 	// AAuraEnemy 타입 Enemy 소환
-	void SpawnEnemies(TSubclassOf<AAuraEnemy> Class);
+	void SpawnEnemy(TSubclassOf<AAuraEnemy> Class);
 
 	// 비동기적으로 Enemy 소환
 	// RandomDelay마다 랜덤한 수의 랜덤한 Enemy를 소환하고, 현재 스테이지에서 정해진 수만큼 모두 소환할 때까지 반복한다.

@@ -149,7 +149,8 @@ void AStageGameMode::SpawnStartStageBeacon()
 	}
 
 	check(StartStageBeaconClass);
-
+	
+	SpawnParams.bDeferConstruction = false;
 	StartStageBeacon = GetWorld()->SpawnActor<AActor>(StartStageBeaconClass, SpawnParams);
 }
 
@@ -168,7 +169,7 @@ void AStageGameMode::AsyncSpawnEnemies()
 		for (; NumSpawnedEnemies < TotalCount; ++NumSpawnedEnemies)
 		{
 			const TSubclassOf<AAuraEnemy>& EnemyClass = EnemyClassTable[RandomEnemyInfos[NumSpawnedEnemies]];
-			SpawnEnemies(EnemyClass);
+			SpawnEnemy(EnemyClass);
 		}
 
 		// RandomDelay가 지난 뒤 다시 소환
@@ -181,17 +182,21 @@ void AStageGameMode::AsyncSpawnEnemies()
 	}
 }
 
-void AStageGameMode::SpawnEnemies(TSubclassOf<AAuraEnemy> Class)
+void AStageGameMode::SpawnEnemy(TSubclassOf<AAuraEnemy> Class)
 {
 	check(Class);
 
+	SpawnParams.bDeferConstruction = true;
+	
 	// Find Random Point
 	const FVector RandomPoint = UKismetMathLibrary::RandomPointInBoundingBox_Box(SpawnEnemyVolumeBox);
+	const FTransform SpawnTransform(RandomPoint);
 
-	if (AAuraEnemy* Enemy = GetWorld()->SpawnActor<AAuraEnemy>(Class, RandomPoint, FRotator::ZeroRotator, SpawnParams))
+	if (AAuraEnemy* Enemy = GetWorld()->SpawnActor<AAuraEnemy>(Class, SpawnTransform, SpawnParams))
 	{
 		Enemy->SpawnDefaultController();
 		Enemy->OnCharacterDeadDelegate.AddDynamic(this, &ThisClass::OnEnemyDead);
+		Enemy->FinishSpawning(SpawnTransform);
 	}
 }
 
