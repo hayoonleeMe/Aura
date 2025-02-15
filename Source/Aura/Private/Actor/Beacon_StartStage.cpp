@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Game/StageGameMode.h"
+#include "Kismet/GameplayStatics.h"
 
 ABeacon_StartStage::ABeacon_StartStage()
 {
@@ -47,6 +48,10 @@ void ABeacon_StartStage::UnHighlightActor()
 
 void ABeacon_StartStage::Interact()
 {
+	if (InteractSound)
+	{
+		UGameplayStatics::PlaySound2D(this, InteractSound);
+	}
 	ServerInteract();
 }
 

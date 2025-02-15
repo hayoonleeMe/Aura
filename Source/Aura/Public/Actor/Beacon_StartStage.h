@@ -37,6 +37,9 @@ private:
 	UFUNCTION(Server, Reliable)
 	void ServerInteract();
 
+	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	TObjectPtr<USoundBase> InteractSound;
+
 	// ============================================================================
 	// Tooltip
 	// ============================================================================
