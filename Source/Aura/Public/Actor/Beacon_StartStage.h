@@ -7,6 +7,7 @@
 #include "Interface/InteractionInterface.h"
 #include "Beacon_StartStage.generated.h"
 
+class UWidgetComponent;
 class UBoxComponent;
 
 /**
@@ -35,4 +36,14 @@ private:
 
 	UFUNCTION(Server, Reliable)
 	void ServerInteract();
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	TObjectPtr<USoundBase> InteractSound;
+
+	// ============================================================================
+	// Tooltip
+	// ============================================================================
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UWidgetComponent> TooltipWidgetComponent;
 };

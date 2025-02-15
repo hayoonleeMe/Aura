@@ -5,7 +5,9 @@
 
 #include "Aura/Aura.h"
 #include "Components/BoxComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Game/StageGameMode.h"
+#include "Kismet/GameplayStatics.h"
 
 ABeacon_StartStage::ABeacon_StartStage()
 {
@@ -19,20 +21,37 @@ ABeacon_StartStage::ABeacon_StartStage()
 	MeshComponent->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_BLUE);
 	MeshComponent->SetCollisionResponseToChannel(ECC_Target, ECR_Block);
 	MeshComponent->SetRelativeLocation(FVector(0.f, 0.f, -160.f));
+
+	/* Tooltip */
+	TooltipWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Tooltip Widget Component"));
+	TooltipWidgetComponent->SetupAttachment(BoxComponent);
+	TooltipWidgetComponent->SetVisibility(false);
+	TooltipWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	TooltipWidgetComponent->SetDrawAtDesiredSize(true);
+	TooltipWidgetComponent->SetPivot(FVector2D(0.f, 0.5f));
+	TooltipWidgetComponent->SetRelativeLocation(FVector(0.f, 50.f, 0.f));
 }
 
 void ABeacon_StartStage::HighlightActor()
 {
 	MeshComponent->SetRenderCustomDepth(true);
+
+	TooltipWidgetComponent->SetVisibility(true);
 }
 
 void ABeacon_StartStage::UnHighlightActor()
 {
 	MeshComponent->SetRenderCustomDepth(false);
+
+	TooltipWidgetComponent->SetVisibility(false);
 }
 
 void ABeacon_StartStage::Interact()
 {
+	if (InteractSound)
+	{
+		UGameplayStatics::PlaySound2D(this, InteractSound);
+	}
 	ServerInteract();
 }
 
