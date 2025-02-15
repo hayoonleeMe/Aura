@@ -19,7 +19,7 @@ void UOverlayWidgetController::BroadcastInitialValues()
 	OnXPChangedDelegate.Broadcast(AuraAS->GetXP());
 	OnLevelChangedDelegate.Broadcast(AuraAS->GetLevel());
 
-	if (GetAuraPlayerControllerChecked()->HasAuthority())
+	if (GetAuraPlayerControllerChecked()->HasAuthority() || GetAuraPlayerControllerChecked()->IsValidGameStateBaseInClient())
 	{
 		UpdateStartupSpells();
 	}
