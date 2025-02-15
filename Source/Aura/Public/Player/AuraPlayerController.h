@@ -54,6 +54,8 @@ public:
 
 	FOnGameStateBaseValidInClientSignature OnGameStateBaseValidInClientDelegate;
 
+	bool IsValidGameStateBaseInClient() const { return bValidGameStateBaseInClient; }
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
