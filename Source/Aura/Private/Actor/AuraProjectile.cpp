@@ -18,6 +18,7 @@ AAuraProjectile::AAuraProjectile()
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
 	SetReplicatingMovement(true);
+	bAlwaysRelevant = true;
 	
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Component"));
 	SetRootComponent(SphereComponent);
@@ -35,35 +36,20 @@ AAuraProjectile::AAuraProjectile()
 	ProjectileMovementComponent->MaxSpeed = 550.f;
 	ProjectileMovementComponent->ProjectileGravityScale = 0.f;
 	
-	LifeSpan = 15.f;
+	LoopingSoundComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Looping Sound Component"));
+	LoopingSoundComponent->SetupAttachment(GetRootComponent());
+	LoopingSoundComponent->bAutoActivate = false;
 }
 
-void AAuraProjectile::BeginPlay()
+void AAuraProjectile::PostInitializeComponents()
 {
-	Super::BeginPlay();
+	Super::PostInitializeComponents();
 
-	// Actor의 수명 설정
-	SetLifeSpan(LifeSpan);
-	
-	if (LoopingSound)
+	if (LoopingSoundComponent->GetSound())
 	{
-		LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());
+		LoopingSoundComponent->Activate();
 	}
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnSphereOverlap);
-}
-
-void AAuraProjectile::Destroyed()
-{
-	if (LoopingSoundComponent)
-	{
-		LoopingSoundComponent->Stop();
-		LoopingSoundComponent->DestroyComponent();
-	}
-	if (ImpactCueTag.IsValid())
-	{
-		UAuraBlueprintLibrary::ExecuteGameplayCue(GetOwner(), ImpactCueTag, GetActorLocation());
-	}
-	Super::Destroyed();
 }
 
 void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
@@ -81,6 +67,11 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 		UAuraBlueprintLibrary::ApplyDamageEffect(DamageEffectParams);
 	}
 
+	if (ImpactCueTag.IsValid())
+	{
+		UAuraBlueprintLibrary::ExecuteGameplayCue(GetOwner(), ImpactCueTag, GetActorLocation());
+	}
+
 	Destroy();
 }
 
@@ -91,6 +82,6 @@ bool AAuraProjectile::IsValidOverlap(const AActor* TargetActor) const
 	{
 		return false;
 	}
-	const AActor* SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
+	const AActor* SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent ? DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor() : nullptr;
 	return IsValid(SourceAvatarActor) && IsValid(TargetActor) && SourceAvatarActor != TargetActor && UAuraBlueprintLibrary::IsNotFriend(SourceAvatarActor, TargetActor); 
 }
