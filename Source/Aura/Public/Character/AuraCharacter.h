@@ -5,9 +5,11 @@
 #include "CoreMinimal.h"
 #include "Character/BaseCharacter.h"
 #include "Interface/CombatInterface.h"
+#include "Interface/ObjectPoolInterface.h"
 #include "Interface/PlayerInterface.h"
 #include "AuraCharacter.generated.h"
 
+class UObjectPoolComponent;
 class UNiagaraComponent;
 class UCameraComponent;
 class USpringArmComponent;
@@ -17,7 +19,7 @@ class UGameplayEffect;
  * 
  */
 UCLASS()
-class AURA_API AAuraCharacter : public ABaseCharacter, public IPlayerInterface
+class AURA_API AAuraCharacter : public ABaseCharacter, public IPlayerInterface, public IObjectPoolInterface
 {
 	GENERATED_BODY()
 
@@ -45,6 +47,10 @@ public:
 	virtual int32 GetLevelUpAttributePointsAward(int32 Level) const override;
 	virtual int32 GetLevelUpSpellPointsAward(int32 Level) const override;
 	/* End PlayerInterface */
+
+	/* Begin ObjectPoolInterface */
+	virtual AActor* SpawnFromPool(const TSubclassOf<AActor>& Class, const FTransform& SpawnTransform) override;
+	/* End ObjectPoolInterface */
 	
 protected:
 	virtual void InitAbilityActorInfo() override;
@@ -53,6 +59,13 @@ protected:
 	virtual void HandleDeathLocally() override;
 
 private:
+	// ============================================================================
+	// Projectile Pool 
+	// ============================================================================
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UObjectPoolComponent> FireBoltPoolComponent;
+	
 	// ============================================================================
 	// Effects
 	// ============================================================================

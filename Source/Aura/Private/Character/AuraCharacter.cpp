@@ -7,16 +7,23 @@
 #include "AuraGameplayTags.h"
 #include "NiagaraComponent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Actor/FireBolt_Pooled.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Component/ObjectPoolComponent.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
 
 AAuraCharacter::AAuraCharacter()
 {
+	/* Projectile Pool */
+	FireBoltPoolComponent = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("Projectile Pool Component"));
+	FireBoltPoolComponent->SetPoolSize(100);
+	FireBoltPoolComponent->bAutoActivate = true;
+	
 	/* Camera */
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm Component"));
 	SpringArmComponent->SetupAttachment(GetRootComponent());
@@ -148,6 +155,15 @@ int32 AAuraCharacter::GetLevelUpSpellPointsAward(int32 Level) const
 {
 	const AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
 	return AuraPS->GetLevelUpSpellPointsAward(Level);
+}
+
+AActor* AAuraCharacter::SpawnFromPool(const TSubclassOf<AActor>& Class, const FTransform& SpawnTransform)
+{
+	if (Class->IsChildOf(AFireBolt_Pooled::StaticClass()))
+	{
+		return FireBoltPoolComponent->SpawnFromPool(SpawnTransform);
+	}
+	return nullptr;
 }
 
 void AAuraCharacter::MulticastActivatePassiveSpellNiagaraComponent_Implementation(const FGameplayTag& SpellTag) const

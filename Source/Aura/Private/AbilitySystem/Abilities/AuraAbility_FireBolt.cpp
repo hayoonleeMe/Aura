@@ -9,6 +9,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AbilityTasks/AbilityTask_TargetDataUnderMouse.h"
 #include "Actor/AuraProjectile.h"
+#include "Interface/ObjectPoolInterface.h"
 
 UAuraAbility_FireBolt::UAuraAbility_FireBolt()
 {
@@ -123,8 +124,8 @@ void UAuraAbility_FireBolt::SpawnFireBolts() const
 	check(ProjectileClass);
 
 	const UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo());
-	const AActor* AvatarActor = GetAvatarActorFromActorInfo();
-	if (!AuraASC || !IsValid(AvatarActor) || !AvatarActor->HasAuthority())	// Only Spawn in Server
+	AActor* AvatarActor = GetAvatarActorFromActorInfo();
+	if (!AuraASC || !IsValid(AvatarActor))
 	{
 		return;
 	}
@@ -160,12 +161,14 @@ void UAuraAbility_FireBolt::SpawnFireBolts() const
 		SpawnTransform.SetLocation(CombatSocketLocation);
 		SpawnTransform.SetRotation(Rotation.Quaternion());
 
-		AActor* OwningActor = GetOwningActorFromActorInfo();
-		if (AAuraProjectile* AuraProjectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(ProjectileClass, SpawnTransform, OwningActor, Cast<APawn>(OwningActor), ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
+		// Object Pooling instead of spawn actor
+		if (IObjectPoolInterface* ObjectPoolInterface = Cast<IObjectPoolInterface>(AvatarActor))
 		{
-			// Projectile로 데미지를 입히기 위해 설정
-			MakeDamageEffectParams(AuraProjectile->DamageEffectParams, nullptr);
-			AuraProjectile->FinishSpawning(SpawnTransform);
+			if (AAuraProjectile* AuraProjectile = ObjectPoolInterface->SpawnFromPool<AAuraProjectile>(ProjectileClass, SpawnTransform))
+			{
+				// Projectile로 데미지를 입히기 위해 설정
+				MakeDamageEffectParams(AuraProjectile->DamageEffectParams, nullptr);
+			}
 		}	
 	}
 }
