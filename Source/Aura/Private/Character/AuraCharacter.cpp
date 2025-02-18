@@ -227,8 +227,20 @@ void AAuraCharacter::InitAbilityActorInfo()
 			}
 		}
 	}
+	else
 	{
+		/* Respawn */
+		
+		// 모든 Passive Ability 실행
+		AuraASC->ActivateAllPassiveSpells();
+
+		if (IsLocallyControlled())
 		{
+			if (APlayerController* PC = GetController<APlayerController>())
+			{
+				// Enable Input
+				PC->EnableInput(PC);
+			}
 		}
 	}
 

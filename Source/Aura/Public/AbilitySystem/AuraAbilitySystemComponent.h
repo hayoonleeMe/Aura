@@ -73,6 +73,9 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerHandleEquipSpell(const FGameplayTag& SpellTagToEquip, const FGameplayTag& InputTag);
 
+	// 현재 실행할 수 있는 모든 Passive Spell을 실행한다.
+	void ActivateAllPassiveSpells();
+
 	FOnSpellAbilityChangedSignature OnSpellAbilityChangedDelegate;
 	FOnEquippedSpellAbilityChangedSignature OnEquippedSpellAbilityChangedDelegate;
 	FOnActivatableAbilitiesReplicatedSignature OnActivatableAbilitiesReplicatedDelegate;
