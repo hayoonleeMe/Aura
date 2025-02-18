@@ -9,6 +9,7 @@
 #include "AbilitySystem/AbilityTasks/AbilityTask_ClickToMove.h"
 #include "Aura/Aura.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/PlayerController.h"
 
 UAuraAbility_ClickToMove::UAuraAbility_ClickToMove()
 {
