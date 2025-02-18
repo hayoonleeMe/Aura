@@ -253,10 +253,24 @@ void AAuraCharacter::InitAbilityActorInfo()
 
 void AAuraCharacter::InitializeAttributes()
 {
-	check(GetAbilitySystemComponent());
-
+	const UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(GetAbilitySystemComponent());
+	const bool bASCAlreadyInitialized = AuraASC->IsInitialized();
+	const FGameplayTag PrimaryAttributesTag = FAuraGameplayTags::Get().Attributes_Primary;
+	
 	for (const TSubclassOf<UGameplayEffect>& EffectClass : StartupEffects)
 	{
+		if (bASCAlreadyInitialized)
+		{
+			if (const UGameplayEffect* Effect = EffectClass ? EffectClass->GetDefaultObject<UGameplayEffect>() : nullptr)
+			{
+				// 리스폰 시 Primary Attributes를 초기화하는 Effect 적용 방지
+				if (Effect->InheritableGameplayEffectTags.CombinedTags.HasTag(PrimaryAttributesTag))
+				{
+					continue;
+				}
+			}
+		}
+		
 		ApplyEffectSpecToSelf(EffectClass);
 	}
 }
