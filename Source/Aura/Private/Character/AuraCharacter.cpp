@@ -236,6 +236,19 @@ void AAuraCharacter::InitializeAttributes()
 
 void AAuraCharacter::HandleDeathLocally()
 {
+	// Disable Input
+	if (APlayerController* PC = GetController<APlayerController>())
+	{
+		PC->DisableInput(PC);
+	}
+
+	// Disable Movement
+	if (UCharacterMovementComponent* MoveComponent = GetCharacterMovement())
+	{
+		MoveComponent->StopMovementImmediately();
+		MoveComponent->DisableMovement();
+	}
+	
 	// 충돌 방지
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	FCollisionResponseContainer Container(ECR_Ignore);
@@ -251,4 +264,17 @@ void AAuraCharacter::HandleDeathLocally()
 	WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	WeaponMeshComponent->SetSimulatePhysics(true);		
 	WeaponMeshComponent->SetEnableGravity(true);
+
+	if (AbilitySystemComponent)
+	{
+		// Cancel All Abilities
+		AbilitySystemComponent->CancelAbilities();
+
+		// Remove All Active Effects
+		TArray<FActiveGameplayEffectHandle> ActiveEffectHandles = AbilitySystemComponent->GetActiveGameplayEffects().GetAllActiveEffectHandles();
+		for (const FActiveGameplayEffectHandle& EffectHandle : ActiveEffectHandles)
+		{
+			AbilitySystemComponent->RemoveActiveGameplayEffect(EffectHandle);
+		}
+	}
 }
