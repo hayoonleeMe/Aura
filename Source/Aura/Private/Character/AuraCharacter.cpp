@@ -62,7 +62,6 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 
 	// for server (PossessedBy is called on server)
 	InitAbilityActorInfo();
-	InitializeAttributes();
 }
 
 void AAuraCharacter::OnRep_PlayerState()
@@ -205,23 +204,39 @@ void AAuraCharacter::InitAbilityActorInfo()
 	AbilitySystemComponent->InitAbilityActorInfo(AuraPS, this);
 	AttributeSet = AuraPS->GetAttributeSet();
 
-	// Overlay Widget 생성 전에 Startup Ability 추가
-	AddStartupAbilities(StartupAbilities);
-	
-	// 어빌리티 실행에 실패할 때 콜백 함수 등록
-	if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
+
+	// 가장 처음 게임이 시작했을 때
+	if (!AuraASC->IsInitialized())
 	{
-		AuraASC->AbilityFailedCallbacks.AddUObject(AuraASC, &UAuraAbilitySystemComponent::OnAbilityFailed);
-	}
-	
-	// Overlay Widget 초기화
-	if (AAuraPlayerController* AuraPC = GetController<AAuraPlayerController>())
-	{
-		if (AAuraHUD* AuraHUD = AuraPC->GetHUD<AAuraHUD>())
+		// Overlay Widget 생성 전에 Startup Ability 추가
+		AddStartupAbilities(StartupAbilities);
+
+		if (!AuraASC->AbilityFailedCallbacks.IsBoundToObject(AuraASC))
 		{
-			AuraHUD->InitOverlay(AuraPC, AuraPS, AbilitySystemComponent, AttributeSet);
+			// 어빌리티 실행에 실패할 때 콜백 함수 등록
+			AuraASC->AbilityFailedCallbacks.AddUObject(AuraASC, &UAuraAbilitySystemComponent::OnAbilityFailed);
+		}
+
+		// Overlay Widget 초기화
+		if (AAuraPlayerController* AuraPC = GetController<AAuraPlayerController>())
+		{
+			if (AAuraHUD* AuraHUD = AuraPC->GetHUD<AAuraHUD>())
+			{
+				AuraHUD->InitOverlay(AuraPC, AuraPS, AbilitySystemComponent, AttributeSet);
+			}
 		}
 	}
+	{
+		{
+		}
+	}
+
+	if (HasAuthority())
+	{
+		InitializeAttributes();
+	}
+	AuraASC->SetInitialized();
 }
 
 void AAuraCharacter::InitializeAttributes()

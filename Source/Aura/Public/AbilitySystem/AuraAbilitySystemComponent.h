@@ -26,6 +26,9 @@ class AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
 public:
 	virtual void OnRep_ActivateAbilities() override;
 
+	bool IsInitialized() const { return bInitialized; }
+	void SetInitialized() { bInitialized = true; }
+
 	// ============================================================================
 	// Ability
 	// ============================================================================
@@ -104,6 +107,9 @@ public:
 	float GetCooldownTimeRemaining(const FGameplayTag& CooldownTag) const;
 
 private:
+	// ASC가 초기화됐는지 여부
+	bool bInitialized = false;
+	
 	// ============================================================================
 	// Spell
 	// ============================================================================
