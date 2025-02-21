@@ -135,6 +135,12 @@ void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSp
 		const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
 		
 		AActor* AvatarActor = GetActorInfo() && GetActorInfo()->AvatarActor.IsValid() ? GetActorInfo()->AvatarActor.Get() : nullptr;
+		ICombatInterface* CombatInterface = Cast<ICombatInterface>(AvatarActor);
+
+		if (!CombatInterface || CombatInterface->IsDead())
+		{
+			return;
+		}
 
 		const FAuraGameplayEffectContext* AuraEffectContext = FAuraGameplayEffectContext::ExtractEffectContext(EffectSpec.GetEffectContext());
         check(AuraEffectContext);
@@ -146,19 +152,16 @@ void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSp
 		if (NewHealth <= 0.f)
 		{
 			// Dead
-			if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(AvatarActor))
-			{
-				CombatInterface->Die();
+			CombatInterface->Die();
 
-				// if player kill enemy
-				if (CombatInterface->GetRoleTag().MatchesTagExact(GameplayTags.Role_Enemy))
+			// if player kill enemy
+			if (CombatInterface->GetRoleTag().MatchesTagExact(GameplayTags.Role_Enemy))
+			{
+				// Enemy Dead, Reward XP to Player
+				const int32 XPReward = CombatInterface->GetXPReward();
+				if (UAuraAbilitySystemComponent* InstigatorASC = Cast<UAuraAbilitySystemComponent>(AuraEffectContext->GetInstigatorAbilitySystemComponent()))
 				{
-					// Enemy Dead, Reward XP to Player
-					const int32 XPReward = CombatInterface->GetXPReward();
-					if (UAuraAbilitySystemComponent* InstigatorASC = Cast<UAuraAbilitySystemComponent>(AuraEffectContext->GetInstigatorAbilitySystemComponent()))
-					{
-						InstigatorASC->ApplyXPGainEffect(XPReward);
-					}
+					InstigatorASC->ApplyXPGainEffect(XPReward);
 				}
 			}
 		}
