@@ -13,6 +13,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Component/ObjectPoolComponent.h"
+#include "Game/StageGameMode.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
@@ -70,6 +71,16 @@ void AAuraCharacter::OnRep_PlayerState()
 
 	// for client
 	InitAbilityActorInfo();
+}
+
+void AAuraCharacter::Die()
+{
+	Super::Die();
+
+	if (AStageGameMode* StageGameMode = GetWorld()->GetAuthGameMode<AStageGameMode>())
+	{
+		StageGameMode->RequestPlayerRespawn(GetController<APlayerController>());
+	}
 }
 
 void AAuraCharacter::OnPassiveSpellActivated(const FGameplayTag& SpellTag) const

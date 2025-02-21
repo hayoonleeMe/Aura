@@ -29,6 +29,7 @@ public:
 	virtual void OnRep_PlayerState() override;
 
 	/* Begin CombatInterface */
+	virtual void Die() override;
 	virtual void OnPassiveSpellActivated(const FGameplayTag& SpellTag) const override;
 	virtual void OnPassiveSpellDeactivated(const FGameplayTag& SpellTag) const override;
 	/* End CombatInterface */

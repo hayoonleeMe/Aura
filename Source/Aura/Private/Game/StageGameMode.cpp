@@ -3,11 +3,14 @@
 
 #include "Game/StageGameMode.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "Actor/SpawnEnemyVolume.h"
 #include "Algo/RandomShuffle.h"
 #include "Character/AuraEnemy.h"
 #include "Components/BoxComponent.h"
 #include "Data/StageConfig.h"
+#include "Game/AuraGameStateBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Player/AuraPlayerController.h"
@@ -60,6 +63,76 @@ void AStageGameMode::PostSeamlessTravel()
 	GetWorldTimerManager().SetTimer(PollingTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::PollInit), 0.1f, true);
 }
 
+void AStageGameMode::RequestPlayerRespawn(APlayerController* PlayerController)
+{
+	if (!IsValid(PlayerController))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invalid PlayerController in %hs"), __FUNCTION__);
+		return;
+	}
+	
+	AAuraPlayerController* AuraPC = CastChecked<AAuraPlayerController>(PlayerController);
+	AuraPC->UseLifeCount();
+	
+	const bool bGameEnd = TotalLifeCount <= AuraPC->GetUsedLifeCount();
+	NotifyRespawnStartToLocalPlayer(PlayerController, bGameEnd);
+
+	if (bGameEnd)
+	{
+		// Can't Respawn, Try End Game
+		HandlePlayerRetire();
+	}
+	else
+	{
+		// Start Respawn Timer
+		FTimerHandle RespawnTimerHandle;
+		GetWorldTimerManager().SetTimer(RespawnTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::OnRespawnTimerFinished, PlayerController), RespawnTime, false);	
+	}
+}
+
+void AStageGameMode::OnRespawnTimerFinished(APlayerController* ControllerToRespawn)
+{
+	APawn* PawnToRespawn = ControllerToRespawn ? ControllerToRespawn->GetPawn() : nullptr;
+	if (!IsValid(ControllerToRespawn) || !IsValid(PawnToRespawn))
+	{
+		return;
+	}
+
+	// Uninitialize ASC
+	if (UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(PawnToRespawn))
+	{
+		AbilitySystemComponent->RemoveAllGameplayCues();
+		AbilitySystemComponent->SetAvatarActor(nullptr);
+	}
+
+	const FTransform RespawnTransform = PawnToRespawn->GetActorTransform();
+
+	ControllerToRespawn->Reset();
+	PawnToRespawn->SetActorHiddenInGame(true);
+	PawnToRespawn->DetachFromControllerPendingDestroy();
+	PawnToRespawn->Destroy();
+
+	// Restart Next Frame
+	GetWorldTimerManager().SetTimerForNextTick(FTimerDelegate::CreateWeakLambda(this, [this, ControllerToRespawn, RespawnTransform]()
+	{
+		RestartPlayerAtTransform(ControllerToRespawn, RespawnTransform);
+	}));
+}
+
+void AStageGameMode::HandlePlayerRetire()
+{
+	++RetiredPlayerCount;
+	if (RetiredPlayerCount == GetWorld()->GetNumPlayerControllers())
+	{
+		EndGame();
+	}
+}
+
+void AStageGameMode::EndGame()
+{
+	UE_LOG(LogTemp, Warning, TEXT("EndGame"));
+}
+
 void AStageGameMode::WaitStageStart()
 {
 	BroadcastStageStatusChangeToAllLocalPlayers();
@@ -86,7 +159,7 @@ void AStageGameMode::EndStage()
 
 	if (StageNumber > MaxStageNumber)
 	{
-		// TODO : 게임 종료
+		EndGame();
 		UE_LOG(LogTemp, Warning, TEXT("게임 종료"));
 	}
 	else
@@ -114,6 +187,13 @@ void AStageGameMode::InitData()
 	// Actor의 Ownership 설정을 위해 SimulatedProxy가 사용하는 PlayerController를 Owner로 설정
 	SpawnParams.Owner = GetSimulatedPlayerController();
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	// Caching Respawn Data
+	if (const AAuraGameStateBase* AuraGameStateBase = GetGameState<AAuraGameStateBase>())
+	{
+		TotalLifeCount = AuraGameStateBase->TotalLifeCount;
+		RespawnTime = AuraGameStateBase->RespawnTime;
+	}
 }
 
 void AStageGameMode::PollInit()
