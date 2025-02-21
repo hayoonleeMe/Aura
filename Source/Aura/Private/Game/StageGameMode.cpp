@@ -347,3 +347,14 @@ void AStageGameMode::BroadcastStageStatusChangeToAllLocalPlayers() const
 		}
 	}
 }
+
+void AStageGameMode::NotifyRespawnStartToLocalPlayer(APlayerController* ControllerToRespawn, bool bGameEnd) const
+{
+	const double RespawnTimerEndSeconds = !bGameEnd ? GetWorld()->GetTimeSeconds() + RespawnTime : -1.f;
+
+	// 로컬 플레이어 화면에 표시
+	if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(ControllerToRespawn))
+	{
+		AuraPC->ClientOnRespawnStart(RespawnTimerEndSeconds);
+	}
+}

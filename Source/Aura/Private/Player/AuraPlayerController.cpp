@@ -101,6 +101,14 @@ void AAuraPlayerController::SetUIInputMode()
 	SetInputMode(InputMode);
 }
 
+void AAuraPlayerController::ClientOnRespawnStart_Implementation(double RespawnTimerEndSeconds)
+{
+	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())
+	{
+		AuraHUD->OnRespawnStart(RespawnTimerEndSeconds);
+	}
+}
+
 void AAuraPlayerController::MulticastOnStageStatusChanged_Implementation(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount)
 {
 	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())

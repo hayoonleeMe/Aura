@@ -37,6 +37,14 @@ void AAuraHUD::OnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber,
 	}
 }
 
+void AAuraHUD::OnRespawnStart(double RespawnTimerEndSeconds) const
+{
+	if (OverlayWidgetController)
+	{
+		OverlayWidgetController->OnRespawnStart(RespawnTimerEndSeconds);
+	}
+}
+
 void AAuraHUD::OnEnemyDead() const
 {
 	if (OverlayWidgetController)

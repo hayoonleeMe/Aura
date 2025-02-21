@@ -34,6 +34,9 @@ public:
 	// 현재 변경된 StageStatus 전달
 	void OnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount) const;
 
+	// Respawn 시작을 알림
+	void OnRespawnStart(double RespawnTimerEndSeconds) const;
+
 	// Enemy 죽음을 전달
 	void OnEnemyDead() const;
 

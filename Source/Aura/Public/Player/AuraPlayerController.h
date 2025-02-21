@@ -52,6 +52,9 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastOnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount);
 
+	UFUNCTION(Client, Reliable)
+	void ClientOnRespawnStart(double RespawnTimerEndSeconds);
+
 	FOnGameStateBaseValidInClientSignature OnGameStateBaseValidInClientDelegate;
 
 	bool IsValidGameStateBaseInClient() const { return bValidGameStateBaseInClient; }

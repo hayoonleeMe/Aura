@@ -69,6 +69,11 @@ void UOverlayWidgetController::OnStageStatusChanged(EStageStatus StageStatus, in
 	OnStageStatusChangedDelegate.Broadcast(StageStatus, StageNumber, WaitingTimerEndSeconds, TotalEnemyCount);
 }
 
+void UOverlayWidgetController::OnRespawnStart(double RespawnTimerEndSeconds) const
+{
+	OnRespawnStartDelegate.Broadcast(RespawnTimerEndSeconds);
+}
+
 void UOverlayWidgetController::OnEnemyDead() const
 {
 	OnEnemyDeadDelegate.Broadcast();
