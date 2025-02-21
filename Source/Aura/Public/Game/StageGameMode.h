@@ -30,6 +30,9 @@ public:
 	void WaitStageStart();
 	void StartStage();
 	void EndStage();
+
+	// 가능하면 리스폰 수행
+	void RequestPlayerRespawn(APlayerController* PlayerController);
 	
 private:
 	// ============================================================================
@@ -47,6 +50,19 @@ private:
 
 	// 최대 진행할 수 있는 Stage 수
 	int32 MaxStageNumber = INDEX_NONE;
+
+	// ============================================================================
+	// Game End
+	// ============================================================================
+
+	// 리스폰을 더 이상 할 수 없는 플레이어 수
+	int32 RetiredPlayerCount = 0;
+
+	// RetiredPlayerCount를 1 증가시키고 가능하면 EndGame() 수행
+	void HandlePlayerRetire();
+
+	// 게임 종료
+	void EndGame();
 
 	// ============================================================================
 	// Waiting Timer
@@ -152,6 +168,21 @@ private:
 	TMap<uint8, TSubclassOf<AAuraEnemy>> EnemyClassTable;
 
 	// ============================================================================
+	// Respawn
+	// ============================================================================
+
+	// 플레이어의 최대 목숨 개수
+	// Retrieved from AAuraGameStateBase
+	int32 TotalLifeCount = 0;
+
+	// 리스폰에 걸리는 시간
+	// Retrieved from AAuraGameStateBase
+	float RespawnTime = 0.f;
+
+	// RespawnTimer Callback function 
+	void OnRespawnTimerFinished(APlayerController* ControllerToRespawn);
+
+	// ============================================================================
 	// Helper
 	// ============================================================================
 
@@ -160,6 +191,9 @@ private:
 
 	// 모든 로컬 플레이어의 UI에 StageStatus를 표시
 	void BroadcastStageStatusChangeToAllLocalPlayers() const;
+
+	// 리스폰할 플레이어의 UI에 RespawnTimer를 표시
+	void NotifyRespawnStartToLocalPlayer(APlayerController* ControllerToRespawn, bool bGameEnd) const;
 
 	// 모든 플레이어가 각 기기에서 유효한지 체크하기 위해 Polling
 	void PollInit();

@@ -115,28 +115,13 @@ void ABaseCharacter::AddStartupAbilities(const TArray<TSubclassOf<UGameplayAbili
 
 void ABaseCharacter::Die()
 {
-	// 중복 호출 방지
-	if (bDead)
-	{
-		return;
-	}
-	
 	/* Called on server */
-	bDead = true;
-	HandleDeathLocally();
-
-	if (AbilitySystemComponent)
+	
+	// 중복 호출 방지
+	if (!bDead)
 	{
-		// Block Input
-		AbilitySystemComponent->CancelAllAbilities();
-		AbilitySystemComponent->ClearAllAbilities();
-
-		// Remove All Active Effects
-     	TArray<FActiveGameplayEffectHandle> ActiveEffectHandles = AbilitySystemComponent->GetActiveGameplayEffects().GetAllActiveEffectHandles();
-		for (const FActiveGameplayEffectHandle& EffectHandle : ActiveEffectHandles)
-		{
-			AbilitySystemComponent->RemoveActiveGameplayEffect(EffectHandle);
-		}
+		bDead = true;
+		HandleDeathLocally();
 	}
 }
 

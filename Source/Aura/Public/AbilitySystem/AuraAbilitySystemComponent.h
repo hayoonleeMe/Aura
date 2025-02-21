@@ -26,6 +26,9 @@ class AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
 public:
 	virtual void OnRep_ActivateAbilities() override;
 
+	bool IsInitialized() const { return bInitialized; }
+	void SetInitialized() { bInitialized = true; }
+
 	// ============================================================================
 	// Ability
 	// ============================================================================
@@ -70,6 +73,9 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerHandleEquipSpell(const FGameplayTag& SpellTagToEquip, const FGameplayTag& InputTag);
 
+	// 현재 실행할 수 있는 모든 Passive Spell을 실행한다.
+	void ActivateAllPassiveSpells();
+
 	FOnSpellAbilityChangedSignature OnSpellAbilityChangedDelegate;
 	FOnEquippedSpellAbilityChangedSignature OnEquippedSpellAbilityChangedDelegate;
 	FOnActivatableAbilitiesReplicatedSignature OnActivatableAbilitiesReplicatedDelegate;
@@ -104,6 +110,9 @@ public:
 	float GetCooldownTimeRemaining(const FGameplayTag& CooldownTag) const;
 
 private:
+	// ASC가 초기화됐는지 여부
+	bool bInitialized = false;
+	
 	// ============================================================================
 	// Spell
 	// ============================================================================

@@ -13,12 +13,16 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Component/ObjectPoolComponent.h"
+#include "Game/StageGameMode.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
 
 AAuraCharacter::AAuraCharacter()
 {
+	// 리스폰 시 Enemy를 피해 항상 스폰되도록
+	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn; 
+	
 	/* Projectile Pool */
 	FireBoltPoolComponent = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("Projectile Pool Component"));
 	FireBoltPoolComponent->SetPoolSize(100);
@@ -62,7 +66,6 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 
 	// for server (PossessedBy is called on server)
 	InitAbilityActorInfo();
-	InitializeAttributes();
 }
 
 void AAuraCharacter::OnRep_PlayerState()
@@ -71,6 +74,16 @@ void AAuraCharacter::OnRep_PlayerState()
 
 	// for client
 	InitAbilityActorInfo();
+}
+
+void AAuraCharacter::Die()
+{
+	Super::Die();
+
+	if (AStageGameMode* StageGameMode = GetWorld()->GetAuthGameMode<AStageGameMode>())
+	{
+		StageGameMode->RequestPlayerRespawn(GetController<APlayerController>());
+	}
 }
 
 void AAuraCharacter::OnPassiveSpellActivated(const FGameplayTag& SpellTag) const
@@ -205,37 +218,92 @@ void AAuraCharacter::InitAbilityActorInfo()
 	AbilitySystemComponent->InitAbilityActorInfo(AuraPS, this);
 	AttributeSet = AuraPS->GetAttributeSet();
 
-	// Overlay Widget 생성 전에 Startup Ability 추가
-	AddStartupAbilities(StartupAbilities);
-	
-	// 어빌리티 실행에 실패할 때 콜백 함수 등록
-	if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
+
+	// 가장 처음 게임이 시작했을 때
+	if (!AuraASC->IsInitialized())
 	{
-		AuraASC->AbilityFailedCallbacks.AddUObject(AuraASC, &UAuraAbilitySystemComponent::OnAbilityFailed);
-	}
-	
-	// Overlay Widget 초기화
-	if (AAuraPlayerController* AuraPC = GetController<AAuraPlayerController>())
-	{
-		if (AAuraHUD* AuraHUD = AuraPC->GetHUD<AAuraHUD>())
+		// Overlay Widget 생성 전에 Startup Ability 추가
+		AddStartupAbilities(StartupAbilities);
+
+		if (!AuraASC->AbilityFailedCallbacks.IsBoundToObject(AuraASC))
 		{
-			AuraHUD->InitOverlay(AuraPC, AuraPS, AbilitySystemComponent, AttributeSet);
+			// 어빌리티 실행에 실패할 때 콜백 함수 등록
+			AuraASC->AbilityFailedCallbacks.AddUObject(AuraASC, &UAuraAbilitySystemComponent::OnAbilityFailed);
+		}
+
+		// Overlay Widget 초기화
+		if (AAuraPlayerController* AuraPC = GetController<AAuraPlayerController>())
+		{
+			if (AAuraHUD* AuraHUD = AuraPC->GetHUD<AAuraHUD>())
+			{
+				AuraHUD->InitOverlay(AuraPC, AuraPS, AbilitySystemComponent, AttributeSet);
+			}
 		}
 	}
+	else
+	{
+		/* Respawn */
+		
+		// 모든 Passive Ability 실행
+		AuraASC->ActivateAllPassiveSpells();
+
+		if (IsLocallyControlled())
+		{
+			if (APlayerController* PC = GetController<APlayerController>())
+			{
+				// Enable Input
+				PC->EnableInput(PC);
+			}
+		}
+	}
+
+	if (HasAuthority())
+	{
+		InitializeAttributes();
+	}
+	AuraASC->SetInitialized();
 }
 
 void AAuraCharacter::InitializeAttributes()
 {
-	check(GetAbilitySystemComponent());
-
+	const UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(GetAbilitySystemComponent());
+	const bool bASCAlreadyInitialized = AuraASC->IsInitialized();
+	const FGameplayTag PrimaryAttributesTag = FAuraGameplayTags::Get().Attributes_Primary;
+	
 	for (const TSubclassOf<UGameplayEffect>& EffectClass : StartupEffects)
 	{
+		if (bASCAlreadyInitialized)
+		{
+			if (const UGameplayEffect* Effect = EffectClass ? EffectClass->GetDefaultObject<UGameplayEffect>() : nullptr)
+			{
+				// 리스폰 시 Primary Attributes를 초기화하는 Effect 적용 방지
+				if (Effect->InheritableGameplayEffectTags.CombinedTags.HasTag(PrimaryAttributesTag))
+				{
+					continue;
+				}
+			}
+		}
+		
 		ApplyEffectSpecToSelf(EffectClass);
 	}
 }
 
 void AAuraCharacter::HandleDeathLocally()
 {
+	// Disable Input
+	if (APlayerController* PC = GetController<APlayerController>())
+	{
+		PC->DisableInput(PC);
+	}
+
+	// Disable Movement
+	if (UCharacterMovementComponent* MoveComponent = GetCharacterMovement())
+	{
+		MoveComponent->StopMovementImmediately();
+		MoveComponent->DisableMovement();
+	}
+	
 	// 충돌 방지
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	FCollisionResponseContainer Container(ECR_Ignore);
@@ -251,4 +319,17 @@ void AAuraCharacter::HandleDeathLocally()
 	WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	WeaponMeshComponent->SetSimulatePhysics(true);		
 	WeaponMeshComponent->SetEnableGravity(true);
+
+	if (AbilitySystemComponent)
+	{
+		// Cancel All Abilities
+		AbilitySystemComponent->CancelAbilities();
+
+		// Remove All Active Effects
+		TArray<FActiveGameplayEffectHandle> ActiveEffectHandles = AbilitySystemComponent->GetActiveGameplayEffects().GetAllActiveEffectHandles();
+		for (const FActiveGameplayEffectHandle& EffectHandle : ActiveEffectHandles)
+		{
+			AbilitySystemComponent->RemoveActiveGameplayEffect(EffectHandle);
+		}
+	}
 }

@@ -31,6 +31,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.InputTag_Passive_2 = Manager.AddNativeGameplayTag(TEXT("InputTag.Passive.2"), TEXT("Passive Input Tag for second slot"));
 
 	/* Primary Attributes */
+	GameplayTags.Attributes_Primary = Manager.AddNativeGameplayTag(TEXT("Attributes.Primary"), TEXT("Primary Attributes Tag"));
 	GameplayTags.Attributes_Primary_Strength = Manager.AddNativeGameplayTag(TEXT("Attributes.Primary.Strength"), TEXT("Increases physical damage"));
 	GameplayTags.Attributes_Primary_Intelligence = Manager.AddNativeGameplayTag(TEXT("Attributes.Primary.Intelligence"), TEXT("Increases magical damage"));
 	GameplayTags.Attributes_Primary_Resilience = Manager.AddNativeGameplayTag(TEXT("Attributes.Primary.Resilience"), TEXT("Increases Armor and Armor Penetration"));

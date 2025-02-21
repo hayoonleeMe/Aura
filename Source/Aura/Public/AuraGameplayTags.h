@@ -47,6 +47,7 @@ struct FAuraGameplayTags
 	// Primary Attributes
 	// ============================================================================
 
+	FGameplayTag Attributes_Primary;
 	FGameplayTag Attributes_Primary_Strength;
 	FGameplayTag Attributes_Primary_Intelligence;
 	FGameplayTag Attributes_Primary_Resilience;

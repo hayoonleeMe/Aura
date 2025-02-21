@@ -148,6 +148,20 @@ bool UAuraAbilitySystemComponent::IsSpellUnlocked(const FGameplayTag& SpellTag)
 	return GetSpellSpecForSpellTag(SpellTag) != nullptr;
 }
 
+void UAuraAbilitySystemComponent::ActivateAllPassiveSpells()
+{
+	ABILITYLIST_SCOPE_LOCK();
+
+	const FGameplayTagContainer TagContainer(FAuraGameplayTags::Get().Abilities_Passive);
+	TArray<FGameplayAbilitySpec*> ActivatableAbilitySpecs;
+	GetActivatableGameplayAbilitySpecsByAllMatchingTags(TagContainer, ActivatableAbilitySpecs);
+	
+	for (const FGameplayAbilitySpec* AbilitySpec : ActivatableAbilitySpecs)
+	{
+		TryActivateAbility(AbilitySpec->Handle);
+	}
+}
+
 void UAuraAbilitySystemComponent::UnlockSpell(const FGameplayTag& SpellTag, const TSubclassOf<UGameplayAbility>& SpellAbilityClass)
 {
 	const FGameplayAbilitySpec SpellSpec(SpellAbilityClass);

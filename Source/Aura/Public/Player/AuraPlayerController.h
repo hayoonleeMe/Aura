@@ -52,9 +52,15 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastOnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount);
 
+	UFUNCTION(Client, Reliable)
+	void ClientOnRespawnStart(double RespawnTimerEndSeconds);
+
 	FOnGameStateBaseValidInClientSignature OnGameStateBaseValidInClientDelegate;
 
 	bool IsValidGameStateBaseInClient() const { return bValidGameStateBaseInClient; }
+
+	FORCEINLINE int32 GetUsedLifeCount() const { return UsedLifeCount; }
+	FORCEINLINE void UseLifeCount() { ++UsedLifeCount; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -75,6 +81,9 @@ private:
 
 	// 현재 프레임에서의 TargetHitResult의 Actor
 	TWeakObjectPtr<AActor> TargetFromCurrentFrame;
+
+	// 플레이어가 사용한 목숨 개수
+	int32 UsedLifeCount = 0;
 	
 	// ============================================================================
 	// Input
