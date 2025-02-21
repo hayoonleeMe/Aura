@@ -96,6 +96,9 @@ public:
 	// Respawn 시작을 알림
 	void OnRespawnStart(double RespawnTimerEndSeconds) const;
 
+	UFUNCTION(BlueprintCallable)
+	int32 GetTotalLifeCount() const;
+
 	// Enemy 죽음을 전달
 	void OnEnemyDead() const;
 

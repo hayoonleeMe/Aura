@@ -6,6 +6,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Data/SpellConfig.h"
+#include "Game/AuraGameStateBase.h"
 #include "Player/AuraPlayerController.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
@@ -72,6 +73,12 @@ void UOverlayWidgetController::OnStageStatusChanged(EStageStatus StageStatus, in
 void UOverlayWidgetController::OnRespawnStart(double RespawnTimerEndSeconds) const
 {
 	OnRespawnStartDelegate.Broadcast(RespawnTimerEndSeconds);
+}
+
+int32 UOverlayWidgetController::GetTotalLifeCount() const
+{
+	const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr;
+	return AuraGameStateBase ? AuraGameStateBase->TotalLifeCount : 0;
 }
 
 void UOverlayWidgetController::OnEnemyDead() const
