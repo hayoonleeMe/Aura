@@ -70,8 +70,6 @@ FText UAuraAbility_ArcaneSpike::GetDescription(int32 Level) const
 void UAuraAbility_ArcaneSpike::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                                const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	K2_CommitAbility();
-
 	UAuraDamageAbility::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
 	if (UAbilityTask_TargetDataUnderMouse* AbilityTask = UAbilityTask_TargetDataUnderMouse::CreateTask(this))
@@ -111,6 +109,7 @@ void UAuraAbility_ArcaneSpike::OnTargetDataUnderMouseSet(const FGameplayAbilityT
 
 void UAuraAbility_ArcaneSpike::OnEventReceived(FGameplayEventData Payload)
 {
+	Super::OnEventReceived(Payload);
 	SpawnArcaneShard();
 	FinishAttack();
 }

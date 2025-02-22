@@ -66,8 +66,6 @@ FText UAuraAbility_ChainLightning::GetDescription(int32 Level) const
 void UAuraAbility_ChainLightning::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                                   const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	K2_CommitAbility();
-
 	UAuraDamageAbility::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	// 클라이언트의 Cursor HitResult와 CursorTarget을 항상 서버로 전달하기 위해 UAbilityTask_TargetDataUnderMouse 수행 
@@ -105,6 +103,7 @@ void UAuraAbility_ChainLightning::OnTargetDataUnderMouseSet(const FGameplayAbili
 
 void UAuraAbility_ChainLightning::OnEventReceived(FGameplayEventData Payload)
 {
+	Super::OnEventReceived(Payload);
 	CastLightningBeam();
 	FinishAttack();
 }

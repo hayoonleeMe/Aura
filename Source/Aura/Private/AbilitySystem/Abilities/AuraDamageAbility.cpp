@@ -79,6 +79,11 @@ void UAuraDamageAbility::FinishMontage()
 	TryEndAbility();
 }
 
+void UAuraDamageAbility::OnEventReceived(FGameplayEventData Payload)
+{
+	K2_CommitAbility();
+}
+
 void UAuraDamageAbility::FinishAttack()
 {
 	bFinishAttack = true;
