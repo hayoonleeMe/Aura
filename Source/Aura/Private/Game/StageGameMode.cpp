@@ -388,12 +388,12 @@ void AStageGameMode::BroadcastStageStatusChangeToAllLocalPlayers() const
 	{
 		const double WaitingTimerEndSeconds = StageStatus == EStageStatus::Waiting ? GetWorld()->GetTimeSeconds() + WaitingTime : 0.0;
 
-		// 모든 Player Controller의 Multicast RPC를 호출해 로컬 플레이어의 화면에 표시
+		// 모든 Player Controller의 Client RPC를 호출해 로컬 플레이어의 화면에 표시
 		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 		{
 			if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(It->Get()))
 			{
-				AuraPC->MulticastOnStageStatusChanged(StageStatus, StageNumber, WaitingTimerEndSeconds, RandomEnemyInfos.Num());
+				AuraPC->ClientOnStageStatusChanged(StageStatus, StageNumber, WaitingTimerEndSeconds, RandomEnemyInfos.Num());
 			}
 		}
 	}

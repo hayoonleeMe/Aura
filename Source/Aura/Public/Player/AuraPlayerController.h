@@ -49,8 +49,8 @@ public:
 	UFUNCTION(Client, Reliable)
 	void ClientIndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const;
 
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastOnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount);
+	UFUNCTION(Client, Reliable)
+	void ClientOnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount);
 
 	UFUNCTION(Client, Reliable)
 	void ClientOnRespawnStart(double RespawnTimerEndSeconds);
