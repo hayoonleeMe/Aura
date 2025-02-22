@@ -7,6 +7,7 @@
 #include "Types/StageStatus.h"
 #include "StageGameMode.generated.h"
 
+struct FOnAttributeChangeData;
 class UMultiplayerSessionsSubsystem;
 class AAuraEnemy;
 class UStageConfig;
@@ -158,6 +159,13 @@ private:
 	// 한번에 소환할 수 있는 최대 Enemy 수
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Spawn Enemy")
 	int32 MaxSpawnCount;
+
+	// 소환할 Enemy 레벨
+	float EnemySpawnLevel = 1.f;
+
+	// 플레이어의 Level Attribute 값이 변경될 때 호출되는 콜백 함수
+	// GetGameplayAttributeValueChangeDelegate를 통해 해당 델리게이트에 바인딩됨
+	void OnPlayerLevelAttributeChanged(const FOnAttributeChangeData& Data);
 
 	// AAuraEnemy 타입 Enemy 소환
 	void SpawnEnemy(TSubclassOf<AAuraEnemy> Class);
