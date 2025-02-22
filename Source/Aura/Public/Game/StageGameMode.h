@@ -7,6 +7,7 @@
 #include "Types/StageStatus.h"
 #include "StageGameMode.generated.h"
 
+class UMultiplayerSessionsSubsystem;
 class AAuraEnemy;
 class UStageConfig;
 
@@ -63,6 +64,16 @@ private:
 
 	// 게임 종료
 	void EndGame();
+
+	// 게임이 실제로 종료될 때까지의 딜레이
+	UPROPERTY(EditDefaultsOnly,	Category="Aura|Game End")
+	float GameEndDelaySeconds;
+
+	// Destroy Session 작업이 완료됐을 때의 콜백 함수
+	void OnDestroySessionComplete(bool bWasSuccessful) const;
+
+	UPROPERTY()
+	TObjectPtr<UMultiplayerSessionsSubsystem> MultiplayerSessionsSubsystem;
 
 	// ============================================================================
 	// Waiting Timer
