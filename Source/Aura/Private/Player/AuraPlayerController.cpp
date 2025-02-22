@@ -117,7 +117,7 @@ void AAuraPlayerController::ClientOnRespawnStart_Implementation(double RespawnTi
 	}
 }
 
-void AAuraPlayerController::MulticastOnStageStatusChanged_Implementation(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount)
+void AAuraPlayerController::ClientOnStageStatusChanged_Implementation(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount)
 {
 	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())
 	{
