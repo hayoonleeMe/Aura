@@ -53,6 +53,14 @@ void AAuraHUD::OnEnemyDead() const
 	}
 }
 
+void AAuraHUD::OnGameEnd() const
+{
+	if (OverlayWidgetController)
+	{
+		OverlayWidgetController->OnGameEnd();
+	}
+}
+
 void AAuraHUD::MakeOverlayWidgetController(const FWidgetControllerParams& WCParams)
 {
 	check(OverlayWidgetControllerClass);

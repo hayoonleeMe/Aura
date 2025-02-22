@@ -55,6 +55,9 @@ public:
 	UFUNCTION(Client, Reliable)
 	void ClientOnRespawnStart(double RespawnTimerEndSeconds);
 
+	UFUNCTION(Client, Reliable)
+	void ClientEndGame();
+
 	FOnGameStateBaseValidInClientSignature OnGameStateBaseValidInClientDelegate;
 
 	bool IsValidGameStateBaseInClient() const { return bValidGameStateBaseInClient; }

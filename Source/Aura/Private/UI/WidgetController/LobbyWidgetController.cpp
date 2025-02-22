@@ -4,6 +4,7 @@
 #include "UI/WidgetController/LobbyWidgetController.h"
 
 #include "MultiplayerSessionsSubsystem.h"
+#include "GameFramework/PlayerController.h"
 
 void ULobbyWidgetController::BroadcastInitialValues()
 {

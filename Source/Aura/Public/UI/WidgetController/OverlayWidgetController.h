@@ -39,6 +39,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRespawnStartSignature, double, Re
 // Enemy 죽음을 알리는 델레게이트
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEnemyDeadSignature);
 
+// 게임 종료를 알리는 델레게이트
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameEndSignature);
+
 /**
  * Overlay Widget에서 사용할 WidgetController
  */
@@ -90,6 +93,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="Aura|Overlay")
 	FOnEnemyDeadSignature OnEnemyDeadDelegate;
 
+	UPROPERTY(BlueprintAssignable, Category="Aura|Overlay")
+	FOnGameEndSignature OnGameEndDelegate;
+
 	// 현재 변경된 StageStatus 전달
 	void OnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount) const;
 
@@ -101,6 +107,9 @@ public:
 
 	// Enemy 죽음을 전달
 	void OnEnemyDead() const;
+
+	// 게임 종료를 전달
+	void OnGameEnd() const;
 
 private:
 	// Spell의 장착 상태 변경을 업데이트

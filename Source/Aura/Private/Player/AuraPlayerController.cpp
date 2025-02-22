@@ -101,6 +101,14 @@ void AAuraPlayerController::SetUIInputMode()
 	SetInputMode(InputMode);
 }
 
+void AAuraPlayerController::ClientEndGame_Implementation()
+{
+	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())
+	{
+		AuraHUD->OnGameEnd();
+	}
+}
+
 void AAuraPlayerController::ClientOnRespawnStart_Implementation(double RespawnTimerEndSeconds)
 {
 	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())

@@ -40,6 +40,9 @@ public:
 	// Enemy 죽음을 전달
 	void OnEnemyDead() const;
 
+	// 게임 종료를 전달
+	void OnGameEnd() const;
+
 private:
 	// ============================================================================
 	// Overlay

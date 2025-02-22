@@ -5,6 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "MultiplayerSessionsSubsystem.h"
 #include "Actor/SpawnEnemyVolume.h"
 #include "Algo/RandomShuffle.h"
 #include "Character/AuraEnemy.h"
@@ -35,6 +36,9 @@ AStageGameMode::AStageGameMode()
 	RandomDeviation = 1.f;
 	MaxSpawnCount = 3;
 	SpawnDelayTimerDelegate = FTimerDelegate::CreateUObject(this, &ThisClass::AsyncSpawnEnemies);
+
+	/* End Game */
+	GameEndDelaySeconds = 5.f;
 }
 
 #if WITH_EDITOR
@@ -128,9 +132,42 @@ void AStageGameMode::HandlePlayerRetire()
 	}
 }
 
-void AStageGameMode::EndGame()
+void AStageGameMode::EndGame() const
 {
-	UE_LOG(LogTemp, Warning, TEXT("EndGame"));
+	// 게임 종료를 UI에 표시
+	BroadcastGameEndToAllLocalPlayers();
+
+	// 등록된 모든 타이머 제거
+	GetWorldTimerManager().ClearAllTimersForObject(this);
+
+	// DestroySession이 끝날 때 콜백 함수 OnDestroySessionComplete 등록
+	FTimerHandle EndGameTimerHandle;
+	GetWorldTimerManager().SetTimer(EndGameTimerHandle, FTimerDelegate::CreateLambda([this]()
+	{
+		if (MultiplayerSessionsSubsystem)
+		{
+			MultiplayerSessionsSubsystem->DestroySession();
+		}
+	}), GameEndDelaySeconds, false);
+}
+
+void AStageGameMode::OnDestroySessionComplete(bool bWasSuccessful) const
+{
+	if (bWasSuccessful)
+	{
+		if (UGameInstance* GameInstance = GetGameInstance())
+		{
+			GameInstance->ReturnToMainMenu();
+		}
+	}
+	else
+	{
+		// 세션 제거에 실패하면 다시 시도
+		if (MultiplayerSessionsSubsystem)
+		{
+			MultiplayerSessionsSubsystem->DestroySession();
+		}
+	}
 }
 
 void AStageGameMode::WaitStageStart()
@@ -160,7 +197,6 @@ void AStageGameMode::EndStage()
 	if (StageNumber > MaxStageNumber)
 	{
 		EndGame();
-		UE_LOG(LogTemp, Warning, TEXT("게임 종료"));
 	}
 	else
 	{
@@ -170,6 +206,11 @@ void AStageGameMode::EndStage()
 
 void AStageGameMode::InitData()
 {
+	if (!GetWorld())
+	{
+		return;
+	}
+	
 	// Caching MaxStageNumber
 	check(StageConfig);
 	MaxStageNumber = StageConfig->GetMaxStageNumber();
@@ -193,6 +234,16 @@ void AStageGameMode::InitData()
 	{
 		TotalLifeCount = AuraGameStateBase->TotalLifeCount;
 		RespawnTime = AuraGameStateBase->RespawnTime;
+	}
+
+	// Caching MultiplayerSessionsSubsystem and Bind Callback
+	if (const UGameInstance* GameInstance = GetWorld()->GetGameInstance())
+	{
+		MultiplayerSessionsSubsystem = GameInstance->GetSubsystem<UMultiplayerSessionsSubsystem>();
+		if (MultiplayerSessionsSubsystem)
+		{
+			MultiplayerSessionsSubsystem->AuraOnDestroySessionCompleteDelegate.AddUObject(this, &ThisClass::OnDestroySessionComplete);
+		}
 	}
 }
 
@@ -356,5 +407,19 @@ void AStageGameMode::NotifyRespawnStartToLocalPlayer(APlayerController* Controll
 	if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(ControllerToRespawn))
 	{
 		AuraPC->ClientOnRespawnStart(RespawnTimerEndSeconds);
+	}
+}
+
+void AStageGameMode::BroadcastGameEndToAllLocalPlayers() const
+{
+	if (GetWorld())
+	{
+		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+		{
+			if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(It->Get()))
+			{
+				AuraPC->ClientEndGame();
+			}
+		}
 	}
 }
