@@ -15,6 +15,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Player/AuraPlayerController.h"
+#include "AbilitySystem/AuraAttributeSet.h"
 
 // For Test in PIE
 #if WITH_EDITOR
@@ -245,6 +246,18 @@ void AStageGameMode::InitData()
 			MultiplayerSessionsSubsystem->AuraOnDestroySessionCompleteDelegate.AddUObject(this, &ThisClass::OnDestroySessionComplete);
 		}
 	}
+
+	// EnemySpawnLevel을 업데이트하기 위해 플레이어 레벨이 변경될 때 콜백 함수 등록
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		if (It->IsValid())
+		{
+			if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(It->Get()->GetPawn()))
+			{
+				ASC->GetGameplayAttributeValueChangeDelegate(UAuraAttributeSet::GetLevelAttribute()).AddUObject(this, &ThisClass::OnPlayerLevelAttributeChanged);
+			}
+		}
+	}
 }
 
 void AStageGameMode::PollInit()
@@ -317,6 +330,11 @@ void AStageGameMode::AsyncSpawnEnemies()
 	}
 }
 
+void AStageGameMode::OnPlayerLevelAttributeChanged(const FOnAttributeChangeData& Data)
+{
+	EnemySpawnLevel += 0.5f;
+}
+
 void AStageGameMode::SpawnEnemy(TSubclassOf<AAuraEnemy> Class)
 {
 	check(Class);
@@ -331,6 +349,7 @@ void AStageGameMode::SpawnEnemy(TSubclassOf<AAuraEnemy> Class)
 	{
 		Enemy->SpawnDefaultController();
 		Enemy->OnCharacterDeadDelegate.AddDynamic(this, &ThisClass::OnEnemyDead);
+		Enemy->SpawnLevel = FMath::RoundToInt32(EnemySpawnLevel);
 		Enemy->FinishSpawning(SpawnTransform);
 	}
 }
