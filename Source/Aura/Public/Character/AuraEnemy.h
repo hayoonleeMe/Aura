@@ -51,6 +51,9 @@ public:
 	virtual void UnHighlightActor() override;
 	/* End InteractionInterface */
 
+	// Enemy가 스폰될 때 레벨 값
+	int32 SpawnLevel = 1;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
@@ -85,6 +88,9 @@ protected:
 	// Set in BTTask
 	UPROPERTY()
 	TWeakObjectPtr<AActor> CombatTarget;
+
+	// Enemy의 Level Attribute를 SpawnLevel 값으로 초기화
+	void InitializeEnemyLevel() const;
 
 	// ============================================================================
 	// Health Bar

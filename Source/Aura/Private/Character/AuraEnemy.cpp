@@ -87,6 +87,7 @@ void AAuraEnemy::BeginPlay()
 	Super::BeginPlay();
 
 	InitAbilityActorInfo();
+	InitializeEnemyLevel();
 	InitializeAttributes();
 	InitializeForHealthBar();
 
@@ -163,6 +164,17 @@ void AAuraEnemy::OnHitReactTagChanged(const FGameplayTag Tag, int32 Count) const
 	{
 		// AIController server only
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("HitReact"), bHitReact);
+	}
+}
+
+void AAuraEnemy::InitializeEnemyLevel() const
+{
+	if (HasAuthority())
+	{
+		if (UAuraAttributeSet* AuraAS = Cast<UAuraAttributeSet>(AttributeSet))
+		{
+			AuraAS->InitLevel(SpawnLevel);
+		}
 	}
 }
 
