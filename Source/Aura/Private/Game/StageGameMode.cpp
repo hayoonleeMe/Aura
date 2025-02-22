@@ -132,7 +132,7 @@ void AStageGameMode::HandlePlayerRetire()
 	}
 }
 
-void AStageGameMode::EndGame()
+void AStageGameMode::EndGame() const
 {
 	// 게임 종료를 UI에 표시
 	BroadcastGameEndToAllLocalPlayers();
@@ -197,7 +197,6 @@ void AStageGameMode::EndStage()
 	if (StageNumber > MaxStageNumber)
 	{
 		EndGame();
-		UE_LOG(LogTemp, Warning, TEXT("게임 종료"));
 	}
 	else
 	{

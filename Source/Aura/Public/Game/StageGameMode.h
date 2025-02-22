@@ -63,7 +63,7 @@ private:
 	void HandlePlayerRetire();
 
 	// 게임 종료
-	void EndGame();
+	void EndGame() const;
 
 	// 게임이 실제로 종료될 때까지의 딜레이
 	UPROPERTY(EditDefaultsOnly,	Category="Aura|Game End")
