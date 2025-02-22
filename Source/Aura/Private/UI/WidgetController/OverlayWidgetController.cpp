@@ -86,6 +86,11 @@ void UOverlayWidgetController::OnEnemyDead() const
 	OnEnemyDeadDelegate.Broadcast();
 }
 
+void UOverlayWidgetController::OnGameEnd() const
+{
+	OnGameEndDelegate.Broadcast();
+}
+
 void UOverlayWidgetController::UpdateEquippedSpellChange(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag) const
 {
 	if (SpellConfig)

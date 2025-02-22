@@ -134,6 +134,9 @@ void AStageGameMode::HandlePlayerRetire()
 
 void AStageGameMode::EndGame()
 {
+	// 게임 종료를 UI에 표시
+	BroadcastGameEndToAllLocalPlayers();
+
 	// 등록된 모든 타이머 제거
 	GetWorldTimerManager().ClearAllTimersForObject(this);
 
@@ -405,5 +408,19 @@ void AStageGameMode::NotifyRespawnStartToLocalPlayer(APlayerController* Controll
 	if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(ControllerToRespawn))
 	{
 		AuraPC->ClientOnRespawnStart(RespawnTimerEndSeconds);
+	}
+}
+
+void AStageGameMode::BroadcastGameEndToAllLocalPlayers() const
+{
+	if (GetWorld())
+	{
+		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+		{
+			if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(It->Get()))
+			{
+				AuraPC->ClientEndGame();
+			}
+		}
 	}
 }
