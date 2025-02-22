@@ -56,7 +56,7 @@ protected:
 	
 	// UAbilityTask_WaitGameplayEvent::EventReceived 델레게이트 Callback 함수
 	UFUNCTION()
-	virtual void OnEventReceived(FGameplayEventData Payload) {}
+	virtual void OnEventReceived(FGameplayEventData Payload);
 
 	// 공격 작업을 끝내고 TryEndAbility
 	void FinishAttack();

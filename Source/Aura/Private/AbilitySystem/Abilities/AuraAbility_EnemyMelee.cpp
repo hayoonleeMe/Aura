@@ -18,8 +18,6 @@ UAuraAbility_EnemyMelee::UAuraAbility_EnemyMelee()
 void UAuraAbility_EnemyMelee::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                               const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	K2_CommitAbility();
-	
 	// Activated only in server by AI (BTTask)
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
 	if (!CombatInterface)
@@ -51,6 +49,8 @@ void UAuraAbility_EnemyMelee::OnEventReceived(FGameplayEventData Payload)
 	{
 		return;
 	}
+
+	Super::OnEventReceived(Payload);
 
 	float AttackRangeRadius = 0.f, AttackRangeHalfHeight = 0.f;
 	CombatInterface->GetAttackCheckRange(AttackRangeRadius, AttackRangeHalfHeight);

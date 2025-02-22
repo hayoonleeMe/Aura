@@ -71,8 +71,6 @@ FText UAuraAbility_FireBolt::GetDescription(int32 Level) const
 void UAuraAbility_FireBolt::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                             const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	K2_CommitAbility();
-
 	UAuraDamageAbility::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
 	// 클라이언트의 Cursor HitResult와 CursorTarget을 항상 서버로 전달하기 위해 UAbilityTask_TargetDataUnderMouse 수행 
@@ -110,6 +108,7 @@ void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTarg
 
 void UAuraAbility_FireBolt::OnEventReceived(FGameplayEventData Payload)
 {
+	Super::OnEventReceived(Payload);
 	SpawnFireBolts();
 	FinishAttack();
 }

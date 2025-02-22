@@ -14,8 +14,6 @@ UAuraAbility_EnemyRange::UAuraAbility_EnemyRange()
 void UAuraAbility_EnemyRange::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                               const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	K2_CommitAbility();
-	
 	// Activated only in server by AI (BTTask)
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
 	if (!CombatInterface)
@@ -48,6 +46,8 @@ void UAuraAbility_EnemyRange::OnEventReceived(FGameplayEventData Payload)
 	{
 		return;
 	}
+
+	Super::OnEventReceived(Payload);
 
 	const FVector& CombatSocketLocation = CombatInterface->GetCombatSocketLocation(CachedCombatSocketName);
 	SpawnProjectile(CachedTargetLocation, CombatSocketLocation);
