@@ -27,6 +27,7 @@ AAuraProjectile::AAuraProjectile()
 	FCollisionResponseContainer Container;
 	Container.SetAllChannels(ECR_Ignore);
 	Container.SetResponse(ECC_Pawn, ECR_Overlap);
+	Container.SetResponse(ECC_Enemy, ECR_Overlap);
 	Container.SetResponse(ECC_WorldStatic, ECR_Overlap);
 	Container.SetResponse(ECC_WorldDynamic, ECR_Overlap);
 	SphereComponent->SetCollisionResponseToChannels(Container);

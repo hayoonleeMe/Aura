@@ -24,6 +24,11 @@
 
 AAuraEnemy::AAuraEnemy()
 {
+	GetCapsuleComponent()->SetCollisionObjectType(ECC_Enemy);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Enemy, ECR_Ignore);
+	GetMesh()->SetCollisionObjectType(ECC_Enemy);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Enemy, ECR_Ignore);
+	
 	GetMesh()->SetCollisionResponseToChannel(ECC_Target, ECR_Block);
 	GetMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);
 	
