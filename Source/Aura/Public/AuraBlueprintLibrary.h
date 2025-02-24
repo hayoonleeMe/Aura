@@ -45,8 +45,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static float GetCriticalHitResistanceCoefficientByLevel(const UObject* WorldContextObject, float Level);
 
+	// TargetAbilitySystemComponent에 Damage Effect를 적용한다.
+	// 적용 성공 여부를 반환한다.
 	UFUNCTION(BlueprintCallable)
-	static void ApplyDamageEffect(const FDamageEffectParams& Params);
+	static bool ApplyDamageEffect(const FDamageEffectParams& Params);
 
 	// 데미지를 입히기 위해 서로 적인지를 판별하는 함수
 	UFUNCTION(BlueprintCallable)

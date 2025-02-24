@@ -55,8 +55,10 @@ float UAuraBlueprintLibrary::GetCriticalHitResistanceCoefficientByLevel(const UO
 	return 0.f;
 }
 
-void UAuraBlueprintLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
+bool UAuraBlueprintLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
 {
+	check(Params.TargetAbilitySystemComponent);
+
 	// Set Debuff Parameters
 	const FGameplayEffectContextHandle EffectContextHandle = Params.SourceAbilitySystemComponent->MakeEffectContext();
 	if (FAuraGameplayEffectContext* AuraEffectContext = FAuraGameplayEffectContext::ExtractEffectContext(EffectContextHandle))
@@ -70,6 +72,8 @@ void UAuraBlueprintLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, Params.DamageTypeTag, Params.BaseDamage);
 	
 	Params.TargetAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data);
+
+	return true;
 }
 
 bool UAuraBlueprintLibrary::IsNotFriend(const AActor* Actor1, const AActor* Actor2)
