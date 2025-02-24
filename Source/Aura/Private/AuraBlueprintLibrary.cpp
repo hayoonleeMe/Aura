@@ -59,6 +59,12 @@ bool UAuraBlueprintLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
 {
 	check(Params.TargetAbilitySystemComponent);
 
+	// 데미지 무적
+	if (Params.TargetAbilitySystemComponent->HasMatchingGameplayTag(FAuraGameplayTags::Get().Gameplay_Invincibility))
+	{
+		return false;
+	}
+	
 	// Set Debuff Parameters
 	const FGameplayEffectContextHandle EffectContextHandle = Params.SourceAbilitySystemComponent->MakeEffectContext();
 	if (FAuraGameplayEffectContext* AuraEffectContext = FAuraGameplayEffectContext::ExtractEffectContext(EffectContextHandle))
