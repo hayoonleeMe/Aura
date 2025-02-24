@@ -174,6 +174,12 @@ struct FAuraGameplayTags
 	FGameplayTag GameplayCue_LightningBeam;
 	FGameplayTag GameplayCue_ArcaneShard;
 	FGameplayTag GameplayCue_SummonEffect;
+
+	// ============================================================================
+	// Gameplay
+	// ============================================================================
+
+	FGameplayTag Gameplay_Invincibility;
 	
 private:
 	static FAuraGameplayTags GameplayTags;
