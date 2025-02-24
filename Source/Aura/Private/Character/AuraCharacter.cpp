@@ -58,6 +58,9 @@ AAuraCharacter::AAuraCharacter()
 	ManaSiphonComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Mana Siphon Component"));
 	ManaSiphonComponent->SetupAttachment(GetRootComponent());
 	ManaSiphonComponent->bAutoActivate = false;
+
+	/* Invincibility */
+	RespawnInvincibilityTime = 3.f;
 }
 
 void AAuraCharacter::PossessedBy(AController* NewController)
