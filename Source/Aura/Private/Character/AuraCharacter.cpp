@@ -251,6 +251,9 @@ void AAuraCharacter::InitAbilityActorInfo()
 		// 모든 Passive Ability 실행
 		AuraASC->ActivateAllPassiveSpells();
 
+		// 리스폰 무적 적용
+		AuraASC->ApplyEffectSpecToSelfWithSetByCaller(InvincibilityEffectClass, FAuraGameplayTags::Get().Gameplay_Invincibility, RespawnInvincibilityTime);
+
 		if (IsLocallyControlled())
 		{
 			if (APlayerController* PC = GetController<APlayerController>())
