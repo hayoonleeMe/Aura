@@ -52,6 +52,9 @@ AAuraEnemy::AAuraEnemy()
 
 	/* Movement */
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->bUseRVOAvoidance = true;
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 30.f;
+	GetCharacterMovement()->AvoidanceWeight = 0.5f;
 
 	/* Debuff Niagara Component */
 	EnfeebleDebuffComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Enfeeble Debuff Component"));
