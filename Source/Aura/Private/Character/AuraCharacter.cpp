@@ -58,6 +58,9 @@ AAuraCharacter::AAuraCharacter()
 	ManaSiphonComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Mana Siphon Component"));
 	ManaSiphonComponent->SetupAttachment(GetRootComponent());
 	ManaSiphonComponent->bAutoActivate = false;
+
+	/* Invincibility */
+	RespawnInvincibilityTime = 3.f;
 }
 
 void AAuraCharacter::PossessedBy(AController* NewController)
@@ -248,6 +251,9 @@ void AAuraCharacter::InitAbilityActorInfo()
 		// 모든 Passive Ability 실행
 		AuraASC->ActivateAllPassiveSpells();
 
+		// 리스폰 무적 적용
+		AuraASC->ApplyEffectSpecToSelfWithSetByCaller(InvincibilityEffectClass, FAuraGameplayTags::Get().Gameplay_Invincibility, RespawnInvincibilityTime);
+
 		if (IsLocallyControlled())
 		{
 			if (APlayerController* PC = GetController<APlayerController>())
@@ -267,7 +273,7 @@ void AAuraCharacter::InitAbilityActorInfo()
 
 void AAuraCharacter::InitializeAttributes()
 {
-	const UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(GetAbilitySystemComponent());
+	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(GetAbilitySystemComponent());
 	const bool bASCAlreadyInitialized = AuraASC->IsInitialized();
 	const FGameplayTag PrimaryAttributesTag = FAuraGameplayTags::Get().Attributes_Primary;
 	
@@ -285,7 +291,7 @@ void AAuraCharacter::InitializeAttributes()
 			}
 		}
 		
-		ApplyEffectSpecToSelf(EffectClass);
+		AuraASC->ApplyEffectSpecToSelf(EffectClass);
 	}
 }
 

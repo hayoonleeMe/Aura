@@ -96,15 +96,6 @@ void ABaseCharacter::BeginPlay()
 	
 }
 
-void ABaseCharacter::ApplyEffectSpecToSelf(const TSubclassOf<UGameplayEffect>& EffectClass, float InLevel) const
-{
-	if (EffectClass)
-	{
-		const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(EffectClass, InLevel, GetAbilitySystemComponent()->MakeEffectContext());
-		GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data);
-	}
-}
-
 void ABaseCharacter::AddStartupAbilities(const TArray<TSubclassOf<UGameplayAbility>>& AbilityClasses) const
 {
 	if (HasAuthority())

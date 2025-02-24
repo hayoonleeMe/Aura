@@ -102,4 +102,16 @@ private:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastDeactivatePassiveSpellNiagaraComponent(const FGameplayTag& SpellTag) const;
+
+	// ============================================================================
+	// Invincibility
+	// ============================================================================
+
+	// 무적 기능을 부여하는 Effect Class
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Invincibility")
+	TSubclassOf<UGameplayEffect> InvincibilityEffectClass;
+
+	// 리스폰 시 무적 시간
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Invincibility")
+	float RespawnInvincibilityTime;
 };

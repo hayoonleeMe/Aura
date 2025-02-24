@@ -95,6 +95,13 @@ public:
 	// Helper
 	// ============================================================================
 
+	// 지정된 GameplayEffect 클래스를 기반으로 GameplayEffect Spec을 생성하고 적용한다.
+	void ApplyEffectSpecToSelf(const TSubclassOf<UGameplayEffect>& EffectClass, float Level = 1.f);
+
+	// 지정된 GameplayEffect 클래스를 기반으로 GameplayEffect Spec을 생성한 후,
+	// DataTag와 Magnitude에 해당하는 SetByCaller Modifier를 설정하고 적용한다.
+	void ApplyEffectSpecToSelfWithSetByCaller(const TSubclassOf<UGameplayEffect>& EffectClass, const FGameplayTag& DataTag, float Magnitude,  float Level = 1.f);
+
 	// SpellTag를 가지는 Spell Ability Spec Pointer를 반환한다.
 	// 존재하지 않으면 nullptr를 반환한다.
 	FGameplayAbilitySpec* GetSpellSpecForSpellTag(const FGameplayTag& SpellTag);
