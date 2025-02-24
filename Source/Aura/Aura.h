@@ -37,6 +37,10 @@
 // Default Response Ignore, Only Block Wall Mesh in Level
 #define ECC_OnlyWall ECollisionChannel::ECC_GameTraceChannel5
 
+// Enemy를 나타내는 Object Channel
+// Default Response Block, Ignore ECC_Enemy
+#define ECC_Enemy ECollisionChannel::ECC_GameTraceChannel6
+
 // ============================================================================
 // Custom Log Macro
 // ============================================================================

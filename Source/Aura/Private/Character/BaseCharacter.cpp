@@ -23,6 +23,7 @@ ABaseCharacter::ABaseCharacter()
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 	GetMesh()->SetCollisionResponseToChannel(ECC_ClickToMove, ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Target, ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Enemy, ECR_Ignore);
 	GetMesh()->SetGenerateOverlapEvents(true);
 	
 	/* Weapon Mesh */
