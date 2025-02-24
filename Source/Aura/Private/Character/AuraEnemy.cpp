@@ -142,15 +142,16 @@ void AAuraEnemy::InitializeAttributes()
 	// EnemyClassConfig에 정의된 데이터에 따라, EnemyClassType에 맞는 GameplayEffect로 Attributes를 초기화
 	if (HasAuthority())
 	{
+		UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
 		const int32 Level = UAuraBlueprintLibrary::GetLevelAttributeValue(this);
 		if (const UEnemyClassConfig* EnemyClassConfig = UAuraBlueprintLibrary::GetEnemyClassConfig(this))
 		{
 			if (const FEnemyClassInfo* EnemyClassInfo = EnemyClassConfig->GetInfoByType(EnemyClassType))
 			{
-				ApplyEffectSpecToSelf(EnemyClassInfo->PrimaryAttributes, Level);
+				AuraASC->ApplyEffectSpecToSelf(EnemyClassInfo->PrimaryAttributes, Level);
 			}
-			ApplyEffectSpecToSelf(EnemyClassConfig->SecondaryAttributes, Level);
-			ApplyEffectSpecToSelf(EnemyClassConfig->VitalAttributes, Level);
+			AuraASC->ApplyEffectSpecToSelf(EnemyClassConfig->SecondaryAttributes, Level);
+			AuraASC->ApplyEffectSpecToSelf(EnemyClassConfig->VitalAttributes, Level);
 		}
 	}
 }

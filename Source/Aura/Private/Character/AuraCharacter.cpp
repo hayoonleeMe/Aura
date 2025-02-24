@@ -267,7 +267,7 @@ void AAuraCharacter::InitAbilityActorInfo()
 
 void AAuraCharacter::InitializeAttributes()
 {
-	const UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(GetAbilitySystemComponent());
+	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(GetAbilitySystemComponent());
 	const bool bASCAlreadyInitialized = AuraASC->IsInitialized();
 	const FGameplayTag PrimaryAttributesTag = FAuraGameplayTags::Get().Attributes_Primary;
 	
@@ -285,7 +285,7 @@ void AAuraCharacter::InitializeAttributes()
 			}
 		}
 		
-		ApplyEffectSpecToSelf(EffectClass);
+		AuraASC->ApplyEffectSpecToSelf(EffectClass);
 	}
 }
 

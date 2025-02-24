@@ -280,6 +280,26 @@ void UAuraAbilitySystemComponent::ApplyXPGainEffect(int32 XPAmount)
 	}
 }
 
+void UAuraAbilitySystemComponent::ApplyEffectSpecToSelf(const TSubclassOf<UGameplayEffect>& EffectClass, float Level)
+{
+	if (EffectClass)
+	{
+		const FGameplayEffectSpecHandle SpecHandle = MakeOutgoingSpec(EffectClass, Level, MakeEffectContext());
+		ApplyGameplayEffectSpecToSelf(*SpecHandle.Data);
+	}
+}
+
+void UAuraAbilitySystemComponent::ApplyEffectSpecToSelfWithSetByCaller(const TSubclassOf<UGameplayEffect>& EffectClass, const FGameplayTag& DataTag,
+	float Magnitude, float Level)
+{
+	if (EffectClass)
+	{
+		const FGameplayEffectSpecHandle SpecHandle = MakeOutgoingSpec(EffectClass, Level, MakeEffectContext());
+		SpecHandle.Data->SetSetByCallerMagnitude(DataTag, Magnitude);
+		ApplyGameplayEffectSpecToSelf(*SpecHandle.Data);
+	}
+}
+
 void UAuraAbilitySystemComponent::ClientExecuteGameplayCue_Implementation(const FGameplayTag& CueTag)
 {
 	if (GetAvatarActor())
