@@ -3,6 +3,7 @@
 
 #include "Actor/Rock.h"
 
+#include "AuraGameplayTags.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -21,6 +22,8 @@ ARock::ARock()
 	MeshComponent->SetupAttachment(GetRootComponent());
 	MeshComponent->SetRelativeScale3D(FVector(1.25f));
 	MeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	ImpactCueTag = AuraGameplayTags::GameplayCue_RockImpact;
 }
 
 void ARock::Tick(float DeltaTime)

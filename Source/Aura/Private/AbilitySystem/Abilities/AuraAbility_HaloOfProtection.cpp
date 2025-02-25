@@ -9,6 +9,7 @@
 UAuraAbility_HaloOfProtection::UAuraAbility_HaloOfProtection()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+	AbilityTags.AddTag(AuraGameplayTags::Abilities_Passive_HaloOfProtection);
 }
 
 FText UAuraAbility_HaloOfProtection::GetDescription(int32 Level) const
@@ -38,7 +39,7 @@ void UAuraAbility_HaloOfProtection::ActivateAbility(const FGameplayAbilitySpecHa
 	{
 		if (const ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo()))
 		{
-			CombatInterface->OnPassiveSpellActivated(FAuraGameplayTags::Get().Abilities_Passive_HaloOfProtection);
+			CombatInterface->OnPassiveSpellActivated(AuraGameplayTags::Abilities_Passive_HaloOfProtection);
 		}
 	}
 }
@@ -52,7 +53,7 @@ void UAuraAbility_HaloOfProtection::EndAbility(const FGameplayAbilitySpecHandle 
 	{
 		if (const ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo()))
 		{
-			CombatInterface->OnPassiveSpellDeactivated(FAuraGameplayTags::Get().Abilities_Passive_HaloOfProtection);
+			CombatInterface->OnPassiveSpellDeactivated(AuraGameplayTags::Abilities_Passive_HaloOfProtection);
 		}
 	}
 }

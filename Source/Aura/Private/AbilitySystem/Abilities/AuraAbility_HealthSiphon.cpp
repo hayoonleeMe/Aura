@@ -11,6 +11,8 @@
 UAuraAbility_HealthSiphon::UAuraAbility_HealthSiphon()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+	AbilityTags.AddTag(AuraGameplayTags::Abilities_Passive_HealthSiphon);
+	ActivationOwnedTags.AddTag(AuraGameplayTags::Abilities_Passive_HealthSiphon);
 }
 
 FText UAuraAbility_HealthSiphon::GetDescription(int32 Level) const
@@ -35,7 +37,7 @@ FText UAuraAbility_HealthSiphon::GetDescription(int32 Level) const
 void UAuraAbility_HealthSiphon::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                                 const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	if (UAbilityTask_WaitGameplayEvent* WaitGameplayEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, FAuraGameplayTags::Get().Abilities_Passive_HealthSiphon))
+	if (UAbilityTask_WaitGameplayEvent* WaitGameplayEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, AuraGameplayTags::Abilities_Passive_HealthSiphon))
 	{
 		WaitGameplayEvent->EventReceived.AddDynamic(this, &ThisClass::OnEventReceived);
 		WaitGameplayEvent->ReadyForActivation();
@@ -45,7 +47,7 @@ void UAuraAbility_HealthSiphon::ActivateAbility(const FGameplayAbilitySpecHandle
 	{
 		if (const ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo()))
 		{
-			CombatInterface->OnPassiveSpellActivated(FAuraGameplayTags::Get().Abilities_Passive_HealthSiphon);
+			CombatInterface->OnPassiveSpellActivated(AuraGameplayTags::Abilities_Passive_HealthSiphon);
 		}
 	}
 }
@@ -59,7 +61,7 @@ void UAuraAbility_HealthSiphon::EndAbility(const FGameplayAbilitySpecHandle Hand
 	{
 		if (const ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo()))
 		{
-			CombatInterface->OnPassiveSpellDeactivated(FAuraGameplayTags::Get().Abilities_Passive_HealthSiphon);
+			CombatInterface->OnPassiveSpellDeactivated(AuraGameplayTags::Abilities_Passive_HealthSiphon);
 		}
 	}
 }
@@ -75,7 +77,7 @@ void UAuraAbility_HealthSiphon::OnEventReceived(FGameplayEventData Payload)
 		const float RecoveryAmount = Payload.EventMagnitude /* Damage */ * DrainRate;
 		
 		const FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(HealthRecoveryEffectClass, 1.f, FGameplayEffectContextHandle());
-		SpecHandle.Data->SetSetByCallerMagnitude(FAuraGameplayTags::Get().Attributes_Vital_Health, RecoveryAmount);
+		SpecHandle.Data->SetSetByCallerMagnitude(AuraGameplayTags::Attributes_Vital_Health, RecoveryAmount);
 		ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data);
 	}
 }

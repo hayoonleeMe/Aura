@@ -4,11 +4,13 @@
 #include "AbilitySystem/Abilities/AuraAbility_Debuff_Stun.h"
 
 #include "AbilitySystemComponent.h"
+#include "AuraGameplayTags.h"
 
 UAuraAbility_Debuff_Stun::UAuraAbility_Debuff_Stun()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::ServerOnly;
+	AbilityTags.AddTag(AuraGameplayTags::Debuff_Stun);
 }
 
 void UAuraAbility_Debuff_Stun::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

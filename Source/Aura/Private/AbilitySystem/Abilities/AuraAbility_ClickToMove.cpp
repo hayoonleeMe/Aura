@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/Abilities/AuraAbility_ClickToMove.h"
 
+#include "AuraGameplayTags.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "NiagaraFunctionLibrary.h"
@@ -13,6 +14,10 @@
 
 UAuraAbility_ClickToMove::UAuraAbility_ClickToMove()
 {
+	AbilityTags.AddTag(AuraGameplayTags::Abilities_ClickToMove);
+	CancelAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_TryInteract);
+	StartupInputTag = AuraGameplayTags::InputTag_RMB;
+	
 	bShouldMove = true;
 	bShouldSpawnCursorEffect = true;
 	InputDelay = 0.03f;

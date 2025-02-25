@@ -191,7 +191,7 @@ void AAuraPlayerController::PollInit()
 
 void AAuraPlayerController::AbilityInputPressed(FGameplayTag InputTag, int32 InputID)
 {
-	if (InputTag == FAuraGameplayTags::Get().InputTag_LMB)
+	if (InputTag == AuraGameplayTags::InputTag_LMB)
 	{
 		// TargetActor가 Enemy가 아니면 InputTag_LMB Abort
 		if (TargetFromCurrentFrame.IsValid() && !TargetFromCurrentFrame->IsA<AAuraEnemy>())
@@ -199,7 +199,7 @@ void AAuraPlayerController::AbilityInputPressed(FGameplayTag InputTag, int32 Inp
 			return;
 		}
 	}
-	else if (InputTag == FAuraGameplayTags::Get().InputTag_Interact)
+	else if (InputTag == AuraGameplayTags::InputTag_Interact)
 	{
 		// TargetActor가 없거나 Enemy면 InputTag_Interact Abort
 		if (!TargetFromCurrentFrame.IsValid() || TargetFromCurrentFrame->IsA<AAuraEnemy>())

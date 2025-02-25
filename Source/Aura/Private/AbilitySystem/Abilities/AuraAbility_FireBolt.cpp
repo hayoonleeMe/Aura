@@ -14,6 +14,14 @@
 UAuraAbility_FireBolt::UAuraAbility_FireBolt()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+	AbilityTags.AddTag(AuraGameplayTags::Abilities_Offensive_FireBolt);
+	CancelAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_ClickToMove);
+	CancelAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_TryInteract);
+	BlockAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_ClickToMove);
+	BlockAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_Offensive);
+	DamageTypeTag = AuraGameplayTags::Damage_Type_Fire;
+	DebuffTag = AuraGameplayTags::Debuff_Ignite;
+	StartupInputTag = AuraGameplayTags::InputTag_LMB;
 	SpreadAngle = 10.f;
 }
 
@@ -94,7 +102,7 @@ void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTarg
 	const FHitResult& HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
 	CachedImpactPoint = HitResult.ImpactPoint;
 	
-	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(FAuraGameplayTags::Get().Abilities_Offensive_FireBolt);
+	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(AuraGameplayTags::Abilities_Offensive_FireBolt);
 	check(TaggedCombatInfo.AnimMontage);
 	CachedCombatSocketName = TaggedCombatInfo.CombatSocketName;
 
@@ -103,7 +111,7 @@ void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTarg
 	CombatInterface->SetFacingTarget(TargetLocation);
 
 	PlayAttackMontage(TaggedCombatInfo.AnimMontage, true);
-	WaitGameplayEvent(FAuraGameplayTags::Get().Event_Montage_FireBolt);
+	WaitGameplayEvent(AuraGameplayTags::Event_Montage_FireBolt);
 }
 
 void UAuraAbility_FireBolt::OnEventReceived(FGameplayEventData Payload)

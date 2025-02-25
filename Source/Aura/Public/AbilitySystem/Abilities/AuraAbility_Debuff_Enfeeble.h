@@ -9,7 +9,7 @@
 /**
  * 10초 동안 대상이 주는 Damage의 20%를 감소시키는 Enfeeble Debuff
  */
-UCLASS()
+UCLASS(HideCategories=("Aura|Input", "Aura|Spell"))
 class AURA_API UAuraAbility_Debuff_Enfeeble : public UAuraGameplayAbility
 {
 	GENERATED_BODY()

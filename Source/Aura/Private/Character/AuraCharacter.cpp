@@ -21,7 +21,10 @@
 AAuraCharacter::AAuraCharacter()
 {
 	// 리스폰 시 Enemy를 피해 항상 스폰되도록
-	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn; 
+	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	/* Role */
+	RoleTag = AuraGameplayTags::Role_Player;
 	
 	/* Projectile Pool */
 	FireBoltPoolComponent = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("Projectile Pool Component"));
@@ -184,15 +187,15 @@ AActor* AAuraCharacter::SpawnFromPool(const TSubclassOf<AActor>& Class, const FT
 
 void AAuraCharacter::MulticastActivatePassiveSpellNiagaraComponent_Implementation(const FGameplayTag& SpellTag) const
 {
-	if (SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_HaloOfProtection))
+	if (SpellTag.MatchesTagExact(AuraGameplayTags::Abilities_Passive_HaloOfProtection))
 	{
 		HaloOfProtectionComponent->Activate();
 	}
-	else if (SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_HealthSiphon))
+	else if (SpellTag.MatchesTagExact(AuraGameplayTags::Abilities_Passive_HealthSiphon))
 	{
 		HealthSiphonComponent->Activate();
 	}
-	else if (SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_ManaSiphon))
+	else if (SpellTag.MatchesTagExact(AuraGameplayTags::Abilities_Passive_ManaSiphon))
 	{
 		ManaSiphonComponent->Activate();
 	}
@@ -200,15 +203,15 @@ void AAuraCharacter::MulticastActivatePassiveSpellNiagaraComponent_Implementatio
 
 void AAuraCharacter::MulticastDeactivatePassiveSpellNiagaraComponent_Implementation(const FGameplayTag& SpellTag) const
 {
-	if (SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_HaloOfProtection))
+	if (SpellTag.MatchesTagExact(AuraGameplayTags::Abilities_Passive_HaloOfProtection))
 	{
 		HaloOfProtectionComponent->DeactivateImmediate();
 	}
-	else if (SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_HealthSiphon))
+	else if (SpellTag.MatchesTagExact(AuraGameplayTags::Abilities_Passive_HealthSiphon))
 	{
 		HealthSiphonComponent->DeactivateImmediate();
 	}
-	else if (SpellTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Passive_ManaSiphon))
+	else if (SpellTag.MatchesTagExact(AuraGameplayTags::Abilities_Passive_ManaSiphon))
 	{
 		ManaSiphonComponent->DeactivateImmediate();
 	}
@@ -252,7 +255,7 @@ void AAuraCharacter::InitAbilityActorInfo()
 		AuraASC->ActivateAllPassiveSpells();
 
 		// 리스폰 무적 적용
-		AuraASC->ApplyEffectSpecToSelfWithSetByCaller(InvincibilityEffectClass, FAuraGameplayTags::Get().Gameplay_Invincibility, RespawnInvincibilityTime);
+		AuraASC->ApplyEffectSpecToSelfWithSetByCaller(InvincibilityEffectClass, AuraGameplayTags::Gameplay_Invincibility, RespawnInvincibilityTime);
 
 		if (IsLocallyControlled())
 		{
@@ -275,7 +278,7 @@ void AAuraCharacter::InitializeAttributes()
 {
 	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(GetAbilitySystemComponent());
 	const bool bASCAlreadyInitialized = AuraASC->IsInitialized();
-	const FGameplayTag PrimaryAttributesTag = FAuraGameplayTags::Get().Attributes_Primary;
+	const FGameplayTag PrimaryAttributesTag = AuraGameplayTags::Attributes_Primary;
 	
 	for (const TSubclassOf<UGameplayEffect>& EffectClass : StartupEffects)
 	{

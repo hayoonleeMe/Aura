@@ -12,6 +12,7 @@ UAuraAbility_Debuff_Ignite::UAuraAbility_Debuff_Ignite()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::ServerOnly;
+	AbilityTags.AddTag(AuraGameplayTags::Debuff_Ignite);
 }
 
 void UAuraAbility_Debuff_Ignite::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -19,8 +20,6 @@ void UAuraAbility_Debuff_Ignite::ActivateAbility(const FGameplayAbilitySpecHandl
 {
 	checkf(DamageEffectClass, TEXT("Need to set DamageEffectClass"));
 
-	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
-	
 	// Damage Effect를 적용할 Ability System Component 결정
 	// Instigator가 유효하지 않아도 Ignite Damage를 주기 위해 Target의 ASC로 계속 수행
 	const UAbilitySystemComponent* InstigatorASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Cast<AActor>(GetSourceObject(Handle, ActorInfo)));
@@ -42,14 +41,14 @@ void UAuraAbility_Debuff_Ignite::ActivateAbility(const FGameplayAbilitySpecHandl
 	float IgniteDamage = 0.f;
 	if (FGameplayAbilitySpec* Spec = GetCurrentAbilitySpec())
 	{
-		if (Spec->SetByCallerTagMagnitudes.Contains(GameplayTags.Damage_Type_Fire))
+		if (Spec->SetByCallerTagMagnitudes.Contains(AuraGameplayTags::Damage_Type_Fire))
 		{
-			IgniteDamage = Spec->SetByCallerTagMagnitudes[GameplayTags.Damage_Type_Fire] * DamageRate;
+			IgniteDamage = Spec->SetByCallerTagMagnitudes[AuraGameplayTags::Damage_Type_Fire] * DamageRate;
 		}
 	}
 	
 	// Assign Damage
-	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, GameplayTags.Damage_Type_Fire, IgniteDamage);
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, AuraGameplayTags::Damage_Type_Fire, IgniteDamage);
 	
 	GetAbilitySystemComponentFromActorInfo_Checked()->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data);
 

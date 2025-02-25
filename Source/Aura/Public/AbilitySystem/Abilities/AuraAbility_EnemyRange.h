@@ -9,7 +9,7 @@
 /**
  * Enemy의 원거리 공격 Ability
  */
-UCLASS()
+UCLASS(HideCategories=(Spell))
 class AURA_API UAuraAbility_EnemyRange : public UAuraProjectileAbility
 {
 	GENERATED_BODY()

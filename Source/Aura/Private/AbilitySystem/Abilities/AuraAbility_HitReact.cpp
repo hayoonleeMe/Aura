@@ -12,6 +12,8 @@ UAuraAbility_HitReact::UAuraAbility_HitReact()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	bRetriggerInstancedAbility = true;
+	AbilityTags.AddTag(AuraGameplayTags::Abilities_HitReact);
+	ActivationOwnedTags.AddTag(AuraGameplayTags::Abilities_HitReact);
 }
 
 void UAuraAbility_HitReact::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -23,7 +25,7 @@ void UAuraAbility_HitReact::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		return;
 	}
 	
-	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(FAuraGameplayTags::Get().Abilities_HitReact);
+	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(AuraGameplayTags::Abilities_HitReact);
 	check(TaggedCombatInfo.AnimMontage);
 	
 	// HitReactMontage를 재생하고 Wait

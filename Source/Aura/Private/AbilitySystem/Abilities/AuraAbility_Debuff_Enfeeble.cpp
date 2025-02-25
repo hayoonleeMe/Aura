@@ -4,11 +4,13 @@
 #include "AbilitySystem/Abilities/AuraAbility_Debuff_Enfeeble.h"
 
 #include "AbilitySystemComponent.h"
+#include "AuraGameplayTags.h"
 
 UAuraAbility_Debuff_Enfeeble::UAuraAbility_Debuff_Enfeeble()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::ServerOnly;
+	AbilityTags.AddTag(AuraGameplayTags::Debuff_Enfeeble);
 }
 
 void UAuraAbility_Debuff_Enfeeble::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

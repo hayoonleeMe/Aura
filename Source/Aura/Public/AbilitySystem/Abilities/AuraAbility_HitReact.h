@@ -9,7 +9,7 @@
 /**
  * HitReact Effect를 적용하고 HitReact Montage를 재생하는 Ability
  */
-UCLASS()
+UCLASS(HideCategories=("Aura|Input", "Aura|Spell"))
 class AURA_API UAuraAbility_HitReact : public UAuraGameplayAbility
 {
 	GENERATED_BODY()
