@@ -11,6 +11,8 @@
 UAuraAbility_ManaSiphon::UAuraAbility_ManaSiphon()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+	AbilityTags.AddTag(AuraGameplayTags::Abilities_Passive_ManaSiphon);
+	ActivationOwnedTags.AddTag(AuraGameplayTags::Abilities_Passive_ManaSiphon);
 }
 
 FText UAuraAbility_ManaSiphon::GetDescription(int32 Level) const

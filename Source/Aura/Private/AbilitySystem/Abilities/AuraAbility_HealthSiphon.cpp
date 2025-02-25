@@ -11,6 +11,8 @@
 UAuraAbility_HealthSiphon::UAuraAbility_HealthSiphon()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+	AbilityTags.AddTag(AuraGameplayTags::Abilities_Passive_HealthSiphon);
+	ActivationOwnedTags.AddTag(AuraGameplayTags::Abilities_Passive_HealthSiphon);
 }
 
 FText UAuraAbility_HealthSiphon::GetDescription(int32 Level) const

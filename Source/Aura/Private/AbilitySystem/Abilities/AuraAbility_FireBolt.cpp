@@ -14,6 +14,14 @@
 UAuraAbility_FireBolt::UAuraAbility_FireBolt()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+	AbilityTags.AddTag(AuraGameplayTags::Abilities_Offensive_FireBolt);
+	CancelAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_ClickToMove);
+	CancelAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_TryInteract);
+	BlockAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_ClickToMove);
+	BlockAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_Offensive);
+	DamageTypeTag = AuraGameplayTags::Damage_Type_Fire;
+	DebuffTag = AuraGameplayTags::Debuff_Ignite;
+	StartupInputTag = AuraGameplayTags::InputTag_LMB;
 	SpreadAngle = 10.f;
 }
 

@@ -15,6 +15,14 @@
 UAuraAbility_ChainLightning::UAuraAbility_ChainLightning()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+	AbilityTags.AddTag(AuraGameplayTags::Abilities_Offensive_ChainLightning);
+	CancelAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_ClickToMove);
+	CancelAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_TryInteract);
+	BlockAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_ClickToMove);
+	BlockAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_Offensive);
+	DamageTypeTag = AuraGameplayTags::Damage_Type_Lightning;
+	DebuffTag = AuraGameplayTags::Debuff_Stun;
+	StartupInputTag = AuraGameplayTags::InputTag_MMB;
 	MaxCastRange = 600.f;
 }
 

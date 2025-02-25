@@ -13,6 +13,14 @@
 UAuraAbility_ArcaneSpike::UAuraAbility_ArcaneSpike()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+	AbilityTags.AddTag(AuraGameplayTags::Abilities_Offensive_ArcaneSpike);
+	CancelAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_ClickToMove);
+	CancelAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_TryInteract);
+	BlockAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_ClickToMove);
+	BlockAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_Offensive);
+	DamageTypeTag = AuraGameplayTags::Damage_Type_Arcane;
+	DebuffTag = AuraGameplayTags::Debuff_Enfeeble;
+	StartupInputTag = AuraGameplayTags::InputTag_Q;
 	MaxCastRange = 1400.f;
 	CachedTargetLocation = FVector::ZeroVector;
 }
