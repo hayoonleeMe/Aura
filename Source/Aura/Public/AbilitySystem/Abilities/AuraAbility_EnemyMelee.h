@@ -9,7 +9,7 @@
 /**
  * Enemy의 근접 공격 Ability
  */
-UCLASS()
+UCLASS(HideCategories=(Spell))
 class AURA_API UAuraAbility_EnemyMelee : public UAuraDamageAbility
 {
 	GENERATED_BODY()

@@ -9,6 +9,8 @@
 UAuraAbility_EnemyRange::UAuraAbility_EnemyRange()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+	AbilityTags.AddTag(AuraGameplayTags::Abilities_EnemyAttack);
+	DamageTypeTag = AuraGameplayTags::Damage_Type_Physical;
 }
 
 void UAuraAbility_EnemyRange::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

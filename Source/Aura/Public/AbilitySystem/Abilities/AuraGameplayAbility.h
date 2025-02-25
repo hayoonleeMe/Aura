@@ -22,11 +22,11 @@ public:
 	FGameplayTag StartupInputTag;
 
 	// 해당 Spell을 Unlock할 수 있는 Character의 필요 레벨
-	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Spell")
 	int32 UnlockRequiredLevel;
 
 	// Spell의 최대 레벨
-	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Spell")
 	int32 MaxSpellLevel;
 
 	// Spell Menu의 Description Widget에 표시할 Level에 따른 Text를 반환한다.

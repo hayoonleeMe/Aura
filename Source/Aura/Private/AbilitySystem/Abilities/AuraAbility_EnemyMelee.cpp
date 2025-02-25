@@ -12,7 +12,9 @@
 UAuraAbility_EnemyMelee::UAuraAbility_EnemyMelee()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+	AbilityTags.AddTag(AuraGameplayTags::Abilities_EnemyAttack);
 	bCanAttackMultiTarget = true;
+	DamageTypeTag = AuraGameplayTags::Damage_Type_Physical;
 }
 
 void UAuraAbility_EnemyMelee::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
