@@ -226,6 +226,9 @@ void AAuraCharacter::InitAbilityActorInfo()
 
 	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
 
+	// 무적 Effect Material 표시를 위해 Invincibility Tag Changed Delegate에 콜백 함수 등록
+	AuraASC->RegisterGameplayTagEvent(AuraGameplayTags::Gameplay_Invincibility).AddUObject(this, &ThisClass::OnInvincibilityTagChanged);
+
 	// 가장 처음 게임이 시작했을 때
 	if (!AuraASC->IsInitialized())
 	{
@@ -340,5 +343,21 @@ void AAuraCharacter::HandleDeathLocally()
 		{
 			AbilitySystemComponent->RemoveActiveGameplayEffect(EffectHandle);
 		}
+	}
+}
+
+void AAuraCharacter::OnInvincibilityTagChanged(const FGameplayTag Tag, int32 NewCount) const
+{
+	if (NewCount > 0)
+	{
+		// 무적을 나타내는 Material 표시
+		GetMesh()->SetOverlayMaterial(InvincibilityEffectMaterial);
+		WeaponMeshComponent->SetOverlayMaterial(InvincibilityEffectMaterial);
+	}
+	else
+	{
+		// 무적을 나타내는 Material 제거
+		GetMesh()->SetOverlayMaterial(nullptr);
+		WeaponMeshComponent->SetOverlayMaterial(nullptr);
 	}
 }

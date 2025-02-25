@@ -107,9 +107,16 @@ private:
 	// Invincibility
 	// ============================================================================
 
-	// 무적 기능을 부여하는 Effect Class
+	// 무적 기능을 부여하는 GameplayEffect Class
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Invincibility")
 	TSubclassOf<UGameplayEffect> InvincibilityEffectClass;
+
+	// 무적 효과를 표시하기 위한 Material
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Invincibility")
+	TObjectPtr<UMaterialInterface> InvincibilityEffectMaterial;
+
+	// Invincibility Tag가 변경되면 호출되는 콜백 함수
+	void OnInvincibilityTagChanged(const FGameplayTag Tag, int32 NewCount) const;
 
 	// 리스폰 시 무적 시간
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Invincibility")
