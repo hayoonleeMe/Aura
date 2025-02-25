@@ -10,11 +10,14 @@
  * Cursor로 선택한 TargetActor와의 상호작용을 시도하는 Ability
  * TargetActor와의 거리가 먼 경우, 충분히 가까워질 때까지 이동한 뒤 상호작용을 시도한다.
  */
-UCLASS()
+UCLASS(HideCategories=("Aura|Spell"))
 class AURA_API UAuraAbility_TryInteract : public UAuraAbility_MoveAlongNavPathBase
 {
 	GENERATED_BODY()
 
+public:
+	UAuraAbility_TryInteract();
+	
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 

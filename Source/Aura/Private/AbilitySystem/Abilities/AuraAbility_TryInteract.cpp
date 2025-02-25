@@ -3,14 +3,22 @@
 
 #include "AbilitySystem/Abilities/AuraAbility_TryInteract.h"
 
+#include "AuraGameplayTags.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "AbilitySystem/AbilityTasks/AbilityTask_ClickToMove.h"
 #include "Interface/InteractionInterface.h"
 #include "Player/AuraPlayerController.h"
 
+UAuraAbility_TryInteract::UAuraAbility_TryInteract()
+{
+	AbilityTags.AddTag(AuraGameplayTags::Abilities_TryInteract);
+	CancelAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_ClickToMove);
+	StartupInputTag = AuraGameplayTags::InputTag_Interact;
+}
+
 void UAuraAbility_TryInteract::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-                                                const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+                                               const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	// InstancingPolicy가 InstancedPerActor이므로 Activate 할 때마다 TargetActor를 초기화한 뒤 다시 Retrieve
 	TargetActor = nullptr;

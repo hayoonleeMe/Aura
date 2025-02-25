@@ -12,7 +12,7 @@ class UAbilityTask_ClickToMove;
 /**
  * 클릭한 마우스 커서 위치로 Navigation System에 의한 Path를 따라 캐릭터를 이동시키는 Ability 
  */
-UCLASS()
+UCLASS(HideCategories=("Aura|Spell"))
 class AURA_API UAuraAbility_ClickToMove : public UAuraAbility_MoveAlongNavPathBase
 {
 	GENERATED_BODY()
