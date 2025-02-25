@@ -37,6 +37,9 @@ AAuraEnemy::AAuraEnemy()
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>(TEXT("Attribute Set"));
+	
+	/* Role */
+	RoleTag = AuraGameplayTags::Role_Enemy;
 
 	/* Combat */
 	AttackEffectiveRange = 120.f;

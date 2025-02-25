@@ -21,7 +21,10 @@
 AAuraCharacter::AAuraCharacter()
 {
 	// 리스폰 시 Enemy를 피해 항상 스폰되도록
-	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn; 
+	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	/* Role */
+	RoleTag = AuraGameplayTags::Role_Player;
 	
 	/* Projectile Pool */
 	FireBoltPoolComponent = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("Projectile Pool Component"));
