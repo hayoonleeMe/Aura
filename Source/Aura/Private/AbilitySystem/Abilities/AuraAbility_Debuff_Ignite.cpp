@@ -12,6 +12,7 @@ UAuraAbility_Debuff_Ignite::UAuraAbility_Debuff_Ignite()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::ServerOnly;
+	AbilityTags.AddTag(AuraGameplayTags::Debuff_Ignite);
 }
 
 void UAuraAbility_Debuff_Ignite::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

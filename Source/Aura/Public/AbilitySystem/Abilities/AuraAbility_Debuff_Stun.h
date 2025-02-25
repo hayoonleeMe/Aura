@@ -9,7 +9,7 @@
 /**
  * 일정 시간 동안 대상이 아무런 동작도 할 수 없게 기절시키는 Stun Debuff
  */
-UCLASS()
+UCLASS(HideCategories=("Aura|Input", "Aura|Spell"))
 class AURA_API UAuraAbility_Debuff_Stun : public UAuraGameplayAbility
 {
 	GENERATED_BODY()
