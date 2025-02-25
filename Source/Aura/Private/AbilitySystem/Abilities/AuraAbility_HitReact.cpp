@@ -23,7 +23,7 @@ void UAuraAbility_HitReact::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		return;
 	}
 	
-	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(FAuraGameplayTags::Get().Abilities_HitReact);
+	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(AuraGameplayTags::Abilities_HitReact);
 	check(TaggedCombatInfo.AnimMontage);
 	
 	// HitReactMontage를 재생하고 Wait

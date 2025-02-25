@@ -13,33 +13,31 @@
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
-	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
-
 	/* Primary Attributes */
-	TagToAttributeMap.Add(GameplayTags.Attributes_Primary_Strength, GetStrengthAttribute());
-	TagToAttributeMap.Add(GameplayTags.Attributes_Primary_Intelligence, GetIntelligenceAttribute());
-	TagToAttributeMap.Add(GameplayTags.Attributes_Primary_Resilience, GetResilienceAttribute());
-	TagToAttributeMap.Add(GameplayTags.Attributes_Primary_Vigor, GetVigorAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Primary_Strength, GetStrengthAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Primary_Intelligence, GetIntelligenceAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Primary_Resilience, GetResilienceAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Primary_Vigor, GetVigorAttribute());
 	
 	/* Secondary Attributes */
-	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_Armor, GetArmorAttribute());
-	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_ArmorPenetration, GetArmorPenetrationAttribute());
-	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_BlockChance, GetBlockChanceAttribute());
-	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_CriticalHitChance, GetCriticalHitChanceAttribute());
-	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_CriticalHitDamage, GetCriticalHitDamageAttribute());
-	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_CriticalHitResistance, GetCriticalHitResistanceAttribute());
-	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_HealthRegeneration, GetHealthRegenerationAttribute());
-	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_ManaRegeneration, GetManaRegenerationAttribute());
-	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_MaxHealth, GetMaxHealthAttribute());
-	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_MaxMana, GetMaxManaAttribute());
-	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_FireResistance, GetFireResistanceAttribute());
-	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_LightningResistance, GetLightningResistanceAttribute());
-	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_ArcaneResistance, GetArcaneResistanceAttribute());
-	TagToAttributeMap.Add(GameplayTags.Attributes_Secondary_PhysicalResistance, GetPhysicalResistanceAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Secondary_Armor, GetArmorAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Secondary_ArmorPenetration, GetArmorPenetrationAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Secondary_BlockChance, GetBlockChanceAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Secondary_CriticalHitChance, GetCriticalHitChanceAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Secondary_CriticalHitDamage, GetCriticalHitDamageAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Secondary_CriticalHitResistance, GetCriticalHitResistanceAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Secondary_HealthRegeneration, GetHealthRegenerationAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Secondary_ManaRegeneration, GetManaRegenerationAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Secondary_MaxHealth, GetMaxHealthAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Secondary_MaxMana, GetMaxManaAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Secondary_FireResistance, GetFireResistanceAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Secondary_LightningResistance, GetLightningResistanceAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Secondary_ArcaneResistance, GetArcaneResistanceAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Secondary_PhysicalResistance, GetPhysicalResistanceAttribute());
 	
 	/* Vital Attributes */
-	TagToAttributeMap.Add(GameplayTags.Attributes_Vital_Health, GetHealthAttribute());
-	TagToAttributeMap.Add(GameplayTags.Attributes_Vital_Mana, GetManaAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Vital_Health, GetHealthAttribute());
+	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Vital_Mana, GetManaAttribute());
 }
 
 void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -132,8 +130,6 @@ void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSp
 	const float LocalIncomingDamage = GetIncomingDamage();
 	if (LocalIncomingDamage > 0.f)
 	{
-		const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
-		
 		AActor* AvatarActor = GetActorInfo() && GetActorInfo()->AvatarActor.IsValid() ? GetActorInfo()->AvatarActor.Get() : nullptr;
 		ICombatInterface* CombatInterface = Cast<ICombatInterface>(AvatarActor);
 
@@ -155,7 +151,7 @@ void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSp
 			CombatInterface->Die();
 
 			// if player kill enemy
-			if (CombatInterface->GetRoleTag().MatchesTagExact(GameplayTags.Role_Enemy))
+			if (CombatInterface->GetRoleTag().MatchesTagExact(AuraGameplayTags::Role_Enemy))
 			{
 				// Enemy Dead, Reward XP to Player
 				const int32 XPReward = CombatInterface->GetXPReward();
@@ -173,7 +169,7 @@ void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSp
 			if (FMath::RandRange(1, 100) <= AuraEffectContext->GetDebuffChance())
 			{
 				const FGameplayTag DebuffTag = AuraEffectContext->GetDebuffTag();
-				if (DebuffTag.MatchesTagExact(GameplayTags.Debuff_Ignite))
+				if (DebuffTag.MatchesTagExact(AuraGameplayTags::Debuff_Ignite))
 				{
 					ActivateIgniteDebuff(AuraEffectContext, LocalIncomingDamage);
 				}
@@ -184,9 +180,9 @@ void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSp
 			}
 
 			// HitReact
-			if (AuraEffectContext->ShouldActivateHitReact() && !ASC->HasMatchingGameplayTag(GameplayTags.Debuff_Stun))
+			if (AuraEffectContext->ShouldActivateHitReact() && !ASC->HasMatchingGameplayTag(AuraGameplayTags::Debuff_Stun))
 			{
-				ASC->TryActivateAbilitiesByTag(GameplayTags.Abilities_HitReact.GetSingleTagContainer());
+				ASC->TryActivateAbilitiesByTag(AuraGameplayTags::Abilities_HitReact.GetTag().GetSingleTagContainer());
 			}
 		}
 
@@ -235,7 +231,7 @@ void UAuraAttributeSet::HandlePlayerXPGain()
 			// 플레이어 기기에서 NonReplicated LevelUp Effect GameplayCue 실행
 			if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetOwningAbilitySystemComponent()))
 			{
-				AuraASC->ClientExecuteGameplayCue(FAuraGameplayTags::Get().GameplayCue_LevelUp);
+				AuraASC->ClientExecuteGameplayCue(AuraGameplayTags::GameplayCue_LevelUp);
 			}
 		}
 		else
@@ -259,7 +255,7 @@ void UAuraAttributeSet::ActivateIgniteDebuff(const FAuraGameplayEffectContext* A
 			AbilitySpec->SourceObject = AuraEffectContext->GetInstigator();
 
 			// Incoming Damage를 전달하기 위해 SetByCallerTagMagnitudes 사용 
-			AbilitySpec->SetByCallerTagMagnitudes.Add(FAuraGameplayTags::Get().Damage_Type_Fire, LocalIncomingDamage);
+			AbilitySpec->SetByCallerTagMagnitudes.Add(AuraGameplayTags::Damage_Type_Fire, LocalIncomingDamage);
 						
 			AuraASC->TryActivateAbility(AbilitySpec->Handle);
 		}

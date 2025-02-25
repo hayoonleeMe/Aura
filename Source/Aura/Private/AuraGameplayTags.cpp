@@ -5,127 +5,123 @@
 
 #include "GameplayTagsManager.h"
 
-FAuraGameplayTags FAuraGameplayTags::GameplayTags;
-
-void FAuraGameplayTags::InitializeNativeGameplayTags()
+namespace AuraGameplayTags
 {
-	UGameplayTagsManager& Manager = UGameplayTagsManager::Get();
-
 	/* Activate Fail */
-	GameplayTags.Activate_Fail_Cost = Manager.AddNativeGameplayTag(TEXT("Activate.Fail.Cost"), TEXT("Ability Activate Fail Cost Tag"));
-	GameplayTags.Activate_Fail_Cooldown = Manager.AddNativeGameplayTag(TEXT("Activate.Fail.Cooldown"), TEXT("Ability Activate Fail Cooldown Tag"));
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Activate_Fail_Cost, "Activate.Fail.Cost", "Ability Activate Fail Cost Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Activate_Fail_Cooldown, "Activate.Fail.Cooldown", "Ability Activate Fail Cooldown Tag");
 	
 	/* Input */
-	GameplayTags.InputTag = Manager.AddNativeGameplayTag(TEXT("InputTag"), TEXT("Input Tag"));
-	GameplayTags.InputTag_LMB = Manager.AddNativeGameplayTag(TEXT("InputTag.LMB"), TEXT("Input Tag for Left Mouse Button"));
-	GameplayTags.InputTag_Interact = Manager.AddNativeGameplayTag(TEXT("InputTag.Interact"), TEXT("Input Tag for Interact"));
-	GameplayTags.InputTag_RMB = Manager.AddNativeGameplayTag(TEXT("InputTag.RMB"), TEXT("Input Tag for Right Mouse Button"));
-	GameplayTags.InputTag_MMB = Manager.AddNativeGameplayTag(TEXT("InputTag.MMB"), TEXT("Input Tag for Middle Mouse Button"));
-	GameplayTags.InputTag_Q = Manager.AddNativeGameplayTag(TEXT("InputTag.Q"), TEXT("Input Tag for Q key"));
-	GameplayTags.InputTag_W = Manager.AddNativeGameplayTag(TEXT("InputTag.W"), TEXT("Input Tag for W key"));
-	GameplayTags.InputTag_E = Manager.AddNativeGameplayTag(TEXT("InputTag.E"), TEXT("Input Tag for E key"));
-	GameplayTags.InputTag_R = Manager.AddNativeGameplayTag(TEXT("InputTag.R"), TEXT("Input Tag for R key"));
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag, "InputTag", "Input Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_LMB, "InputTag.LMB", "Input Tag for Left Mouse Button");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Interact, "InputTag.Interact", "Input Tag for Interact");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_RMB, "InputTag.RMB", "Input Tag for Right Mouse Button");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_MMB, "InputTag.MMB", "Input Tag for Middle Mouse Button");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Q, "InputTag.Q", "Input Tag for Q key");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_W, "InputTag.W", "Input Tag for W key");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_E, "InputTag.E", "Input Tag for E key");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_R, "InputTag.R", "Input Tag for R key");
 
 	/* Passive Input */
-	GameplayTags.InputTag_Passive_1 = Manager.AddNativeGameplayTag(TEXT("InputTag.Passive.1"), TEXT("Passive Input Tag for first slot"));
-	GameplayTags.InputTag_Passive_2 = Manager.AddNativeGameplayTag(TEXT("InputTag.Passive.2"), TEXT("Passive Input Tag for second slot"));
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Passive_1, "InputTag.Passive.1", "Passive Input Tag for first slot");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Passive_2, "InputTag.Passive.2", "Passive Input Tag for second slot");
 
 	/* Primary Attributes */
-	GameplayTags.Attributes_Primary = Manager.AddNativeGameplayTag(TEXT("Attributes.Primary"), TEXT("Primary Attributes Tag"));
-	GameplayTags.Attributes_Primary_Strength = Manager.AddNativeGameplayTag(TEXT("Attributes.Primary.Strength"), TEXT("Increases physical damage"));
-	GameplayTags.Attributes_Primary_Intelligence = Manager.AddNativeGameplayTag(TEXT("Attributes.Primary.Intelligence"), TEXT("Increases magical damage"));
-	GameplayTags.Attributes_Primary_Resilience = Manager.AddNativeGameplayTag(TEXT("Attributes.Primary.Resilience"), TEXT("Increases Armor and Armor Penetration"));
-	GameplayTags.Attributes_Primary_Vigor = Manager.AddNativeGameplayTag(TEXT("Attributes.Primary.Vigor"), TEXT("Increases Health"));
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Primary, "Attributes.Primary", "Primary Attributes Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Primary_Strength, "Attributes.Primary.Strength", "Increases physical damage");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Primary_Intelligence, "Attributes.Primary.Intelligence", "Increases magical damage");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Primary_Resilience, "Attributes.Primary.Resilience", "Increases Armor and Armor Penetration");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Primary_Vigor, "Attributes.Primary.Vigor", "Increases Health");
 	
 	/* Secondary Attributes */
-	GameplayTags.Attributes_Secondary_Armor = Manager.AddNativeGameplayTag(TEXT("Attributes.Secondary.Armor"), TEXT("Reduces damage taken, improves Block Chance"));
-	GameplayTags.Attributes_Secondary_ArmorPenetration = Manager.AddNativeGameplayTag(TEXT("Attributes.Secondary.ArmorPenetration"), TEXT("Ignored Percentage of enemy Armor, increases Critical Hit Chance"));
-	GameplayTags.Attributes_Secondary_BlockChance = Manager.AddNativeGameplayTag(TEXT("Attributes.Secondary.BlockChance"), TEXT("Chance to cut incoming damage in half"));
-	GameplayTags.Attributes_Secondary_CriticalHitChance = Manager.AddNativeGameplayTag(TEXT("Attributes.Secondary.CriticalHitChance"), TEXT("Chance to double damage plus critical hit bonus"));
-	GameplayTags.Attributes_Secondary_CriticalHitDamage = Manager.AddNativeGameplayTag(TEXT("Attributes.Secondary.CriticalHitDamage"), TEXT("Bonus damage added when a critical hit is scored"));
-	GameplayTags.Attributes_Secondary_CriticalHitResistance = Manager.AddNativeGameplayTag(TEXT("Attributes.Secondary.CriticalHitResistance"), TEXT("Reduces Critical Hit Chance of attacking enemies"));
-	GameplayTags.Attributes_Secondary_HealthRegeneration = Manager.AddNativeGameplayTag(TEXT("Attributes.Secondary.HealthRegeneration"), TEXT("Amount of Health regenerated every 1 second"));
-	GameplayTags.Attributes_Secondary_ManaRegeneration = Manager.AddNativeGameplayTag(TEXT("Attributes.Secondary.ManaRegeneration"), TEXT("Amount of Mana regenerated every 1 second"));
-	GameplayTags.Attributes_Secondary_MaxHealth = Manager.AddNativeGameplayTag(TEXT("Attributes.Secondary.MaxHealth"), TEXT("Maximum amount of Health obtainable"));
-	GameplayTags.Attributes_Secondary_MaxMana = Manager.AddNativeGameplayTag(TEXT("Attributes.Secondary.MaxMana"), TEXT("Maximum amount of Mana obtainable"));
-	GameplayTags.Attributes_Secondary_FireResistance = Manager.AddNativeGameplayTag(TEXT("Attributes.Secondary.FireResistance"), TEXT("Resistance to Fire Damage"));
-	GameplayTags.Attributes_Secondary_LightningResistance = Manager.AddNativeGameplayTag(TEXT("Attributes.Secondary.LightningResistance"), TEXT("Resistance to Lightning Damage"));
-	GameplayTags.Attributes_Secondary_ArcaneResistance = Manager.AddNativeGameplayTag(TEXT("Attributes.Secondary.ArcaneResistance"), TEXT("Resistance to Arcane Damage"));
-	GameplayTags.Attributes_Secondary_PhysicalResistance = Manager.AddNativeGameplayTag(TEXT("Attributes.Secondary.PhysicalResistance"), TEXT("Resistance to Physical Damage"));
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_Armor, "Attributes.Secondary.Armor", "Reduces damage taken, improves Block Chance");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_ArmorPenetration, "Attributes.Secondary.ArmorPenetration", "Ignored Percentage of enemy Armor, increases Critical Hit Chance");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_BlockChance, "Attributes.Secondary.BlockChance", "Chance to cut incoming damage in half");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_CriticalHitChance, "Attributes.Secondary.CriticalHitChance", "Chance to double damage plus critical hit bonus");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_CriticalHitDamage, "Attributes.Secondary.CriticalHitDamage", "Bonus damage added when a critical hit is scored");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_CriticalHitResistance, "Attributes.Secondary.CriticalHitResistance", "Reduces Critical Hit Chance of attacking enemies");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_HealthRegeneration, "Attributes.Secondary.HealthRegeneration", "Amount of Health regenerated every 1 second");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_ManaRegeneration, "Attributes.Secondary.ManaRegeneration", "Amount of Mana regenerated every 1 second");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_MaxHealth, "Attributes.Secondary.MaxHealth", "Maximum amount of Health obtainable");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_MaxMana, "Attributes.Secondary.MaxMana", "Maximum amount of Mana obtainable");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_FireResistance, "Attributes.Secondary.FireResistance", "Resistance to Fire Damage");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_LightningResistance, "Attributes.Secondary.LightningResistance", "Resistance to Lightning Damage");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_ArcaneResistance, "Attributes.Secondary.ArcaneResistance", "Resistance to Arcane Damage");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_PhysicalResistance, "Attributes.Secondary.PhysicalResistance", "Resistance to Physical Damage");
 	
 	/* Vital Attributes */
-	GameplayTags.Attributes_Vital_Health = Manager.AddNativeGameplayTag(TEXT("Attributes.Vital.Health"), TEXT("Amount of damage a player can take before death"));
-	GameplayTags.Attributes_Vital_Mana = Manager.AddNativeGameplayTag(TEXT("Attributes.Vital.Mana"), TEXT("Amount of energy a player can use to cast spells"));
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Vital_Health, "Attributes.Vital.Health", "Amount of damage a player can take before death");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Vital_Mana, "Attributes.Vital.Mana", "Amount of energy a player can use to cast spells");
 
 	/* Meta Attributes */
-	GameplayTags.Attributes_Meta_Level = Manager.AddNativeGameplayTag(TEXT("Attributes.Meta.Level"), TEXT("Indicates the character's current progression level"));
-	GameplayTags.Attributes_Meta_XP = Manager.AddNativeGameplayTag(TEXT("Attributes.Meta.XP"), TEXT("Amount of experience points a player has accumulated for leveling up"));
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Meta_Level, "Attributes.Meta.Level", "Indicates the character's current progression level");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Meta_XP, "Attributes.Meta.XP", "Amount of experience points a player has accumulated for leveling up");
 
 	/* Damage Types */
-	GameplayTags.Damage_Type_Fire = Manager.AddNativeGameplayTag(TEXT("Damage.Type.Fire"), TEXT("Fire Damage Type"));
-	GameplayTags.DamageTypeToResistanceMap.Add(GameplayTags.Damage_Type_Fire, GameplayTags.Attributes_Secondary_FireResistance);
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Damage_Type_Fire, "Damage.Type.Fire", "Fire Damage Type");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Damage_Type_Lightning, "Damage.Type.Lightning", "Lightning Damage Type");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Damage_Type_Arcane, "Damage.Type.Arcane", "Arcane Damage Type");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Damage_Type_Physical, "Damage.Type.Physical", "Physical Damage Type");
 	
-	GameplayTags.Damage_Type_Lightning = Manager.AddNativeGameplayTag(TEXT("Damage.Type.Lightning"), TEXT("Lightning Damage Type"));
-	GameplayTags.DamageTypeToResistanceMap.Add(GameplayTags.Damage_Type_Lightning, GameplayTags.Attributes_Secondary_LightningResistance);
-	
-	GameplayTags.Damage_Type_Arcane = Manager.AddNativeGameplayTag(TEXT("Damage.Type.Arcane"), TEXT("Arcane Damage Type"));
-	GameplayTags.DamageTypeToResistanceMap.Add(GameplayTags.Damage_Type_Arcane, GameplayTags.Attributes_Secondary_ArcaneResistance);
-	
-	GameplayTags.Damage_Type_Physical = Manager.AddNativeGameplayTag(TEXT("Damage.Type.Physical"), TEXT("Physical Damage Type"));
-	GameplayTags.DamageTypeToResistanceMap.Add(GameplayTags.Damage_Type_Physical, GameplayTags.Attributes_Secondary_PhysicalResistance);
+	const TMap<FGameplayTag, FGameplayTag> DamageTypeToResistanceMap =
+	{
+		{ Damage_Type_Fire, Attributes_Secondary_FireResistance },
+		{ Damage_Type_Lightning, Attributes_Secondary_LightningResistance },
+		{ Damage_Type_Arcane, Attributes_Secondary_ArcaneResistance },
+		{ Damage_Type_Physical, Attributes_Secondary_PhysicalResistance }
+	};
 
 	/* Role */
-	GameplayTags.Role_Player = Manager.AddNativeGameplayTag(TEXT("Role.Player"), TEXT("Player Role"));
-	GameplayTags.Role_Enemy = Manager.AddNativeGameplayTag(TEXT("Role.Enemy"), TEXT("Enemy Role"));
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Role_Player, "Role.Player", "Player Role");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Role_Enemy, "Role.Enemy", "Enemy Role");
 
 	/* Event */
-	GameplayTags.Event_Montage_FireBolt = Manager.AddNativeGameplayTag(TEXT("Event.Montage.FireBolt"), TEXT("FireBolt Montage Event Tag"));
-	GameplayTags.Event_Montage_ChainLightning = Manager.AddNativeGameplayTag(TEXT("Event.Montage.ChainLightning"), TEXT("ChainLightning Montage Event Tag"));
-	GameplayTags.Event_Montage_ArcaneSpike = Manager.AddNativeGameplayTag(TEXT("Event.Montage.ArcaneSpike"), TEXT("ArcaneSpike Montage Event Tag"));
-	GameplayTags.Event_Montage_EnemyAttack = Manager.AddNativeGameplayTag(TEXT("Event.Montage.EnemyAttack"), TEXT("EnemyAttack Montage Event Tag"));
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_FireBolt, "Event.Montage.FireBolt", "FireBolt Montage Event Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_ChainLightning, "Event.Montage.ChainLightning", "ChainLightning Montage Event Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_ArcaneSpike, "Event.Montage.ArcaneSpike", "ArcaneSpike Montage Event Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_EnemyAttack, "Event.Montage.EnemyAttack", "EnemyAttack Montage Event Tag");
 
 	/* Abilities */
-	GameplayTags.Abilities_ClickToMove = Manager.AddNativeGameplayTag(TEXT("Abilities.ClickToMove"), TEXT("ClickToMove Ability Tag"));
-	GameplayTags.Abilities_TryInteract = Manager.AddNativeGameplayTag(TEXT("Abilities.TryInteract"), TEXT("TryInteract Ability Tag"));
-	GameplayTags.Abilities_HitReact = Manager.AddNativeGameplayTag(TEXT("Abilities.HitReact"), TEXT("HitReact Ability Tag"));
-	GameplayTags.Abilities_EnemyAttack = Manager.AddNativeGameplayTag(TEXT("Abilities.EnemyAttack"), TEXT("EnemyAttack Ability Tag"));
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_ClickToMove, "Abilities.ClickToMove", "ClickToMove Ability Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_TryInteract, "Abilities.TryInteract", "TryInteract Ability Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_HitReact, "Abilities.HitReact", "HitReact Ability Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_EnemyAttack, "Abilities.EnemyAttack", "EnemyAttack Ability Tag");
 
 	/* Abilities.Offensive */
-	GameplayTags.Abilities_Offensive = Manager.AddNativeGameplayTag(TEXT("Abilities.Offensive"), TEXT("Offensive Ability Tag"));
-	GameplayTags.Abilities_Offensive_FireBolt = Manager.AddNativeGameplayTag(TEXT("Abilities.Offensive.FireBolt"), TEXT("FireBolt Offensive Ability Tag"));
-	GameplayTags.Abilities_Offensive_ChainLightning = Manager.AddNativeGameplayTag(TEXT("Abilities.Offensive.ChainLightning"), TEXT("ChainLightning Offensive Ability Tag"));
-	GameplayTags.Abilities_Offensive_ArcaneSpike = Manager.AddNativeGameplayTag(TEXT("Abilities.Offensive.ArcaneSpike"), TEXT("ArcaneSpike Offensive Ability Tag"));
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Offensive, "Abilities.Offensive", "Offensive Ability Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Offensive_FireBolt, "Abilities.Offensive.FireBolt", "FireBolt Offensive Ability Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Offensive_ChainLightning, "Abilities.Offensive.ChainLightning", "ChainLightning Offensive Ability Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Offensive_ArcaneSpike, "Abilities.Offensive.ArcaneSpike", "ArcaneSpike Offensive Ability Tag");
 
 	/* Abilities.Passive */
-	GameplayTags.Abilities_Passive = Manager.AddNativeGameplayTag(TEXT("Abilities.Passive"), TEXT("Passive Ability Tag"));
-	GameplayTags.Abilities_Passive_HaloOfProtection = Manager.AddNativeGameplayTag(TEXT("Abilities.Passive.HaloOfProtection"), TEXT("HaloOfProtection Passive Ability Tag"));
-	GameplayTags.Abilities_Passive_HealthSiphon = Manager.AddNativeGameplayTag(TEXT("Abilities.Passive.HealthSiphon"), TEXT("HealthSiphon Passive Ability Tag"));
-	GameplayTags.Abilities_Passive_ManaSiphon = Manager.AddNativeGameplayTag(TEXT("Abilities.Passive.ManaSiphon"), TEXT("ManaSiphon Passive Ability Tag"));
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Passive, "Abilities.Passive", "Passive Ability Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Passive_HaloOfProtection, "Abilities.Passive.HaloOfProtection", "HaloOfProtection Passive Ability Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Passive_HealthSiphon, "Abilities.Passive.HealthSiphon", "HealthSiphon Passive Ability Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Passive_ManaSiphon, "Abilities.Passive.ManaSiphon", "ManaSiphon Passive Ability Tag");
 
 	/* Debuff */
-	GameplayTags.Debuff_Ignite = Manager.AddNativeGameplayTag(TEXT("Debuff.Ignite"), TEXT("Ignite Debuff Tag"));
-	GameplayTags.Debuff_Enfeeble = Manager.AddNativeGameplayTag(TEXT("Debuff.Enfeeble"), TEXT("Enfeeble Debuff Tag"));
-	GameplayTags.Debuff_Stun = Manager.AddNativeGameplayTag(TEXT("Debuff.Stun"), TEXT("Stun Debuff Tag"));
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Debuff_Ignite, "Debuff.Ignite", "Ignite Debuff Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Debuff_Enfeeble, "Debuff.Enfeeble", "Enfeeble Debuff Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Debuff_Stun, "Debuff.Stun", "Stun Debuff Tag");
 
 	/* Cooldown */
-	GameplayTags.Cooldown_ArcaneSpike = Manager.AddNativeGameplayTag(TEXT("Cooldown.ArcaneSpike"), TEXT("ArcaneSpike Cooldown Tag"));
-	
-	GameplayTags.Cooldown_Melee_GoblinSpear = Manager.AddNativeGameplayTag(TEXT("Cooldown.Melee.GoblinSpear"), TEXT("GoblinSpear Melee Cooldown Tag"));
-	GameplayTags.Cooldown_Melee_DemonWarrior = Manager.AddNativeGameplayTag(TEXT("Cooldown.Melee.DemonWarrior"), TEXT("DemonWarrior Melee Cooldown Tag"));
-	GameplayTags.Cooldown_Melee_Ghoul = Manager.AddNativeGameplayTag(TEXT("Cooldown.Melee.Ghoul"), TEXT("Ghoul Melee Cooldown Tag"));
-	GameplayTags.Cooldown_Range_GoblinSlingshot = Manager.AddNativeGameplayTag(TEXT("Cooldown.Range.GoblinSlingshot"), TEXT("GoblinSlingshot Range Cooldown Tag"));
-	GameplayTags.Cooldown_Range_DemonRanger = Manager.AddNativeGameplayTag(TEXT("Cooldown.Range.DemonRanger"), TEXT("DemonRanger Range Cooldown Tag"));
-	GameplayTags.Cooldown_Range_Shaman = Manager.AddNativeGameplayTag(TEXT("Cooldown.Range.Shaman"), TEXT("Shaman Range Cooldown Tag"));
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_ArcaneSpike, "Cooldown.ArcaneSpike", "ArcaneSpike Cooldown Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_Melee_GoblinSpear, "Cooldown.Melee.GoblinSpear", "GoblinSpear Melee Cooldown Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_Melee_DemonWarrior, "Cooldown.Melee.DemonWarrior", "DemonWarrior Melee Cooldown Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_Melee_Ghoul, "Cooldown.Melee.Ghoul", "Ghoul Melee Cooldown Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_Range_GoblinSlingshot, "Cooldown.Range.GoblinSlingshot", "GoblinSlingshot Range Cooldown Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_Range_DemonRanger, "Cooldown.Range.DemonRanger", "DemonRanger Range Cooldown Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_Range_Shaman, "Cooldown.Range.Shaman", "Shaman Range Cooldown Tag");
 
 	/* GameplayCue */
-	GameplayTags.GameplayCue_FireBoltImpact = Manager.AddNativeGameplayTag(TEXT("GameplayCue.FireBoltImpact"), TEXT("FireBoltImpact GameplayCue Tag"));
-	GameplayTags.GameplayCue_EnemyMeleeImpact = Manager.AddNativeGameplayTag(TEXT("GameplayCue.EnemyMeleeImpact"), TEXT("EnemyMeleeImpact GameplayCue Tag"));
-	GameplayTags.GameplayCue_RockImpact = Manager.AddNativeGameplayTag(TEXT("GameplayCue.RockImpact"), TEXT("RockImpact GameplayCue Tag"));
-	GameplayTags.GameplayCue_LevelUp = Manager.AddNativeGameplayTag(TEXT("GameplayCue.LevelUp"), TEXT("LevelUp GameplayCue Tag"));
-	GameplayTags.GameplayCue_LightningBeam = Manager.AddNativeGameplayTag(TEXT("GameplayCue.LightningBeam"), TEXT("LightningBeam GameplayCue Tag"));
-	GameplayTags.GameplayCue_ArcaneShard = Manager.AddNativeGameplayTag(TEXT("GameplayCue.ArcaneShard"), TEXT("ArcaneShard GameplayCue Tag"));
-	GameplayTags.GameplayCue_SummonEffect = Manager.AddNativeGameplayTag(TEXT("GameplayCue.SummonEffect"), TEXT("SummonEffect GameplayCue Tag"));
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_FireBoltImpact, "GameplayCue.FireBoltImpact", "FireBoltImpact GameplayCue Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_EnemyMeleeImpact, "GameplayCue.EnemyMeleeImpact", "EnemyMeleeImpact GameplayCue Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_RockImpact, "GameplayCue.RockImpact", "RockImpact GameplayCue Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_LevelUp, "GameplayCue.LevelUp", "LevelUp GameplayCue Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_LightningBeam, "GameplayCue.LightningBeam", "LightningBeam GameplayCue Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_ArcaneShard, "GameplayCue.ArcaneShard", "ArcaneShard GameplayCue Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_SummonEffect, "GameplayCue.SummonEffect", "SummonEffect GameplayCue Tag");
 
 	/* Gameplay */
-	GameplayTags.Gameplay_Invincibility = Manager.AddNativeGameplayTag(TEXT("Gameplay.Invincibility"), TEXT("Invincibility Tag"));
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Gameplay_Invincibility, "Gameplay.Invincibility", "Invincibility Tag");
 }

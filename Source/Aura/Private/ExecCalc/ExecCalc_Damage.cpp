@@ -55,18 +55,17 @@ static const TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition>& GetT
 	static TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> Map;
 	if (Map.IsEmpty())
 	{
-		const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
 		const AuraDamageStatics& DamageStatics = GetDamageStatics();
-		Map.Add(GameplayTags.Attributes_Secondary_Armor, DamageStatics.ArmorDef);
-		Map.Add(GameplayTags.Attributes_Secondary_ArmorPenetration, DamageStatics.ArmorPenetrationDef);
-		Map.Add(GameplayTags.Attributes_Secondary_BlockChance, DamageStatics.BlockChanceDef);
-		Map.Add(GameplayTags.Attributes_Secondary_CriticalHitChance, DamageStatics.CriticalHitChanceDef);
-		Map.Add(GameplayTags.Attributes_Secondary_CriticalHitDamage, DamageStatics.CriticalHitDamageDef);
-		Map.Add(GameplayTags.Attributes_Secondary_CriticalHitResistance, DamageStatics.CriticalHitResistanceDef);
-		Map.Add(GameplayTags.Attributes_Secondary_FireResistance, DamageStatics.FireResistanceDef);
-		Map.Add(GameplayTags.Attributes_Secondary_LightningResistance, DamageStatics.LightningResistanceDef);
-		Map.Add(GameplayTags.Attributes_Secondary_ArcaneResistance, DamageStatics.ArcaneResistanceDef);
-		Map.Add(GameplayTags.Attributes_Secondary_PhysicalResistance, DamageStatics.PhysicalResistanceDef);
+		Map.Add(AuraGameplayTags::Attributes_Secondary_Armor, DamageStatics.ArmorDef);
+		Map.Add(AuraGameplayTags::Attributes_Secondary_ArmorPenetration, DamageStatics.ArmorPenetrationDef);
+		Map.Add(AuraGameplayTags::Attributes_Secondary_BlockChance, DamageStatics.BlockChanceDef);
+		Map.Add(AuraGameplayTags::Attributes_Secondary_CriticalHitChance, DamageStatics.CriticalHitChanceDef);
+		Map.Add(AuraGameplayTags::Attributes_Secondary_CriticalHitDamage, DamageStatics.CriticalHitDamageDef);
+		Map.Add(AuraGameplayTags::Attributes_Secondary_CriticalHitResistance, DamageStatics.CriticalHitResistanceDef);
+		Map.Add(AuraGameplayTags::Attributes_Secondary_FireResistance, DamageStatics.FireResistanceDef);
+		Map.Add(AuraGameplayTags::Attributes_Secondary_LightningResistance, DamageStatics.LightningResistanceDef);
+		Map.Add(AuraGameplayTags::Attributes_Secondary_ArcaneResistance, DamageStatics.ArcaneResistanceDef);
+		Map.Add(AuraGameplayTags::Attributes_Secondary_PhysicalResistance, DamageStatics.PhysicalResistanceDef);
 	}
 	return Map;
 }
@@ -90,7 +89,6 @@ UExecCalc_Damage::UExecCalc_Damage()
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
                                               FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
-	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
 	const AuraDamageStatics& DamageStatics = GetDamageStatics();
 	const TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition>& TagToCaptureDefMap = GetTagToCaptureDefMap();
 
@@ -122,7 +120,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	float Damage = 0.f;
 
 	// 이 Damage Effect를 적용할 때 설정한 SetByCaller 값을 찾아 저항값을 적용한 데미지를 합산한다.
-	for (const TTuple<FGameplayTag, FGameplayTag>& Tuple : GameplayTags.DamageTypeToResistanceMap)
+	for (const TTuple<FGameplayTag, FGameplayTag>& Tuple : AuraGameplayTags::DamageTypeToResistanceMap)
 	{
 		const FGameplayTag& DamageTypeTag = Tuple.Key;
 		const FGameplayTag& ResistanceTag = Tuple.Value;
@@ -143,7 +141,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	}
 
 	// Damage Reduction by Halo Of Protection Passive Spell
-	if (FGameplayAbilitySpec* AbilitySpec = TargetASC->GetSpellSpecForSpellTag(GameplayTags.Abilities_Passive_HaloOfProtection))
+	if (FGameplayAbilitySpec* AbilitySpec = TargetASC->GetSpellSpecForSpellTag(AuraGameplayTags::Abilities_Passive_HaloOfProtection))
 	{
 		float DamageReductionRate = 0.f;
 		if (UAuraAbility_HaloOfProtection* HaloOfProtection = Cast<UAuraAbility_HaloOfProtection>(AbilitySpec->GetPrimaryInstance()))
@@ -204,31 +202,31 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	}
 	
 	// Health recovery from Damage
-	if (SourceASC->HasMatchingGameplayTag(GameplayTags.Abilities_Passive_HealthSiphon))
+	if (SourceASC->HasMatchingGameplayTag(AuraGameplayTags::Abilities_Passive_HealthSiphon))
 	{
 		if (AActor* SourceAvatarActor = SourceASC->GetAvatarActor())
 		{
 			FGameplayEventData Payload;
 			Payload.EventMagnitude = Damage;
 			// Will receive this event in AuraAbility_HealthSiphon, then recovery health
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(SourceAvatarActor, GameplayTags.Abilities_Passive_HealthSiphon, Payload);
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(SourceAvatarActor, AuraGameplayTags::Abilities_Passive_HealthSiphon, Payload);
 		}
 	}
 
 	// Mana recovery from Damage
-	if (SourceASC->HasMatchingGameplayTag(GameplayTags.Abilities_Passive_ManaSiphon))
+	if (SourceASC->HasMatchingGameplayTag(AuraGameplayTags::Abilities_Passive_ManaSiphon))
 	{
 		if (AActor* SourceAvatarActor = SourceASC->GetAvatarActor())
 		{
 			FGameplayEventData Payload;
 			Payload.EventMagnitude = Damage;
 			// Will receive this event in AuraAbility_ManaSiphon, then recovery mana
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(SourceAvatarActor, GameplayTags.Abilities_Passive_ManaSiphon, Payload);
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(SourceAvatarActor, AuraGameplayTags::Abilities_Passive_ManaSiphon, Payload);
 		}
 	}
 
 	// Damage Reduction by Enfeeble Debuff
-	if (SourceASC->HasMatchingGameplayTag(FAuraGameplayTags::Get().Debuff_Enfeeble))
+	if (SourceASC->HasMatchingGameplayTag(AuraGameplayTags::Debuff_Enfeeble))
 	{
 		Damage *= (1.f - UAuraAbility_Debuff_Enfeeble::GetDamageReductionRate());
 	}

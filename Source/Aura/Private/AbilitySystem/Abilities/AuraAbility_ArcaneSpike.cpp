@@ -97,14 +97,14 @@ void UAuraAbility_ArcaneSpike::OnTargetDataUnderMouseSet(const FGameplayAbilityT
 		CachedTargetLocation = HitResult.ImpactPoint;
 	}
 
-	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(FAuraGameplayTags::Get().Abilities_Offensive_ArcaneSpike);
+	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(AuraGameplayTags::Abilities_Offensive_ArcaneSpike);
 	check(TaggedCombatInfo.AnimMontage);
 
 	// for Anim Montage Motion Warping
 	CombatInterface->SetFacingTarget(CachedTargetLocation);
 
 	PlayAttackMontage(TaggedCombatInfo.AnimMontage, true);
-	WaitGameplayEvent(FAuraGameplayTags::Get().Event_Montage_ArcaneSpike);
+	WaitGameplayEvent(AuraGameplayTags::Event_Montage_ArcaneSpike);
 }
 
 void UAuraAbility_ArcaneSpike::OnEventReceived(FGameplayEventData Payload)
@@ -150,7 +150,7 @@ void UAuraAbility_ArcaneSpike::SpawnArcaneShard() const
 		const FVector FinalTargetLocation = GetAdjustedTargetLocation(StartLocation, TargetLocation, QueryParams);
 		TargetLocations.Add(FinalTargetLocation);
 		CueParameters.Location = FinalTargetLocation;
-		UAuraBlueprintLibrary::ExecuteGameplayCueWithParams(AvatarActor, FAuraGameplayTags::Get().GameplayCue_ArcaneShard, CueParameters);
+		UAuraBlueprintLibrary::ExecuteGameplayCueWithParams(AvatarActor, AuraGameplayTags::GameplayCue_ArcaneShard, CueParameters);
 	}
 	else
 	{
@@ -164,7 +164,7 @@ void UAuraAbility_ArcaneSpike::SpawnArcaneShard() const
 			FinalTargetLocation = GetAdjustedTargetLocation(StartLocation, FinalTargetLocation, QueryParams);
 			TargetLocations.Add(FinalTargetLocation);
 			CueParameters.Location = FinalTargetLocation;
-			UAuraBlueprintLibrary::ExecuteGameplayCueWithParams(AvatarActor, FAuraGameplayTags::Get().GameplayCue_ArcaneShard, CueParameters);
+			UAuraBlueprintLibrary::ExecuteGameplayCueWithParams(AvatarActor, AuraGameplayTags::GameplayCue_ArcaneShard, CueParameters);
 		}
 	}
 

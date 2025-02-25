@@ -102,7 +102,7 @@ void AAuraEnemy::BeginPlay()
 	// Execute SummonEffect GameplayCue
 	FGameplayCueParameters CueParams;
 	CueParams.Location = GetNavAgentLocation();
-	UGameplayCueManager::ExecuteGameplayCue_NonReplicated(this, FAuraGameplayTags::Get().GameplayCue_SummonEffect, CueParams);
+	UGameplayCueManager::ExecuteGameplayCue_NonReplicated(this, AuraGameplayTags::GameplayCue_SummonEffect, CueParams);
 }
 
 void AAuraEnemy::InitAbilityActorInfo()
@@ -125,16 +125,16 @@ void AAuraEnemy::InitAbilityActorInfo()
 	}
 
 	// Abilities.HitReact Tag의 Added, Removed Event에 Binding
-	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Abilities_HitReact).AddUObject(this, &ThisClass::OnHitReactTagChanged);
+	AbilitySystemComponent->RegisterGameplayTagEvent(AuraGameplayTags::Abilities_HitReact).AddUObject(this, &ThisClass::OnHitReactTagChanged);
 
 	// Debuff.Enfeeble Tag의 Added, Removed Event에 Binding
-	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_Enfeeble).AddUObject(this, &ThisClass::OnDebuffEnfeebleTagChanged);
+	AbilitySystemComponent->RegisterGameplayTagEvent(AuraGameplayTags::Debuff_Enfeeble).AddUObject(this, &ThisClass::OnDebuffEnfeebleTagChanged);
 	
 	// Debuff.Ignite Tag의 Added, Removed Event에 Binding
-	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_Ignite).AddUObject(this, &ThisClass::OnDebuffIgniteTagChanged);
+	AbilitySystemComponent->RegisterGameplayTagEvent(AuraGameplayTags::Debuff_Ignite).AddUObject(this, &ThisClass::OnDebuffIgniteTagChanged);
 
 	// Debuff.Stun Tag의 Added, Removed Event에 Binding
-	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_Stun).AddUObject(this, &ThisClass::OnDebuffStunTagChanged);
+	AbilitySystemComponent->RegisterGameplayTagEvent(AuraGameplayTags::Debuff_Stun).AddUObject(this, &ThisClass::OnDebuffStunTagChanged);
 }
 
 void AAuraEnemy::InitializeAttributes()
@@ -322,7 +322,7 @@ void AAuraEnemy::OnDebuffStunTagChanged(const FGameplayTag Tag, int32 Count) con
 	const bool bStun = Count > 0;
 	if (bStun)
 	{
-		const FTaggedCombatInfo TaggedCombatInfo = GetTaggedCombatInfo(FAuraGameplayTags::Get().Debuff_Stun);
+		const FTaggedCombatInfo TaggedCombatInfo = GetTaggedCombatInfo(AuraGameplayTags::Debuff_Stun);
 		check(TaggedCombatInfo.AnimMontage);
 
 		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())

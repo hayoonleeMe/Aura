@@ -26,7 +26,7 @@ void UAuraAbility_EnemyMelee::ActivateAbility(const FGameplayAbilitySpecHandle H
 	}
 
 	// Get TaggedCombatInfo and Caching
-	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(FAuraGameplayTags::Get().Abilities_EnemyAttack);
+	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(AuraGameplayTags::Abilities_EnemyAttack);
 	check(TaggedCombatInfo.AnimMontage);
 	CachedCombatSocketName = TaggedCombatInfo.CombatSocketName;
 
@@ -39,7 +39,7 @@ void UAuraAbility_EnemyMelee::ActivateAbility(const FGameplayAbilitySpecHandle H
 	}
 
 	PlayAttackMontage(TaggedCombatInfo.AnimMontage, false);
-	WaitGameplayEvent(FAuraGameplayTags::Get().Event_Montage_EnemyAttack);
+	WaitGameplayEvent(AuraGameplayTags::Event_Montage_EnemyAttack);
 }
 
 void UAuraAbility_EnemyMelee::OnEventReceived(FGameplayEventData Payload)
@@ -81,7 +81,7 @@ void UAuraAbility_EnemyMelee::OnEventReceived(FGameplayEventData Payload)
 					if (UAuraBlueprintLibrary::ApplyDamageEffect(DamageEffectParams))
 					{
 						// 성공적으로 데미지를 입힐 때 Impact Cue 실행
-						UAuraBlueprintLibrary::ExecuteGameplayCue(TargetActor, FAuraGameplayTags::Get().GameplayCue_EnemyMeleeImpact, TargetActor->GetActorLocation());
+						UAuraBlueprintLibrary::ExecuteGameplayCue(TargetActor, AuraGameplayTags::GameplayCue_EnemyMeleeImpact, TargetActor->GetActorLocation());
 					}
 				}
 			}

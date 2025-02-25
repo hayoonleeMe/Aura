@@ -47,7 +47,7 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 
 bool USpellMenuWidgetController::IsSelectedSpellOffensive() const
 {
-	return SelectedSpellTag.MatchesTag(FAuraGameplayTags::Get().Abilities_Offensive);
+	return SelectedSpellTag.MatchesTag(AuraGameplayTags::Abilities_Offensive);
 }
 
 bool USpellMenuWidgetController::CanEquipSpell() const

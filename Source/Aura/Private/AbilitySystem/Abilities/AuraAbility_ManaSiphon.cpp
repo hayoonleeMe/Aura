@@ -35,7 +35,7 @@ FText UAuraAbility_ManaSiphon::GetDescription(int32 Level) const
 void UAuraAbility_ManaSiphon::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                               const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	if (UAbilityTask_WaitGameplayEvent* WaitGameplayEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, FAuraGameplayTags::Get().Abilities_Passive_ManaSiphon))
+	if (UAbilityTask_WaitGameplayEvent* WaitGameplayEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, AuraGameplayTags::Abilities_Passive_ManaSiphon))
 	{
 		WaitGameplayEvent->EventReceived.AddDynamic(this, &ThisClass::OnEventReceived);
 		WaitGameplayEvent->ReadyForActivation();
@@ -45,7 +45,7 @@ void UAuraAbility_ManaSiphon::ActivateAbility(const FGameplayAbilitySpecHandle H
 	{
 		if (const ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo()))
 		{
-			CombatInterface->OnPassiveSpellActivated(FAuraGameplayTags::Get().Abilities_Passive_ManaSiphon);
+			CombatInterface->OnPassiveSpellActivated(AuraGameplayTags::Abilities_Passive_ManaSiphon);
 		}
 	}
 }
@@ -59,7 +59,7 @@ void UAuraAbility_ManaSiphon::EndAbility(const FGameplayAbilitySpecHandle Handle
 	{
 		if (const ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo()))
 		{
-			CombatInterface->OnPassiveSpellDeactivated(FAuraGameplayTags::Get().Abilities_Passive_ManaSiphon);
+			CombatInterface->OnPassiveSpellDeactivated(AuraGameplayTags::Abilities_Passive_ManaSiphon);
 		}
 	}
 }
@@ -75,7 +75,7 @@ void UAuraAbility_ManaSiphon::OnEventReceived(FGameplayEventData Payload)
 		const float RecoveryAmount = Payload.EventMagnitude /* Damage */ * DrainRate;
 		
 		const FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(ManaRecoveryEffectClass, 1.f, FGameplayEffectContextHandle());
-		SpecHandle.Data->SetSetByCallerMagnitude(FAuraGameplayTags::Get().Attributes_Vital_Mana, RecoveryAmount);
+		SpecHandle.Data->SetSetByCallerMagnitude(AuraGameplayTags::Attributes_Vital_Mana, RecoveryAmount);
 		ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data);
 	}
 }

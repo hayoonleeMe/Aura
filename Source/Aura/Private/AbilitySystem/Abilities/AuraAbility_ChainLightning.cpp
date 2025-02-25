@@ -89,7 +89,7 @@ void UAuraAbility_ChainLightning::OnTargetDataUnderMouseSet(const FGameplayAbili
 	const FHitResult& HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
 	CachedImpactPoint = HitResult.ImpactPoint;
 	
-	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(FAuraGameplayTags::Get().Abilities_Offensive_ChainLightning);
+	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(AuraGameplayTags::Abilities_Offensive_ChainLightning);
 	check(TaggedCombatInfo.AnimMontage);
 	CachedCombatSocketName = TaggedCombatInfo.CombatSocketName;
 	
@@ -98,7 +98,7 @@ void UAuraAbility_ChainLightning::OnTargetDataUnderMouseSet(const FGameplayAbili
 	CombatInterface->SetFacingTarget(TargetLocation);
 
 	PlayAttackMontage(TaggedCombatInfo.AnimMontage, true);
-	WaitGameplayEvent(FAuraGameplayTags::Get().Event_Montage_ChainLightning);
+	WaitGameplayEvent(AuraGameplayTags::Event_Montage_ChainLightning);
 }
 
 void UAuraAbility_ChainLightning::OnEventReceived(FGameplayEventData Payload)
@@ -123,8 +123,6 @@ void UAuraAbility_ChainLightning::CastLightningBeam() const
 		return;
 	}
 
-	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
-
 	FVector TargetLocation = AuraASC->CursorTargetWeakPtr.IsValid() ? AuraASC->CursorTargetWeakPtr->GetActorLocation() : CachedImpactPoint;
 	const FVector StartLocation = UAuraBlueprintLibrary::GetActorFeetLocation(AvatarActor) + FVector(0.f, 0.f, 35.f);
 	const FVector Direction = (TargetLocation - StartLocation).GetSafeNormal();
@@ -145,7 +143,7 @@ void UAuraAbility_ChainLightning::CastLightningBeam() const
 	}
 
 	// Spawn Beam from Player to Target
-	UAuraBlueprintLibrary::ExecuteGameplayCue(AvatarActor, GameplayTags.GameplayCue_LightningBeam, TargetLocation);
+	UAuraBlueprintLibrary::ExecuteGameplayCue(AvatarActor, AuraGameplayTags::GameplayCue_LightningBeam, TargetLocation);
 
 	// First Target이 없다면 Damage를 입히지 않기 위해 Early Return
 	if (!IsValid(FirstTargetActor))
@@ -188,7 +186,7 @@ void UAuraAbility_ChainLightning::CastLightningBeam() const
 		}
 		
 		// Spawn Beam CurrentTarget To NearestTarget
-		UAuraBlueprintLibrary::ExecuteGameplayCue(CurrentTarget, GameplayTags.GameplayCue_LightningBeam, NearestTarget->GetActorLocation());
+		UAuraBlueprintLibrary::ExecuteGameplayCue(CurrentTarget, AuraGameplayTags::GameplayCue_LightningBeam, NearestTarget->GetActorLocation());
 		
 		SelectedActors.Add(NearestTarget);
 		CurrentTarget = NearestTarget; 

@@ -94,7 +94,7 @@ void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTarg
 	const FHitResult& HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
 	CachedImpactPoint = HitResult.ImpactPoint;
 	
-	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(FAuraGameplayTags::Get().Abilities_Offensive_FireBolt);
+	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(AuraGameplayTags::Abilities_Offensive_FireBolt);
 	check(TaggedCombatInfo.AnimMontage);
 	CachedCombatSocketName = TaggedCombatInfo.CombatSocketName;
 
@@ -103,7 +103,7 @@ void UAuraAbility_FireBolt::OnTargetDataUnderMouseSet(const FGameplayAbilityTarg
 	CombatInterface->SetFacingTarget(TargetLocation);
 
 	PlayAttackMontage(TaggedCombatInfo.AnimMontage, true);
-	WaitGameplayEvent(FAuraGameplayTags::Get().Event_Montage_FireBolt);
+	WaitGameplayEvent(AuraGameplayTags::Event_Montage_FireBolt);
 }
 
 void UAuraAbility_FireBolt::OnEventReceived(FGameplayEventData Payload)

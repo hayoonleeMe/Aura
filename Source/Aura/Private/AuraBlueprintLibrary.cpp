@@ -60,7 +60,7 @@ bool UAuraBlueprintLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
 	check(Params.TargetAbilitySystemComponent);
 
 	// 데미지 무적
-	if (Params.TargetAbilitySystemComponent->HasMatchingGameplayTag(FAuraGameplayTags::Get().Gameplay_Invincibility))
+	if (Params.TargetAbilitySystemComponent->HasMatchingGameplayTag(AuraGameplayTags::Gameplay_Invincibility))
 	{
 		return false;
 	}
@@ -146,7 +146,7 @@ void UAuraBlueprintLibrary::GetEnemiesOverlappedByChannel(const UWorld* World, T
 		return;
 	}
 	
-	const FGameplayTag EnemyRoleTag = FAuraGameplayTags::Get().Role_Enemy;
+	const FGameplayTag EnemyRoleTag = AuraGameplayTags::Role_Enemy;
 	
 	TArray<FOverlapResult> OverlapResults;
 	World->OverlapMultiByChannel(OverlapResults, Pos, Rot, TraceChannel, CollisionShape);

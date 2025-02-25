@@ -2,185 +2,174 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
+#include "NativeGameplayTags.h"
 
-/**
- *	Singleton containing native gameplay tags
- */
-struct FAuraGameplayTags
+namespace AuraGameplayTags
 {
-	static FAuraGameplayTags& Get() { return GameplayTags; }
-	static void InitializeNativeGameplayTags();
-
 	// ============================================================================
 	// Activate Fail
 	// 어빌리티 실행이 실패한 이유를 나타내는 태그
 	// ============================================================================
 
-	FGameplayTag Activate_Fail_Cost;
-	FGameplayTag Activate_Fail_Cooldown;
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Activate_Fail_Cost);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Activate_Fail_Cooldown);
 
 	// ============================================================================
 	// Input
 	// ============================================================================
 
-	FGameplayTag InputTag;
-	FGameplayTag InputTag_LMB;
-	FGameplayTag InputTag_Interact;
-	FGameplayTag InputTag_RMB;
-	FGameplayTag InputTag_MMB;
-	FGameplayTag InputTag_Q;
-	FGameplayTag InputTag_W;
-	FGameplayTag InputTag_E;
-	FGameplayTag InputTag_R;
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_LMB);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Interact);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_RMB);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_MMB);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Q);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_W);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_E);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_R);
 
 	// ============================================================================
 	// Passive Input
 	// 실제 트리거하는 Key는 아니지만, UI에 Passive Spell을 나타내기 위한 Tag
 	// ============================================================================
 
-	FGameplayTag InputTag_Passive_1;
-	FGameplayTag InputTag_Passive_2;
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Passive_1);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Passive_2);
 
 	// ============================================================================
 	// Primary Attributes
 	// ============================================================================
 
-	FGameplayTag Attributes_Primary;
-	FGameplayTag Attributes_Primary_Strength;
-	FGameplayTag Attributes_Primary_Intelligence;
-	FGameplayTag Attributes_Primary_Resilience;
-	FGameplayTag Attributes_Primary_Vigor;
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Primary);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Primary_Strength);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Primary_Intelligence);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Primary_Resilience);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Primary_Vigor);
 
 	// ============================================================================
 	// Secondary Attributes
 	// ============================================================================
 
-	FGameplayTag Attributes_Secondary_Armor;
-	FGameplayTag Attributes_Secondary_ArmorPenetration;
-	FGameplayTag Attributes_Secondary_BlockChance;
-	FGameplayTag Attributes_Secondary_CriticalHitChance;
-	FGameplayTag Attributes_Secondary_CriticalHitDamage;
-	FGameplayTag Attributes_Secondary_CriticalHitResistance;
-	FGameplayTag Attributes_Secondary_HealthRegeneration;
-	FGameplayTag Attributes_Secondary_ManaRegeneration;
-	FGameplayTag Attributes_Secondary_MaxHealth;
-	FGameplayTag Attributes_Secondary_MaxMana;
-	FGameplayTag Attributes_Secondary_FireResistance;
-	FGameplayTag Attributes_Secondary_LightningResistance;
-	FGameplayTag Attributes_Secondary_ArcaneResistance;
-	FGameplayTag Attributes_Secondary_PhysicalResistance;
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Secondary_Armor);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Secondary_ArmorPenetration);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Secondary_BlockChance);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Secondary_CriticalHitChance);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Secondary_CriticalHitDamage);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Secondary_CriticalHitResistance);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Secondary_HealthRegeneration);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Secondary_ManaRegeneration);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Secondary_MaxHealth);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Secondary_MaxMana);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Secondary_FireResistance);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Secondary_LightningResistance);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Secondary_ArcaneResistance);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Secondary_PhysicalResistance);
 
 	// ============================================================================
 	// Vital Attributes
 	// ============================================================================
 
-	FGameplayTag Attributes_Vital_Health;
-	FGameplayTag Attributes_Vital_Mana;
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Vital_Health);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Vital_Mana);
 
 	// ============================================================================
 	// Meta Attributes
 	// ============================================================================
 
-	FGameplayTag Attributes_Meta_Level;
-	FGameplayTag Attributes_Meta_XP;
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Meta_Level);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Meta_XP);
 
 	// ============================================================================
 	// Damage Types
 	// ============================================================================
 
-	FGameplayTag Damage_Type_Fire;
-	FGameplayTag Damage_Type_Lightning;
-	FGameplayTag Damage_Type_Arcane;
-	FGameplayTag Damage_Type_Physical;
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Damage_Type_Fire);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Damage_Type_Lightning);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Damage_Type_Arcane);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Damage_Type_Physical);
 
-	TMap<FGameplayTag, FGameplayTag> DamageTypeToResistanceMap;
+	extern const TMap<FGameplayTag, FGameplayTag> DamageTypeToResistanceMap;
 
 	// ============================================================================
 	// Role
 	// ============================================================================
 
-	FGameplayTag Role_Player;
-	FGameplayTag Role_Enemy;
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Role_Player);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Role_Enemy);
 
 	// ============================================================================
 	// Event
 	// ============================================================================
 
-	FGameplayTag Event_Montage_FireBolt;
-	FGameplayTag Event_Montage_ChainLightning;
-	FGameplayTag Event_Montage_ArcaneSpike;
-	FGameplayTag Event_Montage_EnemyAttack;
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_FireBolt);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_ChainLightning);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_ArcaneSpike);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_EnemyAttack);
 	
 	// ============================================================================
 	// Abilities
 	// ============================================================================
-
-	FGameplayTag Abilities_ClickToMove;
-	FGameplayTag Abilities_TryInteract;
-	FGameplayTag Abilities_HitReact;
-	FGameplayTag Abilities_EnemyAttack;
+	
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_ClickToMove);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_TryInteract);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_HitReact);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_EnemyAttack);
 
 	// ============================================================================
 	// Abilities.Offensive
 	// 플레이어가 Damage를 입히기 위해 직접 사용하는 Offensive Ability
 	// ============================================================================
 
-	FGameplayTag Abilities_Offensive;
-	FGameplayTag Abilities_Offensive_FireBolt;
-	FGameplayTag Abilities_Offensive_ChainLightning;
-	FGameplayTag Abilities_Offensive_ArcaneSpike;
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive_FireBolt);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive_ChainLightning);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive_ArcaneSpike);
 
 	// ============================================================================
 	// Abilities.Passive
 	// 장착하는 동안 계속해서 적용되는 Passive Ability
 	// ============================================================================
 
-	FGameplayTag Abilities_Passive;
-	FGameplayTag Abilities_Passive_HaloOfProtection;
-	FGameplayTag Abilities_Passive_HealthSiphon;
-	FGameplayTag Abilities_Passive_ManaSiphon;
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Passive);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Passive_HaloOfProtection);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Passive_HealthSiphon);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Passive_ManaSiphon);
 
 	// ============================================================================
 	// Debuff
 	// ============================================================================
 
-	FGameplayTag Debuff_Ignite;
-	FGameplayTag Debuff_Enfeeble;
-	FGameplayTag Debuff_Stun;
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Debuff_Ignite);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Debuff_Enfeeble);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Debuff_Stun);
 
 	// ============================================================================
 	// Cooldown
 	// ============================================================================
 
-	FGameplayTag Cooldown_ArcaneSpike;
-	
-	FGameplayTag Cooldown_Melee_GoblinSpear;
-	FGameplayTag Cooldown_Melee_DemonWarrior;
-	FGameplayTag Cooldown_Melee_Ghoul;
-	FGameplayTag Cooldown_Range_GoblinSlingshot;
-	FGameplayTag Cooldown_Range_DemonRanger;
-	FGameplayTag Cooldown_Range_Shaman;
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_ArcaneSpike);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Melee_GoblinSpear);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Melee_DemonWarrior);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Melee_Ghoul);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Range_GoblinSlingshot);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Range_DemonRanger);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Range_Shaman);
 
 	// ============================================================================
 	// GameplayCue
 	// ============================================================================
 
-	FGameplayTag GameplayCue_FireBoltImpact;
-	FGameplayTag GameplayCue_EnemyMeleeImpact;
-	FGameplayTag GameplayCue_RockImpact;
-	FGameplayTag GameplayCue_LevelUp;
-	FGameplayTag GameplayCue_LightningBeam;
-	FGameplayTag GameplayCue_ArcaneShard;
-	FGameplayTag GameplayCue_SummonEffect;
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_FireBoltImpact);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_EnemyMeleeImpact);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_RockImpact);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_LevelUp);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_LightningBeam);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_ArcaneShard);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_SummonEffect);
 
 	// ============================================================================
 	// Gameplay
 	// ============================================================================
 
-	FGameplayTag Gameplay_Invincibility;
-	
-private:
-	static FAuraGameplayTags GameplayTags;
-};
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Gameplay_Invincibility);
+}

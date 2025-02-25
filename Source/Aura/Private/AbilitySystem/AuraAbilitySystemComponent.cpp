@@ -27,8 +27,8 @@ void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
 
 void UAuraAbilitySystemComponent::OnAbilityFailed(const UGameplayAbility* Ability, const FGameplayTagContainer& FailureTags)
 {
-	const bool bFailDueToCost = FailureTags.HasTagExact(FAuraGameplayTags::Get().Activate_Fail_Cost); 
-	const bool bFailDueToCooldown = FailureTags.HasTagExact(FAuraGameplayTags::Get().Activate_Fail_Cooldown);
+	const bool bFailDueToCost = FailureTags.HasTagExact(AuraGameplayTags::Activate_Fail_Cost); 
+	const bool bFailDueToCooldown = FailureTags.HasTagExact(AuraGameplayTags::Activate_Fail_Cooldown);
 	if (!bFailDueToCost && !bFailDueToCooldown)
 	{
 		return;
@@ -152,7 +152,7 @@ void UAuraAbilitySystemComponent::ActivateAllPassiveSpells()
 {
 	ABILITYLIST_SCOPE_LOCK();
 
-	const FGameplayTagContainer TagContainer(FAuraGameplayTags::Get().Abilities_Passive);
+	const FGameplayTagContainer TagContainer(AuraGameplayTags::Abilities_Passive);
 	TArray<FGameplayAbilitySpec*> ActivatableAbilitySpecs;
 	GetActivatableGameplayAbilitySpecsByAllMatchingTags(TagContainer, ActivatableAbilitySpecs);
 	
@@ -224,7 +224,7 @@ void UAuraAbilitySystemComponent::ServerHandleEquipSpell_Implementation(const FG
 	MarkAbilitySpecDirty(*SpellSpecToEquip);
 
 	// Passive Spell은 장착과 동시에 활성화
-	if (SpellSpecToEquip->Ability->AbilityTags.HasTag(FAuraGameplayTags::Get().Abilities_Passive) && !SpellSpecToEquip->Ability->IsActive())
+	if (SpellSpecToEquip->Ability->AbilityTags.HasTag(AuraGameplayTags::Abilities_Passive) && !SpellSpecToEquip->Ability->IsActive())
 	{
 		TryActivateAbility(SpellSpecToEquip->Handle);
 	}
@@ -243,7 +243,7 @@ void UAuraAbilitySystemComponent::UnEquipSpell(FGameplayAbilitySpec* SpellSpecTo
 		// Passive Spell은 장착과 동시에 실행되므로, 장착 해제 후 종료
 		if (bClearPassiveSpell)
 		{
-			if (SpellSpecToUnEquip->Ability->AbilityTags.HasTag(FAuraGameplayTags::Get().Abilities_Passive))
+			if (SpellSpecToUnEquip->Ability->AbilityTags.HasTag(AuraGameplayTags::Abilities_Passive))
 			{
 				CancelAbilitySpec(*SpellSpecToUnEquip, nullptr);
 			}
@@ -326,7 +326,7 @@ FGameplayTag UAuraAbilitySystemComponent::GetSpellTagForSpellSpec(const FGamepla
 	{
 		for (const FGameplayTag& Tag : SpellSpec->Ability->AbilityTags)
 		{
-			if (Tag.MatchesTag(FAuraGameplayTags::Get().Abilities_Offensive) || Tag.MatchesTag(FAuraGameplayTags::Get().Abilities_Passive))
+			if (Tag.MatchesTag(AuraGameplayTags::Abilities_Offensive) || Tag.MatchesTag(AuraGameplayTags::Abilities_Passive))
 			{
 				return Tag;
 			}

@@ -33,7 +33,7 @@ EBTNodeResult::Type UBTTask_EnemyAttack::ExecuteTask(UBehaviorTreeComponent& Own
 		CombatInterface->SetCombatTarget(TargetActor);
 
 		// Enemy의 공격을 나타내는 GameplayTag로 Attack Ability 실행
-		const FGameplayTagContainer TagContainer(FAuraGameplayTags::Get().Abilities_EnemyAttack);
+		const FGameplayTagContainer TagContainer(AuraGameplayTags::Abilities_EnemyAttack);
 		if (!OwnerASC->TryActivateAbilitiesByTag(TagContainer))
 		{
 			return EBTNodeResult::Failed;

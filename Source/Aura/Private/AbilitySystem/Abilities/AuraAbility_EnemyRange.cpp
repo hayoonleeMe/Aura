@@ -22,7 +22,7 @@ void UAuraAbility_EnemyRange::ActivateAbility(const FGameplayAbilitySpecHandle H
 	}
 
 	// Caching
-	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(FAuraGameplayTags::Get().Abilities_EnemyAttack);
+	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(AuraGameplayTags::Abilities_EnemyAttack);
 	check(TaggedCombatInfo.AnimMontage);
 	CachedCombatSocketName = TaggedCombatInfo.CombatSocketName;
 
@@ -36,7 +36,7 @@ void UAuraAbility_EnemyRange::ActivateAbility(const FGameplayAbilitySpecHandle H
 	}
 
 	PlayAttackMontage(TaggedCombatInfo.AnimMontage, false);
-	WaitGameplayEvent(FAuraGameplayTags::Get().Event_Montage_EnemyAttack);
+	WaitGameplayEvent(AuraGameplayTags::Event_Montage_EnemyAttack);
 }
 
 void UAuraAbility_EnemyRange::OnEventReceived(FGameplayEventData Payload)
