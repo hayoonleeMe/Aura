@@ -8,6 +8,8 @@
 #include "Types/StageStatus.h"
 #include "OverlayWidgetController.generated.h"
 
+class UMultiplayerSessionsSubsystem;
+
 /**
  * WBP_Overlay에서 생성해 연 Menu를 나타내는 enum
  */
@@ -15,7 +17,8 @@ UENUM(BlueprintType)
 enum class EMenuType : uint8
 {
 	SpellMenu,
-	AttributeMenu
+	AttributeMenu,
+	PauseMenu
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, NewValue);
@@ -111,6 +114,10 @@ public:
 	// 게임 종료를 전달
 	void OnGameEnd() const;
 
+	// 현재 게임에서 나가고 메인 메뉴로 돌아감
+	UFUNCTION(BlueprintCallable)
+	void LeaveGame();
+
 private:
 	// Spell의 장착 상태 변경을 업데이트
 	void UpdateEquippedSpellChange(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag) const;
@@ -120,4 +127,10 @@ private:
 
 	// Equipped Spell의 Cooldown을 업데이트
 	void UpdateEquippedSpellCooldown(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag) const;
+
+	UPROPERTY()
+	TObjectPtr<UMultiplayerSessionsSubsystem> MultiplayerSessionsSubsystem;
+
+	// Destroy Session 작업이 완료됐을 때의 콜백 함수
+	void OnDestroySessionComplete(bool bWasSuccessful) const;
 };
