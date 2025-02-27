@@ -6,12 +6,15 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
+#include "EngineUtils.h"
 #include "GameplayEffectTypes.h"
+#include "LevelSequenceActor.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/AuraGameplayAbilityTargetData_SingleTargetHit.h"
 #include "AbilitySystem/AuraGameplayEffectContext.h"
 #include "Game/AuraGameModeBase.h"
+#include "Game/AuraGameStateBase.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
@@ -230,6 +233,25 @@ TWeakObjectPtr<AActor> UAuraBlueprintLibrary::GetCursorTargetFromTargetData(cons
 	}
 
 	return nullptr;
+}
+
+ALevelSequenceActor* UAuraBlueprintLibrary::GetLevelSequenceActorMatchingTag(const UWorld* World, const FName& Tag)
+{
+	for (TActorIterator<ALevelSequenceActor> It(World); It; ++It)
+	{
+		if (It && It->ActorHasTag(Tag))
+		{
+			return *It;
+		}
+	}
+	return nullptr;
+}
+
+ALevelSequenceActor* UAuraBlueprintLibrary::GetPauseMenuLevelSequenceActor(const UObject* WorldContextObject)
+{
+	const UWorld* World = WorldContextObject ? WorldContextObject->GetWorld() : nullptr;
+	const AAuraGameStateBase* AuraGameStateBase = World ? World->GetGameState<AAuraGameStateBase>() : nullptr;
+	return AuraGameStateBase ? AuraGameStateBase->PauseMenuLevelSequenceActor : nullptr;
 }
 
 UOverlayWidgetController* UAuraBlueprintLibrary::GetOverlayWidgetController(const APlayerController* OwningController)
