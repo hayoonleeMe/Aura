@@ -24,6 +24,19 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	CursorTrace();
 }
 
+void AAuraPlayerController::OnRep_Pawn()
+{
+	Super::OnRep_Pawn();
+
+	if (GetPawn() && bValidGameStateBaseInClient)
+	{
+		// Pawn이 설정되어 클라이언트로 Replicate 될 때
+		// 이미 GameStateBase가 유효한 시점이라면 Level Sequence Actor를 Pawn에 부착한다.
+		// 아직 GameStateBase가 유효하지 않은 첫 초기화 시점이라면 PollInit()에서 수행한다.
+		AttachPauseMenuLevelSequenceActorToPawn();
+	}
+}
+
 void AAuraPlayerController::IndicateAbilityActivateCostFail()
 {
 	// 생성된 WidgetComponent가 없을 때 다시 생성해 표시
@@ -143,6 +156,11 @@ void AAuraPlayerController::ClientIndicateDamage_Implementation(float Damage, bo
 	}
 }
 
+void AAuraPlayerController::OnLevelSequencePlayerStop()
+{
+	SetViewTarget(GetPawn());
+}
+
 void AAuraPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -173,6 +191,25 @@ void AAuraPlayerController::SetupInputComponent()
 	}
 }
 
+void AAuraPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	// 서버에서 Level Sequence Actor를 Pawn에 부착한다.
+	AttachPauseMenuLevelSequenceActorToPawn();
+}
+
+void AAuraPlayerController::AttachPauseMenuLevelSequenceActorToPawn() const
+{
+	if (IsLocalController())
+	{
+		if (const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr)
+		{
+			AuraGameStateBase->AttachPauseMenuLevelSequenceActorToPawn(GetPawn());
+		}
+	}
+}
+
 void AAuraPlayerController::PollInit()
 {
 	if (!HasAuthority() && !bValidGameStateBaseInClient)
@@ -182,6 +219,10 @@ void AAuraPlayerController::PollInit()
 			bValidGameStateBaseInClient = true;
 			BindAbilityInput();
 			GetWorldTimerManager().ClearTimer(PollingTimerHandle);
+
+			// 클라이언트에서 초기화 시 Level Sequence Actor를 Pawn에 부착한다.
+			// 이후부터는 OnRep_Pawn에서 수행한다.
+			AttachPauseMenuLevelSequenceActorToPawn();
 
 			// Notify for client
 			OnGameStateBaseValidInClientDelegate.Broadcast();

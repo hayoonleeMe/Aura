@@ -3,10 +3,12 @@
 
 #include "UI/WidgetController/OverlayWidgetController.h"
 
+#include "MultiplayerSessionsSubsystem.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Data/SpellConfig.h"
 #include "Game/AuraGameStateBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerController.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
@@ -32,6 +34,16 @@ void UOverlayWidgetController::BroadcastInitialValues()
 
 void UOverlayWidgetController::BindCallbacksToDependencies()
 {
+	// Caching MultiplayerSessionsSubsystem and Bind Callback
+	if (const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld()))
+	{
+		MultiplayerSessionsSubsystem = GameInstance->GetSubsystem<UMultiplayerSessionsSubsystem>();
+		if (MultiplayerSessionsSubsystem)
+		{
+			MultiplayerSessionsSubsystem->AuraOnDestroySessionCompleteDelegate.AddUObject(this, &ThisClass::OnDestroySessionComplete);
+		}
+	}
+	
 	const UAuraAttributeSet* AuraAS = GetAuraAttributeSetChecked();
 	UAuraAbilitySystemComponent* AuraASC = GetAuraAbilitySystemComponentChecked();
 
@@ -89,6 +101,14 @@ void UOverlayWidgetController::OnEnemyDead() const
 void UOverlayWidgetController::OnGameEnd() const
 {
 	OnGameEndDelegate.Broadcast();
+}
+
+void UOverlayWidgetController::LeaveGame()
+{
+	if (MultiplayerSessionsSubsystem)
+	{
+		MultiplayerSessionsSubsystem->DestroySession();
+	}
 }
 
 void UOverlayWidgetController::UpdateEquippedSpellChange(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag) const
@@ -156,6 +176,25 @@ void UOverlayWidgetController::UpdateEquippedSpellCooldown(bool bEquipped, const
 				// CooldownTag에 대해 등록된 Event 제거
 				CooldownTagEvent.RemoveAll(this);
 			}	
+		}
+	}
+}
+
+void UOverlayWidgetController::OnDestroySessionComplete(bool bWasSuccessful) const
+{
+	if (bWasSuccessful)
+	{
+		if (UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld()))
+		{
+			GameInstance->ReturnToMainMenu();
+		}
+	}
+	else
+	{
+		// 세션 제거에 실패하면 다시 시도
+		if (MultiplayerSessionsSubsystem)
+		{
+			MultiplayerSessionsSubsystem->DestroySession();
 		}
 	}
 }

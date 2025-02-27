@@ -7,6 +7,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AuraBlueprintLibrary.generated.h"
 
+class ALevelSequenceActor;
 struct FGameplayAbilityTargetDataHandle;
 struct FGameplayCueParameters;
 class USpellMenuWidgetController;
@@ -95,6 +96,15 @@ public:
 
 	// Returns the Cursor Target for a given index if it exists
 	static TWeakObjectPtr<AActor> GetCursorTargetFromTargetData(const FGameplayAbilityTargetDataHandle& TargetData, int32 Index);
+
+	// World에서 Tag를 가지는 Level Sequence Actor를 찾아 반환한다.
+	// 존재하지 않으면 nullptr를 반환한다.
+	static ALevelSequenceActor* GetLevelSequenceActorMatchingTag(const UWorld* World, const FName& Tag);
+
+	// AAuraGameStateBase에 캐싱된 PauseMenu Level Sequence Actor를 반환한다.
+	// 존재하지 않으면 nullptr를 반환한다.
+	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"))
+	static ALevelSequenceActor* GetPauseMenuLevelSequenceActor(const UObject* WorldContextObject);
 
 	// ============================================================================
 	// UI
