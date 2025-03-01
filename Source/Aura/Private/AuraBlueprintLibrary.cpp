@@ -14,16 +14,13 @@
 #include "AbilitySystem/AuraGameplayAbilityTargetData_SingleTargetHit.h"
 #include "AbilitySystem/AuraGameplayEffectContext.h"
 #include "Game/AuraGameModeBase.h"
-#include "Game/AuraGameStateBase.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
 #include "Interface/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
-#include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
 #include "Types/DamageEffectParams.h"
-#include "UI/HUD/AuraHUD.h"
 
 UEnemyClassConfig* UAuraBlueprintLibrary::GetEnemyClassConfig(const UObject* WorldContextObject)
 {
@@ -176,28 +173,6 @@ FVector UAuraBlueprintLibrary::GetActorFeetLocation(const AActor* Actor)
 	return FVector::ZeroVector;
 }
 
-void UAuraBlueprintLibrary::SetInGameInputMode(const UObject* WorldContextObject)
-{
-	if (WorldContextObject && WorldContextObject->GetWorld())
-	{
-		if (AAuraPlayerController* AuraPC = WorldContextObject->GetWorld()->GetFirstPlayerController<AAuraPlayerController>())
-		{
-			AuraPC->SetInGameInputMode();
-		}
-	}
-}
-
-void UAuraBlueprintLibrary::SetUIInputMode(const UObject* WorldContextObject)
-{
-	if (WorldContextObject && WorldContextObject->GetWorld())
-	{
-		if (AAuraPlayerController* AuraPC = WorldContextObject->GetWorld()->GetFirstPlayerController<AAuraPlayerController>())
-		{
-			AuraPC->SetUIInputMode();
-		}
-	}
-}
-
 int32 UAuraBlueprintLibrary::GetLevelAttributeValue(AActor* Actor)
 {
 	if (const UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Actor)))
@@ -247,48 +222,8 @@ ALevelSequenceActor* UAuraBlueprintLibrary::GetLevelSequenceActorMatchingTag(con
 	return nullptr;
 }
 
-ALevelSequenceActor* UAuraBlueprintLibrary::GetPauseMenuLevelSequenceActor(const UObject* WorldContextObject)
 float UAuraBlueprintLibrary::GetServerWorldTimeSecondsAsFloat(const UWorld* World)
 {
-	const UWorld* World = WorldContextObject ? WorldContextObject->GetWorld() : nullptr;
-	const AAuraGameStateBase* AuraGameStateBase = World ? World->GetGameState<AAuraGameStateBase>() : nullptr;
-	return AuraGameStateBase ? AuraGameStateBase->PauseMenuLevelSequenceActor : nullptr;
-}
-
-UOverlayWidgetController* UAuraBlueprintLibrary::GetOverlayWidgetController(const APlayerController* OwningController)
-{
-	if (OwningController)
-	{
-		if (const AAuraHUD* AuraHUD = OwningController->GetHUD<AAuraHUD>())
-		{
-			return AuraHUD->GetOverlayWidgetController();
-		}
-	}
-	return nullptr;
-}
-
-UAttributeMenuWidgetController* UAuraBlueprintLibrary::GetAttributeMenuWidgetController(const APlayerController* OwningController)
-{
-	if (OwningController)
-	{
-		if (const AAuraHUD* AuraHUD = OwningController->GetHUD<AAuraHUD>())
-		{
-			return AuraHUD->GetAttributeMenuWidgetController();
-		}
-	}
-	return nullptr;
-}
-
-USpellMenuWidgetController* UAuraBlueprintLibrary::GetSpellMenuWidgetController(const APlayerController* OwningController)
-{
-	if (OwningController)
-	{
-		if (const AAuraHUD* AuraHUD = OwningController->GetHUD<AAuraHUD>())
-		{
-			return AuraHUD->GetSpellMenuWidgetController();
-		}
-	}
-	return nullptr;
 	const AGameStateBase* GameStateBase = World ? World->GetGameState() : nullptr;
 	return GameStateBase ? GameStateBase->GetServerWorldTimeSeconds() : 0.0;
 }

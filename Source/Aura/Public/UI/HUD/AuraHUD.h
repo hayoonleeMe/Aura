@@ -6,16 +6,12 @@
 #include "GameFramework/HUD.h"
 #include "AuraHUD.generated.h"
 
-class USpellMenuWidgetController;
-class UAttributeMenuWidgetController;
-struct FWidgetControllerParams;
-class UOverlayWidgetController;
 class UAuraUserWidget;
 class UAttributeSet;
 class UAbilitySystemComponent;
 
 /**
- * Widget을 화면에 표시하고 WidgetController를 관리하는 HUD Class
+ * Widget을 화면에 표시하고 관리하는 HUD Class
  */
 UCLASS()
 class AURA_API AAuraHUD : public AHUD
@@ -23,12 +19,8 @@ class AURA_API AAuraHUD : public AHUD
 	GENERATED_BODY()
 
 public:
-	// Overlay Widget, WidgetController를 초기화하고 Overlay Widget을 화면에 표시
-	void InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);
-
-	UOverlayWidgetController* GetOverlayWidgetController() const { return OverlayWidgetController; }
-	UAttributeMenuWidgetController* GetAttributeMenuWidgetController() const { return AttributeMenuWidgetController; }
-	USpellMenuWidgetController* GetSpellMenuWidgetController() const { return SpellMenuWidgetController; }
+	// Overlay Widget을 초기화하고 화면에 표시
+	void InitOverlay();
 
 private:
 	// ============================================================================
@@ -40,39 +32,4 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Overlay")
 	TSubclassOf<UAuraUserWidget> OverlayWidgetClass;
-
-	UPROPERTY()
-	TObjectPtr<UOverlayWidgetController> OverlayWidgetController;
-
-	UPROPERTY(EditDefaultsOnly, Category="Aura|Overlay")
-	TSubclassOf<UOverlayWidgetController> OverlayWidgetControllerClass;
-
-	// OverlayWidgetController가 유효하지 않다면 FWidgetControllerParams로 OverlayWidgetController를 생성
-	void MakeOverlayWidgetController(const FWidgetControllerParams& WCParams);
-
-	// ============================================================================
-	// Attribute Menu
-	// ============================================================================
-
-	UPROPERTY()
-	TObjectPtr<UAttributeMenuWidgetController> AttributeMenuWidgetController;
-
-	UPROPERTY(EditDefaultsOnly, Category="Aura|Attribute Menu")
-	TSubclassOf<UAttributeMenuWidgetController> AttributeMenuWidgetControllerClass;
-
-	// AttributeMenuWidgetController가 유효하지 않다면 FWidgetControllerParams로 AttributeMenuWidgetController를 생성
-	void MakeAttributeMenuWidgetController(const FWidgetControllerParams& WCParams);
-
-	// ============================================================================
-	// Spell Menu
-	// ============================================================================
-
-	UPROPERTY()
-	TObjectPtr<USpellMenuWidgetController> SpellMenuWidgetController;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Aura|Spell Menu")
-	TSubclassOf<USpellMenuWidgetController> SpellMenuWidgetControllerClass;
-
-	// SpellMenuWidgetController가 유효하지 않다면 FWidgetControllerParams로 SpellMenuWidgetController를 생성
-	void MakeSpellMenuWidgetController(const FWidgetControllerParams& WCParams);
 };
