@@ -26,7 +26,8 @@ public class Aura : ModuleRules
 			"MultiplayerSessions",
 			"OnlineSubsystem",
 			"LevelSequence",
-			"MovieScene"
+			"MovieScene",
+			"SlateCore"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
