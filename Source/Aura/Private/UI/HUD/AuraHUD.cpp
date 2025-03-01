@@ -28,39 +28,6 @@ void AAuraHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySyst
 		OverlayWidget->AddToViewport();
 	}
 }
-
-void AAuraHUD::OnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount) const
-{
-	if (OverlayWidgetController)
-	{
-		OverlayWidgetController->OnStageStatusChanged(StageStatus, StageNumber, WaitingTimerEndSeconds, TotalEnemyCount);
-	}
-}
-
-void AAuraHUD::OnRespawnStart(double RespawnTimerEndSeconds) const
-{
-	if (OverlayWidgetController)
-	{
-		OverlayWidgetController->OnRespawnStart(RespawnTimerEndSeconds);
-	}
-}
-
-void AAuraHUD::OnEnemyDead() const
-{
-	if (OverlayWidgetController)
-	{
-		OverlayWidgetController->OnEnemyDead();
-	}
-}
-
-void AAuraHUD::OnGameEnd() const
-{
-	if (OverlayWidgetController)
-	{
-		OverlayWidgetController->OnGameEnd();
-	}
-}
-
 void AAuraHUD::MakeOverlayWidgetController(const FWidgetControllerParams& WCParams)
 {
 	check(OverlayWidgetControllerClass);

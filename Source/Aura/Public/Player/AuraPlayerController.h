@@ -25,6 +25,9 @@ DECLARE_DELEGATE_FourParams(FOnStageStatusChangedSignature, EStageStatus /*Stage
 // Respawn이 시작됨을 알리는 델레게이트
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnRespawnStartedSignature, float /*RespawnTimerEndSeconds*/);
 
+// 게임이 종료됨을 알리는 델레게이트
+DECLARE_DELEGATE(FOnGameEndSignature);
+
 // 월드에 존재하던 적이 죽음을 알리는 델레게이트
 DECLARE_DELEGATE(FOnEnemyDeadSignature);
 
@@ -59,9 +62,6 @@ public:
 	UFUNCTION(Client, Reliable)
 	void ClientIndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const;
 
-	UFUNCTION(Client, Reliable)
-	void ClientEndGame();
-
 	bool IsValidGameStateBaseInClient() const { return bValidGameStateBaseInClient; }
 	FOnGameStateBaseValidInClientSignature OnGameStateBaseValidInClientDelegate;
 
@@ -92,6 +92,14 @@ public:
 
 	FOnRespawnStartedSignature OnRespawnStartedDelegate;
 
+	// ============================================================================
+	// Game End
+	// ============================================================================
+
+	UFUNCTION(Client, Reliable)
+	void ClientEndGame();
+
+	FOnGameEndSignature OnGameEndDelegate;
 	
 protected:
 	virtual void BeginPlay() override;

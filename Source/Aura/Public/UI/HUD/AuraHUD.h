@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "Types/StageStatus.h"
 #include "AuraHUD.generated.h"
 
 class USpellMenuWidgetController;
@@ -30,18 +29,6 @@ public:
 	UOverlayWidgetController* GetOverlayWidgetController() const { return OverlayWidgetController; }
 	UAttributeMenuWidgetController* GetAttributeMenuWidgetController() const { return AttributeMenuWidgetController; }
 	USpellMenuWidgetController* GetSpellMenuWidgetController() const { return SpellMenuWidgetController; }
-
-	// 현재 변경된 StageStatus 전달
-	void OnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount) const;
-
-	// Respawn 시작을 알림
-	void OnRespawnStart(double RespawnTimerEndSeconds) const;
-
-	// Enemy 죽음을 전달
-	void OnEnemyDead() const;
-
-	// 게임 종료를 전달
-	void OnGameEnd() const;
 
 private:
 	// ============================================================================

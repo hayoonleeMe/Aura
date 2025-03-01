@@ -13,7 +13,6 @@
 #include "Input/AuraInputComponent.h"
 #include "Interface/InteractionInterface.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "UI/HUD/AuraHUD.h"
 #include "UI/Widget/DamageIndicatorComponent.h"
 
 void AAuraPlayerController::PlayerTick(float DeltaTime)
@@ -118,13 +117,6 @@ void AAuraPlayerController::SetUIInputMode(UUserWidget* WidgetToFocus)
 	SetInputMode(InputMode);
 }
 
-void AAuraPlayerController::ClientEndGame_Implementation()
-{
-	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())
-	{
-		AuraHUD->OnGameEnd();
-	}
-}
 void AAuraPlayerController::ClientIndicateDamage_Implementation(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const
 {
 	if (!DamageIndicatorComponentClass || !IsValid(GetPawn()))
@@ -159,6 +151,14 @@ void AAuraPlayerController::ClientOnStageStatusChanged_Implementation(EStageStat
 void AAuraPlayerController::ClientNotifyRespawnStart_Implementation(float RespawnTimerEndSeconds)
 {
 	OnRespawnStartedDelegate.Broadcast(RespawnTimerEndSeconds);
+}
+
+void AAuraPlayerController::ClientEndGame_Implementation()
+{
+	if (OnGameEndDelegate.IsBound())
+	{
+		OnGameEndDelegate.Execute();
+	}
 }
 
 void AAuraPlayerController::BeginPlay()
