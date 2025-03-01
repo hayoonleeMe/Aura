@@ -27,7 +27,7 @@ struct FSpellInfo
 	TObjectPtr<UTexture2D> SpellIcon;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UMaterialInstance> Background;
+	TObjectPtr<UMaterialInterface> Background;
 };
 
 /**

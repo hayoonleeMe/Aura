@@ -7,6 +7,7 @@
 #include "AuraGameStateBase.generated.h"
 
 class UAttributeConfig;
+class USpellConfig;
 class ALevelSequenceActor;
 class UAuraInputConfig;
 class UInputMappingContext;
@@ -31,6 +32,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	TObjectPtr<UAuraInputConfig> AuraInputConfig;
 
+	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	TObjectPtr<USpellConfig> SpellConfig;
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	TObjectPtr<UAttributeConfig> AttributeConfig;

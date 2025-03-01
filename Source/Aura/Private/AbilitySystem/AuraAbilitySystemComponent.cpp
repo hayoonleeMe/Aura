@@ -15,14 +15,8 @@ void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
 {
 	Super::OnRep_ActivateAbilities();
 
-	const int32 NewNum = GetActivatableAbilities().Num();
-	if (NumActivatableAbilities != NewNum)
-	{
-		// 클라이언트의 Spell Menu Widget에서 Spell을 Unlock한 뒤 Equip Button을 올바르게 활성화하기 위해 Broadcast
-		// 실제 ActivatableAbilities 수가 변경됐을 때만 수행
-		NumActivatableAbilities = NewNum;
-		OnActivatableAbilitiesReplicatedDelegate.Broadcast();
-	}
+	// Spell 변경 사항을 알린다.
+	OnActivatableAbilitiesReplicatedDelegate.Broadcast();
 }
 
 void UAuraAbilitySystemComponent::OnAbilityFailed(const UGameplayAbility* Ability, const FGameplayTagContainer& FailureTags)
@@ -168,7 +162,7 @@ void UAuraAbilitySystemComponent::UnlockSpell(const FGameplayTag& SpellTag, cons
 	GiveAbility(SpellSpec);
 
 	// Spell이 Unlock 됨을 전달해 UI에 표시
-	ClientBroadcastSpellChange(SpellTag);
+	OnSpellAbilityChangedDelegate.Broadcast(SpellTag);
 }
 
 void UAuraAbilitySystemComponent::UpgradeSpell(const FGameplayTag& SpellTag)
@@ -179,7 +173,7 @@ void UAuraAbilitySystemComponent::UpgradeSpell(const FGameplayTag& SpellTag)
 		MarkAbilitySpecDirty(*SpellSpec);
 
 		// Spell의 Level 변경을 전달
-		ClientBroadcastSpellChange(SpellTag);
+		OnSpellAbilityChangedDelegate.Broadcast(SpellTag);
 	}
 }
 
@@ -249,11 +243,6 @@ void UAuraAbilitySystemComponent::UnEquipSpell(FGameplayAbilitySpec* SpellSpecTo
 			}
 		}
 	}
-}
-
-void UAuraAbilitySystemComponent::ClientBroadcastSpellChange_Implementation(const FGameplayTag& SpellTag)
-{
-	OnSpellAbilityChangedDelegate.Broadcast(SpellTag);
 }
 
 void UAuraAbilitySystemComponent::ClientBroadcastEquippedSpellChange_Implementation(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag)
