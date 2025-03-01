@@ -108,9 +108,13 @@ void AAuraPlayerController::SetInGameInputMode()
 	SetInputMode(InputMode);
 }
 
-void AAuraPlayerController::SetUIInputMode()
+void AAuraPlayerController::SetUIInputMode(UUserWidget* WidgetToFocus)
 {
-	const FInputModeUIOnly InputMode;
+	FInputModeUIOnly InputMode;
+	if (WidgetToFocus)
+	{
+		InputMode.SetWidgetToFocus(WidgetToFocus->TakeWidget());
+	}
 	SetInputMode(InputMode);
 }
 

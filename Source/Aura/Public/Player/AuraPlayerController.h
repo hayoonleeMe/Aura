@@ -44,7 +44,7 @@ public:
 	void SetInGameInputMode();
 	
 	// UI 전용 Input Mode로 설정
-	void SetUIInputMode();
+	void SetUIInputMode(UUserWidget* WidgetToFocus);
 
 	// Damage를 나타내는 DamageIndicator Widget을 화면에 표시한다.
 	UFUNCTION(Client, Reliable)
