@@ -121,6 +121,9 @@ public:
 	// OwningController의 HUD에 저장된 Spell Menu Widget Controller 반환
 	UFUNCTION(BlueprintPure)
 	static USpellMenuWidgetController* GetSpellMenuWidgetController(const APlayerController* OwningController);
+	// AGameStateBase::GetServerWorldTimeSeconds()를 float 형으로 반환한다.
+	// 구할 수 없으면 0.f을 반환한다.
+	static float GetServerWorldTimeSecondsAsFloat(const UWorld* World);
 
 	// ============================================================================
 	// Math

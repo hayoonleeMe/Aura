@@ -248,6 +248,7 @@ ALevelSequenceActor* UAuraBlueprintLibrary::GetLevelSequenceActorMatchingTag(con
 }
 
 ALevelSequenceActor* UAuraBlueprintLibrary::GetPauseMenuLevelSequenceActor(const UObject* WorldContextObject)
+float UAuraBlueprintLibrary::GetServerWorldTimeSecondsAsFloat(const UWorld* World)
 {
 	const UWorld* World = WorldContextObject ? WorldContextObject->GetWorld() : nullptr;
 	const AAuraGameStateBase* AuraGameStateBase = World ? World->GetGameState<AAuraGameStateBase>() : nullptr;
@@ -288,6 +289,8 @@ USpellMenuWidgetController* UAuraBlueprintLibrary::GetSpellMenuWidgetController(
 		}
 	}
 	return nullptr;
+	const AGameStateBase* GameStateBase = World ? World->GetGameState() : nullptr;
+	return GameStateBase ? GameStateBase->GetServerWorldTimeSeconds() : 0.0;
 }
 
 void UAuraBlueprintLibrary::GetSpreadDirections(TArray<FVector>& OutDirections, int32 NumDirections, float SpreadAngle, const FVector& CentralDirection)

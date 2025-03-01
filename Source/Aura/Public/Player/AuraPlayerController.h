@@ -19,9 +19,14 @@ class UAuraInputConfig;
 // 클라이언트에서 GameStateBase가 유효해질 때 Broadcast
 DECLARE_MULTICAST_DELEGATE(FOnGameStateBaseValidInClientSignature);
 
+// Stage Status가 변경됨을 알리는 델레게이트
+DECLARE_DELEGATE_FourParams(FOnStageStatusChangedSignature, EStageStatus /*StageStatus*/, int32 /*StageNumber*/, double /*WaitingTimerEndSeconds*/, int32 /*TotalEnemyCount*/);
 
 // Respawn이 시작됨을 알리는 델레게이트
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnRespawnStartedSignature, float /*RespawnTimerEndSeconds*/);
+
+// 월드에 존재하던 적이 죽음을 알리는 델레게이트
+DECLARE_DELEGATE(FOnEnemyDeadSignature);
 
 /**
  * 
@@ -55,8 +60,6 @@ public:
 	void ClientIndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const;
 
 	UFUNCTION(Client, Reliable)
-	void ClientOnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount);
-	UFUNCTION(Client, Reliable)
 	void ClientEndGame();
 
 	bool IsValidGameStateBaseInClient() const { return bValidGameStateBaseInClient; }
@@ -69,6 +72,16 @@ public:
 	// ViewTarget을 플레이어 캐릭터로 되돌린다.
 	UFUNCTION()
 	void OnLevelSequencePlayerStop();
+
+	// ============================================================================
+	// Stage
+	// ============================================================================
+
+	UFUNCTION(Client, Reliable)
+	void ClientOnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount);
+
+	FOnStageStatusChangedSignature OnStageStatusChangedDelegate;
+	FOnEnemyDeadSignature OnEnemyDeadDelegate;
 
 	// ============================================================================
 	// Respawn
