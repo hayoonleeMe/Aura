@@ -125,15 +125,6 @@ void AAuraPlayerController::ClientEndGame_Implementation()
 		AuraHUD->OnGameEnd();
 	}
 }
-
-void AAuraPlayerController::ClientOnRespawnStart_Implementation(double RespawnTimerEndSeconds)
-{
-	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())
-	{
-		AuraHUD->OnRespawnStart(RespawnTimerEndSeconds);
-	}
-}
-
 void AAuraPlayerController::ClientOnStageStatusChanged_Implementation(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount)
 {
 	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())
@@ -163,6 +154,12 @@ void AAuraPlayerController::ClientIndicateDamage_Implementation(float Damage, bo
 void AAuraPlayerController::OnLevelSequencePlayerStop()
 {
 	SetViewTarget(GetPawn());
+}
+
+
+void AAuraPlayerController::ClientNotifyRespawnStart_Implementation(float RespawnTimerEndSeconds)
+{
+	OnRespawnStartedDelegate.Broadcast(RespawnTimerEndSeconds);
 }
 
 void AAuraPlayerController::BeginPlay()

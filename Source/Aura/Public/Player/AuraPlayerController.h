@@ -19,6 +19,10 @@ class UAuraInputConfig;
 // 클라이언트에서 GameStateBase가 유효해질 때 Broadcast
 DECLARE_MULTICAST_DELEGATE(FOnGameStateBaseValidInClientSignature);
 
+
+// Respawn이 시작됨을 알리는 델레게이트
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnRespawnStartedSignature, float /*RespawnTimerEndSeconds*/);
+
 /**
  * 
  */
@@ -52,16 +56,11 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void ClientOnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount);
-
-	UFUNCTION(Client, Reliable)
-	void ClientOnRespawnStart(double RespawnTimerEndSeconds);
-
 	UFUNCTION(Client, Reliable)
 	void ClientEndGame();
 
-	FOnGameStateBaseValidInClientSignature OnGameStateBaseValidInClientDelegate;
-
 	bool IsValidGameStateBaseInClient() const { return bValidGameStateBaseInClient; }
+	FOnGameStateBaseValidInClientSignature OnGameStateBaseValidInClientDelegate;
 
 	FORCEINLINE int32 GetUsedLifeCount() const { return UsedLifeCount; }
 	FORCEINLINE void UseLifeCount() { ++UsedLifeCount; }
@@ -70,6 +69,16 @@ public:
 	// ViewTarget을 플레이어 캐릭터로 되돌린다.
 	UFUNCTION()
 	void OnLevelSequencePlayerStop();
+
+	// ============================================================================
+	// Respawn
+	// ============================================================================
+
+	UFUNCTION(Client, Reliable)
+	void ClientNotifyRespawnStart(float RespawnTimerEndSeconds);
+
+	FOnRespawnStartedSignature OnRespawnStartedDelegate;
+
 	
 protected:
 	virtual void BeginPlay() override;

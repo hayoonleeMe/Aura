@@ -425,7 +425,7 @@ void AStageGameMode::NotifyRespawnStartToLocalPlayer(APlayerController* Controll
 	// 로컬 플레이어 화면에 표시
 	if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(ControllerToRespawn))
 	{
-		AuraPC->ClientOnRespawnStart(RespawnTimerEndSeconds);
+		AuraPC->ClientNotifyRespawnStart(RespawnTimerEndSeconds);
 	}
 }
 
