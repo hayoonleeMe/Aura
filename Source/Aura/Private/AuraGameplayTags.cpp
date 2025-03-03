@@ -27,7 +27,6 @@ namespace AuraGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Passive_2, "InputTag.Passive.2", "Passive Input Tag for second slot");
 
 	/* Primary Attributes */
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Primary, "Attributes.Primary", "Primary Attributes Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Primary_Strength, "Attributes.Primary.Strength", "Increases physical damage");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Primary_Intelligence, "Attributes.Primary.Intelligence", "Increases magical damage");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Primary_Resilience, "Attributes.Primary.Resilience", "Increases Armor and Armor Penetration");
@@ -124,4 +123,7 @@ namespace AuraGameplayTags
 
 	/* Gameplay */
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Gameplay_Invincibility, "Gameplay.Invincibility", "Invincibility Tag");
+
+	/* EffectRules */
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(EffectRules_PerLife, "EffectRules.PerLife", "PerLife GameplayEffect Apply Rule Tag");
 }
