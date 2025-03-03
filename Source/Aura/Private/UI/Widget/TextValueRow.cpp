@@ -8,14 +8,17 @@
 #include "UI/Widget/FramedValue.h"
 #include "UI/Widget/ToolTip_AttributeRow.h"
 
+UTextValueRow::UTextValueRow(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	ToolTipWidgetDelegate.BindDynamic(this, &ThisClass::GetTextLabelTooltipWidget);
+}
+
 void UTextValueRow::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
 	check(ToolTipWidgetClass);
-
-	ToolTipWidgetDelegate.BindDynamic(this, &ThisClass::GetTextLabelTooltipWidget);
-	SynchronizeProperties();	// ToolTipWidgetDelegate 적용을 위해 동기화
 }
 
 UWidget* UTextValueRow::GetTextLabelTooltipWidget()

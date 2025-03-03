@@ -20,6 +20,9 @@ class AURA_API UTextValueRow : public UAuraUserWidget
 {
 	GENERATED_BODY()
 
+public:
+	UTextValueRow(const FObjectInitializer& ObjectInitializer);
+	
 protected:
 	virtual void NativeConstruct() override;
 

@@ -24,11 +24,15 @@
 #include "UI/Widget/SpellGlobeButton.h"
 #include "UI/Widget/SquareButton.h"
 
+USpellMenu::USpellMenu(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	SetIsFocusable(true);
+}
+
 void USpellMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	SetIsFocusable(true);
 
 	const AAuraGameStateBase* AuraGameStateBase = GetAuraGameStateBaseChecked();
 	SpellConfig = AuraGameStateBase->SpellConfig;

@@ -19,11 +19,15 @@
 #include "UI/Widget/StageStartAlert.h"
 #include "UI/Widget/StageWaitingTimer.h"
 
+UGameOverlay::UGameOverlay(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	SetIsFocusable(true);
+}
+
 void UGameOverlay::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	SetIsFocusable(true);
 
 	check(RespawnTimerClass);
 	check(GameEndAlertClass);

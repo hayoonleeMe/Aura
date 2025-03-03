@@ -16,6 +16,9 @@ class AURA_API UPauseMenu : public UAuraUserWidget
 {
 	GENERATED_BODY()
 
+public:
+	UPauseMenu(const FObjectInitializer& ObjectInitializer);
+
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;

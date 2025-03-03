@@ -25,6 +25,9 @@ class AURA_API USpellMenu : public UAuraUserWidget
 {
 	GENERATED_BODY()
 
+public:
+	USpellMenu(const FObjectInitializer& ObjectInitializer);
+
 protected:
 	virtual void NativeConstruct() override;
 

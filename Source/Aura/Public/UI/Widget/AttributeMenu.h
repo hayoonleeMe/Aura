@@ -21,6 +21,9 @@ class AURA_API UAttributeMenu : public UAuraUserWidget
 {
 	GENERATED_BODY()
 
+public:
+	UAttributeMenu(const FObjectInitializer& ObjectInitializer);
+
 protected:
 	virtual void NativeConstruct() override;
 

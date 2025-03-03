@@ -6,6 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "AuraHUD.generated.h"
 
+class UGameOverlay;
 class UAuraUserWidget;
 class UAttributeSet;
 class UAbilitySystemComponent;
@@ -28,8 +29,8 @@ private:
 	// ============================================================================
 
 	UPROPERTY()
-	TObjectPtr<UAuraUserWidget> OverlayWidget;
+	TObjectPtr<UGameOverlay> GameOverlay;
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Overlay")
-	TSubclassOf<UAuraUserWidget> OverlayWidgetClass;
+	TSubclassOf<UGameOverlay> GameOverlayClass;
 };

@@ -28,6 +28,9 @@ class AURA_API UGameOverlay : public UAuraUserWidget
 {
 	GENERATED_BODY()
 
+public:
+	UGameOverlay(const FObjectInitializer& ObjectInitializer);
+
 protected:
 	virtual void NativeConstruct() override;
 
