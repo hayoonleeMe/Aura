@@ -3,16 +3,16 @@
 
 #include "UI/HUD/AuraHUD.h"
 
-#include "UI/Widget/AuraUserWidget.h"
+#include "UI/Widget/GameOverlay.h"
 
 void AAuraHUD::InitOverlay()
 {
-	check(OverlayWidgetClass);
+	check(GameOverlayClass);
 
-	OverlayWidget = CreateWidget<UAuraUserWidget>(GetOwningPlayerController(), OverlayWidgetClass);
-	if (OverlayWidget)
+	GameOverlay = CreateWidget<UGameOverlay>(GetOwningPlayerController(), GameOverlayClass);
+	if (GameOverlay)
 	{
 		// 화면에 표시
-		OverlayWidget->AddToViewport();
+		GameOverlay->AddToViewport();
 	}
 }
