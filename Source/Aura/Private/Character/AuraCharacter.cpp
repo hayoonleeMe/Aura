@@ -281,23 +281,22 @@ void AAuraCharacter::InitializeAttributes()
 {
 	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(GetAbilitySystemComponent());
 	const bool bASCAlreadyInitialized = AuraASC->IsInitialized();
-	const FGameplayTag PrimaryAttributesTag = AuraGameplayTags::Attributes_Primary;
 	
 	for (const TSubclassOf<UGameplayEffect>& EffectClass : StartupEffects)
 	{
 		if (bASCAlreadyInitialized)
 		{
-			if (const UGameplayEffect* Effect = EffectClass ? EffectClass->GetDefaultObject<UGameplayEffect>() : nullptr)
+			// 리스폰 시에는 EffectRules.PerLife Tag를 가지는 StartupEffect만 적용
+			if (EffectClass->GetDefaultObject<UGameplayEffect>()->InheritableGameplayEffectTags.CombinedTags.HasTagExact(AuraGameplayTags::EffectRules_PerLife))
 			{
-				// 리스폰 시 Primary Attributes를 초기화하는 Effect 적용 방지
-				if (Effect->InheritableGameplayEffectTags.CombinedTags.HasTag(PrimaryAttributesTag))
-				{
-					continue;
-				}
+				AuraASC->ApplyEffectSpecToSelf(EffectClass);
 			}
 		}
-		
-		AuraASC->ApplyEffectSpecToSelf(EffectClass);
+		else
+		{
+			// 첫 스폰 시에는 모든 StartupEffect 적용
+			AuraASC->ApplyEffectSpecToSelf(EffectClass);
+		}
 	}
 }
 
@@ -337,12 +336,10 @@ void AAuraCharacter::HandleDeathLocally()
 		// Cancel All Abilities
 		AbilitySystemComponent->CancelAbilities();
 
-		// Remove All Active Effects
-		TArray<FActiveGameplayEffectHandle> ActiveEffectHandles = AbilitySystemComponent->GetActiveGameplayEffects().GetAllActiveEffectHandles();
-		for (const FActiveGameplayEffectHandle& EffectHandle : ActiveEffectHandles)
-		{
-			AbilitySystemComponent->RemoveActiveGameplayEffect(EffectHandle);
-		}
+		// 캐릭터가 죽을 때 EffectRules.PerLife Tag를 가지는 이펙트만 제거
+		FGameplayTagContainer QueryTags;
+		QueryTags.AddTag(AuraGameplayTags::EffectRules_PerLife);
+		AbilitySystemComponent->RemoveActiveEffectsWithTags(QueryTags);
 	}
 }
 
