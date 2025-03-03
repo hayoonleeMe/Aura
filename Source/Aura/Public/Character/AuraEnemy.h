@@ -7,7 +7,6 @@
 #include "Character/BaseCharacter.h"
 #include "Interface/InteractionInterface.h"
 #include "Types/EnemyClassType.h"
-#include "UI/WidgetController/OverlayWidgetController.h"
 #include "AuraEnemy.generated.h"
 
 class UNiagaraComponent;
@@ -28,16 +27,6 @@ public:
 	AAuraEnemy();
 	virtual void PossessedBy(AController* NewController) override;
 
-	// ============================================================================
-	// Overlay Widget Controller
-	// ============================================================================
-
-	UPROPERTY(BlueprintAssignable)
-	FOnAttributeChangedSignature OnHealthChangedDelegate;
-	
-	UPROPERTY(BlueprintAssignable)
-	FOnAttributeChangedSignature OnMaxHealthChangedDelegate;
-	
 	/* Begin CombatInterface */
 	virtual void SetCombatTarget(AActor* InCombatTarget) override { CombatTarget = InCombatTarget; }
 	virtual TWeakObjectPtr<AActor> GetCombatTarget() const override { return CombatTarget; }

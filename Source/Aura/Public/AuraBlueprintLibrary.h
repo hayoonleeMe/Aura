@@ -10,10 +10,6 @@
 class ALevelSequenceActor;
 struct FGameplayAbilityTargetDataHandle;
 struct FGameplayCueParameters;
-class USpellMenuWidgetController;
-class UOverlayWidgetController;
-struct FWidgetControllerParams;
-class UAttributeMenuWidgetController;
 struct FGameplayTag;
 struct FDamageEffectParams;
 class UEnemyClassConfig;
@@ -78,14 +74,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static FVector GetActorFeetLocation(const AActor* Actor);
 
-	// 게임에서 기본으로 사용하는 Input Mode로 설정
-	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"))
-	static void SetInGameInputMode(const UObject* WorldContextObject);
-
-	// UI 전용 Input Mode로 설정
-	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"))
-	static void SetUIInputMode(const UObject* WorldContextObject);
-
 	// Actor의 Level Attribute 값을 반환
 	UFUNCTION(BlueprintCallable)
 	static int32 GetLevelAttributeValue(AActor* Actor);
@@ -101,26 +89,9 @@ public:
 	// 존재하지 않으면 nullptr를 반환한다.
 	static ALevelSequenceActor* GetLevelSequenceActorMatchingTag(const UWorld* World, const FName& Tag);
 
-	// AAuraGameStateBase에 캐싱된 PauseMenu Level Sequence Actor를 반환한다.
-	// 존재하지 않으면 nullptr를 반환한다.
-	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"))
-	static ALevelSequenceActor* GetPauseMenuLevelSequenceActor(const UObject* WorldContextObject);
-
-	// ============================================================================
-	// UI
-	// ============================================================================
-
-	// OwningController의 HUD에 저장된 Overlay Widget Controller 반환
-	UFUNCTION(BlueprintPure)
-	static UOverlayWidgetController* GetOverlayWidgetController(const APlayerController* OwningController);
-	
-	// OwningController의 HUD에 저장된 Attribute Menu Widget Controller 반환
-	UFUNCTION(BlueprintPure)
-	static UAttributeMenuWidgetController* GetAttributeMenuWidgetController(const APlayerController* OwningController);
-
-	// OwningController의 HUD에 저장된 Spell Menu Widget Controller 반환
-	UFUNCTION(BlueprintPure)
-	static USpellMenuWidgetController* GetSpellMenuWidgetController(const APlayerController* OwningController);
+	// AGameStateBase::GetServerWorldTimeSeconds()를 float 형으로 반환한다.
+	// 구할 수 없으면 0.f을 반환한다.
+	static float GetServerWorldTimeSecondsAsFloat(const UWorld* World);
 
 	// ============================================================================
 	// Math

@@ -20,7 +20,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interface/PlayerInterface.h"
 #include "Materials/MaterialInstance.h"
-#include "UI/Widget/AuraUserWidget.h"
+#include "UI/Widget/EnemyHealthBar.h"
 
 AAuraEnemy::AAuraEnemy()
 {
@@ -192,29 +192,12 @@ void AAuraEnemy::InitializeEnemyLevel() const
 
 void AAuraEnemy::InitializeForHealthBar()
 {
-	check(AbilitySystemComponent && AttributeSet && HealthBarComponent);
-
-	// AuraEnemy가 Widget Controller 역할을 함
-	if (UAuraUserWidget* HealthBarWidget = Cast<UAuraUserWidget>(HealthBarComponent->GetWidget()))
+	if (HealthBarComponent)
 	{
-		HealthBarWidget->SetWidgetController(this);
-	}
-
-	if (const UAuraAttributeSet* AuraAS = Cast<UAuraAttributeSet>(AttributeSet))
-	{
-		// Attribute Changed Event를 알리기 위해 바인딩
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAS->GetHealthAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
+		if (UEnemyHealthBar* HealthBarWidget = Cast<UEnemyHealthBar>(HealthBarComponent->GetWidget()))
 		{
-			OnHealthChangedDelegate.Broadcast(Data.NewValue);
-		});
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAS->GetMaxHealthAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
-		{
-			OnMaxHealthChangedDelegate.Broadcast(Data.NewValue);
-		});
-
-		// 초기값 Broadcast
-		OnHealthChangedDelegate.Broadcast(AuraAS->GetHealth());
-		OnMaxHealthChangedDelegate.Broadcast(AuraAS->GetMaxHealth());
+			HealthBarWidget->InitializeHealthBar(this);
+		}
 	}
 }
 

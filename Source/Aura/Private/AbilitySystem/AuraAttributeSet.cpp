@@ -34,10 +34,6 @@ UAuraAttributeSet::UAuraAttributeSet()
 	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Secondary_LightningResistance, GetLightningResistanceAttribute());
 	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Secondary_ArcaneResistance, GetArcaneResistanceAttribute());
 	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Secondary_PhysicalResistance, GetPhysicalResistanceAttribute());
-	
-	/* Vital Attributes */
-	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Vital_Health, GetHealthAttribute());
-	TagToAttributeMap.Add(AuraGameplayTags::Attributes_Vital_Mana, GetManaAttribute());
 }
 
 void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

@@ -6,8 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "LobbyHUD.generated.h"
 
-class ULobbyWidgetController;
-class UAuraUserWidget;
+class ULobbyOverlay;
 
 /**
  * Lobby Overlay를 표시할 HUD
@@ -18,21 +17,19 @@ class AURA_API ALobbyHUD : public AHUD
 	GENERATED_BODY()
 
 public:
-	ULobbyWidgetController* GetLobbyWidgetController() const { return LobbyWidgetController; }
+	// 로비에 새로운 플레이어가 추가됐을 때
+	void OnNewPlayerAdded(const FString& PlayerName) const;
 
+	// 로비에서 플레이어가 떠났을 때
+	void OnPlayerLeft() const;
+	
 protected:
 	virtual void BeginPlay() override;
 
 private:
 	UPROPERTY()
-	TObjectPtr<UAuraUserWidget> LobbyOverlay;
-
+	TObjectPtr<ULobbyOverlay> LobbyOverlay;
+	
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Lobby")
-	TSubclassOf<UAuraUserWidget> LobbyOverlayClass;
-
-	UPROPERTY()
-	TObjectPtr<ULobbyWidgetController> LobbyWidgetController;
-
-	UPROPERTY(EditDefaultsOnly, Category="Aura|Lobby")
-	TSubclassOf<ULobbyWidgetController> LobbyWidgetControllerClass;
+	TSubclassOf<ULobbyOverlay> LobbyOverlayClass;
 };

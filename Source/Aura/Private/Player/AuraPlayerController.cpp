@@ -13,7 +13,6 @@
 #include "Input/AuraInputComponent.h"
 #include "Interface/InteractionInterface.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "UI/HUD/AuraHUD.h"
 #include "UI/Widget/DamageIndicatorComponent.h"
 
 void AAuraPlayerController::PlayerTick(float DeltaTime)
@@ -73,9 +72,9 @@ void AAuraPlayerController::IndicateAbilityActivateCooldownFail()
 
 void AAuraPlayerController::NotifyEnemyDead()
 {
-	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())
+	if (OnEnemyDeadDelegate.IsBound())
 	{
-		AuraHUD->OnEnemyDead();
+		OnEnemyDeadDelegate.Execute();
 	}
 }
 
@@ -108,34 +107,14 @@ void AAuraPlayerController::SetInGameInputMode()
 	SetInputMode(InputMode);
 }
 
-void AAuraPlayerController::SetUIInputMode()
+void AAuraPlayerController::SetUIInputMode(UUserWidget* WidgetToFocus)
 {
-	const FInputModeUIOnly InputMode;
+	FInputModeUIOnly InputMode;
+	if (WidgetToFocus)
+	{
+		InputMode.SetWidgetToFocus(WidgetToFocus->TakeWidget());
+	}
 	SetInputMode(InputMode);
-}
-
-void AAuraPlayerController::ClientEndGame_Implementation()
-{
-	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())
-	{
-		AuraHUD->OnGameEnd();
-	}
-}
-
-void AAuraPlayerController::ClientOnRespawnStart_Implementation(double RespawnTimerEndSeconds)
-{
-	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())
-	{
-		AuraHUD->OnRespawnStart(RespawnTimerEndSeconds);
-	}
-}
-
-void AAuraPlayerController::ClientOnStageStatusChanged_Implementation(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount)
-{
-	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())
-	{
-		AuraHUD->OnStageStatusChanged(StageStatus, StageNumber, WaitingTimerEndSeconds, TotalEnemyCount);
-	}
 }
 
 void AAuraPlayerController::ClientIndicateDamage_Implementation(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const
@@ -159,6 +138,27 @@ void AAuraPlayerController::ClientIndicateDamage_Implementation(float Damage, bo
 void AAuraPlayerController::OnLevelSequencePlayerStop()
 {
 	SetViewTarget(GetPawn());
+}
+
+void AAuraPlayerController::ClientOnStageStatusChanged_Implementation(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount)
+{
+	if (OnStageStatusChangedDelegate.IsBound())
+	{
+		OnStageStatusChangedDelegate.Execute(StageStatus, StageNumber, WaitingTimerEndSeconds, TotalEnemyCount);
+	}
+}
+
+void AAuraPlayerController::ClientNotifyRespawnStart_Implementation(float RespawnTimerEndSeconds)
+{
+	OnRespawnStartedDelegate.Broadcast(RespawnTimerEndSeconds);
+}
+
+void AAuraPlayerController::ClientEndGame_Implementation()
+{
+	if (OnGameEndDelegate.IsBound())
+	{
+		OnGameEndDelegate.Execute();
+	}
 }
 
 void AAuraPlayerController::BeginPlay()

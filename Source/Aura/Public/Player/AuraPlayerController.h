@@ -19,6 +19,18 @@ class UAuraInputConfig;
 // 클라이언트에서 GameStateBase가 유효해질 때 Broadcast
 DECLARE_MULTICAST_DELEGATE(FOnGameStateBaseValidInClientSignature);
 
+// Stage Status가 변경됨을 알리는 델레게이트
+DECLARE_DELEGATE_FourParams(FOnStageStatusChangedSignature, EStageStatus /*StageStatus*/, int32 /*StageNumber*/, double /*WaitingTimerEndSeconds*/, int32 /*TotalEnemyCount*/);
+
+// Respawn이 시작됨을 알리는 델레게이트
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnRespawnStartedSignature, float /*RespawnTimerEndSeconds*/);
+
+// 게임이 종료됨을 알리는 델레게이트
+DECLARE_DELEGATE(FOnGameEndSignature);
+
+// 월드에 존재하던 적이 죽음을 알리는 델레게이트
+DECLARE_DELEGATE(FOnEnemyDeadSignature);
+
 /**
  * 
  */
@@ -44,24 +56,14 @@ public:
 	void SetInGameInputMode();
 	
 	// UI 전용 Input Mode로 설정
-	void SetUIInputMode();
+	void SetUIInputMode(UUserWidget* WidgetToFocus);
 
 	// Damage를 나타내는 DamageIndicator Widget을 화면에 표시한다.
 	UFUNCTION(Client, Reliable)
 	void ClientIndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const;
 
-	UFUNCTION(Client, Reliable)
-	void ClientOnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount);
-
-	UFUNCTION(Client, Reliable)
-	void ClientOnRespawnStart(double RespawnTimerEndSeconds);
-
-	UFUNCTION(Client, Reliable)
-	void ClientEndGame();
-
-	FOnGameStateBaseValidInClientSignature OnGameStateBaseValidInClientDelegate;
-
 	bool IsValidGameStateBaseInClient() const { return bValidGameStateBaseInClient; }
+	FOnGameStateBaseValidInClientSignature OnGameStateBaseValidInClientDelegate;
 
 	FORCEINLINE int32 GetUsedLifeCount() const { return UsedLifeCount; }
 	FORCEINLINE void UseLifeCount() { ++UsedLifeCount; }
@@ -70,6 +72,34 @@ public:
 	// ViewTarget을 플레이어 캐릭터로 되돌린다.
 	UFUNCTION()
 	void OnLevelSequencePlayerStop();
+
+	// ============================================================================
+	// Stage
+	// ============================================================================
+
+	UFUNCTION(Client, Reliable)
+	void ClientOnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount);
+
+	FOnStageStatusChangedSignature OnStageStatusChangedDelegate;
+	FOnEnemyDeadSignature OnEnemyDeadDelegate;
+
+	// ============================================================================
+	// Respawn
+	// ============================================================================
+
+	UFUNCTION(Client, Reliable)
+	void ClientNotifyRespawnStart(float RespawnTimerEndSeconds);
+
+	FOnRespawnStartedSignature OnRespawnStartedDelegate;
+
+	// ============================================================================
+	// Game End
+	// ============================================================================
+
+	UFUNCTION(Client, Reliable)
+	void ClientEndGame();
+
+	FOnGameEndSignature OnGameEndDelegate;
 	
 protected:
 	virtual void BeginPlay() override;

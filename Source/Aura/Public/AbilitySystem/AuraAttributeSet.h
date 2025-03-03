@@ -31,6 +31,7 @@ public:
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
 	// Tag와 Attribute Mapping
+	// Primary, Secondary Attribute만 포함
 	TMap<FGameplayTag, FGameplayAttribute> TagToAttributeMap;
 	
 	// ============================================================================
