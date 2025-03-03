@@ -10,14 +10,17 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "UI/Widget/ToolTip_XPBar.h"
 
+UXPBar::UXPBar(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	ToolTipWidgetDelegate.BindDynamic(this, &ThisClass::GetProgressBarXPTooltipWidget);
+}
+
 void UXPBar::NativeConstruct()
 {
 	Super::NativeConstruct();
 
 	check(ToolTipWidgetClass);
-
-	ToolTipWidgetDelegate.BindDynamic(this, &ThisClass::GetProgressBarXPTooltipWidget);
-	SynchronizeProperties();	// ToolTipWidgetDelegate 적용을 위해 동기화 
 
 	UAuraAbilitySystemComponent* AuraASC = GetOwnerAuraAbilitySystemComponentChecked();
 	AuraASC->GetGameplayAttributeValueChangeDelegate(UAuraAttributeSet::GetXPAttribute()).AddWeakLambda(this, [this](const FOnAttributeChangeData& Data)

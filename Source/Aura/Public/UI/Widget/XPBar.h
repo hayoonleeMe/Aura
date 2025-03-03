@@ -16,6 +16,9 @@ class AURA_API UXPBar : public UAuraUserWidget
 {
 	GENERATED_BODY()
 
+public:
+	UXPBar(const FObjectInitializer& ObjectInitializer);
+
 protected:
 	virtual void NativeConstruct() override;
 
