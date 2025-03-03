@@ -5,7 +5,6 @@
 
 #include "GameFramework/PlayerState.h"
 #include "UI/HUD/LobbyHUD.h"
-#include "UI/WidgetController/LobbyWidgetController.h"
 
 // Called on server and client
 void ALobbyGameStateBase::AddPlayerState(APlayerState* PlayerState)
@@ -19,7 +18,7 @@ void ALobbyGameStateBase::AddPlayerState(APlayerState* PlayerState)
 		{
 			if (const ALobbyHUD* LobbyHUD = PC->GetHUD<ALobbyHUD>())
 			{
-				LobbyHUD->GetLobbyWidgetController()->OnNewPlayerAdded(PlayerState->GetPlayerName());
+				LobbyHUD->OnNewPlayerAdded(PlayerState->GetPlayerName());
 			}
 		}
 	}));
@@ -34,7 +33,7 @@ void ALobbyGameStateBase::RemovePlayerState(APlayerState* PlayerState)
 	{
 		if (const ALobbyHUD* LobbyHUD = PC->GetHUD<ALobbyHUD>())
 		{
-			LobbyHUD->GetLobbyWidgetController()->OnPlayerLeft();
+			LobbyHUD->OnPlayerLeft();
 		}
 	}
 }
