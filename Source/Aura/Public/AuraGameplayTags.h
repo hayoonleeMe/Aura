@@ -40,7 +40,6 @@ namespace AuraGameplayTags
 	// Primary Attributes
 	// ============================================================================
 
-	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Primary);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Primary_Strength);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Primary_Intelligence);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Primary_Resilience);
@@ -172,4 +171,10 @@ namespace AuraGameplayTags
 	// ============================================================================
 
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Gameplay_Invincibility);
+
+	// ============================================================================
+	// EffectRules
+	// ============================================================================
+
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(EffectRules_PerLife);
 }
