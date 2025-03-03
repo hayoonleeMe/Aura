@@ -11,12 +11,16 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "UI/Widget/SquareButton.h"
 
+UPauseMenu::UPauseMenu(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	SetIsFocusable(true);
+}
+
 void UPauseMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	SetIsFocusable(true);
-	
 	Button_ReturnToGame->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnReturnToGameButtonClicked);
 	Button_Options->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnOptionsButtonClicked);
 	Button_LeaveGame->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnLeaveGameButtonClicked);

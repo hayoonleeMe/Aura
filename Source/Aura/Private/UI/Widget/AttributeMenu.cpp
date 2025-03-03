@@ -15,11 +15,15 @@
 #include "UI/Widget/SquareButton.h"
 #include "UI/Widget/TextValueButtonRow.h"
 
+UAttributeMenu::UAttributeMenu(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	SetIsFocusable(true);	
+}
+
 void UAttributeMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	SetIsFocusable(true);	
 
 	const AAuraGameStateBase* AuraGameStateBase = GetAuraGameStateBaseChecked();
 	AttributeConfig = AuraGameStateBase->AttributeConfig;
