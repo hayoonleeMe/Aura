@@ -6,11 +6,15 @@
 #include "AuraBlueprintLibrary.h"
 #include "Components/TextBlock.h"
 
+UStageWaitingTimer::UStageWaitingTimer(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	TranslationTimeSeconds = 1.5f;
+}
+
 void UStageWaitingTimer::NativeConstruct()
 {
 	Super::NativeConstruct();
-	
-	TranslationTimeSeconds = 1.5f;
 	
 	Text_StageNumber->SetText(FText::AsNumber(StageNumber));
 

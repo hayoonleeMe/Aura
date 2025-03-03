@@ -7,10 +7,9 @@
 #include "Components/TextBlock.h"
 #include "Data/SpellConfig.h"
 
-void UEquippedSpellGlobe::NativeConstruct()
+UEquippedSpellGlobe::UEquippedSpellGlobe(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
-	Super::NativeConstruct();
-
 	NormalColor = FLinearColor::White;
 	CooldownColor = FLinearColor(0.25f, 0.25f, 0.25f);
 	CooldownUpdateInterval = 0.05f;

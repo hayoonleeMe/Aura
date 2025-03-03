@@ -16,6 +16,9 @@ class AURA_API ULifeCounter : public UAuraUserWidget
 {
 	GENERATED_BODY()
 
+public:
+	ULifeCounter(const FObjectInitializer& ObjectInitializer);
+
 protected:
 	virtual void NativeConstruct() override;
 	

@@ -19,10 +19,9 @@ class AURA_API UEquippedSpellGlobe : public UUserWidget
 {
 	GENERATED_BODY()
 
-protected:
-	virtual void NativeConstruct() override;
-
 public:
+	UEquippedSpellGlobe(const FObjectInitializer& ObjectInitializer);
+
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UImage> Image_SpellIcon;
 

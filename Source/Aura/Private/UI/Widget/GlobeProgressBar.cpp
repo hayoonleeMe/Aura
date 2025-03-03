@@ -5,10 +5,9 @@
 
 #include "Components/ProgressBar.h"
 
-void UGlobeProgressBar::NativeConstruct()
+UGlobeProgressBar::UGlobeProgressBar(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
-	Super::NativeConstruct();
-
 	InterpSpeed = 5.f;
 }
 

@@ -9,11 +9,15 @@
 #include "Game/AuraGameStateBase.h"
 #include "Player/AuraPlayerController.h"
 
+ULifeCounter::ULifeCounter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	RightPadding = 8.f;
+}
+
 void ULifeCounter::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	RightPadding = 8.f;
 
 	const AAuraGameStateBase* AuraGameStateBase = GetAuraGameStateBaseChecked();
 	for (int32 i = 1; i <= AuraGameStateBase->TotalLifeCount; ++i)

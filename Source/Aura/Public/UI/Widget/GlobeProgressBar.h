@@ -16,8 +16,10 @@ class AURA_API UGlobeProgressBar : public UAuraUserWidget
 {
 	GENERATED_BODY()
 
+public:
+	UGlobeProgressBar(const FObjectInitializer& ObjectInitializer);
+
 protected:
-	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 public:

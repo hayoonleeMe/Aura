@@ -16,6 +16,9 @@ class AURA_API UStageWaitingTimer : public UUserWidget
 {
 	GENERATED_BODY()
 
+public:
+	UStageWaitingTimer(const FObjectInitializer& ObjectInitializer);
+	
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
