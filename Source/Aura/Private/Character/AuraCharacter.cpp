@@ -242,11 +242,11 @@ void AAuraCharacter::InitAbilityActorInfo()
 		}
 
 		// Overlay Widget 초기화
-		if (AAuraPlayerController* AuraPC = GetController<AAuraPlayerController>())
+		if (const APlayerController* PC = GetController<APlayerController>())
 		{
-			if (AAuraHUD* AuraHUD = AuraPC->GetHUD<AAuraHUD>())
+			if (AAuraHUD* AuraHUD = PC->GetHUD<AAuraHUD>())
 			{
-				AuraHUD->InitOverlay(AuraPC, AuraPS, AbilitySystemComponent, AttributeSet);
+				AuraHUD->InitOverlay();
 			}
 		}
 	}
