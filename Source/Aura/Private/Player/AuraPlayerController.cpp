@@ -118,6 +118,30 @@ void AAuraPlayerController::SetUIInputMode(UUserWidget* WidgetToFocus)
 	SetInputMode(InputMode);
 }
 
+void AAuraPlayerController::AddUIMappingContext() const
+{
+	if (const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr)
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(AuraGameStateBase->UIContext, 1);
+			Subsystem->RemoveMappingContext(AuraGameStateBase->AbilityContext);
+		}
+	}
+}
+
+void AAuraPlayerController::RemoveUIMappingContext() const
+{
+	if (const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr)
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+		{
+			Subsystem->RemoveMappingContext(AuraGameStateBase->UIContext);
+			Subsystem->AddMappingContext(AuraGameStateBase->AbilityContext, 0);
+		}
+	}
+}
+
 void AAuraPlayerController::ClientIndicateDamage_Implementation(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const
 {
 	if (!DamageIndicatorComponentClass || !IsValid(GetPawn()))

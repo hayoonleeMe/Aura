@@ -60,6 +60,12 @@ public:
 	// UI 전용 Input Mode로 설정
 	void SetUIInputMode(UUserWidget* WidgetToFocus);
 
+	// UI IMC를 추가하고, Ability IMC를 제거한다.
+	void AddUIMappingContext() const;
+
+	// UI IMC를 제거하고, 다시 Ability IMC를 추가한다.
+	void RemoveUIMappingContext() const;
+
 	// Damage를 나타내는 DamageIndicator Widget을 화면에 표시한다.
 	UFUNCTION(Client, Reliable)
 	void ClientIndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const;
