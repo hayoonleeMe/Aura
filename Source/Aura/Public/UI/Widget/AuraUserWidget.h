@@ -36,7 +36,19 @@ public:
 	FOnRemovedSignature OnRemovedDelegate;
 
 protected:
+	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	
 	virtual void BroadcastInitialValues() {}
+
+	// UI Input Mapping Context를 사용할 것인지 여부
+	bool bUseUIMapping = false;
+
+	// AAuraPlayerController에 UI IMC를 추가하고, Ability IMC를 제거한다.
+	// bUseUIMapping가 true일 때 NativeConstruct()에서 호출된다. 
+	void AddUIMappingContext();
+
+	// AAuraPlayerController에 UI IMC를 제거하고, 다시 Ability IMC를 추가한다.
+	// bUseUIMapping가 true일 때 NativeDestruct()에서 호출된다.
+	void RemoveUIMappingContext();
 };

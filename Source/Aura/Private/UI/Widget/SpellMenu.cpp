@@ -28,6 +28,7 @@ USpellMenu::USpellMenu(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	SetIsFocusable(true);
+	bUseUIMapping = true;
 }
 
 void USpellMenu::NativeConstruct()

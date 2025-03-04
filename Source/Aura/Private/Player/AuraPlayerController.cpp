@@ -194,6 +194,7 @@ void AAuraPlayerController::BeginPlay()
 	check(AuraGameStateBase);
 	check(AuraGameStateBase->AbilityContext);
 	check(AuraGameStateBase->CommonContext);
+	check(AuraGameStateBase->UIContext);
 	
 	// Add Input Mapping Context
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
@@ -234,6 +235,12 @@ void AAuraPlayerController::SetupInputComponent()
 	if (IA_PauseMenu)
 	{
 		AuraInputComponent->BindAction(IA_PauseMenu, ETriggerEvent::Started, this, &ThisClass::OnMenuActionStarted, EGameMenuType::PauseMenu);
+	}
+	
+	// Bind UI Context
+	if (IA_CloseUI)
+	{
+		AuraInputComponent->BindAction(IA_CloseUI, ETriggerEvent::Started, this, &ThisClass::OnCloseUIActionStarted);
 	}
 }
 
@@ -282,6 +289,11 @@ void AAuraPlayerController::OnMenuActionStarted(EGameMenuType GameMenuType)
 	{
 		AuraHUD->OpenMenu(GameMenuType);
 	}
+}
+
+void AAuraPlayerController::OnCloseUIActionStarted()
+{
+	OnCloseUIActionStartedDelegate.Broadcast();
 }
 
 void AAuraPlayerController::AbilityInputPressed(FGameplayTag InputTag, int32 InputID)

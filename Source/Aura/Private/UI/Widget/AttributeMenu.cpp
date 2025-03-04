@@ -19,6 +19,7 @@ UAttributeMenu::UAttributeMenu(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	SetIsFocusable(true);	
+	bUseUIMapping = true;
 }
 
 void UAttributeMenu::NativeConstruct()
