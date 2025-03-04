@@ -28,6 +28,9 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	TObjectPtr<UInputMappingContext> AbilityContext;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	TObjectPtr<UInputMappingContext> CommonContext;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	TObjectPtr<UAuraInputConfig> AuraInputConfig;
