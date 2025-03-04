@@ -156,6 +156,9 @@ private:
 
 	// Menu Input Action이 Started 될 때 호출되는 콜백 함수
 	void OnMenuActionStarted(EGameMenuType GameMenuType);
+	
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
+	TObjectPtr<UInputAction> IA_CloseUI;
 	// ============================================================================
 	// GAS
 	// ============================================================================
