@@ -39,9 +39,9 @@ void UGameOverlay::NativeConstruct()
 	check(StageStartAlertClass);
 
 	/* Game Overlay */
-	Button_AttributeMenu->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnAttributeMenuButtonClicked);
-	Button_SpellMenu->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnSpellMenuButtonClicked);
-	Button_PauseMenu->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnPauseMenuButtonClicked);
+	Button_AttributeMenu->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OpenAttributeMenu);
+	Button_SpellMenu->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OpenSpellMenu);
+	Button_PauseMenu->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OpenPauseMenu);
 
 	AAuraPlayerController* AuraPC = CastChecked<AAuraPlayerController>(GetOwningPlayer());
 	AuraPC->OnStageStatusChangedDelegate.BindUObject(this, &ThisClass::OnStageStatusChanged);
@@ -118,13 +118,17 @@ void UGameOverlay::OnGameEnd()
 	}
 }
 
-void UGameOverlay::OnAttributeMenuButtonClicked()
+void UGameOverlay::OpenAttributeMenu()
 {
+	if (PauseMenu)
+	{
+		return;
+	}
+	
 	if (AttributeMenu)
 	{
 		AttributeMenu->RemoveFromParent();
 		AttributeMenu = nullptr;
-		SetInGameInputMode();
 	}
 	else
 	{
@@ -146,16 +150,12 @@ void UGameOverlay::OnAttributeMenuButtonClicked()
 			AttributeMenu->SetPositionInViewport(ViewportSize * 0.5f);
 		}
 		AttributeMenu->AddToViewport();
-
-		// Set Input Mode
-		SetUIInputMode(AttributeMenu);
 	}
 }
 
 void UGameOverlay::OnAttributeMenuClosed()
 {
 	AttributeMenu = nullptr;
-	SetInGameInputMode();
 }
 
 void UGameOverlay::OnAttributePointsChanged(int32 Value) const
@@ -166,13 +166,17 @@ void UGameOverlay::OnAttributePointsChanged(int32 Value) const
 	}
 }
 
-void UGameOverlay::OnSpellMenuButtonClicked()
+void UGameOverlay::OpenSpellMenu()
 {
+	if (PauseMenu)
+	{
+		return;
+	}
+	
 	if (SpellMenu)
 	{
 		SpellMenu->RemoveFromParent();
 		SpellMenu = nullptr;
-		SetInGameInputMode();
 	}
 	else
 	{
@@ -194,16 +198,12 @@ void UGameOverlay::OnSpellMenuButtonClicked()
 			SpellMenu->SetPositionInViewport(ViewportSize * 0.5f);
 		}
 		SpellMenu->AddToViewport();
-
-		// Set Input Mode
-		SetUIInputMode(SpellMenu);
 	}
 }
 
 void UGameOverlay::OnSpellMenuClosed()
 {
 	SpellMenu = nullptr;
-	SetInGameInputMode();
 }
 
 void UGameOverlay::OnSpellPointsChanged(int32 Value) const
@@ -230,7 +230,7 @@ void UGameOverlay::OnEquippedSpellChanged(bool bEquipped, const FGameplayTag& In
 	}
 }
 
-void UGameOverlay::OnPauseMenuButtonClicked()
+void UGameOverlay::OpenPauseMenu()
 {
 	if (AttributeMenu)
 	{
@@ -250,15 +250,11 @@ void UGameOverlay::OnPauseMenuButtonClicked()
 
 	// GameOverlay 숨김
 	SetRenderOpacity(0.f);
-	
-	// Set Input Mode
-	SetUIInputMode(PauseMenu);
 }
 
 void UGameOverlay::OnPauseMenuClosed()
 {
 	PauseMenu = nullptr;
-	SetInGameInputMode();
 	SetRenderOpacity(1.f);
 }
 

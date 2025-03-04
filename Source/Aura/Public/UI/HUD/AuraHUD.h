@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "Types/GameMenuType.h"
 #include "AuraHUD.generated.h"
 
 class UGameOverlay;
@@ -22,6 +23,9 @@ class AURA_API AAuraHUD : public AHUD
 public:
 	// Overlay Widget을 초기화하고 화면에 표시
 	void InitOverlay();
+
+	// GameMenuType에 해당하는 메뉴를 연다.
+	void OpenMenu(EGameMenuType GameMenuType) const;
 
 private:
 	// ============================================================================

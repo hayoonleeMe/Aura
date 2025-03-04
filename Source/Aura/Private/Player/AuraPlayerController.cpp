@@ -9,10 +9,12 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Aura/Aura.h"
 #include "Character/AuraEnemy.h"
+#include "Framework/Application/NavigationConfig.h"
 #include "Game/AuraGameStateBase.h"
 #include "Input/AuraInputComponent.h"
 #include "Interface/InteractionInterface.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "UI/HUD/AuraHUD.h"
 #include "UI/Widget/DamageIndicatorComponent.h"
 
 void AAuraPlayerController::PlayerTick(float DeltaTime)
@@ -99,22 +101,28 @@ void AAuraPlayerController::CursorTrace()
 	}
 }
 
-void AAuraPlayerController::SetInGameInputMode()
+void AAuraPlayerController::AddUIMappingContext() const
 {
-	FInputModeGameAndUI InputMode;
-	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-	InputMode.SetHideCursorDuringCapture(false);
-	SetInputMode(InputMode);
+	if (const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr)
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(AuraGameStateBase->UIContext, 1);
+			Subsystem->RemoveMappingContext(AuraGameStateBase->AbilityContext);
+		}
+	}
 }
 
-void AAuraPlayerController::SetUIInputMode(UUserWidget* WidgetToFocus)
+void AAuraPlayerController::RemoveUIMappingContext() const
 {
-	FInputModeUIOnly InputMode;
-	if (WidgetToFocus)
+	if (const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr)
 	{
-		InputMode.SetWidgetToFocus(WidgetToFocus->TakeWidget());
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+		{
+			Subsystem->RemoveMappingContext(AuraGameStateBase->UIContext);
+			Subsystem->AddMappingContext(AuraGameStateBase->AbilityContext, 0);
+		}
 	}
-	SetInputMode(InputMode);
 }
 
 void AAuraPlayerController::ClientIndicateDamage_Implementation(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const
@@ -165,22 +173,37 @@ void AAuraPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Disable Navigation
+	FSlateApplication::Get().GetNavigationConfig()->bTabNavigation = false;
+	FSlateApplication::Get().GetNavigationConfig()->bAnalogNavigation = false;
+	FSlateApplication::Get().GetNavigationConfig()->bKeyNavigation = false;
+
 	const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr;
-	check(AuraGameStateBase && AuraGameStateBase->AuraContext);
+	check(AuraGameStateBase);
+	check(AuraGameStateBase->AbilityContext);
+	check(AuraGameStateBase->CommonContext);
+	check(AuraGameStateBase->UIContext);
 	
+	// Add Input Mapping Context
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
-		Subsystem->AddMappingContext(AuraGameStateBase->AuraContext, 0);
+		Subsystem->AddMappingContext(AuraGameStateBase->AbilityContext, 0);
+		Subsystem->AddMappingContext(AuraGameStateBase->CommonContext, 0);
 	}
 
 	bShowMouseCursor = true;
-	SetInGameInputMode();
+	
+	FInputModeGameAndUI InputMode;
+	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+	InputMode.SetHideCursorDuringCapture(false);
+	SetInputMode(InputMode);
 }
 
 void AAuraPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
+	// Bind Ability Context
 	if (HasAuthority())
 	{
 		BindAbilityInput();
@@ -188,6 +211,28 @@ void AAuraPlayerController::SetupInputComponent()
 	else
 	{
 		GetWorldTimerManager().SetTimer(PollingTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::PollInit), 0.1f,true);
+	}
+
+	UAuraInputComponent* AuraInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
+	
+	// Bind Common Context
+	if (IA_AttributeMenu)
+	{
+		AuraInputComponent->BindAction(IA_AttributeMenu, ETriggerEvent::Started, this, &ThisClass::OnMenuActionStarted, EGameMenuType::AttributeMenu);
+	}
+	if (IA_SpellMenu)
+	{
+		AuraInputComponent->BindAction(IA_SpellMenu, ETriggerEvent::Started, this, &ThisClass::OnMenuActionStarted, EGameMenuType::SpellMenu);
+	}
+	if (IA_PauseMenu)
+	{
+		AuraInputComponent->BindAction(IA_PauseMenu, ETriggerEvent::Started, this, &ThisClass::OnMenuActionStarted, EGameMenuType::PauseMenu);
+	}
+	
+	// Bind UI Context
+	if (IA_CloseUI)
+	{
+		AuraInputComponent->BindAction(IA_CloseUI, ETriggerEvent::Started, this, &ThisClass::OnCloseUIActionStarted);
 	}
 }
 
@@ -228,6 +273,19 @@ void AAuraPlayerController::PollInit()
 			OnGameStateBaseValidInClientDelegate.Broadcast();
 		}
 	}
+}
+
+void AAuraPlayerController::OnMenuActionStarted(EGameMenuType GameMenuType)
+{
+	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())
+	{
+		AuraHUD->OpenMenu(GameMenuType);
+	}
+}
+
+void AAuraPlayerController::OnCloseUIActionStarted()
+{
+	OnCloseUIActionStartedDelegate.Broadcast();
 }
 
 void AAuraPlayerController::AbilityInputPressed(FGameplayTag InputTag, int32 InputID)

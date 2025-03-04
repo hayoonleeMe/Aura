@@ -16,3 +16,22 @@ void AAuraHUD::InitOverlay()
 		GameOverlay->AddToViewport();
 	}
 }
+
+void AAuraHUD::OpenMenu(EGameMenuType GameMenuType) const
+{
+	if (GameOverlay)
+	{
+		if (GameMenuType == EGameMenuType::AttributeMenu)
+		{
+			GameOverlay->OpenAttributeMenu();	
+		}
+		else if (GameMenuType == EGameMenuType::SpellMenu)
+		{
+			GameOverlay->OpenSpellMenu();
+		}
+		else if (GameMenuType == EGameMenuType::PauseMenu)
+		{
+			GameOverlay->OpenPauseMenu();
+		}
+	}
+}

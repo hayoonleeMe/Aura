@@ -6,9 +6,11 @@
 #include "GameplayTagContainer.h"
 #include "GameFramework/PlayerController.h"
 #include "Interface/PlayerInterface.h"
+#include "Types/GameMenuType.h"
 #include "Types/StageStatus.h"
 #include "AuraPlayerController.generated.h"
 
+class UInputAction;
 class UWidgetComponent;
 class UDamageIndicatorComponent;
 class USplineComponent;
@@ -31,6 +33,9 @@ DECLARE_DELEGATE(FOnGameEndSignature);
 // 월드에 존재하던 적이 죽음을 알리는 델레게이트
 DECLARE_DELEGATE(FOnEnemyDeadSignature);
 
+// CloseUI Input Action이 Started 되어 현재 UI를 닫아야 함을 알리는 델레게이트
+DECLARE_MULTICAST_DELEGATE(FOnCloseUIActionStartedSignature);
+
 /**
  * 
  */
@@ -52,11 +57,13 @@ public:
 
 	AActor* GetTargetActorFromCursor() const { return TargetFromCurrentFrame.Get(); }
 	
-	// 게임에서 기본으로 사용하는 Input Mode로 설정
-	void SetInGameInputMode();
-	
-	// UI 전용 Input Mode로 설정
-	void SetUIInputMode(UUserWidget* WidgetToFocus);
+	// UI IMC를 추가하고, Ability IMC를 제거한다.
+	void AddUIMappingContext() const;
+
+	// UI IMC를 제거하고, 다시 Ability IMC를 추가한다.
+	void RemoveUIMappingContext() const;
+
+	FOnCloseUIActionStartedSignature OnCloseUIActionStartedDelegate;
 
 	// Damage를 나타내는 DamageIndicator Widget을 화면에 표시한다.
 	UFUNCTION(Client, Reliable)
@@ -142,6 +149,24 @@ private:
 	void PollInit();
 	bool bValidGameStateBaseInClient = false;
 	FTimerHandle PollingTimerHandle;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
+	TObjectPtr<UInputAction> IA_AttributeMenu;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
+	TObjectPtr<UInputAction> IA_SpellMenu;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
+	TObjectPtr<UInputAction> IA_PauseMenu;
+
+	// Menu Input Action이 Started 될 때 호출되는 콜백 함수
+	void OnMenuActionStarted(EGameMenuType GameMenuType);
+	
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
+	TObjectPtr<UInputAction> IA_CloseUI;
+
+	// CloseUI Input Action이 Started 될 때 호출되는 콜백 함수
+	void OnCloseUIActionStarted();
 
 	// ============================================================================
 	// GAS
