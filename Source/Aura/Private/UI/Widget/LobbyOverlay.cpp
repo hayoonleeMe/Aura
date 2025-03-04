@@ -39,7 +39,7 @@ void ULobbyOverlay::NativeConstruct()
 
 	if (GetWorld())
 	{
-		GetWorld()->GetTimerManager().SetTimer(RefreshFriendsListTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::RequestInvitableFriendsList), FriendsListRefreshIntervalSeconds, true);
+		GetWorld()->GetTimerManager().SetTimer(RefreshFriendsListTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::RequestInvitableFriendsList), FriendsListRefreshIntervalSeconds, true, 0.f);
 	}
 }
 
