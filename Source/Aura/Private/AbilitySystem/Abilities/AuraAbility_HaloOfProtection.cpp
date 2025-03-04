@@ -20,13 +20,16 @@ FText UAuraAbility_HaloOfProtection::GetDescription(int32 Level) const
 	const FString RetStr = FString::Printf(TEXT(
 		// Title
 		"<Title>HALO OF PROTECTION</>\n\n"
+		
+		// Level
+		"<Default>Level: </><Level>%d</>\n"
 
 		// Description
 		"<Default>Reduces incoming damage by </>"
 		"<Percent>%d%%</>"),
 		
 		// Values
-		DamageReductionPercent
+		Level, DamageReductionPercent
 	);
 
 	return FText::FromString(RetStr);
