@@ -6,9 +6,11 @@
 #include "GameplayTagContainer.h"
 #include "GameFramework/PlayerController.h"
 #include "Interface/PlayerInterface.h"
+#include "Types/GameMenuType.h"
 #include "Types/StageStatus.h"
 #include "AuraPlayerController.generated.h"
 
+class UInputAction;
 class UWidgetComponent;
 class UDamageIndicatorComponent;
 class USplineComponent;
@@ -143,6 +145,17 @@ private:
 	bool bValidGameStateBaseInClient = false;
 	FTimerHandle PollingTimerHandle;
 
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
+	TObjectPtr<UInputAction> IA_AttributeMenu;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
+	TObjectPtr<UInputAction> IA_SpellMenu;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
+	TObjectPtr<UInputAction> IA_PauseMenu;
+
+	// Menu Input Action이 Started 될 때 호출되는 콜백 함수
+	void OnMenuActionStarted(EGameMenuType GameMenuType);
 	// ============================================================================
 	// GAS
 	// ============================================================================

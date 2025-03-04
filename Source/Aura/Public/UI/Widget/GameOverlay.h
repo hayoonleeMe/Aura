@@ -67,7 +67,7 @@ public:
 	TObjectPtr<USquareButton> Button_AttributeMenu;
 
 	UFUNCTION()
-	void OnAttributeMenuButtonClicked();
+	void OpenAttributeMenu();
 
 	UPROPERTY(EditDefaultsOnly, Category="Attribute Menu")
 	TSubclassOf<UAttributeMenu> AttributeMenuClass;
@@ -87,7 +87,7 @@ public:
 	TObjectPtr<USquareButton> Button_SpellMenu;
 
 	UFUNCTION()
-	void OnSpellMenuButtonClicked();
+	void OpenSpellMenu();
 
 	UPROPERTY(EditDefaultsOnly, Category="Spell Menu")
 	TSubclassOf<USpellMenu> SpellMenuClass;
@@ -110,7 +110,7 @@ public:
 	TObjectPtr<USquareButton> Button_PauseMenu;
 
 	UFUNCTION()
-	void OnPauseMenuButtonClicked();
+	void OpenPauseMenu();
 	
 	UPROPERTY(EditDefaultsOnly, Category="Pause Menu")
 	TSubclassOf<UPauseMenu> PauseMenuClass;

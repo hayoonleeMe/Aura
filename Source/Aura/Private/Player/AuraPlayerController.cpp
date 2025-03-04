@@ -13,6 +13,7 @@
 #include "Input/AuraInputComponent.h"
 #include "Interface/InteractionInterface.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "UI/HUD/AuraHUD.h"
 #include "UI/Widget/DamageIndicatorComponent.h"
 
 void AAuraPlayerController::PlayerTick(float DeltaTime)
@@ -194,6 +195,22 @@ void AAuraPlayerController::SetupInputComponent()
 	{
 		GetWorldTimerManager().SetTimer(PollingTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::PollInit), 0.1f,true);
 	}
+
+	UAuraInputComponent* AuraInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
+	
+	// Bind Common Context
+	if (IA_AttributeMenu)
+	{
+		AuraInputComponent->BindAction(IA_AttributeMenu, ETriggerEvent::Started, this, &ThisClass::OnMenuActionStarted, EGameMenuType::AttributeMenu);
+	}
+	if (IA_SpellMenu)
+	{
+		AuraInputComponent->BindAction(IA_SpellMenu, ETriggerEvent::Started, this, &ThisClass::OnMenuActionStarted, EGameMenuType::SpellMenu);
+	}
+	if (IA_PauseMenu)
+	{
+		AuraInputComponent->BindAction(IA_PauseMenu, ETriggerEvent::Started, this, &ThisClass::OnMenuActionStarted, EGameMenuType::PauseMenu);
+	}
 }
 
 void AAuraPlayerController::OnPossess(APawn* InPawn)
@@ -232,6 +249,14 @@ void AAuraPlayerController::PollInit()
 			// Notify for client
 			OnGameStateBaseValidInClientDelegate.Broadcast();
 		}
+	}
+}
+
+void AAuraPlayerController::OnMenuActionStarted(EGameMenuType GameMenuType)
+{
+	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())
+	{
+		AuraHUD->OpenMenu(GameMenuType);
 	}
 }
 

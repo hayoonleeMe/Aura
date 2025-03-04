@@ -39,9 +39,9 @@ void UGameOverlay::NativeConstruct()
 	check(StageStartAlertClass);
 
 	/* Game Overlay */
-	Button_AttributeMenu->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnAttributeMenuButtonClicked);
-	Button_SpellMenu->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnSpellMenuButtonClicked);
-	Button_PauseMenu->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnPauseMenuButtonClicked);
+	Button_AttributeMenu->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OpenAttributeMenu);
+	Button_SpellMenu->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OpenSpellMenu);
+	Button_PauseMenu->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OpenPauseMenu);
 
 	AAuraPlayerController* AuraPC = CastChecked<AAuraPlayerController>(GetOwningPlayer());
 	AuraPC->OnStageStatusChangedDelegate.BindUObject(this, &ThisClass::OnStageStatusChanged);
@@ -118,8 +118,13 @@ void UGameOverlay::OnGameEnd()
 	}
 }
 
-void UGameOverlay::OnAttributeMenuButtonClicked()
+void UGameOverlay::OpenAttributeMenu()
 {
+	if (PauseMenu)
+	{
+		return;
+	}
+	
 	if (AttributeMenu)
 	{
 		AttributeMenu->RemoveFromParent();
@@ -166,8 +171,13 @@ void UGameOverlay::OnAttributePointsChanged(int32 Value) const
 	}
 }
 
-void UGameOverlay::OnSpellMenuButtonClicked()
+void UGameOverlay::OpenSpellMenu()
 {
+	if (PauseMenu)
+	{
+		return;
+	}
+	
 	if (SpellMenu)
 	{
 		SpellMenu->RemoveFromParent();
@@ -230,7 +240,7 @@ void UGameOverlay::OnEquippedSpellChanged(bool bEquipped, const FGameplayTag& In
 	}
 }
 
-void UGameOverlay::OnPauseMenuButtonClicked()
+void UGameOverlay::OpenPauseMenu()
 {
 	if (AttributeMenu)
 	{
