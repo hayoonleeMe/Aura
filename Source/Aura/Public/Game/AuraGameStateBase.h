@@ -33,6 +33,9 @@ public:
 	TObjectPtr<UInputMappingContext> CommonContext;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	TObjectPtr<UInputMappingContext> UIContext;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	TObjectPtr<UAuraInputConfig> AuraInputConfig;
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
