@@ -9,6 +9,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Aura/Aura.h"
 #include "Character/AuraEnemy.h"
+#include "Framework/Application/NavigationConfig.h"
 #include "Game/AuraGameStateBase.h"
 #include "Input/AuraInputComponent.h"
 #include "Interface/InteractionInterface.h"
@@ -171,6 +172,11 @@ void AAuraPlayerController::ClientEndGame_Implementation()
 void AAuraPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Disable Navigation
+	FSlateApplication::Get().GetNavigationConfig()->bTabNavigation = false;
+	FSlateApplication::Get().GetNavigationConfig()->bAnalogNavigation = false;
+	FSlateApplication::Get().GetNavigationConfig()->bKeyNavigation = false;
 
 	const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr;
 	check(AuraGameStateBase);

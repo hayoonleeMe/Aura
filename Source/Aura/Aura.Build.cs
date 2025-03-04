@@ -27,7 +27,8 @@ public class Aura : ModuleRules
 			"OnlineSubsystem",
 			"LevelSequence",
 			"MovieScene",
-			"SlateCore"
+			"SlateCore",
+			"Slate"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
