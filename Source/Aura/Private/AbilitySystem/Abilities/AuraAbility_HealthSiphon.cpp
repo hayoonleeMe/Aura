@@ -24,11 +24,14 @@ FText UAuraAbility_HealthSiphon::GetDescription(int32 Level) const
 		// Title
 		"<Title>HEALTH SIPHON</>\n\n"
 
+		// Level
+		"<Default>Level: </><Level>%d</>\n"
+
 		// Description
 		"<Default>Restores </><Percent>%d%%</><Default> of the damage dealt as health.</>"),
 
 		// Values
-		DrainPercent
+		Level, DrainPercent
 	);
 
 	return FText::FromString(RetStr);
