@@ -61,15 +61,13 @@ void AFireBolt_Pooled::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent,
 		if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 		{
 			DamageEffectParams.TargetAbilitySystemComponent = TargetASC;	
-			if (UAuraBlueprintLibrary::ApplyDamageEffect(DamageEffectParams))
-			{
-				// 성공적으로 데미지를 입힐 때 Impact Cue 실행 
-				if (ImpactCueTag.IsValid())
-				{
-					UAuraBlueprintLibrary::ExecuteGameplayCue(GetOwner(), ImpactCueTag, GetActorLocation());
-				}
-			}
+			UAuraBlueprintLibrary::ApplyDamageEffect(DamageEffectParams);
 		}
+	}
+
+	if (ImpactCueTag.IsValid())
+	{
+		UAuraBlueprintLibrary::ExecuteGameplayCue(GetOwner(), ImpactCueTag, GetActorLocation());
 	}
 
 	PooledActorComponent->SetInUse(false);
