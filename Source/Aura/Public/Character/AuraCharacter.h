@@ -9,6 +9,7 @@
 #include "Interface/PlayerInterface.h"
 #include "AuraCharacter.generated.h"
 
+class UWidgetComponent;
 class UObjectPoolComponent;
 class UNiagaraComponent;
 class UCameraComponent;
@@ -121,4 +122,15 @@ private:
 	// 리스폰 시 무적 시간
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Invincibility")
 	float RespawnInvincibilityTime;
+
+	// ============================================================================
+	// Player Nameplate
+	// ============================================================================
+
+	// 플레이어 아이디를 표시하는 위젯 컴포넌트
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UWidgetComponent> PlayerNameplateWidgetComponent;
+
+	// PlayerNameplate 위젯에 플레이어 아이디 설정
+	void InitializePlayerNameplateWidget() const;
 };

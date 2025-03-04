@@ -13,10 +13,12 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Component/ObjectPoolComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Game/StageGameMode.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
+#include "UI/Widget/PlayerNameplate.h"
 
 AAuraCharacter::AAuraCharacter()
 {
@@ -64,6 +66,13 @@ AAuraCharacter::AAuraCharacter()
 
 	/* Invincibility */
 	RespawnInvincibilityTime = 3.f;
+
+	/* Player Nameplate */
+	PlayerNameplateWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Player Nameplate Widget Component"));
+	PlayerNameplateWidgetComponent->SetupAttachment(GetRootComponent());
+	PlayerNameplateWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	PlayerNameplateWidgetComponent->SetDrawAtDesiredSize(true);
+	PlayerNameplateWidgetComponent->SetRelativeLocation(FVector(0.f, 0.f, 120.f));
 }
 
 void AAuraCharacter::PossessedBy(AController* NewController)
@@ -176,6 +185,17 @@ int32 AAuraCharacter::GetLevelUpSpellPointsAward(int32 Level) const
 	return AuraPS->GetLevelUpSpellPointsAward(Level);
 }
 
+void AAuraCharacter::InitializePlayerNameplateWidget() const
+{
+	if (PlayerNameplateWidgetComponent && GetPlayerState())
+	{
+		if (const UPlayerNameplate* PlayerNameplateWidget = Cast<UPlayerNameplate>(PlayerNameplateWidgetComponent->GetWidget()))
+		{
+			PlayerNameplateWidget->SetPlayerName(GetPlayerState()->GetPlayerName());
+		}
+	}
+}
+
 AActor* AAuraCharacter::SpawnFromPool(const TSubclassOf<AActor>& Class, const FTransform& SpawnTransform)
 {
 	if (Class->IsChildOf(AFireBolt_Pooled::StaticClass()))
@@ -275,6 +295,9 @@ void AAuraCharacter::InitAbilityActorInfo()
 		InitializeAttributes();
 	}
 	AuraASC->SetInitialized();
+
+	// 캐릭터 스폰 시 생명 주기 함수 호출이 어긋나므로 다음 프레임에 호출해 해결
+	GetWorldTimerManager().SetTimerForNextTick(FTimerDelegate::CreateUObject(this, &ThisClass::InitializePlayerNameplateWidget));
 }
 
 void AAuraCharacter::InitializeAttributes()

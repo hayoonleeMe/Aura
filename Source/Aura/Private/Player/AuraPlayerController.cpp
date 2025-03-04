@@ -50,7 +50,7 @@ void AAuraPlayerController::IndicateAbilityActivateCostFail()
 	if (CostCastFailIndicatorComponent)
 	{
 		CostCastFailIndicatorComponent->SetupAttachment(GetPawn()->GetRootComponent());
-		CostCastFailIndicatorComponent->SetRelativeLocation(FVector(0.f, 0.f, GetPawn()->GetDefaultHalfHeight() + 10.f));
+		CostCastFailIndicatorComponent->SetRelativeLocation(FVector(0.f, 0.f, GetPawn()->GetDefaultHalfHeight() * 2.f));
 		CostCastFailIndicatorComponent->RegisterComponent();
 	}
 }
@@ -67,7 +67,7 @@ void AAuraPlayerController::IndicateAbilityActivateCooldownFail()
 	if (CooldownCastFailIndicatorComponent)
 	{
 		CooldownCastFailIndicatorComponent->SetupAttachment(GetPawn()->GetRootComponent());
-		CooldownCastFailIndicatorComponent->SetRelativeLocation(FVector(0.f, 0.f, GetPawn()->GetDefaultHalfHeight() + 10.f));
+		CooldownCastFailIndicatorComponent->SetRelativeLocation(FVector(0.f, 0.f, GetPawn()->GetDefaultHalfHeight() * 2.f));
 		CooldownCastFailIndicatorComponent->RegisterComponent();
 	}
 }
