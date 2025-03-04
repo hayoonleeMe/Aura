@@ -27,22 +27,6 @@ AAuraGameStateBase* UAuraUserWidget::GetAuraGameStateBaseChecked() const
 	return CastChecked<AAuraGameStateBase>(GameStateBase);
 }
 
-void UAuraUserWidget::SetInGameInputMode() const
-{
-	if (AAuraPlayerController* AuraPC = GetOwningPlayer<AAuraPlayerController>())
-	{
-		AuraPC->SetInGameInputMode();
-	}
-}
-
-void UAuraUserWidget::SetUIInputMode(UUserWidget* WidgetToFocus) const
-{
-	if (AAuraPlayerController* AuraPC = GetOwningPlayer<AAuraPlayerController>())
-	{
-		AuraPC->SetUIInputMode(WidgetToFocus);
-	}
-}
-
 void UAuraUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();

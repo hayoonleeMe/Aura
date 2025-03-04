@@ -100,24 +100,6 @@ void AAuraPlayerController::CursorTrace()
 	}
 }
 
-void AAuraPlayerController::SetInGameInputMode()
-{
-	FInputModeGameAndUI InputMode;
-	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-	InputMode.SetHideCursorDuringCapture(false);
-	SetInputMode(InputMode);
-}
-
-void AAuraPlayerController::SetUIInputMode(UUserWidget* WidgetToFocus)
-{
-	FInputModeUIOnly InputMode;
-	if (WidgetToFocus)
-	{
-		InputMode.SetWidgetToFocus(WidgetToFocus->TakeWidget());
-	}
-	SetInputMode(InputMode);
-}
-
 void AAuraPlayerController::AddUIMappingContext() const
 {
 	if (const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr)
@@ -204,7 +186,11 @@ void AAuraPlayerController::BeginPlay()
 	}
 
 	bShowMouseCursor = true;
-	SetInGameInputMode();
+	
+	FInputModeGameAndUI InputMode;
+	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+	InputMode.SetHideCursorDuringCapture(false);
+	SetInputMode(InputMode);
 }
 
 void AAuraPlayerController::SetupInputComponent()

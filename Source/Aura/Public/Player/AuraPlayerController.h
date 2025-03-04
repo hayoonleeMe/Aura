@@ -57,12 +57,6 @@ public:
 
 	AActor* GetTargetActorFromCursor() const { return TargetFromCurrentFrame.Get(); }
 	
-	// 게임에서 기본으로 사용하는 Input Mode로 설정
-	void SetInGameInputMode();
-	
-	// UI 전용 Input Mode로 설정
-	void SetUIInputMode(UUserWidget* WidgetToFocus);
-
 	// UI IMC를 추가하고, Ability IMC를 제거한다.
 	void AddUIMappingContext() const;
 

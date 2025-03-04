@@ -129,7 +129,6 @@ void UGameOverlay::OpenAttributeMenu()
 	{
 		AttributeMenu->RemoveFromParent();
 		AttributeMenu = nullptr;
-		SetInGameInputMode();
 	}
 	else
 	{
@@ -151,16 +150,12 @@ void UGameOverlay::OpenAttributeMenu()
 			AttributeMenu->SetPositionInViewport(ViewportSize * 0.5f);
 		}
 		AttributeMenu->AddToViewport();
-
-		// Set Input Mode
-		SetUIInputMode(AttributeMenu);
 	}
 }
 
 void UGameOverlay::OnAttributeMenuClosed()
 {
 	AttributeMenu = nullptr;
-	SetInGameInputMode();
 }
 
 void UGameOverlay::OnAttributePointsChanged(int32 Value) const
@@ -182,7 +177,6 @@ void UGameOverlay::OpenSpellMenu()
 	{
 		SpellMenu->RemoveFromParent();
 		SpellMenu = nullptr;
-		SetInGameInputMode();
 	}
 	else
 	{
@@ -204,16 +198,12 @@ void UGameOverlay::OpenSpellMenu()
 			SpellMenu->SetPositionInViewport(ViewportSize * 0.5f);
 		}
 		SpellMenu->AddToViewport();
-
-		// Set Input Mode
-		SetUIInputMode(SpellMenu);
 	}
 }
 
 void UGameOverlay::OnSpellMenuClosed()
 {
 	SpellMenu = nullptr;
-	SetInGameInputMode();
 }
 
 void UGameOverlay::OnSpellPointsChanged(int32 Value) const
@@ -260,15 +250,11 @@ void UGameOverlay::OpenPauseMenu()
 
 	// GameOverlay 숨김
 	SetRenderOpacity(0.f);
-	
-	// Set Input Mode
-	SetUIInputMode(PauseMenu);
 }
 
 void UGameOverlay::OnPauseMenuClosed()
 {
 	PauseMenu = nullptr;
-	SetInGameInputMode();
 	SetRenderOpacity(1.f);
 }
 
