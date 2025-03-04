@@ -166,11 +166,13 @@ void AAuraPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr;
-	check(AuraGameStateBase && AuraGameStateBase->AuraContext);
+	check(AuraGameStateBase);
+	check(AuraGameStateBase->AbilityContext);
 	
+	// Add Input Mapping Context
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
-		Subsystem->AddMappingContext(AuraGameStateBase->AuraContext, 0);
+		Subsystem->AddMappingContext(AuraGameStateBase->AbilityContext, 0);
 	}
 
 	bShowMouseCursor = true;
@@ -181,6 +183,7 @@ void AAuraPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
+	// Bind Ability Context
 	if (HasAuthority())
 	{
 		BindAbilityInput();

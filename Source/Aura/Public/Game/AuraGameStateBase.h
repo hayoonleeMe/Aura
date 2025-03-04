@@ -27,7 +27,7 @@ public:
 	AAuraGameStateBase();
 	
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
-	TObjectPtr<UInputMappingContext> AuraContext;
+	TObjectPtr<UInputMappingContext> AbilityContext;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	TObjectPtr<UAuraInputConfig> AuraInputConfig;
