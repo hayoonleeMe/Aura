@@ -8,11 +8,13 @@
 #include "NiagaraComponent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Actor/FireBolt_Pooled.h"
+#include "Aura/Aura.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Component/ObjectPoolComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Game/StageGameMode.h"
 #include "Player/AuraPlayerController.h"
@@ -73,6 +75,17 @@ AAuraCharacter::AAuraCharacter()
 	PlayerNameplateWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	PlayerNameplateWidgetComponent->SetDrawAtDesiredSize(true);
 	PlayerNameplateWidgetComponent->SetRelativeLocation(FVector(0.f, 0.f, 120.f));
+
+	/* Obstacle Check */
+	ObstacleCheckBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Obstacle Check Box"));
+	ObstacleCheckBox->SetupAttachment(SpringArmComponent);
+	ObstacleCheckBox->SetBoxExtent(FVector(350.f, 600.f, 140.f));
+	ObstacleCheckBox->SetRelativeLocation(FVector(630.f, 0.f, -50.f));
+	ObstacleCheckBox->SetCollisionObjectType(ECC_OnlyWall);
+	ObstacleCheckBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	ObstacleCheckBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+	ObstacleCheckBox->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Overlap);
+	ObstacleCheckBox->SetGenerateOverlapEvents(true);
 }
 
 void AAuraCharacter::PossessedBy(AController* NewController)

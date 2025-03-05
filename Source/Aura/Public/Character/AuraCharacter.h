@@ -9,6 +9,7 @@
 #include "Interface/PlayerInterface.h"
 #include "AuraCharacter.generated.h"
 
+class UBoxComponent;
 class UWidgetComponent;
 class UObjectPoolComponent;
 class UNiagaraComponent;
@@ -133,4 +134,11 @@ private:
 
 	// PlayerNameplate 위젯에 플레이어 아이디 설정
 	void InitializePlayerNameplateWidget() const;
+
+	// ============================================================================
+	// Obstacle Check
+	// ============================================================================
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UBoxComponent> ObstacleCheckBox;
 };
