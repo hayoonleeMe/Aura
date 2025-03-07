@@ -7,7 +7,6 @@
 #include "AuraGameplayTags.h"
 #include "NiagaraComponent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
-#include "Actor/FireBolt_Pooled.h"
 #include "Aura/Aura.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -209,9 +208,9 @@ void AAuraCharacter::InitializePlayerNameplateWidget() const
 	}
 }
 
-AActor* AAuraCharacter::SpawnFromPool(const TSubclassOf<AActor>& Class, const FTransform& SpawnTransform)
+AActor* AAuraCharacter::SpawnFromPool(EPooledActorType PooledActorType, const FTransform& SpawnTransform)
 {
-	if (Class->IsChildOf(AFireBolt_Pooled::StaticClass()))
+	if (PooledActorType == EPooledActorType::FireBolt)
 	{
 		return FireBoltPoolComponent->SpawnFromPool(SpawnTransform);
 	}

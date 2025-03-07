@@ -180,7 +180,7 @@ void UAuraAbility_FireBolt::SpawnFireBolts() const
 		// Object Pooling instead of spawn actor
 		if (IObjectPoolInterface* ObjectPoolInterface = Cast<IObjectPoolInterface>(AvatarActor))
 		{
-			if (AAuraProjectile* AuraProjectile = ObjectPoolInterface->SpawnFromPool<AAuraProjectile>(ProjectileClass, SpawnTransform))
+			if (AAuraProjectile* AuraProjectile = ObjectPoolInterface->SpawnFromPool<AAuraProjectile>(EPooledActorType::FireBolt, SpawnTransform))
 			{
 				// Projectile로 데미지를 입히기 위해 설정
 				MakeDamageEffectParams(AuraProjectile->DamageEffectParams, nullptr);
