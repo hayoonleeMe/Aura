@@ -12,6 +12,8 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/PlayerController.h"
 
+const FVector UAuraAbility_ClickToMove::ProjectBoxExtent(1000.f);
+
 UAuraAbility_ClickToMove::UAuraAbility_ClickToMove()
 {
 	AbilityTags.AddTag(AuraGameplayTags::Abilities_ClickToMove);
@@ -54,12 +56,23 @@ void UAuraAbility_ClickToMove::InputPressed(const FGameplayAbilitySpecHandle Han
 			return;
 		}
 
-		// 경로 계산
-		if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(Pawn, Pawn->GetActorLocation(), CursorHit.ImpactPoint))
+		if (UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld()))
 		{
-			PathIndex = 0;
-			NavPaths = MoveTemp(NavPath->PathPoints);
-			if (NavPaths.IsEmpty())
+			FNavLocation ProjectedLocation;
+			if (NavSystem->ProjectPointToNavigation(CursorHit.ImpactPoint, ProjectedLocation, ProjectBoxExtent))
+			{
+				// 유효한 위치에 Project하면 경로 계산
+				if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(Pawn, Pawn->GetActorLocation(), ProjectedLocation))
+				{
+					PathIndex = 0;
+					NavPaths = MoveTemp(NavPath->PathPoints);
+					if (NavPaths.IsEmpty())
+					{
+						return;
+					}
+				}
+			}
+			else
 			{
 				return;
 			}
