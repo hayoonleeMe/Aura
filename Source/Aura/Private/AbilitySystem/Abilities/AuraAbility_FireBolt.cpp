@@ -9,6 +9,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AbilityTasks/AbilityTask_TargetDataUnderMouse.h"
 #include "Actor/AuraProjectile.h"
+#include "Aura/Aura.h"
 #include "Interface/ObjectPoolInterface.h"
 
 UAuraAbility_FireBolt::UAuraAbility_FireBolt()
@@ -153,6 +154,15 @@ void UAuraAbility_FireBolt::SpawnFireBolts() const
 	TArray<FVector> Directions;
 	UAuraBlueprintLibrary::GetSpreadDirections(Directions, NumFireBolts, SpreadAngle, CentralDirection);
 
+	// Enemy가 가까우면 항상 FireBolt가 적중하도록 SpawnLocation 보정
+	FVector SpawnLocation = CombatSocketLocation;
+	const FVector NearForwardLocation = AvatarActor->GetActorLocation() + AvatarActor->GetActorForwardVector() * 50.f;
+	const FCollisionQueryParams QueryParams("", false, AvatarActor);
+	if (GetWorld()->OverlapAnyTestByChannel(NearForwardLocation, FQuat::Identity, ECC_Target, FCollisionShape::MakeSphere(30.f), QueryParams))
+	{
+		SpawnLocation = NearForwardLocation;
+	}
+
 	// 각 방향으로 발사
 	for (const FVector& Direction : Directions)
 	{
@@ -163,9 +173,8 @@ void UAuraAbility_FireBolt::SpawnFireBolts() const
 			Rotation.Pitch = PitchOverride;
 		}
 
-		// CombatSocket에서 Projectile 발사
 		FTransform SpawnTransform;
-		SpawnTransform.SetLocation(CombatSocketLocation);
+		SpawnTransform.SetLocation(SpawnLocation);
 		SpawnTransform.SetRotation(Rotation.Quaternion());
 
 		// Object Pooling instead of spawn actor
