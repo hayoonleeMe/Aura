@@ -9,7 +9,6 @@ UAuraProjectileAbility::UAuraProjectileAbility()
 {
 	bOverridePitch = false;
 	PitchOverride = 0.f;
-	bUseCharacterLocationForDirection = false;
 }
 
 void UAuraProjectileAbility::SpawnProjectile(const FVector& TargetLocation, const FVector& CombatSocketLocation)
@@ -22,8 +21,7 @@ void UAuraProjectileAbility::SpawnProjectile(const FVector& TargetLocation, cons
 	check(ProjectileClass);
 
 	// Projectile 발사 방향 계산
-	const FVector StartLocation = bUseCharacterLocationForDirection ? AvatarActor->GetActorLocation() : CombatSocketLocation;
-	FRotator Rotation = (TargetLocation - StartLocation).Rotation();
+	FRotator Rotation = (TargetLocation - CombatSocketLocation).Rotation();
 	Rotation.Roll = 0.f;
 	if (bOverridePitch)
 	{
