@@ -40,6 +40,9 @@ private:
 	float InputDelay;
 	uint8 bProcessInput : 1;
 
+	// 마우스 커서 위치를 NavMesh 상의 위치로 보정하기 위해 사용되는 BoxExtent
+	static const FVector ProjectBoxExtent;
+
 	// ============================================================================
 	// Effect
 	// ============================================================================
