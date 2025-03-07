@@ -101,6 +101,7 @@ namespace AuraGameplayTags
 	// ============================================================================
 
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_FireBolt);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_FireBall);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_ChainLightning);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_ArcaneSpike);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_EnemyAttack);
@@ -121,6 +122,7 @@ namespace AuraGameplayTags
 
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive_FireBolt);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive_FireBall);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive_ChainLightning);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive_ArcaneSpike);
 
@@ -147,6 +149,7 @@ namespace AuraGameplayTags
 	// ============================================================================
 
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_ArcaneSpike);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_FireBall);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Melee_GoblinSpear);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Melee_DemonWarrior);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Melee_Ghoul);
@@ -159,6 +162,7 @@ namespace AuraGameplayTags
 	// ============================================================================
 
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_FireBoltImpact);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_FireBallImpact);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_EnemyMeleeImpact);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_RockImpact);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_LevelUp);
