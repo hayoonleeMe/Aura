@@ -10,15 +10,10 @@ void UToolTip_XPBar::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	{
-		const FString Format = TEXT("<Tan>Level {Level} </><Normal>({Percent}%)</>");
-		const int32 Percent = FMath::TruncToInt32(UKismetMathLibrary::SafeDivide(XP, XPRequirement) * 100.f);
-		const FText Text = FText::Format(FTextFormat::FromString(Format), Level, Percent);
-		Text_Level->SetText(Text);
-	}
-	{
-		const FString Format = TEXT("<Tan>XP: </><Normal>{XP} </><Tan>/ Next Level: </><Normal>{XPRequirement}</>");
-		const FText Text = FText::Format(FTextFormat::FromString(Format), FMath::TruncToInt32(XP), FMath::TruncToInt32(XPRequirement));
-		Text_XP->SetText(Text);
-	}
+	const int32 Percent = FMath::TruncToInt32(UKismetMathLibrary::SafeDivide(XP, XPRequirement) * 100.f);
+	const FString LevelString = FString::Printf(TEXT("<Tan>Level %d </><Normal>(%d%%)</>"), Level, Percent);
+	Text_Level->SetText(FText::FromString(LevelString));
+
+	const FString XPString = FString::Printf(TEXT("<Tan>XP: </><Normal>%d </><Tan>/ Next Level: </><Normal>%d</>"), FMath::TruncToInt32(XP), FMath::TruncToInt32(XPRequirement));
+	Text_XP->SetText(FText::FromString(XPString));
 }
