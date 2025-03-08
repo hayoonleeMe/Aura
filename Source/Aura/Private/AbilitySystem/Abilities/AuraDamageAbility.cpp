@@ -81,7 +81,10 @@ void UAuraDamageAbility::FinishMontage()
 
 void UAuraDamageAbility::OnEventReceived(FGameplayEventData Payload)
 {
-	K2_CommitAbility();
+	if (HasAuthority(&CurrentActivationInfo))
+	{
+		K2_CommitAbility();
+	}
 }
 
 void UAuraDamageAbility::FinishAttack()
