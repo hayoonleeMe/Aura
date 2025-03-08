@@ -3,24 +3,23 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AuraUserWidget.h"
+#include "Blueprint/UserWidget.h"
 #include "EnemyHealthBar.generated.h"
 
+class UAttributeSet;
+class UAbilitySystemComponent;
 class UProgressBar;
 
 /**
  * 
  */
 UCLASS()
-class AURA_API UEnemyHealthBar : public UAuraUserWidget
+class AURA_API UEnemyHealthBar : public UUserWidget
 {
 	GENERATED_BODY()
 
-protected:
-	virtual void BroadcastInitialValues() override;
-
 public:
-	void InitializeHealthBar(AActor* OwnerEnemy);
+	void InitializeHealthBar(UAbilitySystemComponent* ASC, const UAttributeSet* AS);
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UProgressBar> ProgressBar;

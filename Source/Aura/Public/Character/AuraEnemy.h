@@ -90,7 +90,7 @@ protected:
 	TObjectPtr<UWidgetComponent> HealthBarComponent;
 
 	// HealthBar 업데이트를 위한 초기화 수행
-	void InitializeForHealthBar();
+	void InitializeForHealthBar() const;
 
 	// ============================================================================
 	// Dead
