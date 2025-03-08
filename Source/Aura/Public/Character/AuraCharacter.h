@@ -68,6 +68,12 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UObjectPoolComponent> FireBoltPoolComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UObjectPoolComponent> FireBallPoolComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UObjectPoolComponent> EmberBoltPoolComponent;
 	
 	// ============================================================================
 	// Effects

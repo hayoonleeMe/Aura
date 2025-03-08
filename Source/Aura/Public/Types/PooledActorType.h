@@ -8,5 +8,7 @@
 UENUM()
 enum class EPooledActorType : uint8
 {
-    FireBolt
+    FireBolt,
+	FireBall,
+	EmberBolt
 };

@@ -33,6 +33,14 @@ AAuraCharacter::AAuraCharacter()
 	FireBoltPoolComponent = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("Projectile Pool Component"));
 	FireBoltPoolComponent->SetPoolSize(100);
 	FireBoltPoolComponent->bAutoActivate = true;
+
+	FireBallPoolComponent = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("FireBall Pool Component"));
+	FireBallPoolComponent->SetPoolSize(30);
+	FireBallPoolComponent->bAutoActivate = true;
+
+	EmberBoltPoolComponent = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("EmberBolt Pool Component"));
+	EmberBoltPoolComponent->SetPoolSize(90);
+	EmberBoltPoolComponent->bAutoActivate = true;
 	
 	/* Camera */
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm Component"));
@@ -213,6 +221,14 @@ AActor* AAuraCharacter::SpawnFromPool(EPooledActorType PooledActorType, const FT
 	if (PooledActorType == EPooledActorType::FireBolt)
 	{
 		return FireBoltPoolComponent->SpawnFromPool(SpawnTransform);
+	}
+	if (PooledActorType == EPooledActorType::FireBall)
+	{
+		return FireBallPoolComponent->SpawnFromPool(SpawnTransform);
+	}
+	if (PooledActorType == EPooledActorType::EmberBolt)
+	{
+		return EmberBoltPoolComponent->SpawnFromPool(SpawnTransform);
 	}
 	return nullptr;
 }
