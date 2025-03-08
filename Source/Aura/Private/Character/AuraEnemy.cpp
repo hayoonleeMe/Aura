@@ -190,13 +190,13 @@ void AAuraEnemy::InitializeEnemyLevel() const
 	}
 }
 
-void AAuraEnemy::InitializeForHealthBar()
+void AAuraEnemy::InitializeForHealthBar() const
 {
 	if (HealthBarComponent)
 	{
 		if (UEnemyHealthBar* HealthBarWidget = Cast<UEnemyHealthBar>(HealthBarComponent->GetWidget()))
 		{
-			HealthBarWidget->InitializeHealthBar(this);
+			HealthBarWidget->InitializeHealthBar(AbilitySystemComponent, AttributeSet);
 		}
 	}
 }

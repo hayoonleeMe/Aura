@@ -3,17 +3,17 @@
 
 #include "UI/Widget/EnemyHealthBar.h"
 
-#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Components/ProgressBar.h"
 #include "Interface/CombatInterface.h"
 #include "Kismet/KismetMathLibrary.h"
 
-void UEnemyHealthBar::InitializeHealthBar(AActor* OwnerEnemy)
+void UEnemyHealthBar::InitializeHealthBar(UAbilitySystemComponent* ASC, const UAttributeSet* AS)
 {
-	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OwnerEnemy));
-	check(AuraASC);
+	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(ASC);
+	const UAuraAttributeSet* AuraAS = CastChecked<UAuraAttributeSet>(AS);
+	
 	AuraASC->GetGameplayAttributeValueChangeDelegate(UAuraAttributeSet::GetHealthAttribute()).AddWeakLambda(this, [this](const FOnAttributeChangeData& Data)
 	{
 		UpdateHealth(Data.NewValue);
@@ -23,17 +23,11 @@ void UEnemyHealthBar::InitializeHealthBar(AActor* OwnerEnemy)
 		UpdateMaxHealth(Data.NewValue);
 	});
 
-	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(OwnerEnemy))
+	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(AuraASC->GetAvatarActor_Direct()))
 	{
 		CombatInterface->GetOnCharacterDeadDelegate()->AddDynamic(this, &ThisClass::OnOwnerDead);
 	}
 
-	BroadcastInitialValues();
-}
-
-void UEnemyHealthBar::BroadcastInitialValues()
-{
-	const UAuraAttributeSet* AuraAS = GetOwnerAuraAttributeSetChecked();
 	UpdateHealth(AuraAS->GetHealth());
 	UpdateMaxHealth(AuraAS->GetMaxHealth());
 }
