@@ -74,7 +74,7 @@ AActor* UObjectPoolComponent::SpawnFromPool(const FTransform& SpawnTransform) co
 	
 	if (!PooledActorComponent || !IsValid(PooledActorComponent->GetOwner()))
 	{
-		UE_LOG(LogTemp, Error, TEXT("[ %hs ] Failed to spawn actor from pool"), __FUNCTION__);
+		UE_LOG(LogTemp, Error, TEXT("[ %hs ] Failed to spawn actor from pool in %s"), __FUNCTION__, *GetName());
 		return nullptr;	
 	}
 

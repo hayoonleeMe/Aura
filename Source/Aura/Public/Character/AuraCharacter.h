@@ -52,7 +52,7 @@ public:
 	/* End PlayerInterface */
 
 	/* Begin ObjectPoolInterface */
-	virtual AActor* SpawnFromPool(const TSubclassOf<AActor>& Class, const FTransform& SpawnTransform) override;
+	virtual AActor* SpawnFromPool(EPooledActorType PooledActorType, const FTransform& SpawnTransform) override;
 	/* End ObjectPoolInterface */
 	
 protected:
@@ -68,6 +68,12 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UObjectPoolComponent> FireBoltPoolComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UObjectPoolComponent> FireBallPoolComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UObjectPoolComponent> EmberBoltPoolComponent;
 	
 	// ============================================================================
 	// Effects

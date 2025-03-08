@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Types/PooledActorType.h"
 #include "UObject/Interface.h"
 #include "ObjectPoolInterface.generated.h"
 
@@ -21,12 +22,12 @@ class AURA_API IObjectPoolInterface
 	GENERATED_BODY()
 
 public:
-	// Class 타입에 해당하는 Object Pool에서 사용할 수 있는 Actor를 가져와 SpawnTransform을 설정하고 반환한다.
-	virtual AActor* SpawnFromPool(const TSubclassOf<AActor>& Class, const FTransform& SpawnTransform) { return nullptr; }
+	// PooledActorType에 해당하는 Object Pool에서 사용할 수 있는 Actor를 가져와 SpawnTransform을 설정하고 반환한다.
+	virtual AActor* SpawnFromPool(EPooledActorType PooledActorType, const FTransform& SpawnTransform) { return nullptr; }
 
 	template<class T>
-	T* SpawnFromPool(const TSubclassOf<AActor>& Class, const FTransform& SpawnTransform)
+	T* SpawnFromPool(EPooledActorType PooledActorType, const FTransform& SpawnTransform)
 	{
-		return Cast<T>(SpawnFromPool(Class, SpawnTransform));
+		return Cast<T>(SpawnFromPool(PooledActorType, SpawnTransform));
 	}
 };
