@@ -9,6 +9,7 @@
 #include "Components/Button.h"
 #include "Game/AuraGameStateBase.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "UI/HUD/BaseHUD.h"
 #include "UI/Widget/SquareButton.h"
 
 UPauseMenu::UPauseMenu(const FObjectInitializer& ObjectInitializer)
@@ -54,7 +55,13 @@ void UPauseMenu::OnReturnToGameButtonClicked()
 
 void UPauseMenu::OnOptionsButtonClicked()
 {
-	// TODO : Implement
+	if (const APlayerController* PC = GetOwningPlayer())
+	{
+		if (const ABaseHUD* BaseHUD = PC->GetHUD<ABaseHUD>())
+		{
+			BaseHUD->AddOptionsMenu();
+		}
+	}
 }
 
 void UPauseMenu::OnLeaveGameButtonClicked()
