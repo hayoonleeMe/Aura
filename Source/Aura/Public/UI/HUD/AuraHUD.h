@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/HUD.h"
+#include "BaseHUD.h"
 #include "Types/GameMenuType.h"
 #include "AuraHUD.generated.h"
 
@@ -16,7 +16,7 @@ class UAbilitySystemComponent;
  * Widget을 화면에 표시하고 관리하는 HUD Class
  */
 UCLASS()
-class AURA_API AAuraHUD : public AHUD
+class AURA_API AAuraHUD : public ABaseHUD
 {
 	GENERATED_BODY()
 

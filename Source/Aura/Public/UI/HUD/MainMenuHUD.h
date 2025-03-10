@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/HUD.h"
+#include "BaseHUD.h"
 #include "MainMenuHUD.generated.h"
 
 class UMainMenuOverlay;
@@ -12,7 +12,7 @@ class UMainMenuOverlay;
  * 
  */
 UCLASS()
-class AURA_API AMainMenuHUD : public AHUD
+class AURA_API AMainMenuHUD : public ABaseHUD
 {
 	GENERATED_BODY()
 
