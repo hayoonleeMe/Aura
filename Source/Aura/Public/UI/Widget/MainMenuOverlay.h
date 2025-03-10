@@ -24,6 +24,12 @@ public:
 
 	UFUNCTION()
 	void OnStartButtonClicked();
+
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<USquareButton> Button_Options;
+
+	UFUNCTION()
+	void OnOptionsButtonClicked();
 	
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<USquareButton> Button_Exit;

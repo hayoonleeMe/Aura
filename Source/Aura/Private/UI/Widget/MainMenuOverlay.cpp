@@ -6,6 +6,7 @@
 #include "MultiplayerSessionsSubsystem.h"
 #include "Components/Button.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "UI/HUD/BaseHUD.h"
 #include "UI/Widget/SquareButton.h"
 
 void UMainMenuOverlay::NativeConstruct()
@@ -13,6 +14,7 @@ void UMainMenuOverlay::NativeConstruct()
 	Super::NativeConstruct();
 
 	Button_Start->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnStartButtonClicked);
+	Button_Options->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnOptionsButtonClicked);
 	Button_Exit->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnExitButtonClicked);
 
 	if (UMultiplayerSessionsSubsystem* MultiplayerSessionsSubsystem = GetGameInstance() ? GetGameInstance()->GetSubsystem<UMultiplayerSessionsSubsystem>() : nullptr)
@@ -27,6 +29,17 @@ void UMainMenuOverlay::OnStartButtonClicked()
 	{
 		MultiplayerSessionsSubsystem->CreateSession();
 		Button_Start->SetIsEnabled(false);
+	}
+}
+
+void UMainMenuOverlay::OnOptionsButtonClicked()
+{
+	if (const APlayerController* PC = GetOwningPlayer())
+	{
+		if (const ABaseHUD* BaseHUD = PC->GetHUD<ABaseHUD>())
+		{
+			BaseHUD->AddOptionsMenu();
+		}
 	}
 }
 
