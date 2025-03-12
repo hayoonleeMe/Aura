@@ -48,12 +48,12 @@ private:
 	uint8 bFirstRun : 1;
 	
 	// 화면 밝기 옵션
-	// 0 ~ 100 => -1 ~ 3
+	// 0 ~ 10 => -1 ~ 3
 	UPROPERTY(config)
 	int32 BrightnessValue;
 
 	// 전체 음량 옵션
-	// 0 ~ 100 => 0 ~ 1
+	// 0 ~ 10 => 0 ~ 1
 	UPROPERTY(config)
 	int32 MasterVolumeValue;
 };

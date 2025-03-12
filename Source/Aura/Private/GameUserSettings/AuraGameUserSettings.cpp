@@ -11,8 +11,8 @@ void UAuraGameUserSettings::SetToDefaults()
 	Super::SetToDefaults();
 
 	bFirstRun = true;
-	BrightnessValue = 50.f;
-	MasterVolumeValue = 100.f;
+	BrightnessValue = 5.f;
+	MasterVolumeValue = 10.f;
 }
 
 void UAuraGameUserSettings::InitializeGameUserSettings(const UWorld* World)
@@ -41,7 +41,7 @@ void UAuraGameUserSettings::ApplyCustomSettings(bool bCheckForCommandLineOverrid
 		// Sound
 		if (const UAuraGameInstance* AuraGameInstance = World->GetGameInstance<UAuraGameInstance>())
 		{
-			AuraGameInstance->SetMasterSoundVolume(MasterVolumeValue / 100.f);
+			AuraGameInstance->SetMasterSoundVolume(MasterVolumeValue / 10.f);
 		}
 	}
 }
