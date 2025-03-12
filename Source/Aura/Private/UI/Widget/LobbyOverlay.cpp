@@ -7,6 +7,7 @@
 #include "Components/Button.h"
 #include "Components/ScrollBox.h"
 #include "Components/TextBlock.h"
+#include "Game/AuraGameInstance.h"
 #include "UI/Widget/FriendsListRow.h"
 #include "UI/Widget/SquareButton.h"
 
@@ -55,6 +56,12 @@ void ULobbyOverlay::NativeDestruct()
 
 void ULobbyOverlay::OnStartButtonClicked()
 {
+	// 로비에서 게임 시작 시 MainMenuMusic 중단
+	if (UAuraGameInstance* AuraGameInstance = GetGameInstance<UAuraGameInstance>())
+	{
+		AuraGameInstance->StopMainMenuMusic();
+	}
+	
 	const APlayerController* PlayerController = GetOwningPlayer();
 	if (PlayerController && PlayerController->HasAuthority() && GetWorld())
 	{
