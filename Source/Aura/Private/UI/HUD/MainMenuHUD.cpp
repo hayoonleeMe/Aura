@@ -3,6 +3,7 @@
 
 #include "UI/HUD/MainMenuHUD.h"
 
+#include "Game/AuraGameInstance.h"
 #include "UI/Widget/MainMenuOverlay.h"
 
 void AMainMenuHUD::BeginPlay()
@@ -21,5 +22,11 @@ void AMainMenuHUD::BeginPlay()
 	if (MainMenuOverlay)
 	{
 		MainMenuOverlay->AddToViewport();
+	}
+
+	// MainMenu로 진입하면 MainMenuMusic 재생
+	if (UAuraGameInstance* AuraGameInstance = GetGameInstance<UAuraGameInstance>())
+	{
+		AuraGameInstance->PlayMainMenuMusic();
 	}
 }

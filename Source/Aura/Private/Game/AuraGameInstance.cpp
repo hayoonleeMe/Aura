@@ -6,7 +6,9 @@
 #include "MultiplayerSessionsSubsystem.h"
 #include "OnlineSessionSettings.h"	// Needed
 #include "Blueprint/UserWidget.h"
+#include "Components/AudioComponent.h"
 #include "GameUserSettings/AuraGameUserSettings.h"
+#include "Kismet/GameplayStatics.h"
 #include "Sound/SoundClass.h"
 
 void UAuraGameInstance::Init()
@@ -44,6 +46,25 @@ void UAuraGameInstance::SetMasterSoundVolume(float Volume) const
 	if (MasterSoundClass)
 	{
 		MasterSoundClass->Properties.Volume = FMath::Clamp(Volume, 0.f, 1.f);
+	}
+}
+
+void UAuraGameInstance::PlayMainMenuMusic()
+{
+	if (!MainMenuMusicComponent && MainMenuMusic)
+	{
+		MainMenuMusicComponent = UGameplayStatics::CreateSound2D(GetWorld(), MainMenuMusic, 1.f, 1.f, 0.f, nullptr, true);
+		MainMenuMusicComponent->Play();
+	}
+}
+
+void UAuraGameInstance::StopMainMenuMusic()
+{
+	if (MainMenuMusicComponent)
+	{
+		MainMenuMusicComponent->Stop();
+		MainMenuMusicComponent->DestroyComponent();
+		MainMenuMusicComponent = nullptr;
 	}
 }
 
