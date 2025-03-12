@@ -4,8 +4,10 @@
 #include "Game/AuraGameInstance.h"
 
 #include "MultiplayerSessionsSubsystem.h"
-#include "OnlineSessionSettings.h"
+#include "OnlineSessionSettings.h"	// Needed
 #include "Blueprint/UserWidget.h"
+#include "GameUserSettings/AuraGameUserSettings.h"
+#include "Sound/SoundClass.h"
 
 void UAuraGameInstance::Init()
 {
@@ -16,6 +18,12 @@ void UAuraGameInstance::Init()
 	{
 		// 게임 초대를 수락하면 OnSessionUserInviteAccepted 호출하도록 연동
 		OnSessionUserInviteAcceptedDelegateHandle = SessionInterface->AddOnSessionUserInviteAcceptedDelegate_Handle(FOnSessionUserInviteAcceptedDelegate::CreateUObject(this, &ThisClass::OnSessionUserInviteAccepted));
+	}
+
+	if (UAuraGameUserSettings* AuraGameUserSettings = Cast<UAuraGameUserSettings>(GEngine ? GEngine->GetGameUserSettings() : nullptr))
+	{
+		// GameUserSettings 로드 및 적용 
+		AuraGameUserSettings->InitializeGameUserSettings(GetWorld());
 	}
 }
 
@@ -29,6 +37,14 @@ void UAuraGameInstance::Shutdown()
 	}
 	
 	Super::Shutdown();
+}
+
+void UAuraGameInstance::SetMasterSoundVolume(float Volume) const
+{
+	if (MasterSoundClass)
+	{
+		MasterSoundClass->Properties.Volume = FMath::Clamp(Volume, 0.f, 1.f);
+	}
 }
 
 void UAuraGameInstance::OnSessionUserInviteAccepted(const bool bWasSuccessful, const int32 ControllerId, FUniqueNetIdPtr UserId, const FOnlineSessionSearchResult& InviteResult)

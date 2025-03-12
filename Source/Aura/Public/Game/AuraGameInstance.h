@@ -17,6 +17,9 @@ class AURA_API UAuraGameInstance : public UGameInstance
 public:
 	virtual void Init() override;
 	virtual void Shutdown() override;
+
+	// 전체 음량 변경
+	void SetMasterSoundVolume(float Volume) const;
 	
 	// LoadingOverlay Widget을 생성하거나 제거
 	// 위젯이 레벨이 변경되도 제거되지 않도록 구현
@@ -41,4 +44,11 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UUserWidget> LoadingOverlay;
+
+	// ============================================================================
+	// Sound
+	// ============================================================================
+
+    UPROPERTY(EditAnywhere, Category="Aura|Sound")
+    TObjectPtr<USoundClass> MasterSoundClass;
 };
