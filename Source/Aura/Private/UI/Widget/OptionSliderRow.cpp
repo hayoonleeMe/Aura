@@ -11,8 +11,12 @@ void UOptionSliderRow::NativeConstruct()
 	Super::NativeConstruct();
 
 	Slider->OnValueChanged.AddDynamic(this, &ThisClass::OnSliderValueChanged);
-	Slider->SetValue(SliderValue);
-	Text_Value->SetText(FText::AsNumber(SliderValue));
+}
+
+void UOptionSliderRow::InitializeSliderValue(int32 Value) const
+{
+	Slider->SetValue(Value);
+	Text_Value->SetText(FText::AsNumber(Value));
 }
 
 void UOptionSliderRow::OnSliderValueChanged(float Value)

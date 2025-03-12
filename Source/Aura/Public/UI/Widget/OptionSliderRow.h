@@ -27,7 +27,8 @@ public:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<USlider> Slider;
 
-	int32 SliderValue = 0;
+	// 초기 Slider 값 설정
+	void InitializeSliderValue(int32 Value) const;
 
 	UFUNCTION()
 	void OnSliderValueChanged(float Value);

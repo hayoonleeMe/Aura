@@ -15,9 +15,6 @@ void UOptionComboBoxRow::NativeConstruct()
 	ComboBox->OnGenerateContentWidget.BindDynamic(this, &ThisClass::GetContentWidget);
 	ComboBox->OnGenerateItemWidget.BindDynamic(this, &ThisClass::GetItemWidget);
 	ComboBox->OnSelectionChanged.AddDynamic(this, &ThisClass::OnSelectionChanged);
-
-	// TODO : for debugging, delete
-	SetComboBoxOptions({ TEXT("Default1"), TEXT("DefaultDefault2"), TEXT("DefaultDefaultDefault3DefaultDefaultDefault3DefaultDefaultDefault3DefaultDefaultDefault3") }, TEXT("Default1"));
 }
 
 UWidget* UOptionComboBoxRow::GetContentWidget(FName Item)

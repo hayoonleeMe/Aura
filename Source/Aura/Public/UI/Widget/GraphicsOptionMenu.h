@@ -21,7 +21,7 @@ class AURA_API UGraphicsOptionMenu : public UUserWidget
 
 public:
 	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UOptionComboBoxRow> Row_Display;
+	TObjectPtr<UOptionComboBoxRow> Row_WindowMode;
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UOptionComboBoxRow> Row_Resolution;

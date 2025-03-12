@@ -19,7 +19,7 @@ void UOptionsMenu::NativeConstruct()
 	OptionTabs.Add(OptionTab_Graphics);
 	OptionTabs.Add(OptionTab_Sound);
 	
-	WidgetSwitcher->SetActiveWidgetIndex(0);
+	WidgetSwitcher->SetActiveWidget(GraphicsOptionMenu);
 	OptionTab_Graphics->Select();
 	
 	Button_Save->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnSaveButtonClicked);
