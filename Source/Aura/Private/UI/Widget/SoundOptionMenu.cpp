@@ -30,10 +30,7 @@ void USoundOptionMenu::NativeDestruct()
 	Super::NativeDestruct();
 
 	// 적용되지 않은 옵션을 원래대로 되돌림
-	if (bMasterVolumeChanged)
-	{
-		AuraGameUserSettings->SetMasterVolumeValue(OriginalSoundOptions.MasterVolume);
-	}
+	RevertChanges();
 }
 
 void USoundOptionMenu::OnOptionSaved()
@@ -42,6 +39,16 @@ void USoundOptionMenu::OnOptionSaved()
 
 	// 저장했으므로 다시 업데이트
 	OriginalSoundOptions = FOriginalSoundOptions(AuraGameUserSettings);
+}
+
+void USoundOptionMenu::RevertChanges()
+{
+	if (bMasterVolumeChanged)
+	{
+		AuraGameUserSettings->SetMasterVolumeValue(OriginalSoundOptions.MasterVolume);
+		Row_MasterVolume->InitializeSliderValue(OriginalSoundOptions.MasterVolume);
+		bMasterVolumeChanged = false;
+	}
 }
 
 bool USoundOptionMenu::HasOptionChanged() const

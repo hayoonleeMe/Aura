@@ -56,6 +56,9 @@ public:
 	// 변경사항이 적용되고 수행
 	void OnOptionSaved();
 
+	// 변경사항 되돌리기
+	void RevertChanges();
+
 	// 아직 저장되지 않은 변경된 옵션이 있는지 반환
 	bool HasOptionChanged() const;
 

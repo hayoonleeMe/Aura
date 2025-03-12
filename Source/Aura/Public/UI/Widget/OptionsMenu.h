@@ -56,10 +56,10 @@ public:
 	void OnSaveButtonClicked();
 	
 	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<USquareButton> Button_Reset;
+	TObjectPtr<USquareButton> Button_Revert;
 
 	UFUNCTION()
-	void OnResetButtonClicked();
+	void OnRevertButtonClicked();
 	
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<USquareButton> Button_Close;

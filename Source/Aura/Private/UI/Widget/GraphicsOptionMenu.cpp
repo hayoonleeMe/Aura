@@ -75,67 +75,7 @@ void UGraphicsOptionMenu::NativeDestruct()
 	Super::NativeDestruct();
 
 	// 적용되지 않은 옵션을 원래대로 되돌림
-	if(bWindowModeChanged)
-	{
-		AuraGameUserSettings->SetFullscreenMode(OriginalGraphicsOptions.WindowMode);
-	}
-	if (bResolutionChanged)
-	{
-		AuraGameUserSettings->SetScreenResolution(OriginalGraphicsOptions.Resolution);
-	}
-	if (bBrightnessChanged)
-	{
-		AuraGameUserSettings->SetBrightnessValue(OriginalGraphicsOptions.Brightness);
-	}
-	if (bVerticalSyncChanged)
-	{
-		AuraGameUserSettings->SetVSyncEnabled(OriginalGraphicsOptions.bVerticalSync);
-	}
-	if (bFPSLimitChanged)
-	{
-		AuraGameUserSettings->SetFrameRateLimit(OriginalGraphicsOptions.FPSLimit);
-	}
-	if (bPresetChanged && OriginalGraphicsOptions.Preset >= 0)
-	{
-		AuraGameUserSettings->SetOverallScalabilityLevelIgnoringResolutionQuality(OriginalGraphicsOptions.Preset);
-		bViewDistanceChanged = bAntiAliasingChanged = bPostProcessingChanged = bShadingChanged = bGlobalIlluminationChanged = bReflectionChanged = bTextureChanged = bEffectChanged = bShadingChanged = false;
-	}
-	if (bViewDistanceChanged)
-	{
-		AuraGameUserSettings->SetViewDistanceQuality(OriginalGraphicsOptions.ViewDistance);
-	}
-	if (bAntiAliasingChanged)
-	{
-		AuraGameUserSettings->SetAntiAliasingQuality(OriginalGraphicsOptions.AntiAliasing);
-	}
-	if (bPostProcessingChanged)
-	{
-		AuraGameUserSettings->SetPostProcessingQuality(OriginalGraphicsOptions.PostProcessing);
-	}
-	if (bShadowChanged)
-	{
-		AuraGameUserSettings->SetShadowQuality(OriginalGraphicsOptions.Shadow);
-	}
-	if (bGlobalIlluminationChanged)
-	{
-		AuraGameUserSettings->SetGlobalIlluminationQuality(OriginalGraphicsOptions.GlobalIllumination);
-	}
-	if (bReflectionChanged)
-	{
-		AuraGameUserSettings->SetReflectionQuality(OriginalGraphicsOptions.Reflection);
-	}
-	if (bTextureChanged)
-	{
-		AuraGameUserSettings->SetTextureQuality(OriginalGraphicsOptions.Texture);
-	}
-	if (bEffectChanged)
-	{
-		AuraGameUserSettings->SetVisualEffectQuality(OriginalGraphicsOptions.Effect);
-	}
-	if (bShadingChanged)
-	{
-		AuraGameUserSettings->SetShadingQuality(OriginalGraphicsOptions.Shading);
-	}
+	RevertChanges();
 }
 
 void UGraphicsOptionMenu::OnOptionSaved()
@@ -144,6 +84,100 @@ void UGraphicsOptionMenu::OnOptionSaved()
 
 	// 저장했으므로 다시 업데이트
 	OriginalGraphicsOptions = FOriginalGraphicsOptions(AuraGameUserSettings);
+}
+
+void UGraphicsOptionMenu::RevertChanges()
+{
+	if(bWindowModeChanged)
+	{
+		AuraGameUserSettings->SetFullscreenMode(OriginalGraphicsOptions.WindowMode);
+		Row_WindowMode->ComboBox->SetSelectedOption(WindowModeOptions[OriginalGraphicsOptions.WindowMode]);
+		bWindowModeChanged = false;
+	}
+	if (bResolutionChanged)
+	{
+		AuraGameUserSettings->SetScreenResolution(OriginalGraphicsOptions.Resolution);
+		Row_Resolution->ComboBox->SetSelectedOption(ResolutionOptions[OriginalGraphicsOptions.Resolution]);
+		bResolutionChanged = false;
+	}
+	if (bBrightnessChanged)
+	{
+		AuraGameUserSettings->SetBrightnessValue(OriginalGraphicsOptions.Brightness);
+		Row_Brightness->InitializeSliderValue(OriginalGraphicsOptions.Brightness);
+		bBrightnessChanged = false;
+	}
+	if (bVerticalSyncChanged)
+	{
+		AuraGameUserSettings->SetVSyncEnabled(OriginalGraphicsOptions.bVerticalSync);
+		Row_VerticalSync->CheckBox->SetIsChecked(OriginalGraphicsOptions.bVerticalSync);
+		bVerticalSyncChanged = false;
+	}
+	if (bFPSLimitChanged)
+	{
+		AuraGameUserSettings->SetFrameRateLimit(OriginalGraphicsOptions.FPSLimit);
+		Row_FPSLimit->ComboBox->SetSelectedOption(FPSLimitOptions[OriginalGraphicsOptions.FPSLimit]);
+		bFPSLimitChanged = false;
+	}
+	if (bPresetChanged && OriginalGraphicsOptions.Preset >= 0)
+	{
+		AuraGameUserSettings->SetOverallScalabilityLevelIgnoringResolutionQuality(OriginalGraphicsOptions.Preset);
+		Row_Preset->ComboBox->SetSelectedOption(PresetOptions[OriginalGraphicsOptions.Preset]);
+		bPresetChanged = bViewDistanceChanged = bAntiAliasingChanged = bPostProcessingChanged = bShadingChanged = bGlobalIlluminationChanged = bReflectionChanged = bTextureChanged = bEffectChanged = bShadingChanged = false;
+	}
+	if (bViewDistanceChanged)
+	{
+		AuraGameUserSettings->SetViewDistanceQuality(OriginalGraphicsOptions.ViewDistance);
+		Row_ViewDistance->ComboBox->SetSelectedOption(ViewDistanceQualityOptions[OriginalGraphicsOptions.ViewDistance]);
+		bViewDistanceChanged = false;
+	}
+	if (bAntiAliasingChanged)
+	{
+		AuraGameUserSettings->SetAntiAliasingQuality(OriginalGraphicsOptions.AntiAliasing);
+		Row_AntiAliasing->ComboBox->SetSelectedOption(OffToEpicQualityOptions[OriginalGraphicsOptions.AntiAliasing]);
+		bAntiAliasingChanged = false;
+	}
+	if (bPostProcessingChanged)
+	{
+		AuraGameUserSettings->SetPostProcessingQuality(OriginalGraphicsOptions.PostProcessing);
+		Row_PostProcessing->ComboBox->SetSelectedOption(LowToEpicQualityOptions[OriginalGraphicsOptions.PostProcessing]);
+		bPostProcessingChanged = false;
+	}
+	if (bShadowChanged)
+	{
+		AuraGameUserSettings->SetShadowQuality(OriginalGraphicsOptions.Shadow);
+		Row_Shadows->ComboBox->SetSelectedOption(OffToEpicQualityOptions[OriginalGraphicsOptions.Shadow]);
+		bShadowChanged = false;
+	}
+	if (bGlobalIlluminationChanged)
+	{
+		AuraGameUserSettings->SetGlobalIlluminationQuality(OriginalGraphicsOptions.GlobalIllumination);
+		Row_GlobalIllumination->ComboBox->SetSelectedOption(LowToEpicQualityOptions[OriginalGraphicsOptions.GlobalIllumination]);
+		bGlobalIlluminationChanged = false;
+	}
+	if (bReflectionChanged)
+	{
+		AuraGameUserSettings->SetReflectionQuality(OriginalGraphicsOptions.Reflection);
+		Row_Reflections->ComboBox->SetSelectedOption(LowToEpicQualityOptions[OriginalGraphicsOptions.Reflection]);
+		bReflectionChanged = false;
+	}
+	if (bTextureChanged)
+	{
+		AuraGameUserSettings->SetTextureQuality(OriginalGraphicsOptions.Texture);
+		Row_Textures->ComboBox->SetSelectedOption(LowToEpicQualityOptions[OriginalGraphicsOptions.Texture]);
+		bTextureChanged = false;
+	}
+	if (bEffectChanged)
+	{
+		AuraGameUserSettings->SetVisualEffectQuality(OriginalGraphicsOptions.Effect);
+		Row_Effects->ComboBox->SetSelectedOption(LowToEpicQualityOptions[OriginalGraphicsOptions.Effect]);
+		bEffectChanged = false;
+	}
+	if (bShadingChanged)
+	{
+		AuraGameUserSettings->SetShadingQuality(OriginalGraphicsOptions.Shading);
+		Row_Shading->ComboBox->SetSelectedOption(LowToEpicQualityOptions[OriginalGraphicsOptions.Shading]);
+		bShadingChanged = false;
+	}
 }
 
 bool UGraphicsOptionMenu::HasOptionChanged() const

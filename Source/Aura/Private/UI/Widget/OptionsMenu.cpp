@@ -26,7 +26,7 @@ void UOptionsMenu::NativeConstruct()
 	OptionTab_Graphics->Select();
 	
 	Button_Save->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnSaveButtonClicked);
-	Button_Reset->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnResetButtonClicked);
+	Button_Revert->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnRevertButtonClicked);
 	Button_Close->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnCloseButtonClicked);
 
 	Button_Save->InternalButton->SetIsEnabled(false);
@@ -67,8 +67,10 @@ void UOptionsMenu::OnSaveButtonClicked()
 	Button_Save->InternalButton->SetIsEnabled(false);
 }
 
-void UOptionsMenu::OnResetButtonClicked()
+void UOptionsMenu::OnRevertButtonClicked()
 {
+	GraphicsOptionMenu->RevertChanges();
+	SoundOptionMenu->RevertChanges();
 }
 
 void UOptionsMenu::OnCloseButtonClicked()
