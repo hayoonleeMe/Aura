@@ -4,8 +4,9 @@
 #include "Game/AuraGameInstance.h"
 
 #include "MultiplayerSessionsSubsystem.h"
-#include "OnlineSessionSettings.h"
+#include "OnlineSessionSettings.h"	// Needed
 #include "Blueprint/UserWidget.h"
+#include "GameUserSettings/AuraGameUserSettings.h"
 
 void UAuraGameInstance::Init()
 {
@@ -16,6 +17,12 @@ void UAuraGameInstance::Init()
 	{
 		// 게임 초대를 수락하면 OnSessionUserInviteAccepted 호출하도록 연동
 		OnSessionUserInviteAcceptedDelegateHandle = SessionInterface->AddOnSessionUserInviteAcceptedDelegate_Handle(FOnSessionUserInviteAcceptedDelegate::CreateUObject(this, &ThisClass::OnSessionUserInviteAccepted));
+	}
+
+	if (UAuraGameUserSettings* AuraGameUserSettings = Cast<UAuraGameUserSettings>(GEngine ? GEngine->GetGameUserSettings() : nullptr))
+	{
+		// GameUserSettings 로드 및 적용 
+		AuraGameUserSettings->InitializeGameUserSettings(GetWorld());
 	}
 }
 
