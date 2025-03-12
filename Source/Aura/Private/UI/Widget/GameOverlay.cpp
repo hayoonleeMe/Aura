@@ -250,12 +250,14 @@ void UGameOverlay::OpenPauseMenu()
 
 	// GameOverlay 숨김
 	SetRenderOpacity(0.f);
+	SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UGameOverlay::OnPauseMenuClosed()
 {
 	PauseMenu = nullptr;
 	SetRenderOpacity(1.f);
+	SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 }
 
 void UGameOverlay::OnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount)
