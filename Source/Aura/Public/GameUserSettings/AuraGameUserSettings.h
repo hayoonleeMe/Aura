@@ -21,6 +21,7 @@ public:
 	
 	void SetBrightnessValue(int32 InValue) { BrightnessValue = InValue; }
 	int32 GetBrightnessValue() const { return BrightnessValue; }
+	float GetClampedBrightnessValue() const;
 
 	void SetMasterVolumeValue(int32 InValue) { MasterVolumeValue = InValue; }
 	int32 GetMasterVolumeValue() const { return MasterVolumeValue; }
@@ -48,7 +49,7 @@ private:
 	uint8 bFirstRun : 1;
 	
 	// 화면 밝기 옵션
-	// 0 ~ 10 => -1 ~ 3
+	// 0 ~ 10 => -2 ~ 2
 	UPROPERTY(config)
 	int32 BrightnessValue;
 

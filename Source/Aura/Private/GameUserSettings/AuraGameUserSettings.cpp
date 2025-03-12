@@ -3,8 +3,10 @@
 
 #include "GameUserSettings/AuraGameUserSettings.h"
 
+#include "Actor/AuraPostProcessVolume.h"
 #include "Game/AuraGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void UAuraGameUserSettings::SetToDefaults()
 {
@@ -13,6 +15,11 @@ void UAuraGameUserSettings::SetToDefaults()
 	bFirstRun = true;
 	BrightnessValue = 5.f;
 	MasterVolumeValue = 10.f;
+}
+
+float UAuraGameUserSettings::GetClampedBrightnessValue() const
+{
+	return UKismetMathLibrary::MapRangeClamped(BrightnessValue, 0.f, 10.f, -2.f, 2.f);
 }
 
 void UAuraGameUserSettings::InitializeGameUserSettings(const UWorld* World)
@@ -42,6 +49,13 @@ void UAuraGameUserSettings::ApplyCustomSettings(bool bCheckForCommandLineOverrid
 		if (const UAuraGameInstance* AuraGameInstance = World->GetGameInstance<UAuraGameInstance>())
 		{
 			AuraGameInstance->SetMasterSoundVolume(MasterVolumeValue / 10.f);
+		}
+
+		// Screen Brightness
+		if (AAuraPostProcessVolume* AuraPostProcessVolume = Cast<AAuraPostProcessVolume>(UGameplayStatics::GetActorOfClass(World, AAuraPostProcessVolume::StaticClass())))
+		{
+			// 인게임에서 변경한 경우 월드에서 찾을 수 있으므로 옵션 설정
+			AuraPostProcessVolume->ApplyBrightness(GetClampedBrightnessValue());
 		}
 	}
 }
