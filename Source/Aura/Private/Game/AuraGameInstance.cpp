@@ -7,6 +7,7 @@
 #include "OnlineSessionSettings.h"	// Needed
 #include "Blueprint/UserWidget.h"
 #include "GameUserSettings/AuraGameUserSettings.h"
+#include "Sound/SoundClass.h"
 
 void UAuraGameInstance::Init()
 {
@@ -36,6 +37,14 @@ void UAuraGameInstance::Shutdown()
 	}
 	
 	Super::Shutdown();
+}
+
+void UAuraGameInstance::SetMasterSoundVolume(float Volume) const
+{
+	if (MasterSoundClass)
+	{
+		MasterSoundClass->Properties.Volume = FMath::Clamp(Volume, 0.f, 1.f);
+	}
 }
 
 void UAuraGameInstance::OnSessionUserInviteAccepted(const bool bWasSuccessful, const int32 ControllerId, FUniqueNetIdPtr UserId, const FOnlineSessionSearchResult& InviteResult)

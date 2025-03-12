@@ -3,6 +3,7 @@
 
 #include "GameUserSettings/AuraGameUserSettings.h"
 
+#include "Game/AuraGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 
 void UAuraGameUserSettings::SetToDefaults()
@@ -35,8 +36,14 @@ void UAuraGameUserSettings::ApplyCustomSettings(bool bCheckForCommandLineOverrid
 {
 	Super::ApplySettings(bCheckForCommandLineOverrides);
 
-	// TODO : Custom 옵션 적용 
-	
+	if (World)
+	{
+		// Sound
+		if (const UAuraGameInstance* AuraGameInstance = World->GetGameInstance<UAuraGameInstance>())
+		{
+			AuraGameInstance->SetMasterSoundVolume(MasterVolumeValue / 100.f);
+		}
+	}
 }
 
 void UAuraGameUserSettings::SetGraphicOptionByAutoDetect()
