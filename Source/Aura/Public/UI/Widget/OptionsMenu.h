@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "OptionsMenu.generated.h"
 
+class UAuraGameUserSettings;
 class USoundOptionMenu;
 class UGraphicsOptionMenu;
 class UOptionTab;
@@ -65,4 +66,11 @@ public:
 
 	UFUNCTION()
 	void OnCloseButtonClicked();
+
+	// OptionMenu의 옵션이 변경될 때 호출되는 Callback
+	void OnOptionChanged();
+
+private:
+	UPROPERTY()
+	TObjectPtr<UAuraGameUserSettings> AuraGameUserSettings;
 };

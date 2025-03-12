@@ -5,6 +5,7 @@
 
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
+#include "GameUserSettings/AuraGameUserSettings.h"
 #include "UI/Widget/OptionTab.h"
 #include "UI/Widget/SquareButton.h"
 #include "UI/Widget/GraphicsOptionMenu.h"
@@ -13,6 +14,8 @@
 void UOptionsMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	AuraGameUserSettings = CastChecked<UAuraGameUserSettings>(GEngine ? GEngine->GetGameUserSettings() : nullptr);
 
 	OptionTab_Graphics->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnGraphicsTabClicked);
 	OptionTab_Sound->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnSoundTabClicked);
@@ -25,6 +28,10 @@ void UOptionsMenu::NativeConstruct()
 	Button_Save->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnSaveButtonClicked);
 	Button_Reset->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnResetButtonClicked);
 	Button_Close->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnCloseButtonClicked);
+
+	Button_Save->InternalButton->SetIsEnabled(false);
+	GraphicsOptionMenu->OnOptionChangedDelegate.AddUObject(this, &ThisClass::OnOptionChanged);
+	SoundOptionMenu->OnOptionChangedDelegate.AddUObject(this, &ThisClass::OnOptionChanged);
 }
 
 void UOptionsMenu::OnGraphicsTabClicked()
@@ -53,6 +60,11 @@ void UOptionsMenu::OnSoundTabClicked()
 
 void UOptionsMenu::OnSaveButtonClicked()
 {
+	// 옵션 적용
+	AuraGameUserSettings->ApplyCustomSettings(false, GetWorld());
+	GraphicsOptionMenu->OnOptionSaved();
+	SoundOptionMenu->OnOptionSaved();
+	Button_Save->InternalButton->SetIsEnabled(false);
 }
 
 void UOptionsMenu::OnResetButtonClicked()
@@ -62,4 +74,10 @@ void UOptionsMenu::OnResetButtonClicked()
 void UOptionsMenu::OnCloseButtonClicked()
 {
 	RemoveFromParent();
+}
+
+void UOptionsMenu::OnOptionChanged()
+{
+	// 옵션이 변경되면 Save Button 활성화/비활성화
+	Button_Save->InternalButton->SetIsEnabled(GraphicsOptionMenu->HasOptionChanged() | SoundOptionMenu->HasOptionChanged());
 }
