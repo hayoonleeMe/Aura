@@ -6,10 +6,19 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "UI/Widget/ToolTip_CurrentMaxValue.h"
+
+UHealthGlobe::UHealthGlobe(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	ToolTipWidgetDelegate.BindDynamic(this, &ThisClass::GetTooltipWidget);
+}
 
 void UHealthGlobe::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	check(ToolTipWidgetClass);
 
 	UAuraAbilitySystemComponent* AuraASC = GetOwnerAuraAbilitySystemComponentChecked();
 	AuraASC->GetGameplayAttributeValueChangeDelegate(UAuraAttributeSet::GetHealthAttribute()).AddWeakLambda(this, [this](const FOnAttributeChangeData& Data)
@@ -35,10 +44,33 @@ void UHealthGlobe::UpdateHealth(float NewValue)
 {
 	Health = NewValue;
 	TargetPercent = UKismetMathLibrary::SafeDivide(Health, MaxHealth);
+	UpdateToolTipWidget();
 }
 
 void UHealthGlobe::UpdateMaxHealth(float NewValue)
 {
 	MaxHealth = NewValue;
 	TargetPercent = UKismetMathLibrary::SafeDivide(Health, MaxHealth);
+	UpdateToolTipWidget();
+}
+
+UWidget* UHealthGlobe::GetTooltipWidget()
+{
+	if (!CachedToolTipWidget)
+	{
+		CachedToolTipWidget = CreateWidget<UToolTip_CurrentMaxValue>(this, ToolTipWidgetClass);
+	}
+	if (CachedToolTipWidget)
+	{
+		CachedToolTipWidget->UpdateValues(Health, MaxHealth);
+	}
+	return CachedToolTipWidget;
+}
+
+void UHealthGlobe::UpdateToolTipWidget() const
+{
+	if (CachedToolTipWidget)
+	{
+		CachedToolTipWidget->UpdateValues(Health, MaxHealth);
+	}
 }
