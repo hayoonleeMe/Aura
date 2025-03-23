@@ -6,10 +6,19 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "UI/Widget/ToolTip_CurrentMaxValue.h"
+
+UManaGlobe::UManaGlobe(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	ToolTipWidgetDelegate.BindDynamic(this, &ThisClass::GetTooltipWidget);
+}
 
 void UManaGlobe::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	check(ToolTipWidgetClass);
 
 	UAuraAbilitySystemComponent* AuraASC = GetOwnerAuraAbilitySystemComponentChecked();
 	AuraASC->GetGameplayAttributeValueChangeDelegate(UAuraAttributeSet::GetManaAttribute()).AddWeakLambda(this, [this](const FOnAttributeChangeData& Data)
@@ -35,10 +44,33 @@ void UManaGlobe::UpdateMana(float NewValue)
 {
 	Mana = NewValue;
 	TargetPercent = UKismetMathLibrary::SafeDivide(Mana, MaxMana);
+	UpdateToolTipWidget();
 }
 
 void UManaGlobe::UpdateMaxMana(float NewValue)
 {
 	MaxMana = NewValue;
 	TargetPercent = UKismetMathLibrary::SafeDivide(Mana, MaxMana);
+	UpdateToolTipWidget();
+}
+
+UWidget* UManaGlobe::GetTooltipWidget()
+{
+	if (!CachedToolTipWidget)
+	{
+		CachedToolTipWidget = CreateWidget<UToolTip_CurrentMaxValue>(this, ToolTipWidgetClass);
+	}
+	if (CachedToolTipWidget)
+	{
+		CachedToolTipWidget->UpdateValues(Mana, MaxMana);
+	}
+	return CachedToolTipWidget;
+}
+
+void UManaGlobe::UpdateToolTipWidget() const
+{
+	if (CachedToolTipWidget)
+	{
+		CachedToolTipWidget->UpdateValues(Mana, MaxMana);
+	}
 }
