@@ -96,12 +96,12 @@ void ABaseCharacter::BeginPlay()
 	
 }
 
-void ABaseCharacter::AddStartupAbilities(const TArray<TSubclassOf<UGameplayAbility>>& AbilityClasses) const
+void ABaseCharacter::AddStartupAbilities(const TArray<TSubclassOf<UGameplayAbility>>& AbilityClasses, int32 InLevel) const
 {
 	if (HasAuthority())
 	{
 		UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
-		AuraASC->AddAbilities(AbilityClasses);
+		AuraASC->AddAbilities(AbilityClasses, InLevel);
 	}
 }
 
