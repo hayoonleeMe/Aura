@@ -54,14 +54,14 @@ void UAuraAbilitySystemComponent::OnAbilityFailed(const UGameplayAbility* Abilit
 	}
 }
 
-void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities)
+void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities, int32 InLevel)
 {
 	const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr;
 	check(AuraGameStateBase && AuraGameStateBase->AuraInputConfig);
 	
 	for (const TSubclassOf<UGameplayAbility>& AbilityClass : Abilities)
 	{
-		FGameplayAbilitySpec AbilitySpec(AbilityClass, 1);
+		FGameplayAbilitySpec AbilitySpec(AbilityClass, InLevel);
 		if (const UAuraGameplayAbility* AuraGameplayAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
 		{
 			if (AuraGameplayAbility->StartupInputTag.IsValid())

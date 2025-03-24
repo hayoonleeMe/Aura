@@ -124,7 +124,8 @@ void AAuraEnemy::InitAbilityActorInfo()
 			AddStartupAbilities(EnemyClassConfig->SharedAbilities);
 		}
 		// 특정 Enemy에 귀속되는 GameplayAbility 추가
-		AddStartupAbilities(StartupAbilities);
+		// - Enemy Spawn Level을 따름
+		AddStartupAbilities(StartupAbilities, SpawnLevel);
 	}
 
 	// Abilities.HitReact Tag의 Added, Removed Event에 Binding

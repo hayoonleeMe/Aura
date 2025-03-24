@@ -77,7 +77,7 @@ protected:
 	virtual void InitializeAttributes() {}
 
 
-	void AddStartupAbilities(const TArray<TSubclassOf<UGameplayAbility>>& AbilityClasses) const;
+	void AddStartupAbilities(const TArray<TSubclassOf<UGameplayAbility>>& AbilityClasses, int32 InLevel = 1) const;
 
 	// ============================================================================
 	// Role

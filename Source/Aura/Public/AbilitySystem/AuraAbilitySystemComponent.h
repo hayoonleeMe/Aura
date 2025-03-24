@@ -38,7 +38,7 @@ public:
 	void OnAbilityFailed(const UGameplayAbility* Ability, const FGameplayTagContainer& FailureTags);
 	
 	// Abilities의 Ability Class의 AbilitySpec을 생성해 GiveAbility를 수행하는 함수 
-	void AddAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities);
+	void AddAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities, int32 InLevel);
 
 	// InputID에 해당하는 Ability의 Press Event를 발생시키는 함수
 	void AbilityInputPressed(int32 InputID);

@@ -332,7 +332,12 @@ void AStageGameMode::AsyncSpawnEnemies()
 
 void AStageGameMode::OnPlayerLevelAttributeChanged(const FOnAttributeChangeData& Data)
 {
-	EnemySpawnLevel += 0.5f;
+	if (GetWorld())
+	{
+		// 모든 플레이어의 평균 레벨 증가량을 반영하여 EnemySpawnLevel 업데이트
+		const float AddAmount = 1.f / GetWorld()->GetNumPlayerControllers();
+		EnemySpawnLevel += AddAmount;
+	}
 }
 
 void AStageGameMode::SpawnEnemy(TSubclassOf<AAuraEnemy> Class)
