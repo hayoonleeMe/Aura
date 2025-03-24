@@ -6,30 +6,42 @@
 #include "Components/TextBlock.h"
 #include "Player/AuraPlayerController.h"
 
-void UStageInfoHUD::NativeConstruct()
+void UStageInfoHUD::InitializeStageInfoHUD(int32 InStageNumber, int32 InTotalEnemyCount)
 {
-	Super::NativeConstruct();
-
-	Text_StageNumber->SetText(FText::AsNumber(StageNumber));
-	Text_RemainCount->SetText(FText::AsNumber(EnemyCount));
-	Text_TotalCount->SetText(FText::AsNumber(EnemyCount));
-
 	if (AAuraPlayerController* AuraPC = GetOwningPlayer<AAuraPlayerController>())
 	{
 		AuraPC->OnEnemyDeadDelegate.BindUObject(this, &ThisClass::OnEnemyDead);
 	}
 
+	StageNumber = InStageNumber;
+	TotalEnemyCount = RemainEnemyCount = InTotalEnemyCount;
+	
+	Text_StageNumber->SetText(FText::AsNumber(StageNumber));
+	Text_RemainCount->SetText(FText::AsNumber(RemainEnemyCount));
+	Text_TotalCount->SetText(FText::AsNumber(TotalEnemyCount));
+
 	PlayAnimationForward(PopUpAnimation);
+}
+
+void UStageInfoHUD::UpdateTotalEnemyCount(int32 InTotalEnemyCount)
+{
+	RemainEnemyCount += InTotalEnemyCount - TotalEnemyCount;
+	TotalEnemyCount = InTotalEnemyCount;
+	Text_RemainCount->SetText(FText::AsNumber(RemainEnemyCount));
+	Text_TotalCount->SetText(FText::AsNumber(TotalEnemyCount));
+	
+	PlayAnimationForward(RemainCountTextBlinkAnimation);
+	PlayAnimationForward(TotalCountTextBlinkAnimation);
 }
 
 void UStageInfoHUD::OnEnemyDead()
 {
 	PlayAnimationForward(RemainCountTextBlinkAnimation);
 	
-	--EnemyCount;
-	Text_RemainCount->SetText(FText::AsNumber(EnemyCount));
+	--RemainEnemyCount;
+	Text_RemainCount->SetText(FText::AsNumber(RemainEnemyCount));
 
-	if (EnemyCount <= 0)
+	if (RemainEnemyCount <= 0)
 	{
 		if (GetWorld())
 		{
@@ -42,3 +54,7 @@ void UStageInfoHUD::OnEnemyDead()
 		}
 	}
 }
+
+
+
+

@@ -131,6 +131,7 @@ public:
 	TObjectPtr<UNamedSlot> NamedSlot_StageStartAlert;
 
 	void OnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount);
+	void OnTotalEnemyCountChanged(int32 TotalEnemyCount) const;
 
 	UPROPERTY(EditDefaultsOnly, Category="Stage")
 	TSubclassOf<UStageInfoHUD> StageInfoHUDClass;
