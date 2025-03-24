@@ -35,6 +35,8 @@ public:
 
 	// 가능하면 리스폰 수행
 	void RequestPlayerRespawn(APlayerController* PlayerController);
+
+	void RequestSpawnEnemy(const TSubclassOf<AAuraEnemy>& EnemyClass, const FVector& SpawnLocation, bool bOverrideLocationZ);
 	
 private:
 	// ============================================================================
@@ -143,6 +145,10 @@ private:
 	// 죽은 Enemy 수
 	int32 NumDeadEnemies = 0;
 
+	// 전체 Enemy 수
+	// Shaman에 의해 소환된 Enemy도 포함
+	int32 TotalEnemyCount = 0;
+
 	// Enemy 소환 간격 (초)
 	// 최종 소환 간격 = SpawnWaitTime + FMath::FRandRange(-RandomDeviation, RandomDeviation)
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Spawn Enemy")
@@ -210,6 +216,8 @@ private:
 
 	// 모든 로컬 플레이어의 UI에 StageStatus를 표시
 	void BroadcastStageStatusChangeToAllLocalPlayers() const;
+
+	void BroadcastTotalEnemyCountChangeToAllLocalPlayers() const;
 
 	// 리스폰할 플레이어의 UI에 RespawnTimer를 표시
 	void NotifyRespawnStartToLocalPlayer(APlayerController* ControllerToRespawn, bool bGameEnd) const;

@@ -156,6 +156,14 @@ void AAuraPlayerController::ClientOnStageStatusChanged_Implementation(EStageStat
 	}
 }
 
+void AAuraPlayerController::ClientOnTotalEnemyCountChanged_Implementation(int32 TotalEnemyCount)
+{
+	if (OnTotalEnemyCountChangedDelegate.IsBound())
+	{
+		OnTotalEnemyCountChangedDelegate.Execute(TotalEnemyCount);
+	}
+}
+
 void AAuraPlayerController::ClientNotifyRespawnStart_Implementation(float RespawnTimerEndSeconds)
 {
 	OnRespawnStartedDelegate.Broadcast(RespawnTimerEndSeconds);

@@ -359,10 +359,32 @@ void AStageGameMode::SpawnEnemy(TSubclassOf<AAuraEnemy> Class)
 	}
 }
 
+void AStageGameMode::RequestSpawnEnemy(const TSubclassOf<AAuraEnemy>& EnemyClass, const FVector& SpawnLocation, bool bOverrideLocationZ)
+{
+	check(EnemyClass);
+
+	SpawnParams.bDeferConstruction = true;
+	
+	const float FinalZ = bOverrideLocationZ ? SpawnEnemyVolumeBox.Min.Z : SpawnLocation.Z;
+	const FTransform SpawnTransform(FVector(SpawnLocation.X, SpawnLocation.Y, FinalZ));
+
+	if (AAuraEnemy* Enemy = GetWorld()->SpawnActor<AAuraEnemy>(EnemyClass, SpawnTransform, SpawnParams))
+	{
+		++TotalEnemyCount;
+		
+		Enemy->SpawnDefaultController();
+		Enemy->OnCharacterDeadDelegate.AddDynamic(this, &ThisClass::OnEnemyDead);
+		Enemy->SpawnLevel = FMath::RoundToInt32(EnemySpawnLevel);
+		Enemy->FinishSpawning(SpawnTransform);
+
+		BroadcastTotalEnemyCountChangeToAllLocalPlayers();
+	}
+}
+
 void AStageGameMode::OnEnemyDead()
 {
 	++NumDeadEnemies;
-	if (bFinishSpawn && NumSpawnedEnemies == NumDeadEnemies)
+	if (bFinishSpawn && NumDeadEnemies == TotalEnemyCount)
 	{
 		// 모든 Enemy를 소환하고, 모든 Enemy가 죽으면 EndStageDelay가 지난 뒤 스테이지 종료
 		GetWorldTimerManager().SetTimer(EndStageDelayTimerHandle, EndStageDelayTimerDelegate, EndStageDelay, false);
@@ -389,6 +411,8 @@ void AStageGameMode::PrepareEnemySpawn()
 		}
 	}
 	Algo::RandomShuffle(RandomEnemyInfos);
+	
+	TotalEnemyCount = RandomEnemyInfos.Num();
 }
 
 APlayerController* AStageGameMode::GetSimulatedPlayerController() const
@@ -417,7 +441,22 @@ void AStageGameMode::BroadcastStageStatusChangeToAllLocalPlayers() const
 		{
 			if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(It->Get()))
 			{
-				AuraPC->ClientOnStageStatusChanged(StageStatus, StageNumber, WaitingTimerEndSeconds, RandomEnemyInfos.Num());
+				AuraPC->ClientOnStageStatusChanged(StageStatus, StageNumber, WaitingTimerEndSeconds, TotalEnemyCount);
+			}
+		}
+	}
+}
+
+void AStageGameMode::BroadcastTotalEnemyCountChangeToAllLocalPlayers() const
+{
+	if (GetWorld())
+	{
+		// 모든 Player Controller의 Client RPC를 호출해 로컬 플레이어의 화면에 표시
+		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+		{
+			if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(It->Get()))
+			{
+				AuraPC->ClientOnTotalEnemyCountChanged(TotalEnemyCount);
 			}
 		}
 	}
