@@ -126,6 +126,7 @@ namespace AuraGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_LightningBeam, "GameplayCue.LightningBeam", "LightningBeam GameplayCue Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_ArcaneShard, "GameplayCue.ArcaneShard", "ArcaneShard GameplayCue Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_SummonEffect, "GameplayCue.SummonEffect", "SummonEffect GameplayCue Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_ShamanSummonEffect, "GameplayCue.ShamanSummonEffect", "ShamanSummonEffect GameplayCue Tag");
 
 	/* Gameplay */
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Gameplay_Invincibility, "Gameplay.Invincibility", "Invincibility Tag");

@@ -171,6 +171,7 @@ namespace AuraGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_LightningBeam);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_ArcaneShard);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_SummonEffect);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_ShamanSummonEffect);
 
 	// ============================================================================
 	// Gameplay

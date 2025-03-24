@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/Abilities/AuraAbility_ShamanSummonEnemy.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
@@ -58,6 +59,30 @@ void UAuraAbility_ShamanSummonEnemy::ActivateAbility(const FGameplayAbilitySpecH
 		AbilityTask->EventReceived.AddDynamic(this, &ThisClass::OnEventReceived);
 		AbilityTask->ReadyForActivation();
 	}
+
+	// Add ShamanSummonEffect GameplayCue to Shaman
+	if (ACharacter* AvatarCharacter = Cast<ACharacter>(GetAvatarActorFromActorInfo()))
+	{
+		if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(AvatarCharacter))
+		{
+			FGameplayCueParameters CueParameters;
+			CueParameters.Location = AvatarCharacter->GetActorLocation() + AvatarCharacter->GetActorForwardVector() * 70.f;
+			CueParameters.Location.Z = AvatarCharacter->GetNavAgentLocation().Z;
+			ASC->AddGameplayCue(AuraGameplayTags::GameplayCue_ShamanSummonEffect, CueParameters);
+		}
+	}
+}
+
+void UAuraAbility_ShamanSummonEnemy::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+{
+	// 종료 전에 ShamanSummonEffect GameplayCue 제거
+	if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo()))
+	{
+		ASC->RemoveGameplayCue(AuraGameplayTags::GameplayCue_ShamanSummonEffect);
+	}
+	
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
 void UAuraAbility_ShamanSummonEnemy::OnEventReceived(FGameplayEventData Payload)
