@@ -80,13 +80,15 @@ namespace AuraGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_ChainLightning, "Event.Montage.ChainLightning", "ChainLightning Montage Event Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_ArcaneSpike, "Event.Montage.ArcaneSpike", "ArcaneSpike Montage Event Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_EnemyAttack, "Event.Montage.EnemyAttack", "EnemyAttack Montage Event Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_ShamanSummonEnemy, "Event.Montage.ShamanSummonEnemy", "Shaman's Summon Enemy Montage Event Tag");
 
 	/* Abilities */
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_ClickToMove, "Abilities.ClickToMove", "ClickToMove Ability Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_TryInteract, "Abilities.TryInteract", "TryInteract Ability Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_HitReact, "Abilities.HitReact", "HitReact Ability Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_EnemyAttack, "Abilities.EnemyAttack", "EnemyAttack Ability Tag");
-
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_ShamanSummonEnemy, "Abilities.ShamanSummonEnemy", "Shaman's Summon Enemy Ability Tag");
+	
 	/* Abilities.Offensive */
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Offensive, "Abilities.Offensive", "Offensive Ability Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Offensive_FireBolt, "Abilities.Offensive.FireBolt", "FireBolt Offensive Ability Tag");
