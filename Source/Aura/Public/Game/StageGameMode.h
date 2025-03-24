@@ -139,10 +139,11 @@ private:
 	// Enemy를 현재 스테이지에 정해진 수만큼 모두 소환했는지
 	bool bFinishSpawn = false;
 
-	// 현재 소환된 Enemy 수
-	int32 NumSpawnedEnemies = 0;
+	// 현재 Stage에 의해 소환된 Enemy 수
+	int32 NumStageSpawnedEnemies = 0;
 
 	// 죽은 Enemy 수
+	// Shaman에 의해 소환된 Enemy도 포함
 	int32 NumDeadEnemies = 0;
 
 	// 전체 Enemy 수
@@ -164,7 +165,7 @@ private:
 
 	// 한번에 소환할 수 있는 최대 Enemy 수
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Spawn Enemy")
-	int32 MaxSpawnCount;
+	int32 MaxSpawnCountPerBatch;
 
 	// 소환할 Enemy 레벨
 	float EnemySpawnLevel = 1.f;

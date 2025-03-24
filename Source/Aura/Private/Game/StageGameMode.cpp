@@ -35,7 +35,7 @@ AStageGameMode::AStageGameMode()
 	/* Spawn Enemy */
 	SpawnWaitTime = 2.f;
 	RandomDeviation = 1.f;
-	MaxSpawnCount = 3;
+	MaxSpawnCountPerBatch = 3;
 	SpawnDelayTimerDelegate = FTimerDelegate::CreateUObject(this, &ThisClass::AsyncSpawnEnemies);
 
 	/* End Game */
@@ -306,17 +306,17 @@ void AStageGameMode::AsyncSpawnEnemies()
 {
 	check(StageConfig);
 
-	if (NumSpawnedEnemies < RandomEnemyInfos.Num())
+	const int32 MaxStageEnemyCount = RandomEnemyInfos.Num();
+	if (NumStageSpawnedEnemies < MaxStageEnemyCount)
 	{
 		// 소환할 수 결정
-		const int32 RandCount = FMath::RandRange(1, MaxSpawnCount);
-		const int32 SpawnCount = FMath::Min(RandomEnemyInfos.Num() - NumSpawnedEnemies, RandCount);
-		const int32 TotalCount = NumSpawnedEnemies + SpawnCount;
+		const int32 RandCount = FMath::RandRange(1, MaxSpawnCountPerBatch);
+		const int32 SpawnCount = FMath::Min(MaxStageEnemyCount - NumStageSpawnedEnemies, RandCount);
 
 		// SpawnCount 만큼 소환
-		for (; NumSpawnedEnemies < TotalCount; ++NumSpawnedEnemies)
+		for (int32 Index = 0; Index < SpawnCount; ++Index)
 		{
-			const TSubclassOf<AAuraEnemy>& EnemyClass = EnemyClassTable[RandomEnemyInfos[NumSpawnedEnemies]];
+			const TSubclassOf<AAuraEnemy>& EnemyClass = EnemyClassTable[RandomEnemyInfos[NumStageSpawnedEnemies]];
 			SpawnEnemy(EnemyClass);
 		}
 
@@ -352,6 +352,8 @@ void AStageGameMode::SpawnEnemy(TSubclassOf<AAuraEnemy> Class)
 
 	if (AAuraEnemy* Enemy = GetWorld()->SpawnActor<AAuraEnemy>(Class, SpawnTransform, SpawnParams))
 	{
+		++NumStageSpawnedEnemies;
+
 		Enemy->SpawnDefaultController();
 		Enemy->OnCharacterDeadDelegate.AddDynamic(this, &ThisClass::OnEnemyDead);
 		Enemy->SpawnLevel = FMath::RoundToInt32(EnemySpawnLevel);
@@ -394,7 +396,7 @@ void AStageGameMode::OnEnemyDead()
 void AStageGameMode::PrepareEnemySpawn()
 {
 	bFinishSpawn = false;
-	NumSpawnedEnemies = NumDeadEnemies = 0;
+	NumStageSpawnedEnemies = NumDeadEnemies = 0;
 	
 	RandomEnemyInfos.Empty();
 	EnemyClassTable.Empty();
