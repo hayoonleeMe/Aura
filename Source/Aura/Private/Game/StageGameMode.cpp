@@ -361,14 +361,15 @@ void AStageGameMode::SpawnEnemy(TSubclassOf<AAuraEnemy> Class)
 	}
 }
 
-void AStageGameMode::RequestSpawnEnemy(const TSubclassOf<AAuraEnemy>& EnemyClass, const FVector& SpawnLocation, bool bOverrideLocationZ)
+void AStageGameMode::RequestSpawnEnemy(const TSubclassOf<AAuraEnemy>& EnemyClass, FTransform SpawnTransform, bool bOverrideLocationZ)
 {
 	check(EnemyClass);
 
 	SpawnParams.bDeferConstruction = true;
-	
-	const float FinalZ = bOverrideLocationZ ? SpawnEnemyVolumeBox.Min.Z : SpawnLocation.Z;
-	const FTransform SpawnTransform(FVector(SpawnLocation.X, SpawnLocation.Y, FinalZ));
+
+	FVector SpawnLocation = SpawnTransform.GetTranslation();
+	SpawnLocation.Z = bOverrideLocationZ ? SpawnEnemyVolumeBox.Min.Z : SpawnLocation.Z;
+	SpawnTransform.SetTranslation(SpawnLocation);
 
 	if (AAuraEnemy* Enemy = GetWorld()->SpawnActor<AAuraEnemy>(EnemyClass, SpawnTransform, SpawnParams))
 	{

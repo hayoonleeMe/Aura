@@ -89,10 +89,11 @@ void UAuraAbility_ShamanSummonEnemy::AsyncSpawnEnemies()
 			// Find RandomPoint
 			const FVector RandomDir = FMath::VRandCone(AvatarActor->GetActorForwardVector(), FMath::DegreesToRadians(SpawnConeHalfAngleDegrees));
 			const FVector RandomPoint = AvatarActor->GetActorLocation() + RandomDir * FMath::RandRange(SpawnMinDistance, SpawnMaxDistance);
+			const FTransform SpawnTransform(AvatarActor->GetActorRotation(), RandomPoint);
 
 			if (StageGameMode)
 			{
-				StageGameMode->RequestSpawnEnemy(GetRandomEnemyClass(), RandomPoint, true);
+				StageGameMode->RequestSpawnEnemy(GetRandomEnemyClass(), SpawnTransform, true);
 			}
 		}
 

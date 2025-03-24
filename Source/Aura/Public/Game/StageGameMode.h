@@ -36,7 +36,7 @@ public:
 	// 가능하면 리스폰 수행
 	void RequestPlayerRespawn(APlayerController* PlayerController);
 
-	void RequestSpawnEnemy(const TSubclassOf<AAuraEnemy>& EnemyClass, const FVector& SpawnLocation, bool bOverrideLocationZ);
+	void RequestSpawnEnemy(const TSubclassOf<AAuraEnemy>& EnemyClass, FTransform SpawnTransform, bool bOverrideLocationZ);
 	
 private:
 	// ============================================================================
