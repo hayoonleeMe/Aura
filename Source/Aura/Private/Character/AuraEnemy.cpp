@@ -274,6 +274,11 @@ void AAuraEnemy::HandleDeathLocally()
     }
 
 	Dissolve();
+
+	// Deactivate Debuff Component
+	EnfeebleDebuffComponent->DeactivateImmediate();
+	IgniteDebuffComponent->DeactivateImmediate();
+	StunDebuffComponent->DeactivateImmediate();
 }
 
 void AAuraEnemy::OnDebuffEnfeebleTagChanged(const FGameplayTag Tag, int32 Count) const
