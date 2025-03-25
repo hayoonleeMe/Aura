@@ -33,8 +33,8 @@
 // Default Response Block, Ignore BaseCharacter's Mesh and Capsule, Block Enemy's Mesh
 #define ECC_Target ECollisionChannel::ECC_GameTraceChannel4
 
-// 레벨의 벽 메시만 Block하는 Object Channel
-// Default Response Ignore, Block Wall Mesh in Level, Overlap Wall FadeActor
+// 레벨의 벽 메시만 Block하는 Trace Channel
+// Default Response Ignore, Block Wall Mesh and FadeActor in Level
 #define ECC_OnlyWall ECollisionChannel::ECC_GameTraceChannel5
 
 // Enemy를 나타내는 Object Channel
