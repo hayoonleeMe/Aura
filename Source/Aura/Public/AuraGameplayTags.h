@@ -105,6 +105,7 @@ namespace AuraGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_ChainLightning);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_ArcaneSpike);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_EnemyAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_ShamanSummonEnemy);
 	
 	// ============================================================================
 	// Abilities
@@ -114,6 +115,7 @@ namespace AuraGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_TryInteract);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_HitReact);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_EnemyAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_ShamanSummonEnemy);
 
 	// ============================================================================
 	// Abilities.Offensive
@@ -169,6 +171,7 @@ namespace AuraGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_LightningBeam);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_ArcaneShard);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_SummonEffect);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_ShamanSummonEffect);
 
 	// ============================================================================
 	// Gameplay

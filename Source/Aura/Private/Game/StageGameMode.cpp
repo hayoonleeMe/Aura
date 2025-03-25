@@ -35,7 +35,7 @@ AStageGameMode::AStageGameMode()
 	/* Spawn Enemy */
 	SpawnWaitTime = 2.f;
 	RandomDeviation = 1.f;
-	MaxSpawnCount = 3;
+	MaxSpawnCountPerBatch = 3;
 	SpawnDelayTimerDelegate = FTimerDelegate::CreateUObject(this, &ThisClass::AsyncSpawnEnemies);
 
 	/* End Game */
@@ -306,17 +306,17 @@ void AStageGameMode::AsyncSpawnEnemies()
 {
 	check(StageConfig);
 
-	if (NumSpawnedEnemies < RandomEnemyInfos.Num())
+	const int32 MaxStageEnemyCount = RandomEnemyInfos.Num();
+	if (NumStageSpawnedEnemies < MaxStageEnemyCount)
 	{
 		// 소환할 수 결정
-		const int32 RandCount = FMath::RandRange(1, MaxSpawnCount);
-		const int32 SpawnCount = FMath::Min(RandomEnemyInfos.Num() - NumSpawnedEnemies, RandCount);
-		const int32 TotalCount = NumSpawnedEnemies + SpawnCount;
+		const int32 RandCount = FMath::RandRange(1, MaxSpawnCountPerBatch);
+		const int32 SpawnCount = FMath::Min(MaxStageEnemyCount - NumStageSpawnedEnemies, RandCount);
 
 		// SpawnCount 만큼 소환
-		for (; NumSpawnedEnemies < TotalCount; ++NumSpawnedEnemies)
+		for (int32 Index = 0; Index < SpawnCount; ++Index)
 		{
-			const TSubclassOf<AAuraEnemy>& EnemyClass = EnemyClassTable[RandomEnemyInfos[NumSpawnedEnemies]];
+			const TSubclassOf<AAuraEnemy>& EnemyClass = EnemyClassTable[RandomEnemyInfos[NumStageSpawnedEnemies]];
 			SpawnEnemy(EnemyClass);
 		}
 
@@ -352,6 +352,8 @@ void AStageGameMode::SpawnEnemy(TSubclassOf<AAuraEnemy> Class)
 
 	if (AAuraEnemy* Enemy = GetWorld()->SpawnActor<AAuraEnemy>(Class, SpawnTransform, SpawnParams))
 	{
+		++NumStageSpawnedEnemies;
+
 		Enemy->SpawnDefaultController();
 		Enemy->OnCharacterDeadDelegate.AddDynamic(this, &ThisClass::OnEnemyDead);
 		Enemy->SpawnLevel = FMath::RoundToInt32(EnemySpawnLevel);
@@ -359,10 +361,33 @@ void AStageGameMode::SpawnEnemy(TSubclassOf<AAuraEnemy> Class)
 	}
 }
 
+void AStageGameMode::RequestSpawnEnemy(const TSubclassOf<AAuraEnemy>& EnemyClass, FTransform SpawnTransform, bool bOverrideLocationZ)
+{
+	check(EnemyClass);
+
+	SpawnParams.bDeferConstruction = true;
+
+	FVector SpawnLocation = SpawnTransform.GetTranslation();
+	SpawnLocation.Z = bOverrideLocationZ ? SpawnEnemyVolumeBox.Min.Z : SpawnLocation.Z;
+	SpawnTransform.SetTranslation(SpawnLocation);
+
+	if (AAuraEnemy* Enemy = GetWorld()->SpawnActor<AAuraEnemy>(EnemyClass, SpawnTransform, SpawnParams))
+	{
+		++TotalEnemyCount;
+		
+		Enemy->SpawnDefaultController();
+		Enemy->OnCharacterDeadDelegate.AddDynamic(this, &ThisClass::OnEnemyDead);
+		Enemy->SpawnLevel = FMath::RoundToInt32(EnemySpawnLevel);
+		Enemy->FinishSpawning(SpawnTransform);
+
+		BroadcastTotalEnemyCountChangeToAllLocalPlayers();
+	}
+}
+
 void AStageGameMode::OnEnemyDead()
 {
 	++NumDeadEnemies;
-	if (bFinishSpawn && NumSpawnedEnemies == NumDeadEnemies)
+	if (bFinishSpawn && NumDeadEnemies == TotalEnemyCount)
 	{
 		// 모든 Enemy를 소환하고, 모든 Enemy가 죽으면 EndStageDelay가 지난 뒤 스테이지 종료
 		GetWorldTimerManager().SetTimer(EndStageDelayTimerHandle, EndStageDelayTimerDelegate, EndStageDelay, false);
@@ -372,7 +397,7 @@ void AStageGameMode::OnEnemyDead()
 void AStageGameMode::PrepareEnemySpawn()
 {
 	bFinishSpawn = false;
-	NumSpawnedEnemies = NumDeadEnemies = 0;
+	NumStageSpawnedEnemies = NumDeadEnemies = 0;
 	
 	RandomEnemyInfos.Empty();
 	EnemyClassTable.Empty();
@@ -389,6 +414,8 @@ void AStageGameMode::PrepareEnemySpawn()
 		}
 	}
 	Algo::RandomShuffle(RandomEnemyInfos);
+	
+	TotalEnemyCount = RandomEnemyInfos.Num();
 }
 
 APlayerController* AStageGameMode::GetSimulatedPlayerController() const
@@ -417,7 +444,22 @@ void AStageGameMode::BroadcastStageStatusChangeToAllLocalPlayers() const
 		{
 			if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(It->Get()))
 			{
-				AuraPC->ClientOnStageStatusChanged(StageStatus, StageNumber, WaitingTimerEndSeconds, RandomEnemyInfos.Num());
+				AuraPC->ClientOnStageStatusChanged(StageStatus, StageNumber, WaitingTimerEndSeconds, TotalEnemyCount);
+			}
+		}
+	}
+}
+
+void AStageGameMode::BroadcastTotalEnemyCountChangeToAllLocalPlayers() const
+{
+	if (GetWorld())
+	{
+		// 모든 Player Controller의 Client RPC를 호출해 로컬 플레이어의 화면에 표시
+		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+		{
+			if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(It->Get()))
+			{
+				AuraPC->ClientOnTotalEnemyCountChanged(TotalEnemyCount);
 			}
 		}
 	}

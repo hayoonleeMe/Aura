@@ -5,8 +5,8 @@
 
 #include "AIController.h"
 #include "AbilitySystemBlueprintLibrary.h"
-#include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Interface/CombatInterface.h"
 
@@ -19,11 +19,11 @@ EBTNodeResult::Type UBTTask_EnemyAttack::ExecuteTask(UBehaviorTreeComponent& Own
 {
 	const AAIController* AIController = OwnerComp.GetAIOwner();
 	check(AIController);
+
+	UAuraAbilitySystemComponent* OwnerAuraASC = CastChecked<UAuraAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(AIController->GetPawn()));
+	
 	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(AIController->GetPawn()))
 	{
-		UAbilitySystemComponent* OwnerASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(AIController->GetPawn());
-		check(OwnerASC);
-
 		// Enemy가 공격할 대상인 CombatTarget 설정
 		AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(GetSelectedBlackboardKey()));
 		if (!IsValid(TargetActor))
@@ -31,27 +31,32 @@ EBTNodeResult::Type UBTTask_EnemyAttack::ExecuteTask(UBehaviorTreeComponent& Own
 			return EBTNodeResult::Failed;
 		}
 		CombatInterface->SetCombatTarget(TargetActor);
+	}
 
-		// Enemy의 공격을 나타내는 GameplayTag로 Attack Ability 실행
-		const FGameplayTagContainer TagContainer(AuraGameplayTags::Abilities_EnemyAttack);
-		if (!OwnerASC->TryActivateAbilitiesByTag(TagContainer))
+	if (const FGameplayAbilitySpec* AbilitySpec = OwnerAuraASC->GetSpellSpecForSpellTag(AuraGameplayTags::Abilities_EnemyAttack))
+	{
+		if (UGameplayAbility* Ability = AbilitySpec->GetPrimaryInstance())
+		{
+			// Enemy Attack Ability가 끝나면 Succeeded
+			FDelegateHandle DelegateHandle = Ability->OnGameplayAbilityEnded.AddWeakLambda(this, [this, DelegateHandle, &OwnerComp](UGameplayAbility* EndedAbility)
+			{
+				if (EndedAbility)
+				{
+					EndedAbility->OnGameplayAbilityEnded.Remove(DelegateHandle);
+				}
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			});	
+		}
+
+		// Enemy Attack Ability 실행
+		if (!OwnerAuraASC->TryActivateAbility(AbilitySpec->Handle))
 		{
 			return EBTNodeResult::Failed;
 		}
 
-		// Enemy Attack Ability가 끝나면 Succeeded
-		FDelegateHandle AbilityEndedDelegateHandle = OwnerASC->OnAbilityEnded.AddWeakLambda(this, [this, TagContainer, OwnerASC, AbilityEndedDelegateHandle, &OwnerComp](const FAbilityEndedData& EndedData)
-		{
-			if (EndedData.AbilityThatEnded->AbilityTags.HasAllExact(TagContainer))
-			{
-				OwnerASC->OnAbilityEnded.Remove(AbilityEndedDelegateHandle);
-
-				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-			}
-		});
-		
-		// Enemy Attack Ability가 끝나기 전
+		// Ability가 끝나기 전
 		return EBTNodeResult::InProgress;
 	}
+	
 	return EBTNodeResult::Failed;
 }

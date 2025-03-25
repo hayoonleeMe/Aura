@@ -45,6 +45,7 @@ void UGameOverlay::NativeConstruct()
 
 	AAuraPlayerController* AuraPC = CastChecked<AAuraPlayerController>(GetOwningPlayer());
 	AuraPC->OnStageStatusChangedDelegate.BindUObject(this, &ThisClass::OnStageStatusChanged);
+	AuraPC->OnTotalEnemyCountChangedDelegate.BindUObject(this, &ThisClass::OnTotalEnemyCountChanged);
 	AuraPC->OnRespawnStartedDelegate.AddUObject(this, &ThisClass::OnRespawnStarted);
 	AuraPC->OnGameEndDelegate.BindUObject(this, &ThisClass::OnGameEnd);
 
@@ -301,11 +302,18 @@ void UGameOverlay::OnStageStatusChanged(EStageStatus StageStatus, int32 StageNum
 		NamedSlot_StageStartAlert->AddChild(StageStartAlert);
 
 		StageInfoHUD = CreateWidget<UStageInfoHUD>(this, StageInfoHUDClass);
-		StageInfoHUD->StageNumber = StageNumber;
-		StageInfoHUD->EnemyCount = TotalEnemyCount;
+		StageInfoHUD->InitializeStageInfoHUD(StageNumber, TotalEnemyCount);
 		StageInfoHUD->AddToViewport();
 
 		// NamedSlot_StageWaiting 위치에 StageInfo widget 표시
 		NamedSlot_StageWaiting->AddChild(StageInfoHUD);
+	}
+}
+
+void UGameOverlay::OnTotalEnemyCountChanged(int32 TotalEnemyCount) const
+{
+	if (StageInfoHUD)
+	{
+		StageInfoHUD->UpdateTotalEnemyCount(TotalEnemyCount);
 	}
 }

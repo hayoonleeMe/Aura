@@ -16,9 +16,6 @@ class AURA_API UStageInfoHUD : public UUserWidget
 {
 	GENERATED_BODY()
 
-protected:
-	virtual void NativeConstruct() override;
-
 public:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Text_StageNumber;
@@ -34,12 +31,20 @@ public:
 
 	UPROPERTY(Transient, meta=(BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> RemainCountTextBlinkAnimation;
+
+	UPROPERTY(Transient, meta=(BindWidgetAnim))
+	TObjectPtr<UWidgetAnimation> TotalCountTextBlinkAnimation;
 	
 	UPROPERTY(Transient, meta=(BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> ClearStageAnimation;
 
+	void InitializeStageInfoHUD(int32 InStageNumber, int32 InTotalEnemyCount);
+	void UpdateTotalEnemyCount(int32 InTotalEnemyCount);
+	
+private:
 	int32 StageNumber = 0;
-	int32 EnemyCount = 0;
+	int32 RemainEnemyCount = 0;
+	int32 TotalEnemyCount = 0;
 
 	void OnEnemyDead();
 };

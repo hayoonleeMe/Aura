@@ -226,6 +226,11 @@ void AAuraEnemy::Die()
 	{
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("Dead"), bDead);
 	}
+
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->CancelAbilities();
+	}
 }
 
 int32 AAuraEnemy::GetXPReward()
