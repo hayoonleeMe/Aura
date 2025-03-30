@@ -27,8 +27,6 @@ public:
 protected:
 	virtual void NativeConstruct() override;
 
-	virtual void BroadcastInitialValues() override;
-
 public:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UAttributePointsRow> Row_AttributePoints;

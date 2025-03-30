@@ -31,11 +31,6 @@ void UHealthGlobe::NativeConstruct()
 		UpdateMaxHealth(Data.NewValue);
 	});
 
-	BroadcastInitialValues();
-}
-
-void UHealthGlobe::BroadcastInitialValues()
-{
 	const UAuraAttributeSet* AuraAS = UAuraBlueprintLibrary::GetAuraAttributeSetChecked(GetOwningPlayer());
 	UpdateHealth(AuraAS->GetHealth());
 	UpdateMaxHealth(AuraAS->GetMaxHealth());

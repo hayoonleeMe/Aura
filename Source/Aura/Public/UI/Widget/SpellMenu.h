@@ -32,7 +32,7 @@ public:
 protected:
 	virtual void NativeConstruct() override;
 
-	virtual void BroadcastInitialValues() override;
+	void BroadcastInitialValues();
 	
 	UPROPERTY()
 	TObjectPtr<UAuraAbilitySystemComponent> AuraASC;

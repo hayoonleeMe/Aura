@@ -21,8 +21,6 @@ public:
 protected:
 	virtual void NativeConstruct() override;
 
-	virtual void BroadcastInitialValues() override;
-
 public:
 	void UpdateHealth(float NewValue);
 	void UpdateMaxHealth(float NewValue);

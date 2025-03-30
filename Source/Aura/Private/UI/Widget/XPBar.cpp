@@ -32,14 +32,9 @@ void UXPBar::NativeConstruct()
 		UpdateLevelChange(Data.NewValue);
 	});
 
-	BroadcastInitialValues();
-}
-
-void UXPBar::BroadcastInitialValues()
-{
-    UpdateXPChange(AuraAS->GetXP());
-    UpdateLevelChange(AuraAS->GetLevel());
 	const UAuraAttributeSet* AuraAS = UAuraBlueprintLibrary::GetAuraAttributeSetChecked(GetOwningPlayer());
+	UpdateXPChange(AuraAS->GetXP());
+	UpdateLevelChange(AuraAS->GetLevel());
 }
 
 UWidget* UXPBar::GetProgressBarXPTooltipWidget()

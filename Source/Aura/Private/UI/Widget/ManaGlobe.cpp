@@ -31,11 +31,6 @@ void UManaGlobe::NativeConstruct()
 		UpdateMaxMana(Data.NewValue);
 	});
 
-	BroadcastInitialValues();
-}
-
-void UManaGlobe::BroadcastInitialValues()
-{
 	const UAuraAttributeSet* AuraAS = UAuraBlueprintLibrary::GetAuraAttributeSetChecked(GetOwningPlayer());
 	UpdateMana(AuraAS->GetMana());
 	UpdateMaxMana(AuraAS->GetMaxMana());

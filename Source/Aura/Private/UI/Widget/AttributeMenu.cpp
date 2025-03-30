@@ -73,11 +73,6 @@ void UAttributeMenu::NativeConstruct()
 	AttributeTagToRowMap.Add(Row_ArcaneResistance->AttributeTag, Row_ArcaneResistance);
 	AttributeTagToRowMap.Add(Row_PhysicalResistance->AttributeTag, Row_PhysicalResistance);
 
-	BroadcastInitialValues();
-}
-
-void UAttributeMenu::BroadcastInitialValues()
-{
 	// AttributePoints 값 전달
 	const AAuraPlayerState* AuraPS = GetOwningPlayerState<AAuraPlayerState>(true);
 	UpdateAttributePointsChange(AuraPS->GetAttributePoints());

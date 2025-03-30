@@ -23,8 +23,6 @@ public:
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
-	
-	virtual void BroadcastInitialValues() {}
 
 	// UI Input Mapping Context를 사용할 것인지 여부
 	bool bUseUIMapping = false;

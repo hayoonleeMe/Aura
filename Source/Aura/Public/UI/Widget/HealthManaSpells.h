@@ -25,7 +25,7 @@ class AURA_API UHealthManaSpells : public UAuraUserWidget
 protected:
 	virtual void NativeConstruct() override;
 
-	virtual void BroadcastInitialValues() override;
+	void BroadcastInitialValues();
 	
 public:
 	UPROPERTY(meta=(BindWidget))
