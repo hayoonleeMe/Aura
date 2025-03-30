@@ -3,6 +3,7 @@
 
 #include "UI/Widget/PauseMenu.h"
 
+#include "AuraBlueprintLibrary.h"
 #include "LevelSequenceActor.h"
 #include "LevelSequencePlayer.h"
 #include "MultiplayerSessionsSubsystem.h"
@@ -29,7 +30,7 @@ void UPauseMenu::NativeConstruct()
 	Button_ExitAura->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnExitAuraButtonClicked);
 
 	// PauseMenu Level Sequence 재생
-	const AAuraGameStateBase* AuraGameStateBase = GetAuraGameStateBaseChecked();
+	const AAuraGameStateBase* AuraGameStateBase = UAuraBlueprintLibrary::GetAuraGameStateBaseChecked(GetWorld());
 	if (AuraGameStateBase->PauseMenuLevelSequenceActor && AuraGameStateBase->PauseMenuLevelSequenceActor->SequencePlayer)
 	{
 		AuraGameStateBase->PauseMenuLevelSequenceActor->SequencePlayer->Play();
@@ -39,7 +40,7 @@ void UPauseMenu::NativeConstruct()
 void UPauseMenu::NativeDestruct()
 {
 	// PauseMenu Level Sequence 정지
-	const AAuraGameStateBase* AuraGameStateBase = GetAuraGameStateBaseChecked();
+	const AAuraGameStateBase* AuraGameStateBase = UAuraBlueprintLibrary::GetAuraGameStateBaseChecked(GetWorld());
 	if (AuraGameStateBase->PauseMenuLevelSequenceActor && AuraGameStateBase->PauseMenuLevelSequenceActor->SequencePlayer)
 	{
 		AuraGameStateBase->PauseMenuLevelSequenceActor->SequencePlayer->Stop();

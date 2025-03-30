@@ -3,6 +3,7 @@
 
 #include "UI/Widget/GameOverlay.h"
 
+#include "AuraBlueprintLibrary.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Components/Button.h"
@@ -54,8 +55,8 @@ void UGameOverlay::NativeConstruct()
 	AuraPS->OnAttributePointsChangedDelegate.AddUObject(this, &ThisClass::OnAttributePointsChanged);
 	AuraPS->OnSpellPointsChangedDelegate.AddUObject(this, &ThisClass::OnSpellPointsChanged);
 
-	UAuraAbilitySystemComponent* AuraASC = GetOwnerAuraAbilitySystemComponentChecked();
-	UAuraAttributeSet* AuraAS = GetOwnerAuraAttributeSetChecked();
+	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayer());
+	UAuraAttributeSet* AuraAS = UAuraBlueprintLibrary::GetAuraAttributeSetChecked(GetOwningPlayer());
 	
 	for (const TTuple<FGameplayTag, FGameplayAttribute>& Pair : AuraAS->TagToAttributeMap)
 	{

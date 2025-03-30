@@ -3,6 +3,7 @@
 
 #include "UI/Widget/AttributeMenu.h"
 
+#include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Components/Button.h"
@@ -26,7 +27,7 @@ void UAttributeMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	const AAuraGameStateBase* AuraGameStateBase = GetAuraGameStateBaseChecked();
+	const AAuraGameStateBase* AuraGameStateBase = UAuraBlueprintLibrary::GetAuraGameStateBaseChecked(GetWorld());
 	AttributeConfig = AuraGameStateBase->AttributeConfig;
 	check(AttributeConfig);
 	
@@ -82,7 +83,7 @@ void UAttributeMenu::BroadcastInitialValues()
 	UpdateAttributePointsChange(AuraPS->GetAttributePoints());
 
 	// Attribute Row의 값을 업데이트
-	const UAuraAttributeSet* AuraAS = GetOwnerAuraAttributeSetChecked();
+	const UAuraAttributeSet* AuraAS = UAuraBlueprintLibrary::GetAuraAttributeSetChecked(GetOwningPlayer());
 	for (const TTuple<FGameplayTag, FGameplayAttribute>& Tuple : AuraAS->TagToAttributeMap)
 	{
 		UpdateAttributeValueChange(Tuple.Key, Tuple.Value.GetNumericValue(AuraAS));

@@ -10,23 +10,6 @@
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
 
-UAuraAbilitySystemComponent* UAuraUserWidget::GetOwnerAuraAbilitySystemComponentChecked() const
-{
-	UAbilitySystemComponent* ASC = GetOwningPlayer() ? UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwningPlayer()->GetPawn()) : nullptr;
-	return CastChecked<UAuraAbilitySystemComponent>(ASC);
-}
-
-UAuraAttributeSet* UAuraUserWidget::GetOwnerAuraAttributeSetChecked() const
-{
-	return CastChecked<UAuraAttributeSet>(GetOwningPlayerState<AAuraPlayerState>(true)->GetAttributeSet());
-}
-
-AAuraGameStateBase* UAuraUserWidget::GetAuraGameStateBaseChecked() const
-{
-	AGameStateBase* GameStateBase = GetWorld() ? GetWorld()->GetGameState() : nullptr;
-	return CastChecked<AAuraGameStateBase>(GameStateBase);
-}
-
 void UAuraUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();

@@ -6,11 +6,6 @@
 #include "Blueprint/UserWidget.h"
 #include "AuraUserWidget.generated.h"
 
-class UAuraAttributeSet;
-class AAuraPlayerState;
-class AAuraGameStateBase;
-class UAuraAbilitySystemComponent;
-
 // 위젯이 제거될 때 호출되는 델레게이트
 DECLARE_MULTICAST_DELEGATE(FOnRemovedSignature);
 
@@ -23,10 +18,6 @@ class AURA_API UAuraUserWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	UAuraAbilitySystemComponent* GetOwnerAuraAbilitySystemComponentChecked() const;
-	UAuraAttributeSet* GetOwnerAuraAttributeSetChecked() const;
-	AAuraGameStateBase* GetAuraGameStateBaseChecked() const;
-
 	FOnRemovedSignature OnRemovedDelegate;
 
 protected:

@@ -3,6 +3,7 @@
 
 #include "UI/Widget/HealthManaSpells.h"
 
+#include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
@@ -34,11 +35,11 @@ void UHealthManaSpells::NativeConstruct()
 	InputTagToSpellGlobeMap.Add(Globe_Passive_1->InputTag, Globe_Passive_1);
 	InputTagToSpellGlobeMap.Add(Globe_Passive_2->InputTag, Globe_Passive_2);
 
-	const AAuraGameStateBase* AuraGameStateBase = GetAuraGameStateBaseChecked();
+	const AAuraGameStateBase* AuraGameStateBase = UAuraBlueprintLibrary::GetAuraGameStateBaseChecked(GetWorld());
 	SpellConfig = AuraGameStateBase->SpellConfig;
 	check(SpellConfig);
 
-	UAuraAbilitySystemComponent* AuraASC = GetOwnerAuraAbilitySystemComponentChecked();
+	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayer());
 	AuraASC->OnEquippedSpellAbilityChangedDelegate.AddUObject(this, &ThisClass::OnEquippedSpellChanged);
 
 	AAuraPlayerController* AuraPC = CastChecked<AAuraPlayerController>(GetOwningPlayer());
@@ -54,7 +55,7 @@ void UHealthManaSpells::NativeConstruct()
 
 void UHealthManaSpells::BroadcastInitialValues()
 {
-	UAuraAbilitySystemComponent* AuraASC = GetOwnerAuraAbilitySystemComponentChecked();
+	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayer());
 	TArray<TTuple<FGameplayTag, FGameplayTag>> StartupSpells;
 	AuraASC->GetSpellAndInputTagPairs(StartupSpells);
 	
@@ -74,7 +75,7 @@ void UHealthManaSpells::OnEquippedSpellChanged(bool bEquipped, const FGameplayTa
 
 void UHealthManaSpells::UpdateEquippedSpellCooldown(bool bEquipped, const FGameplayTag& SpellTag, UEquippedSpellGlobe* SpellGlobe)
 {
-	UAuraAbilitySystemComponent* AuraASC = GetOwnerAuraAbilitySystemComponentChecked();
+	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayer());
 	if (const FGameplayAbilitySpec* SpellSpec = AuraASC->GetSpellSpecForSpellTag(SpellTag))
 	{
 		// Spell Cooldown Tag는 하나만 존재한다고 가정

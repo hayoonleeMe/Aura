@@ -6,6 +6,7 @@
 #include "AuraUserWidget.h"
 #include "SpellMenu.generated.h"
 
+class UAuraAbilitySystemComponent;
 class USpellDescription;
 class UEquippedSpellGlobeButton;
 class UEquippedSpellRow;
@@ -32,6 +33,9 @@ protected:
 	virtual void NativeConstruct() override;
 
 	virtual void BroadcastInitialValues() override;
+	
+	UPROPERTY()
+	TObjectPtr<UAuraAbilitySystemComponent> AuraASC;
 
 public:
 	UPROPERTY()

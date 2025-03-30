@@ -21,6 +21,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerState.h"
 #include "Types/DamageEffectParams.h"
+#include "Game/AuraGameStateBase.h"
 
 UEnemyClassConfig* UAuraBlueprintLibrary::GetEnemyClassConfig(const UObject* WorldContextObject)
 {
@@ -226,6 +227,24 @@ float UAuraBlueprintLibrary::GetServerWorldTimeSecondsAsFloat(const UWorld* Worl
 {
 	const AGameStateBase* GameStateBase = World ? World->GetGameState() : nullptr;
 	return GameStateBase ? GameStateBase->GetServerWorldTimeSeconds() : 0.0;
+}
+
+UAuraAbilitySystemComponent* UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(const APlayerController* PlayerController)
+{
+	UAbilitySystemComponent* ASC = PlayerController ? UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(PlayerController->GetPawn()) : nullptr;
+	return CastChecked<UAuraAbilitySystemComponent>(ASC);
+}
+
+UAuraAttributeSet* UAuraBlueprintLibrary::GetAuraAttributeSetChecked(const APlayerController* PlayerController)
+{
+	check(PlayerController);
+	return CastChecked<UAuraAttributeSet>(CastChecked<AAuraPlayerState>(PlayerController->PlayerState)->GetAttributeSet());
+}
+
+AAuraGameStateBase* UAuraBlueprintLibrary::GetAuraGameStateBaseChecked(const UWorld* World)
+{
+	check(World);
+	return World->GetGameState<AAuraGameStateBase>();
 }
 
 void UAuraBlueprintLibrary::GetSpreadDirections(TArray<FVector>& OutDirections, int32 NumDirections, float SpreadAngle, const FVector& CentralDirection)
