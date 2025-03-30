@@ -17,7 +17,6 @@ UPauseMenu::UPauseMenu(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	SetIsFocusable(true);
-	bUseUIMapping = true;
 }
 
 void UPauseMenu::NativeConstruct()

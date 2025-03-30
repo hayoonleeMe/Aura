@@ -56,16 +56,11 @@ public:
 	virtual void IndicateAbilityActivateCostFail() override;
 	virtual void IndicateAbilityActivateCooldownFail() override;
 	virtual void NotifyEnemyDead() override;
+	virtual void AddUIMappingContext() const override;
+	virtual void RemoveUIMappingContext() const override;
 	/* End PlayerInterface */
 
 	AActor* GetTargetActorFromCursor() const { return TargetFromCurrentFrame.Get(); }
-	
-	// UI IMC를 추가하고, Ability IMC를 제거한다.
-	void AddUIMappingContext() const;
-
-	// UI IMC를 제거하고, 다시 Ability IMC를 추가한다.
-	void RemoveUIMappingContext() const;
-
 	FOnCloseUIActionStartedSignature OnCloseUIActionStartedDelegate;
 
 	// Damage를 나타내는 DamageIndicator Widget을 화면에 표시한다.
