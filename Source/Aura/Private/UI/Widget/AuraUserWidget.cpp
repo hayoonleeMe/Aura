@@ -10,8 +10,3 @@
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
 
-void UAuraUserWidget::NativeDestruct()
-{
-	OnRemovedDelegate.Broadcast();
-	Super::NativeDestruct();
-}
