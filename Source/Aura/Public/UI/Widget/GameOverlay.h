@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AuraUserWidget.h"
+#include "Blueprint/UserWidget.h"
 #include "Types/StageStatus.h"
 #include "GameOverlay.generated.h"
 
@@ -24,7 +24,7 @@ class UHealthManaSpells;
  * 
  */
 UCLASS()
-class AURA_API UGameOverlay : public UAuraUserWidget
+class AURA_API UGameOverlay : public UUserWidget
 {
 	GENERATED_BODY()
 

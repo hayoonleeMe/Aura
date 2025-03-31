@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AuraUserWidget.h"
+#include "Blueprint/UserWidget.h"
 #include "GlobeProgressBar.generated.h"
 
 class UProgressBar;
@@ -12,7 +12,7 @@ class UProgressBar;
  * 
  */
 UCLASS()
-class AURA_API UGlobeProgressBar : public UAuraUserWidget
+class AURA_API UGlobeProgressBar : public UUserWidget
 {
 	GENERATED_BODY()
 

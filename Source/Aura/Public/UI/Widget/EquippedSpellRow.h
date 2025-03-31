@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AuraUserWidget.h"
+#include "Blueprint/UserWidget.h"
 #include "EquippedSpellRow.generated.h"
 
 class UImage;
@@ -14,7 +14,7 @@ class UEquippedSpellGlobeButton;
  * 
  */
 UCLASS()
-class AURA_API UEquippedSpellRow : public UAuraUserWidget
+class AURA_API UEquippedSpellRow : public UUserWidget
 {
 	GENERATED_BODY()
 
