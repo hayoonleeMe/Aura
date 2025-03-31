@@ -3,6 +3,7 @@
 
 #include "UI/Widget/GameOverlay.h"
 
+#include "AuraBlueprintLibrary.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Components/Button.h"
@@ -54,8 +55,8 @@ void UGameOverlay::NativeConstruct()
 	AuraPS->OnAttributePointsChangedDelegate.AddUObject(this, &ThisClass::OnAttributePointsChanged);
 	AuraPS->OnSpellPointsChangedDelegate.AddUObject(this, &ThisClass::OnSpellPointsChanged);
 
-	UAuraAbilitySystemComponent* AuraASC = GetOwnerAuraAbilitySystemComponentChecked();
-	UAuraAttributeSet* AuraAS = GetOwnerAuraAttributeSetChecked();
+	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayer());
+	UAuraAttributeSet* AuraAS = UAuraBlueprintLibrary::GetAuraAttributeSetChecked(GetOwningPlayer());
 	
 	for (const TTuple<FGameplayTag, FGameplayAttribute>& Pair : AuraAS->TagToAttributeMap)
 	{
@@ -128,7 +129,7 @@ void UGameOverlay::OpenAttributeMenu()
 	
 	if (AttributeMenu)
 	{
-		AttributeMenu->RemoveFromParent();
+		AttributeMenu->CloseMenu();
 		AttributeMenu = nullptr;
 	}
 	else
@@ -136,13 +137,13 @@ void UGameOverlay::OpenAttributeMenu()
 		if (SpellMenu)
 		{
 			// Remove SpellMenu if exists
-			SpellMenu->RemoveFromParent();
+			SpellMenu->CloseMenu();
 			SpellMenu = nullptr;
 		}
 		
 		// Open AttributeMenu
 		AttributeMenu = CreateWidget<UAttributeMenu>(this, AttributeMenuClass);
-		AttributeMenu->OnRemovedDelegate.AddUObject(this, &ThisClass::OnAttributeMenuClosed);
+		AttributeMenu->GetOnRemovedDelegate().AddUObject(this, &ThisClass::OnAttributeMenuClosed);
 		AttributeMenu->SetAlignmentInViewport({ 0.5f, 0.5f });
 		if (GEngine && GEngine->GameViewport)
 		{
@@ -176,7 +177,7 @@ void UGameOverlay::OpenSpellMenu()
 	
 	if (SpellMenu)
 	{
-		SpellMenu->RemoveFromParent();
+		SpellMenu->CloseMenu();
 		SpellMenu = nullptr;
 	}
 	else
@@ -184,13 +185,13 @@ void UGameOverlay::OpenSpellMenu()
 		if (AttributeMenu)
 		{
 			// Remove AttributeMenu if exists
-			AttributeMenu->RemoveFromParent();
+			AttributeMenu->CloseMenu();
 			AttributeMenu = nullptr;
 		}
 		
 		// Open SpellMenu
 		SpellMenu = CreateWidget<USpellMenu>(this, SpellMenuClass);
-		SpellMenu->OnRemovedDelegate.AddUObject(this, &ThisClass::OnSpellMenuClosed);
+		SpellMenu->GetOnRemovedDelegate().AddUObject(this, &ThisClass::OnSpellMenuClosed);
 		SpellMenu->SetAlignmentInViewport({ 0.5f, 0.5f });
 		if (GEngine && GEngine->GameViewport)
 		{
@@ -246,7 +247,7 @@ void UGameOverlay::OpenPauseMenu()
 	
 	// Open PauseMenu
 	PauseMenu = CreateWidget<UPauseMenu>(this, PauseMenuClass);
-	PauseMenu->OnRemovedDelegate.AddUObject(this, &ThisClass::OnPauseMenuClosed);
+	PauseMenu->GetOnRemovedDelegate().AddUObject(this, &ThisClass::OnPauseMenuClosed);
 	PauseMenu->AddToViewport(1);
 
 	// GameOverlay 숨김

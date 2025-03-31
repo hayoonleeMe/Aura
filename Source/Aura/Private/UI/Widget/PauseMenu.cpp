@@ -3,6 +3,7 @@
 
 #include "UI/Widget/PauseMenu.h"
 
+#include "AuraBlueprintLibrary.h"
 #include "LevelSequenceActor.h"
 #include "LevelSequencePlayer.h"
 #include "MultiplayerSessionsSubsystem.h"
@@ -16,20 +17,26 @@ UPauseMenu::UPauseMenu(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	SetIsFocusable(true);
-	bUseUIMapping = true;
+}
+
+void UPauseMenu::CloseMenu()
+{
+	Super::CloseMenu();
+
+	RemoveFromParent();
 }
 
 void UPauseMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	Button_ReturnToGame->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnReturnToGameButtonClicked);
+	Button_ReturnToGame->InternalButton->OnClicked.AddDynamic(this, &ThisClass::CloseMenu);
 	Button_Options->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnOptionsButtonClicked);
 	Button_LeaveGame->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnLeaveGameButtonClicked);
 	Button_ExitAura->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnExitAuraButtonClicked);
 
 	// PauseMenu Level Sequence 재생
-	const AAuraGameStateBase* AuraGameStateBase = GetAuraGameStateBaseChecked();
+	const AAuraGameStateBase* AuraGameStateBase = UAuraBlueprintLibrary::GetAuraGameStateBaseChecked(GetWorld());
 	if (AuraGameStateBase->PauseMenuLevelSequenceActor && AuraGameStateBase->PauseMenuLevelSequenceActor->SequencePlayer)
 	{
 		AuraGameStateBase->PauseMenuLevelSequenceActor->SequencePlayer->Play();
@@ -39,18 +46,13 @@ void UPauseMenu::NativeConstruct()
 void UPauseMenu::NativeDestruct()
 {
 	// PauseMenu Level Sequence 정지
-	const AAuraGameStateBase* AuraGameStateBase = GetAuraGameStateBaseChecked();
+	const AAuraGameStateBase* AuraGameStateBase = UAuraBlueprintLibrary::GetAuraGameStateBaseChecked(GetWorld());
 	if (AuraGameStateBase->PauseMenuLevelSequenceActor && AuraGameStateBase->PauseMenuLevelSequenceActor->SequencePlayer)
 	{
 		AuraGameStateBase->PauseMenuLevelSequenceActor->SequencePlayer->Stop();
 	}
 	
 	Super::NativeDestruct();
-}
-
-void UPauseMenu::OnReturnToGameButtonClicked()
-{
-	RemoveFromParent();
 }
 
 void UPauseMenu::OnOptionsButtonClicked()

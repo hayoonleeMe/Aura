@@ -3,6 +3,7 @@
 
 #include "UI/Widget/AttributeMenu.h"
 
+#include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Components/Button.h"
@@ -19,18 +20,24 @@ UAttributeMenu::UAttributeMenu(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	SetIsFocusable(true);	
-	bUseUIMapping = true;
+}
+
+void UAttributeMenu::CloseMenu()
+{
+	Super::CloseMenu();
+
+	RemoveFromParent();
 }
 
 void UAttributeMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	const AAuraGameStateBase* AuraGameStateBase = GetAuraGameStateBaseChecked();
+	const AAuraGameStateBase* AuraGameStateBase = UAuraBlueprintLibrary::GetAuraGameStateBaseChecked(GetWorld());
 	AttributeConfig = AuraGameStateBase->AttributeConfig;
 	check(AttributeConfig);
 	
-	Button_Close->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnCloseButtonClicked);
+	Button_Close->InternalButton->OnClicked.AddDynamic(this, &ThisClass::CloseMenu);
 
 	Row_Strength->AttributeTag = AuraGameplayTags::Attributes_Primary_Strength;
 	Row_Intelligence->AttributeTag = AuraGameplayTags::Attributes_Primary_Intelligence;
@@ -72,17 +79,12 @@ void UAttributeMenu::NativeConstruct()
 	AttributeTagToRowMap.Add(Row_ArcaneResistance->AttributeTag, Row_ArcaneResistance);
 	AttributeTagToRowMap.Add(Row_PhysicalResistance->AttributeTag, Row_PhysicalResistance);
 
-	BroadcastInitialValues();
-}
-
-void UAttributeMenu::BroadcastInitialValues()
-{
 	// AttributePoints 값 전달
 	const AAuraPlayerState* AuraPS = GetOwningPlayerState<AAuraPlayerState>(true);
 	UpdateAttributePointsChange(AuraPS->GetAttributePoints());
 
 	// Attribute Row의 값을 업데이트
-	const UAuraAttributeSet* AuraAS = GetOwnerAuraAttributeSetChecked();
+	const UAuraAttributeSet* AuraAS = UAuraBlueprintLibrary::GetAuraAttributeSetChecked(GetOwningPlayer());
 	for (const TTuple<FGameplayTag, FGameplayAttribute>& Tuple : AuraAS->TagToAttributeMap)
 	{
 		UpdateAttributeValueChange(Tuple.Key, Tuple.Value.GetNumericValue(AuraAS));
@@ -109,9 +111,4 @@ void UAttributeMenu::UpdateAttributeValueChange(const FGameplayTag& AttributeTag
 	AttributeInfo.Value = Value;
 	UTextValueRow* Row = AttributeTagToRowMap.FindChecked(AttributeTag);
 	Row->UpdateAttributeValueChange(AttributeInfo);
-}
-
-void UAttributeMenu::OnCloseButtonClicked()
-{
-	RemoveFromParent();
 }

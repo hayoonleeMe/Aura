@@ -22,8 +22,6 @@ public:
 protected:
 	virtual void NativeConstruct() override;
 
-	virtual void BroadcastInitialValues() override;
-
 public:
 	void UpdateMana(float NewValue);
 	void UpdateMaxMana(float NewValue);

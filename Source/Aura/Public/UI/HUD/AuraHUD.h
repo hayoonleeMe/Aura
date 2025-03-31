@@ -8,7 +8,6 @@
 #include "AuraHUD.generated.h"
 
 class UGameOverlay;
-class UAuraUserWidget;
 class UAttributeSet;
 class UAbilitySystemComponent;
 

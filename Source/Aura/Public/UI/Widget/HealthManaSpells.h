@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AuraUserWidget.h"
 #include "GameplayTagContainer.h"
+#include "Blueprint/UserWidget.h"
 #include "HealthManaSpells.generated.h"
 
 struct FOnAttributeChangeData;
@@ -18,14 +18,14 @@ class UHealthGlobe;
  * 
  */
 UCLASS()
-class AURA_API UHealthManaSpells : public UAuraUserWidget
+class AURA_API UHealthManaSpells : public UUserWidget
 {
 	GENERATED_BODY()
 
 protected:
 	virtual void NativeConstruct() override;
 
-	virtual void BroadcastInitialValues() override;
+	void BroadcastInitialValues();
 	
 public:
 	UPROPERTY(meta=(BindWidget))

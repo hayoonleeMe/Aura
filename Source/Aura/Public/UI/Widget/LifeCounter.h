@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AuraUserWidget.h"
+#include "Blueprint/UserWidget.h"
 #include "LifeCounter.generated.h"
 
 class UHorizontalBox;
@@ -12,7 +12,7 @@ class UHorizontalBox;
  * 
  */
 UCLASS()
-class AURA_API ULifeCounter : public UAuraUserWidget
+class AURA_API ULifeCounter : public UUserWidget
 {
 	GENERATED_BODY()
 

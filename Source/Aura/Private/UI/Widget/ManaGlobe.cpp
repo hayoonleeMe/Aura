@@ -3,6 +3,7 @@
 
 #include "UI/Widget/ManaGlobe.h"
 
+#include "AuraBlueprintLibrary.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -20,7 +21,7 @@ void UManaGlobe::NativeConstruct()
 
 	check(ToolTipWidgetClass);
 
-	UAuraAbilitySystemComponent* AuraASC = GetOwnerAuraAbilitySystemComponentChecked();
+	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayer());
 	AuraASC->GetGameplayAttributeValueChangeDelegate(UAuraAttributeSet::GetManaAttribute()).AddWeakLambda(this, [this](const FOnAttributeChangeData& Data)
 	{
 		UpdateMana(Data.NewValue);
@@ -30,12 +31,7 @@ void UManaGlobe::NativeConstruct()
 		UpdateMaxMana(Data.NewValue);
 	});
 
-	BroadcastInitialValues();
-}
-
-void UManaGlobe::BroadcastInitialValues()
-{
-	const UAuraAttributeSet* AuraAS = GetOwnerAuraAttributeSetChecked();
+	const UAuraAttributeSet* AuraAS = UAuraBlueprintLibrary::GetAuraAttributeSetChecked(GetOwningPlayer());
 	UpdateMana(AuraAS->GetMana());
 	UpdateMaxMana(AuraAS->GetMaxMana());
 }

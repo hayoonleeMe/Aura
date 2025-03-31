@@ -12,12 +12,6 @@ void AMainMenuHUD::BeginPlay()
 
 	checkf(MainMenuOverlayClass, TEXT("Need to set MainMenuOverlayClass"));
 
-	APlayerController* PC = GetOwningPlayerController();
-	check(PC);
-
-	PC->SetInputMode(FInputModeUIOnly());
-	PC->SetShowMouseCursor(true);
-
 	MainMenuOverlay = CreateWidget<UMainMenuOverlay>(GetWorld(), MainMenuOverlayClass);
 	if (MainMenuOverlay)
 	{

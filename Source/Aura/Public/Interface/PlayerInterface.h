@@ -80,4 +80,14 @@ public:
 
 	// Enemy 죽음을 알림
 	virtual void NotifyEnemyDead() {}
+
+	// ============================================================================
+	// Input
+	// ============================================================================
+
+	// UI IMC를 추가하고, Ability IMC를 제거한다.
+	virtual void AddUIMappingContext() const {}
+
+	// UI IMC를 제거하고, 다시 Ability IMC를 추가한다.
+	virtual void RemoveUIMappingContext() const {}
 };

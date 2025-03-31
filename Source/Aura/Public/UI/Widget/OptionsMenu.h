@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "ClosableWidget.h"
 #include "OptionsMenu.generated.h"
 
 class UAuraGameUserSettings;
@@ -17,9 +17,14 @@ class USquareButton;
  * 
  */
 UCLASS()
-class AURA_API UOptionsMenu : public UUserWidget
+class AURA_API UOptionsMenu : public UClosableWidget
 {
 	GENERATED_BODY()
+
+public:
+	/* Begin IClosableWidgetInterface */
+	virtual void CloseMenu() override;
+	/* End IClosableWidgetInterface */
 
 protected:
 	virtual void NativeConstruct() override;
@@ -63,9 +68,6 @@ public:
 	
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<USquareButton> Button_Close;
-
-	UFUNCTION()
-	void OnCloseButtonClicked();
 
 	// OptionMenu의 옵션이 변경될 때 호출되는 Callback
 	void OnOptionChanged();

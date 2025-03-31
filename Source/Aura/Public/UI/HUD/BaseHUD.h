@@ -17,12 +17,15 @@ class AURA_API ABaseHUD : public AHUD
 	GENERATED_BODY()
 
 public:
+	void RegisterWidget(UObject* Object);
+	void UnregisterCurrentWidget();
+	void CloseCurrentWidget();
 	void AddOptionsMenu() const;
 
-protected:
-	virtual void BeginPlay() override;
-
 private:
+	UPROPERTY()
+	TArray<TWeakObjectPtr<UObject>> CurrentWidgetStack;
+
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UOptionsMenu> OptionsMenuWidgetClass;
 };

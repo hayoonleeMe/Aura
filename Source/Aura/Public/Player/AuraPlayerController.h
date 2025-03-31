@@ -36,9 +36,6 @@ DECLARE_DELEGATE(FOnGameEndSignature);
 // 월드에 존재하던 적이 죽음을 알리는 델레게이트
 DECLARE_DELEGATE(FOnEnemyDeadSignature);
 
-// CloseUI Input Action이 Started 되어 현재 UI를 닫아야 함을 알리는 델레게이트
-DECLARE_MULTICAST_DELEGATE(FOnCloseUIActionStartedSignature);
-
 /**
  * 
  */
@@ -56,17 +53,11 @@ public:
 	virtual void IndicateAbilityActivateCostFail() override;
 	virtual void IndicateAbilityActivateCooldownFail() override;
 	virtual void NotifyEnemyDead() override;
+	virtual void AddUIMappingContext() const override;
+	virtual void RemoveUIMappingContext() const override;
 	/* End PlayerInterface */
 
 	AActor* GetTargetActorFromCursor() const { return TargetFromCurrentFrame.Get(); }
-	
-	// UI IMC를 추가하고, Ability IMC를 제거한다.
-	void AddUIMappingContext() const;
-
-	// UI IMC를 제거하고, 다시 Ability IMC를 추가한다.
-	void RemoveUIMappingContext() const;
-
-	FOnCloseUIActionStartedSignature OnCloseUIActionStartedDelegate;
 
 	// Damage를 나타내는 DamageIndicator Widget을 화면에 표시한다.
 	UFUNCTION(Client, Reliable)

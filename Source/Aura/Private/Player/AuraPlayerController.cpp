@@ -80,6 +80,24 @@ void AAuraPlayerController::NotifyEnemyDead()
 	}
 }
 
+void AAuraPlayerController::AddUIMappingContext() const
+{
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->AddMappingContext(UIContext, 1);
+		Subsystem->RemoveMappingContext(AbilityContext);
+	}
+}
+
+void AAuraPlayerController::RemoveUIMappingContext() const
+{
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->RemoveMappingContext(UIContext);
+		Subsystem->AddMappingContext(AbilityContext, 0);
+	}
+}
+
 void AAuraPlayerController::CursorTrace()
 {
 	// Caching Target HitResult
@@ -98,30 +116,6 @@ void AAuraPlayerController::CursorTrace()
 		{
 			CurrentInteractionInterface->HighlightActor();
 		}		
-	}
-}
-
-void AAuraPlayerController::AddUIMappingContext() const
-{
-	if (const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr)
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(AuraGameStateBase->UIContext, 1);
-			Subsystem->RemoveMappingContext(AuraGameStateBase->AbilityContext);
-		}
-	}
-}
-
-void AAuraPlayerController::RemoveUIMappingContext() const
-{
-	if (const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr)
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-		{
-			Subsystem->RemoveMappingContext(AuraGameStateBase->UIContext);
-			Subsystem->AddMappingContext(AuraGameStateBase->AbilityContext, 0);
-		}
 	}
 }
 
@@ -293,7 +287,10 @@ void AAuraPlayerController::OnMenuActionStarted(EGameMenuType GameMenuType)
 
 void AAuraPlayerController::OnCloseUIActionStarted()
 {
-	OnCloseUIActionStartedDelegate.Broadcast();
+	if (ABaseHUD* BaseHUD = GetHUD<ABaseHUD>())
+	{
+		BaseHUD->CloseCurrentWidget();
+	}
 }
 
 void AAuraPlayerController::AbilityInputPressed(FGameplayTag InputTag, int32 InputID)

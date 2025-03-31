@@ -3,6 +3,7 @@
 
 #include "UI/Widget/SpellMenu.h"
 
+#include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "GameplayAbilitySpec.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
@@ -28,27 +29,33 @@ USpellMenu::USpellMenu(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	SetIsFocusable(true);
-	bUseUIMapping = true;
+}
+
+void USpellMenu::CloseMenu()
+{
+	Super::CloseMenu();
+
+	RemoveFromParent();
 }
 
 void USpellMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	const AAuraGameStateBase* AuraGameStateBase = GetAuraGameStateBaseChecked();
+	const AAuraGameStateBase* AuraGameStateBase = UAuraBlueprintLibrary::GetAuraGameStateBaseChecked(GetWorld());
 	SpellConfig = AuraGameStateBase->SpellConfig;
 	check(SpellConfig);
 
 	/* Spell Menu */
 	Button_SpendPoint->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnSpendPointButtonClicked);
 	Button_Equip->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnEquipButtonClicked);
-	Button_Close->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnCloseButtonClicked);
+	Button_Close->InternalButton->OnClicked.AddDynamic(this, &ThisClass::CloseMenu);
 
 	AAuraPlayerState* AuraPS = GetOwningPlayerState<AAuraPlayerState>(true);
 	AuraPS->OnSpellPointsChangedDelegate.AddUObject(this, &ThisClass::UpdateSpellPointsChange);
 
 	/* Spell Tree */
-	UAuraAbilitySystemComponent* AuraASC = GetOwnerAuraAbilitySystemComponentChecked();
+	AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayer());
 	AuraASC->OnActivatableAbilitiesReplicatedDelegate.AddUObject(this, &ThisClass::OnSpellGiven);
 	
 	OffensiveSpellTree->GlobeButton_1->OnSpellGlobeButtonSelectedDelegate.BindUObject(this, &ThisClass::OnSpellGlobeButtonSelected);
@@ -121,7 +128,6 @@ void USpellMenu::BroadcastInitialValues()
 	UpdateSpellPointsChange(AuraPS->GetSpellPoints());
 
 	// Spells, Equipped Spells 초기화
-	UAuraAbilitySystemComponent* AuraASC = GetOwnerAuraAbilitySystemComponentChecked();
 	TArray<TTuple<FGameplayTag, FGameplayTag>> StartupSpells;
 	AuraASC->GetSpellAndInputTagPairs(StartupSpells);
 	
@@ -159,7 +165,6 @@ bool USpellMenu::CanSpendPoint() const
 		return false;
 	}
 
-	UAuraAbilitySystemComponent* AuraASC = GetOwnerAuraAbilitySystemComponentChecked();
 	if (const FGameplayAbilitySpec* SpellSpec = AuraASC->GetSpellSpecForSpellTag(CurrentSelectedSpellGlobeButton->SpellTag))
 	{
 		// Spell Spec을 가져올 수 있으면 이미 Unlock 된 것을 의미
@@ -173,7 +178,7 @@ bool USpellMenu::CanSpendPoint() const
 		if (const UAuraGameplayAbility* AuraAbilityCDO = SpellAbilityClass->GetDefaultObject<UAuraGameplayAbility>())
 		{
 			// 현재 플레이어의 레벨이 Spell을 Unlock 할 수 있는 레벨인지 반환
-			const int32 PlayerLevel = GetOwnerAuraAttributeSetChecked()->GetLevel();
+			const int32 PlayerLevel = UAuraBlueprintLibrary::GetAuraAttributeSetChecked(GetOwningPlayer())->GetLevel();
 			return PlayerLevel >= AuraAbilityCDO->UnlockRequiredLevel;
 		}
 	}
@@ -184,7 +189,6 @@ bool USpellMenu::CanSpendPoint() const
 void USpellMenu::OnSpendPointButtonClicked()
 {
 	const FSpellInfo& SpellInfo = SpellConfig->GetSpellInfoByTag(CurrentSelectedSpellGlobeButton->SpellTag);
-	UAuraAbilitySystemComponent* AuraASC = GetOwnerAuraAbilitySystemComponentChecked();
 	AuraASC->ServerSpendPointButtonPressed(CurrentSelectedSpellGlobeButton->SpellTag, SpellInfo.SpellAbilityClass);
 }
 
@@ -202,7 +206,6 @@ void USpellMenu::OnEquipButtonClicked()
 
 bool USpellMenu::CanEquipSpell() const
 {
-	UAuraAbilitySystemComponent* AuraASC = GetOwnerAuraAbilitySystemComponentChecked();
 	return CurrentSelectedSpellGlobeButton && AuraASC->IsSpellUnlocked(CurrentSelectedSpellGlobeButton->SpellTag);
 }
 
@@ -212,16 +215,10 @@ void USpellMenu::EnableButtons() const
 	Button_Equip->SetIsEnabled(CanEquipSpell());
 }
 
-void USpellMenu::OnCloseButtonClicked()
-{
-	RemoveFromParent();
-}
-
 void USpellMenu::UpdateDescription() const
 {
 	if (CurrentSelectedSpellGlobeButton)
 	{
-		UAuraAbilitySystemComponent* AuraASC = GetOwnerAuraAbilitySystemComponentChecked();
 		if (const FGameplayAbilitySpec* SpellSpec = AuraASC->GetSpellSpecForSpellTag(CurrentSelectedSpellGlobeButton->SpellTag))
 		{
 			// SpellSpec을 구할 수 있다는 것은 해당 Spell이 이미 Unlock 됐다는 것을 의미
@@ -303,7 +300,6 @@ void USpellMenu::OnEquippedSpellGlobeButtonSelected(const FGameplayTag& InputTag
 {
 	if (EquippedSpellRow->bWaitSelectGlobe && CurrentSelectedSpellGlobeButton && InputTag.IsValid())
 	{
-		UAuraAbilitySystemComponent* AuraASC = GetOwnerAuraAbilitySystemComponentChecked();
 		AuraASC->ServerHandleEquipSpell(CurrentSelectedSpellGlobeButton->SpellTag, InputTag);
 	}
 }

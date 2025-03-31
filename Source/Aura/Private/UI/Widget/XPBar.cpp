@@ -22,7 +22,7 @@ void UXPBar::NativeConstruct()
 
 	check(ToolTipWidgetClass);
 
-	UAuraAbilitySystemComponent* AuraASC = GetOwnerAuraAbilitySystemComponentChecked();
+	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayer());
 	AuraASC->GetGameplayAttributeValueChangeDelegate(UAuraAttributeSet::GetXPAttribute()).AddWeakLambda(this, [this](const FOnAttributeChangeData& Data)
 	{
 		UpdateXPChange(Data.NewValue);
@@ -32,14 +32,9 @@ void UXPBar::NativeConstruct()
 		UpdateLevelChange(Data.NewValue);
 	});
 
-	BroadcastInitialValues();
-}
-
-void UXPBar::BroadcastInitialValues()
-{
-	const UAuraAttributeSet* AuraAS = GetOwnerAuraAttributeSetChecked();
-    UpdateXPChange(AuraAS->GetXP());
-    UpdateLevelChange(AuraAS->GetLevel());
+	const UAuraAttributeSet* AuraAS = UAuraBlueprintLibrary::GetAuraAttributeSetChecked(GetOwningPlayer());
+	UpdateXPChange(AuraAS->GetXP());
+	UpdateLevelChange(AuraAS->GetLevel());
 }
 
 UWidget* UXPBar::GetProgressBarXPTooltipWidget()

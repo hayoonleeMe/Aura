@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AuraUserWidget.h"
 #include "GameplayTagContainer.h"
+#include "Blueprint/UserWidget.h"
 #include "TextValueRow.generated.h"
 
 class UToolTip_AttributeRow;
@@ -16,7 +16,7 @@ class UTextBlock;
  * 
  */
 UCLASS()
-class AURA_API UTextValueRow : public UAuraUserWidget
+class AURA_API UTextValueRow : public UUserWidget
 {
 	GENERATED_BODY()
 

@@ -7,6 +7,9 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AuraBlueprintLibrary.generated.h"
 
+class UAuraAbilitySystemComponent;
+class AAuraGameStateBase;
+class UAuraAttributeSet;
 class ALevelSequenceActor;
 struct FGameplayAbilityTargetDataHandle;
 struct FGameplayCueParameters;
@@ -92,6 +95,10 @@ public:
 	// AGameStateBase::GetServerWorldTimeSeconds()를 float 형으로 반환한다.
 	// 구할 수 없으면 0.f을 반환한다.
 	static float GetServerWorldTimeSecondsAsFloat(const UWorld* World);
+
+	static UAuraAbilitySystemComponent* GetAuraAbilitySystemComponentChecked(const APlayerController* PlayerController);
+	static UAuraAttributeSet* GetAuraAttributeSetChecked(const APlayerController* PlayerController);
+	static AAuraGameStateBase* GetAuraGameStateBaseChecked(const UWorld* World);
 
 	// ============================================================================
 	// Math
