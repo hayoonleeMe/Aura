@@ -28,12 +28,6 @@ void ALobbyHUD::BeginPlay()
 	
 	checkf(LobbyOverlayClass, TEXT("Need to set LobbyWidgetClass"));
 
-	APlayerController* PC = GetOwningPlayerController();
-	check(PC);
-
-	PC->SetInputMode(FInputModeUIOnly());
-	PC->SetShowMouseCursor(true);
-
 	LobbyOverlay = CreateWidget<ULobbyOverlay>(GetWorld(), LobbyOverlayClass);
 	if (LobbyOverlay)
 	{
