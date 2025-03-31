@@ -149,6 +149,15 @@ private:
 	FTimerHandle PollingTimerHandle;
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
+	TObjectPtr<UInputMappingContext> AbilityContext;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
+	TObjectPtr<UInputMappingContext> CommonContext;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
+	TObjectPtr<UInputMappingContext> UIContext;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
 	TObjectPtr<UInputAction> IA_AttributeMenu;
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
