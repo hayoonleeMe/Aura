@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/HUD.h"
+#include "BaseHUD.h"
 #include "LobbyHUD.generated.h"
 
 class ULobbyOverlay;
@@ -12,7 +12,7 @@ class ULobbyOverlay;
  * Lobby Overlay를 표시할 HUD
  */
 UCLASS()
-class AURA_API ALobbyHUD : public AHUD
+class AURA_API ALobbyHUD : public ABaseHUD
 {
 	GENERATED_BODY()
 
