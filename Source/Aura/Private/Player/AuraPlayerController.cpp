@@ -180,17 +180,15 @@ void AAuraPlayerController::BeginPlay()
 	FSlateApplication::Get().GetNavigationConfig()->bAnalogNavigation = false;
 	FSlateApplication::Get().GetNavigationConfig()->bKeyNavigation = false;
 
-	const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr;
-	check(AuraGameStateBase);
-	check(AuraGameStateBase->AbilityContext);
-	check(AuraGameStateBase->CommonContext);
-	check(AuraGameStateBase->UIContext);
+	check(AbilityContext);
+	check(CommonContext);
+	check(UIContext);
 	
 	// Add Input Mapping Context
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
-		Subsystem->AddMappingContext(AuraGameStateBase->AbilityContext, 0);
-		Subsystem->AddMappingContext(AuraGameStateBase->CommonContext, 0);
+		Subsystem->AddMappingContext(AbilityContext, 0);
+		Subsystem->AddMappingContext(CommonContext, 0);
 	}
 
 	bShowMouseCursor = true;
