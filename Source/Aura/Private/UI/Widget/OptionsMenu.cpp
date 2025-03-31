@@ -11,6 +11,13 @@
 #include "UI/Widget/GraphicsOptionMenu.h"
 #include "UI/Widget/SoundOptionMenu.h"
 
+void UOptionsMenu::CloseMenu()
+{
+	Super::CloseMenu();
+
+	RemoveFromParent();
+}
+
 void UOptionsMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -27,7 +34,7 @@ void UOptionsMenu::NativeConstruct()
 	
 	Button_Save->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnSaveButtonClicked);
 	Button_Revert->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnRevertButtonClicked);
-	Button_Close->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnCloseButtonClicked);
+	Button_Close->InternalButton->OnClicked.AddDynamic(this, &ThisClass::CloseMenu);
 
 	Button_Save->InternalButton->SetIsEnabled(false);
 	GraphicsOptionMenu->OnOptionChangedDelegate.AddUObject(this, &ThisClass::OnOptionChanged);
@@ -71,11 +78,6 @@ void UOptionsMenu::OnRevertButtonClicked()
 {
 	GraphicsOptionMenu->RevertChanges();
 	SoundOptionMenu->RevertChanges();
-}
-
-void UOptionsMenu::OnCloseButtonClicked()
-{
-	RemoveFromParent();
 }
 
 void UOptionsMenu::OnOptionChanged()

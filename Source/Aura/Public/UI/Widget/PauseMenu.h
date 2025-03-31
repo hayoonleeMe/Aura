@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AuraUserWidget.h"
+#include "ClosableWidget.h"
 #include "PauseMenu.generated.h"
 
 class USquareButton;
@@ -12,12 +12,16 @@ class USquareButton;
  * 
  */
 UCLASS()
-class AURA_API UPauseMenu : public UAuraUserWidget
+class AURA_API UPauseMenu : public UClosableWidget
 {
 	GENERATED_BODY()
 
 public:
 	UPauseMenu(const FObjectInitializer& ObjectInitializer);
+
+	/* Begin IClosableWidgetInterface */
+	virtual void CloseMenu() override;
+	/* End IClosableWidgetInterface */
 
 protected:
 	virtual void NativeConstruct() override;
@@ -26,9 +30,6 @@ protected:
 public:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<USquareButton> Button_ReturnToGame;
-
-	UFUNCTION()
-	void OnReturnToGameButtonClicked();
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<USquareButton> Button_Options;

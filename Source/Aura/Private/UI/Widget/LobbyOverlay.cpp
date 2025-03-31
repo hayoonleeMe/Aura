@@ -18,6 +18,20 @@ ULobbyOverlay::ULobbyOverlay(const FObjectInitializer& ObjectInitializer)
 	EmptyPlayerName = TEXT("Empty");
 }
 
+void ULobbyOverlay::CloseMenu()
+{
+	Super::CloseMenu();
+	
+	if (MultiplayerSessionsSubsystem)
+	{
+		// DestroySession이 끝날 때 호출되는 콜백 함수 연동 
+		MultiplayerSessionsSubsystem->AuraOnDestroySessionCompleteDelegate.AddUObject(this, &ThisClass::OnDestroySessionComplete);
+		
+		MultiplayerSessionsSubsystem->DestroySession();
+		Button_Exit->InternalButton->SetIsEnabled(false);
+	}
+}
+
 void ULobbyOverlay::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -31,7 +45,7 @@ void ULobbyOverlay::NativeConstruct()
 	}
 
 	Button_Start->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnStartButtonClicked);
-	Button_Exit->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnExitButtonClicked);
+	Button_Exit->InternalButton->OnClicked.AddDynamic(this, &ThisClass::CloseMenu);
 	if (GetOwningPlayer() && !GetOwningPlayer()->HasAuthority())
 	{
 		// Start 버튼은 서버에서만 표시
@@ -66,18 +80,6 @@ void ULobbyOverlay::OnStartButtonClicked()
 	if (PlayerController && PlayerController->HasAuthority() && GetWorld())
 	{
 		GetWorld()->ServerTravel(TEXT("/Game/Maps/StartupMap?listen"));
-	}
-}
-
-void ULobbyOverlay::OnExitButtonClicked()
-{
-	if (MultiplayerSessionsSubsystem)
-	{
-		// DestroySession이 끝날 때 호출되는 콜백 함수 연동 
-		MultiplayerSessionsSubsystem->AuraOnDestroySessionCompleteDelegate.AddUObject(this, &ThisClass::OnDestroySessionComplete);
-		
-		MultiplayerSessionsSubsystem->DestroySession();
-		Button_Exit->InternalButton->SetIsEnabled(false);
 	}
 }
 

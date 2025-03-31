@@ -19,11 +19,18 @@ UPauseMenu::UPauseMenu(const FObjectInitializer& ObjectInitializer)
 	SetIsFocusable(true);
 }
 
+void UPauseMenu::CloseMenu()
+{
+	Super::CloseMenu();
+
+	RemoveFromParent();
+}
+
 void UPauseMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	Button_ReturnToGame->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnReturnToGameButtonClicked);
+	Button_ReturnToGame->InternalButton->OnClicked.AddDynamic(this, &ThisClass::CloseMenu);
 	Button_Options->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnOptionsButtonClicked);
 	Button_LeaveGame->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnLeaveGameButtonClicked);
 	Button_ExitAura->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnExitAuraButtonClicked);
@@ -46,11 +53,6 @@ void UPauseMenu::NativeDestruct()
 	}
 	
 	Super::NativeDestruct();
-}
-
-void UPauseMenu::OnReturnToGameButtonClicked()
-{
-	RemoveFromParent();
 }
 
 void UPauseMenu::OnOptionsButtonClicked()

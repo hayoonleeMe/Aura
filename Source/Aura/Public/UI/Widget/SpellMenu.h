@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AuraUserWidget.h"
+#include "ClosableWidget.h"
 #include "SpellMenu.generated.h"
 
 class UAuraAbilitySystemComponent;
@@ -22,12 +22,16 @@ class USquareButton;
  * 
  */
 UCLASS()
-class AURA_API USpellMenu : public UAuraUserWidget
+class AURA_API USpellMenu : public UClosableWidget
 {
 	GENERATED_BODY()
 
 public:
 	USpellMenu(const FObjectInitializer& ObjectInitializer);
+
+	/* Begin IClosableWidgetInterface */
+	virtual void CloseMenu() override;
+	/* End IClosableWidgetInterface */
 
 protected:
 	virtual void NativeConstruct() override;
@@ -72,9 +76,6 @@ public:
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<USquareButton> Button_Close;
-
-	UFUNCTION()
-	void OnCloseButtonClicked();
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<USpellDescription> SpellDescription;

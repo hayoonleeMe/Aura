@@ -143,7 +143,7 @@ void UGameOverlay::OpenAttributeMenu()
 		
 		// Open AttributeMenu
 		AttributeMenu = CreateWidget<UAttributeMenu>(this, AttributeMenuClass);
-		AttributeMenu->OnRemovedDelegate.AddUObject(this, &ThisClass::OnAttributeMenuClosed);
+		AttributeMenu->GetOnRemovedDelegate().AddUObject(this, &ThisClass::OnAttributeMenuClosed);
 		AttributeMenu->SetAlignmentInViewport({ 0.5f, 0.5f });
 		if (GEngine && GEngine->GameViewport)
 		{
@@ -191,7 +191,7 @@ void UGameOverlay::OpenSpellMenu()
 		
 		// Open SpellMenu
 		SpellMenu = CreateWidget<USpellMenu>(this, SpellMenuClass);
-		SpellMenu->OnRemovedDelegate.AddUObject(this, &ThisClass::OnSpellMenuClosed);
+		SpellMenu->GetOnRemovedDelegate().AddUObject(this, &ThisClass::OnSpellMenuClosed);
 		SpellMenu->SetAlignmentInViewport({ 0.5f, 0.5f });
 		if (GEngine && GEngine->GameViewport)
 		{
@@ -247,7 +247,7 @@ void UGameOverlay::OpenPauseMenu()
 	
 	// Open PauseMenu
 	PauseMenu = CreateWidget<UPauseMenu>(this, PauseMenuClass);
-	PauseMenu->OnRemovedDelegate.AddUObject(this, &ThisClass::OnPauseMenuClosed);
+	PauseMenu->GetOnRemovedDelegate().AddUObject(this, &ThisClass::OnPauseMenuClosed);
 	PauseMenu->AddToViewport(1);
 
 	// GameOverlay 숨김

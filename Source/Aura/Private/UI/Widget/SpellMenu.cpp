@@ -49,7 +49,7 @@ void USpellMenu::NativeConstruct()
 	/* Spell Menu */
 	Button_SpendPoint->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnSpendPointButtonClicked);
 	Button_Equip->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnEquipButtonClicked);
-	Button_Close->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnCloseButtonClicked);
+	Button_Close->InternalButton->OnClicked.AddDynamic(this, &ThisClass::CloseMenu);
 
 	AAuraPlayerState* AuraPS = GetOwningPlayerState<AAuraPlayerState>(true);
 	AuraPS->OnSpellPointsChangedDelegate.AddUObject(this, &ThisClass::UpdateSpellPointsChange);
@@ -213,11 +213,6 @@ void USpellMenu::EnableButtons() const
 {
 	Button_SpendPoint->SetIsEnabled(CanSpendPoint());
 	Button_Equip->SetIsEnabled(CanEquipSpell());
-}
-
-void USpellMenu::OnCloseButtonClicked()
-{
-	RemoveFromParent();
 }
 
 void USpellMenu::UpdateDescription() const

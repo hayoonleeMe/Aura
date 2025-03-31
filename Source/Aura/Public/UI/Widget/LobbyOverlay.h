@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "ClosableWidget.h"
 #include "LobbyOverlay.generated.h"
 
 class UFriendsListRow;
@@ -17,12 +17,16 @@ class USquareButton;
  * 
  */
 UCLASS()
-class AURA_API ULobbyOverlay : public UUserWidget
+class AURA_API ULobbyOverlay : public UClosableWidget
 {
 	GENERATED_BODY()
 
 public:
 	ULobbyOverlay(const FObjectInitializer& ObjectInitializer);
+
+	/* Begin IClosableWidgetInterface */
+	virtual void CloseMenu() override;
+	/* End IClosableWidgetInterface */
 
 protected:
 	virtual void NativeConstruct() override;
@@ -40,9 +44,6 @@ public:
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<USquareButton> Button_Exit;
-
-	UFUNCTION()
-	void OnExitButtonClicked();
 
 	// Destroy Session 작업이 완료됐을 때의 콜백 함수
 	void OnDestroySessionComplete(bool bWasSuccessful) const;

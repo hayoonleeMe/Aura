@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AuraUserWidget.h"
+#include "ClosableWidget.h"
 #include "GameplayTagContainer.h"
 #include "AttributeMenu.generated.h"
 
@@ -17,12 +17,16 @@ class UTextValueButtonRow;
  * 
  */
 UCLASS()
-class AURA_API UAttributeMenu : public UAuraUserWidget
+class AURA_API UAttributeMenu : public UClosableWidget
 {
 	GENERATED_BODY()
 
 public:
 	UAttributeMenu(const FObjectInitializer& ObjectInitializer);
+
+	/* Begin IClosableWidgetInterface */
+	virtual void CloseMenu() override;
+	/* End IClosableWidgetInterface */
 
 protected:
 	virtual void NativeConstruct() override;
@@ -97,7 +101,4 @@ public:
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<USquareButton> Button_Close;
-
-	UFUNCTION()
-	void OnCloseButtonClicked();
 };

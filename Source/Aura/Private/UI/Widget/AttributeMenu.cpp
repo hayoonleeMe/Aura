@@ -22,6 +22,13 @@ UAttributeMenu::UAttributeMenu(const FObjectInitializer& ObjectInitializer)
 	SetIsFocusable(true);	
 }
 
+void UAttributeMenu::CloseMenu()
+{
+	Super::CloseMenu();
+
+	RemoveFromParent();
+}
+
 void UAttributeMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -30,7 +37,7 @@ void UAttributeMenu::NativeConstruct()
 	AttributeConfig = AuraGameStateBase->AttributeConfig;
 	check(AttributeConfig);
 	
-	Button_Close->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnCloseButtonClicked);
+	Button_Close->InternalButton->OnClicked.AddDynamic(this, &ThisClass::CloseMenu);
 
 	Row_Strength->AttributeTag = AuraGameplayTags::Attributes_Primary_Strength;
 	Row_Intelligence->AttributeTag = AuraGameplayTags::Attributes_Primary_Intelligence;
@@ -104,9 +111,4 @@ void UAttributeMenu::UpdateAttributeValueChange(const FGameplayTag& AttributeTag
 	AttributeInfo.Value = Value;
 	UTextValueRow* Row = AttributeTagToRowMap.FindChecked(AttributeTag);
 	Row->UpdateAttributeValueChange(AttributeInfo);
-}
-
-void UAttributeMenu::OnCloseButtonClicked()
-{
-	RemoveFromParent();
 }
