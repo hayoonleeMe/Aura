@@ -129,7 +129,7 @@ void UGameOverlay::OpenAttributeMenu()
 	
 	if (AttributeMenu)
 	{
-		AttributeMenu->RemoveFromParent();
+		AttributeMenu->CloseMenu();
 		AttributeMenu = nullptr;
 	}
 	else
@@ -137,7 +137,7 @@ void UGameOverlay::OpenAttributeMenu()
 		if (SpellMenu)
 		{
 			// Remove SpellMenu if exists
-			SpellMenu->RemoveFromParent();
+			SpellMenu->CloseMenu();
 			SpellMenu = nullptr;
 		}
 		
@@ -177,7 +177,7 @@ void UGameOverlay::OpenSpellMenu()
 	
 	if (SpellMenu)
 	{
-		SpellMenu->RemoveFromParent();
+		SpellMenu->CloseMenu();
 		SpellMenu = nullptr;
 	}
 	else
@@ -185,7 +185,7 @@ void UGameOverlay::OpenSpellMenu()
 		if (AttributeMenu)
 		{
 			// Remove AttributeMenu if exists
-			AttributeMenu->RemoveFromParent();
+			AttributeMenu->CloseMenu();
 			AttributeMenu = nullptr;
 		}
 		

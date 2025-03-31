@@ -287,7 +287,10 @@ void AAuraPlayerController::OnMenuActionStarted(EGameMenuType GameMenuType)
 
 void AAuraPlayerController::OnCloseUIActionStarted()
 {
-	OnCloseUIActionStartedDelegate.Broadcast();
+	if (ABaseHUD* BaseHUD = GetHUD<ABaseHUD>())
+	{
+		BaseHUD->CloseCurrentWidget();
+	}
 }
 
 void AAuraPlayerController::AbilityInputPressed(FGameplayTag InputTag, int32 InputID)

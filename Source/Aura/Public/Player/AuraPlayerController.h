@@ -36,9 +36,6 @@ DECLARE_DELEGATE(FOnGameEndSignature);
 // 월드에 존재하던 적이 죽음을 알리는 델레게이트
 DECLARE_DELEGATE(FOnEnemyDeadSignature);
 
-// CloseUI Input Action이 Started 되어 현재 UI를 닫아야 함을 알리는 델레게이트
-DECLARE_MULTICAST_DELEGATE(FOnCloseUIActionStartedSignature);
-
 /**
  * 
  */
@@ -61,7 +58,6 @@ public:
 	/* End PlayerInterface */
 
 	AActor* GetTargetActorFromCursor() const { return TargetFromCurrentFrame.Get(); }
-	FOnCloseUIActionStartedSignature OnCloseUIActionStartedDelegate;
 
 	// Damage를 나타내는 DamageIndicator Widget을 화면에 표시한다.
 	UFUNCTION(Client, Reliable)
