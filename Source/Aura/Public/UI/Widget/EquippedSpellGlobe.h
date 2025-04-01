@@ -50,4 +50,7 @@ public:
 	float CooldownUpdateInterval;
 	
 	float RemainingTime = 0.f;
+
+private:
+	FNumberFormattingOptions NumberFormattingOptions;
 };

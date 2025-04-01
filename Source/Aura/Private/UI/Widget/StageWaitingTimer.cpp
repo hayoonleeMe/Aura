@@ -10,6 +10,8 @@ UStageWaitingTimer::UStageWaitingTimer(const FObjectInitializer& ObjectInitializ
 	: Super(ObjectInitializer)
 {
 	TranslationTimeSeconds = 1.5f;
+	NumberFormattingOptions.MinimumFractionalDigits = 0;
+	NumberFormattingOptions.MaximumFractionalDigits = 0;
 }
 
 void UStageWaitingTimer::NativeConstruct()
@@ -66,10 +68,7 @@ void UStageWaitingTimer::UpdateRemainTimeSeconds() const
 		// 남은 시간 업데이트
 		const float RemainSeconds = WaitingTimerEndSeconds - ServerTimeSeconds;
 		
-		FNumberFormattingOptions Options;
-		Options.MinimumFractionalDigits = 0;
-		Options.MaximumFractionalDigits = 0;
-		Text_RemainSeconds->SetText(FText::AsNumber(RemainSeconds, &Options));
+		Text_RemainSeconds->SetText(FText::AsNumber(RemainSeconds, &NumberFormattingOptions));
 
 		if (RemainSeconds < 5.5)
 		{
