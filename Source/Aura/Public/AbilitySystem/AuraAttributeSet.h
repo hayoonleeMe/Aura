@@ -29,6 +29,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PrintDebug() override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
+	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
 
 	// Tag와 Attribute Mapping
 	// Primary, Secondary Attribute만 포함
