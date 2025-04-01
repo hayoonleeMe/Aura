@@ -17,6 +17,8 @@ class AURA_API UToolTip_CurrentMaxValue : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	UToolTip_CurrentMaxValue(const FObjectInitializer& ObjectInitializer);
+	
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> TextBlock_CurrentValue;
 
@@ -24,4 +26,7 @@ public:
 	TObjectPtr<UTextBlock> TextBlock_MaxValue;
 
 	void UpdateValues(float CurrentValue, float MaxValue) const;
+
+private:
+	FNumberFormattingOptions NumberFormattingOptions;
 };

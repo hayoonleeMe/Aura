@@ -13,6 +13,9 @@ UEquippedSpellGlobe::UEquippedSpellGlobe(const FObjectInitializer& ObjectInitial
 	NormalColor = FLinearColor::White;
 	CooldownColor = FLinearColor(0.25f, 0.25f, 0.25f);
 	CooldownUpdateInterval = 0.05f;
+
+	NumberFormattingOptions.MinimumFractionalDigits = 1;
+	NumberFormattingOptions.MaximumFractionalDigits = 1;
 }
 
 void UEquippedSpellGlobe::UpdateEquippedSpellChange(bool bEquipped, const FSpellInfo& SpellInfo) const
@@ -60,8 +63,5 @@ void UEquippedSpellGlobe::UpdateTextCooldown()
 {
 	RemainingTime = FMath::Max(0.f, RemainingTime - CooldownUpdateInterval);
 	
-	FNumberFormattingOptions Options;
-	Options.MinimumFractionalDigits = 1;
-	Options.MaximumFractionalDigits = 1;
-	Text_Cooldown->SetText(FText::AsNumber(RemainingTime, &Options));
+	Text_Cooldown->SetText(FText::AsNumber(RemainingTime, &NumberFormattingOptions));
 }

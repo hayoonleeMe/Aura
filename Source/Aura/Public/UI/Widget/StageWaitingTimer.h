@@ -46,4 +46,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	float TranslationTimeSeconds;
+
+	FNumberFormattingOptions NumberFormattingOptions;
 };
