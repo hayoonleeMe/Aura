@@ -12,8 +12,6 @@ void UEquippedSpellRow::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	check(SpellEquipSound);
-
 	GlobeButton_LMB->InputTag = AuraGameplayTags::InputTag_LMB;
 	GlobeButton_MMB->InputTag = AuraGameplayTags::InputTag_MMB;
 	GlobeButton_Q->InputTag = AuraGameplayTags::InputTag_Q;
@@ -51,13 +49,8 @@ void UEquippedSpellRow::WaitSelectGlobe(bool bWaitOffensive)
 	}
 }
 
-void UEquippedSpellRow::FinishSpellEquip(bool bPlayEquipSound)
+void UEquippedSpellRow::FinishSpellEquip()
 {
-	if (bPlayEquipSound)
-	{
-		PlaySound(SpellEquipSound);
-	}
-
 	bWaitSelectGlobe = false;
 
 	StopAllAnimations();

@@ -42,6 +42,8 @@ void USpellMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	check(SpellEquipSound);
+
 	const AAuraGameStateBase* AuraGameStateBase = UAuraBlueprintLibrary::GetAuraGameStateBaseChecked(GetWorld());
 	SpellConfig = AuraGameStateBase->SpellConfig;
 	check(SpellConfig);
@@ -136,7 +138,7 @@ void USpellMenu::BroadcastInitialValues()
 		UpdateSpellChange(Tuple.Key);
 		if (Tuple.Value.IsValid())
 		{
-			UpdateEquippedSpellChange(true, Tuple.Value, Tuple.Key, false);
+			UpdateEquippedSpellChange(true, Tuple.Value, Tuple.Key);
 		}
 	}
 }
@@ -196,7 +198,7 @@ void USpellMenu::OnEquipButtonClicked()
 {
 	if (EquippedSpellRow->bWaitSelectGlobe)
 	{
-		EquippedSpellRow->FinishSpellEquip(false);
+		EquippedSpellRow->FinishSpellEquip();
 	}
 	else
 	{
@@ -296,15 +298,16 @@ void USpellMenu::UpdateSpellChange(const FGameplayTag& SpellTag)
 	}
 }
 
-void USpellMenu::OnEquippedSpellGlobeButtonSelected(const FGameplayTag& InputTag) const
+void USpellMenu::OnEquippedSpellGlobeButtonSelected(const FGameplayTag& InputTag)
 {
 	if (EquippedSpellRow->bWaitSelectGlobe && CurrentSelectedSpellGlobeButton && InputTag.IsValid())
 	{
+		PlaySound(SpellEquipSound);
 		AuraASC->ServerHandleEquipSpell(CurrentSelectedSpellGlobeButton->SpellTag, InputTag);
 	}
 }
 
-void USpellMenu::UpdateEquippedSpellChange(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag, bool bPlayEquipSound)
+void USpellMenu::UpdateEquippedSpellChange(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag)
 {
 	const FSpellInfo& SpellInfo = SpellConfig->GetSpellInfoByTag(SpellTag);
 	for (const UEquippedSpellGlobeButton* EquippedSpellGlobeButton : EquippedSpellGlobeButtons)
@@ -315,5 +318,5 @@ void USpellMenu::UpdateEquippedSpellChange(bool bEquipped, const FGameplayTag& I
 		}
 	}
 
-	EquippedSpellRow->FinishSpellEquip(bPlayEquipSound);
+	EquippedSpellRow->FinishSpellEquip();
 }
