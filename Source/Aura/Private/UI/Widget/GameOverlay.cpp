@@ -135,6 +135,12 @@ void UGameOverlay::OpenAttributeMenu()
 			SpellMenu->CloseMenu();
 			SpellMenu = nullptr;
 		}
+		if (TutorialMenu)
+		{
+			// Remove TutorialMenu if exists
+			TutorialMenu->CloseMenu();
+			TutorialMenu = nullptr;
+		}
 		
 		// Open AttributeMenu
 		AttributeMenu = CreateWidget<UAttributeMenu>(this, AttributeMenuClass);
@@ -182,6 +188,12 @@ void UGameOverlay::OpenSpellMenu()
 			// Remove AttributeMenu if exists
 			AttributeMenu->CloseMenu();
 			AttributeMenu = nullptr;
+		}
+		if (TutorialMenu)
+		{
+			// Remove TutorialMenu if exists
+			TutorialMenu->CloseMenu();
+			TutorialMenu = nullptr;
 		}
 		
 		// Open SpellMenu
