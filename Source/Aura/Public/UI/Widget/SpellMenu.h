@@ -111,7 +111,10 @@ public:
 	UPROPERTY()
 	TArray<UEquippedSpellGlobeButton*> EquippedSpellGlobeButtons;
 
-	void OnEquippedSpellGlobeButtonSelected(const FGameplayTag& InputTag) const;
+	void OnEquippedSpellGlobeButtonSelected(const FGameplayTag& InputTag);
 
-	void UpdateEquippedSpellChange(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag, bool bPlayEquipSound);
+	void UpdateEquippedSpellChange(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag);
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<USoundBase> SpellEquipSound;
 };

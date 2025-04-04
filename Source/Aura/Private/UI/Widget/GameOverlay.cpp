@@ -228,7 +228,7 @@ void UGameOverlay::OnEquippedSpellChanged(bool bEquipped, const FGameplayTag& In
 {
 	if (SpellMenu)
 	{
-		SpellMenu->UpdateEquippedSpellChange(bEquipped, InputTag, SpellTag, true);
+		SpellMenu->UpdateEquippedSpellChange(bEquipped, InputTag, SpellTag);
 	}
 }
 

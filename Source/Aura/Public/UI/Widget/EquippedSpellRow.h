@@ -58,11 +58,8 @@ public:
 	UPROPERTY(Transient, meta=(BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> SelectPassiveAnimation;
 
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<USoundBase> SpellEquipSound;
-
 	bool bWaitSelectGlobe = false;
 
 	void WaitSelectGlobe(bool bWaitOffensive);
-	void FinishSpellEquip(bool bPlayEquipSound);
+	void FinishSpellEquip();
 };

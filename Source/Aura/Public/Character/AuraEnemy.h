@@ -161,4 +161,8 @@ private:
 	
 	// Debuff.Stun Tag가 추가, 제거될 때 호출됨
 	void OnDebuffStunTagChanged(const FGameplayTag Tag, int32 Count) const;
+
+	// Stun Debuff가 걸릴 때 Sound Effect를 재생하는 Audio Component
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UAudioComponent> StunSoundComponent;
 };
