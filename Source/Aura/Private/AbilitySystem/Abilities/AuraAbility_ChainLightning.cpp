@@ -149,6 +149,11 @@ void UAuraAbility_ChainLightning::CastLightningBeam() const
 		FirstTargetActor = TargetCombatInterface && !TargetCombatInterface->IsDead() ? HitResult.GetActor() : nullptr;
 		TargetLocation = FirstTargetActor ? FirstTargetActor->GetActorLocation() : HitResult.ImpactPoint;
 	}
+	else if (GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, TargetLocation, ECC_OnlyWall, QueryParams))
+	{
+		// Target이 없고 벽에 닿으면 충돌 지점까지만 Beam 발사
+		TargetLocation = HitResult.ImpactPoint;
+	}
 
 	// Spawn Beam from Player to Target
 	UAuraBlueprintLibrary::ExecuteGameplayCue(AvatarActor, AuraGameplayTags::GameplayCue_LightningBeam, TargetLocation);
