@@ -14,6 +14,7 @@
 #include "Aura/Aura.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/AudioComponent.h"
 #include "Data/EnemyClassConfig.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
@@ -71,6 +72,10 @@ AAuraEnemy::AAuraEnemy()
 	StunDebuffComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Stun Debuff Component"));
 	StunDebuffComponent->SetupAttachment(GetRootComponent());
 	StunDebuffComponent->bAutoActivate = false;
+	
+	StunSoundComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Stun Sound Component"));
+	StunSoundComponent->SetupAttachment(GetRootComponent());
+	StunSoundComponent->bAutoActivate = false;
 }
 
 void AAuraEnemy::PossessedBy(AController* NewController)
@@ -328,6 +333,7 @@ void AAuraEnemy::OnDebuffStunTagChanged(const FGameplayTag Tag, int32 Count) con
 		}
 
 		StunDebuffComponent->Activate();
+		StunSoundComponent->Activate();
 	}
 	else
 	{
@@ -337,6 +343,7 @@ void AAuraEnemy::OnDebuffStunTagChanged(const FGameplayTag Tag, int32 Count) con
 		}
 
 		StunDebuffComponent->DeactivateImmediate();
+		StunSoundComponent->Deactivate();
 	}
 
 	if (IsValid(AuraAIController) && AuraAIController->GetBlackboardComponent())
