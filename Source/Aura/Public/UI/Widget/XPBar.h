@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "XPBar.generated.h"
 
+class UToolTip_XPBar;
 class UProgressBar;
 
 /**
@@ -31,6 +32,11 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> ToolTipWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UToolTip_XPBar> CachedToolTipWidget;
+	
+	void UpdateToolTipWidget() const;
 
 	void UpdateXPChange(float InXP);
 	void UpdateLevelChange(int32 InLevel);
