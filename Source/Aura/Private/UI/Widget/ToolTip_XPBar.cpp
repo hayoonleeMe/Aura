@@ -6,10 +6,8 @@
 #include "Components/RichTextBlock.h"
 #include "Kismet/KismetMathLibrary.h"
 
-void UToolTip_XPBar::NativeConstruct()
+void UToolTip_XPBar::UpdateValues(int32 Level, float XP, float XPRequirement) const
 {
-	Super::NativeConstruct();
-
 	const int32 Percent = FMath::TruncToInt32(UKismetMathLibrary::SafeDivide(XP, XPRequirement) * 100.f);
 	const FString LevelString = FString::Printf(TEXT("<Tan>Level %d </><Normal>(%d%%)</>"), Level, Percent);
 	Text_Level->SetText(FText::FromString(LevelString));

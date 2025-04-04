@@ -16,9 +16,6 @@ class AURA_API UToolTip_XPBar : public UUserWidget
 {
 	GENERATED_BODY()
 
-protected:
-	virtual void NativeConstruct() override;
-
 public:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<URichTextBlock> Text_Level;
@@ -26,7 +23,5 @@ public:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<URichTextBlock> Text_XP;
 
-	int32 Level = 0;
-	float XP = 0.f;
-	float XPRequirement = 0.f;
+	void UpdateValues(int32 Level, float XP, float XPRequirement) const;
 };

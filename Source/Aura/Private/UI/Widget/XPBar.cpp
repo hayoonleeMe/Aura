@@ -39,17 +39,30 @@ void UXPBar::NativeConstruct()
 
 UWidget* UXPBar::GetProgressBarXPTooltipWidget()
 {
-	UToolTip_XPBar* ToolTipUserWidget = CreateWidget<UToolTip_XPBar>(this, ToolTipWidgetClass);
-	ToolTipUserWidget->Level = Level;
-	ToolTipUserWidget->XP = XP;
-	ToolTipUserWidget->XPRequirement = XPRequirement;
-	return ToolTipUserWidget;
+	if (!CachedToolTipWidget)
+	{
+		CachedToolTipWidget = CreateWidget<UToolTip_XPBar>(this, ToolTipWidgetClass);
+	}
+	if (CachedToolTipWidget)
+	{
+		CachedToolTipWidget->UpdateValues(Level, XP, XPRequirement);
+	}
+	return CachedToolTipWidget;
+}
+
+void UXPBar::UpdateToolTipWidget() const
+{
+	if (CachedToolTipWidget)
+	{
+		CachedToolTipWidget->UpdateValues(Level, XP, XPRequirement);
+	}
 }
 
 void UXPBar::UpdateXPChange(float InXP)
 {
 	XP = InXP;
 	ProgressBar_XP->SetPercent(UKismetMathLibrary::SafeDivide(XP, XPRequirement));
+	UpdateToolTipWidget();
 }
 
 void UXPBar::UpdateLevelChange(int32 InLevel)
@@ -57,4 +70,5 @@ void UXPBar::UpdateLevelChange(int32 InLevel)
 	Level = InLevel;
 	XPRequirement = UAuraBlueprintLibrary::GetLevelUpXPRequirement(GetOwningPlayer(), Level + 1);
 	ProgressBar_XP->SetPercent(UKismetMathLibrary::SafeDivide(XP, XPRequirement));
+	UpdateToolTipWidget();
 }
