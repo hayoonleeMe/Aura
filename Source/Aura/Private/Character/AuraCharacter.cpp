@@ -326,6 +326,12 @@ void AAuraCharacter::InitAbilityActorInfo()
 
 	// 캐릭터 스폰 시 생명 주기 함수 호출이 어긋나므로 다음 프레임에 호출해 해결
 	GetWorldTimerManager().SetTimerForNextTick(FTimerDelegate::CreateUObject(this, &ThisClass::InitializePlayerNameplateWidget));
+
+	// Audio Listener를 캐릭터로 설정
+	if (APlayerController* PlayerController = GetController<APlayerController>())
+	{
+		PlayerController->SetAudioListenerOverride(GetRootComponent(), FVector::ZeroVector, FRotator::ZeroRotator);
+	}
 }
 
 void AAuraCharacter::InitializeAttributes()
