@@ -54,6 +54,26 @@ public:
 	/* Begin ObjectPoolInterface */
 	virtual AActor* SpawnFromPool(EPooledActorType PooledActorType, const FTransform& SpawnTransform) override;
 	/* End ObjectPoolInterface */
+
+	// ============================================================================
+	// Test
+	// ============================================================================
+
+	// XPAmount만큼의 XP를 획득
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void ServerAddXPForTest(int32 XPAmount);
+
+	// 레벨업
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void ServerLevelUpForTest();
+
+	// Attribute Point 획득
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void ServerAddAttributePointForTest();
+
+	// Spell Point 획득
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void ServerAddSpellPointForTest();
 	
 protected:
 	virtual void InitAbilityActorInfo() override;

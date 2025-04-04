@@ -7,6 +7,7 @@
 #include "AuraGameplayTags.h"
 #include "NiagaraComponent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/AuraAttributeSet.h"
 #include "Aura/Aura.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -231,6 +232,38 @@ AActor* AAuraCharacter::SpawnFromPool(EPooledActorType PooledActorType, const FT
 		return EmberBoltPoolComponent->SpawnFromPool(SpawnTransform);
 	}
 	return nullptr;
+}
+
+void AAuraCharacter::ServerAddXPForTest_Implementation(int32 XPAmount)
+{
+	if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		AuraASC->ApplyXPGainEffect(XPAmount);
+	}
+}
+
+void AAuraCharacter::ServerLevelUpForTest_Implementation()
+{
+	if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		if (const UAuraAttributeSet* AuraAS = Cast<UAuraAttributeSet>(AttributeSet))
+		{
+			const int32 NextLevel = AuraAS->GetLevel() + 1;
+			const int32 XP = AuraAS->GetXP();
+			const int32 XPRequirement = GetLevelUpXpRequirement(NextLevel);
+			AuraASC->ApplyXPGainEffect(XPRequirement - XP);
+		}
+	}
+}
+
+void AAuraCharacter::ServerAddAttributePointForTest_Implementation()
+{
+	AddToAttributePoints(1);
+}
+
+void AAuraCharacter::ServerAddSpellPointForTest_Implementation()
+{
+	AddToSpellPoints(1);
 }
 
 void AAuraCharacter::MulticastActivatePassiveSpellNiagaraComponent_Implementation(const FGameplayTag& SpellTag) const
