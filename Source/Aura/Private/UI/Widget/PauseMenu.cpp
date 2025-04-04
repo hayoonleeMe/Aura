@@ -13,12 +13,6 @@
 #include "UI/HUD/BaseHUD.h"
 #include "UI/Widget/SquareButton.h"
 
-UPauseMenu::UPauseMenu(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
-{
-	SetIsFocusable(true);
-}
-
 void UPauseMenu::CloseMenu()
 {
 	Super::CloseMenu();

@@ -22,8 +22,6 @@ class AURA_API UAttributeMenu : public UClosableWidget
 	GENERATED_BODY()
 
 public:
-	UAttributeMenu(const FObjectInitializer& ObjectInitializer);
-
 	/* Begin IClosableWidgetInterface */
 	virtual void CloseMenu() override;
 	/* End IClosableWidgetInterface */

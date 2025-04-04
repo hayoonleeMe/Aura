@@ -27,8 +27,6 @@ class AURA_API USpellMenu : public UClosableWidget
 	GENERATED_BODY()
 
 public:
-	USpellMenu(const FObjectInitializer& ObjectInitializer);
-
 	/* Begin IClosableWidgetInterface */
 	virtual void CloseMenu() override;
 	/* End IClosableWidgetInterface */

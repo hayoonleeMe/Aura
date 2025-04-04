@@ -25,12 +25,6 @@
 #include "UI/Widget/SpellGlobeButton.h"
 #include "UI/Widget/SquareButton.h"
 
-USpellMenu::USpellMenu(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
-{
-	SetIsFocusable(true);
-}
-
 void USpellMenu::CloseMenu()
 {
 	Super::CloseMenu();
