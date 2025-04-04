@@ -6,7 +6,6 @@
 #include "AuraBlueprintLibrary.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
-#include "Components/Button.h"
 #include "Components/NamedSlot.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
@@ -15,7 +14,6 @@
 #include "UI/Widget/PauseMenu.h"
 #include "UI/Widget/RespawnTimer.h"
 #include "UI/Widget/SpellMenu.h"
-#include "UI/Widget/SquareButton.h"
 #include "UI/Widget/StageInfoHUD.h"
 #include "UI/Widget/StageStartAlert.h"
 #include "UI/Widget/StageWaitingTimer.h"
@@ -40,10 +38,6 @@ void UGameOverlay::NativeConstruct()
 	check(StageStartAlertClass);
 
 	/* Game Overlay */
-	Button_AttributeMenu->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OpenAttributeMenu);
-	Button_SpellMenu->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OpenSpellMenu);
-	Button_PauseMenu->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OpenPauseMenu);
-
 	AAuraPlayerController* AuraPC = CastChecked<AAuraPlayerController>(GetOwningPlayer());
 	AuraPC->OnStageStatusChangedDelegate.BindUObject(this, &ThisClass::OnStageStatusChanged);
 	AuraPC->OnTotalEnemyCountChangedDelegate.BindUObject(this, &ThisClass::OnTotalEnemyCountChanged);
@@ -234,17 +228,6 @@ void UGameOverlay::OnEquippedSpellChanged(bool bEquipped, const FGameplayTag& In
 
 void UGameOverlay::OpenPauseMenu()
 {
-	if (AttributeMenu)
-	{
-		AttributeMenu->RemoveFromParent();
-		AttributeMenu = nullptr;
-	}
-	if (SpellMenu)
-	{
-		SpellMenu->RemoveFromParent();
-		SpellMenu = nullptr;
-	}
-	
 	// Open PauseMenu
 	PauseMenu = CreateWidget<UPauseMenu>(this, PauseMenuClass);
 	PauseMenu->GetOnRemovedDelegate().AddUObject(this, &ThisClass::OnPauseMenuClosed);

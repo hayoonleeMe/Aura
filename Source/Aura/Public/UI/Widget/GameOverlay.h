@@ -63,9 +63,6 @@ public:
 	// Attribute Menu
 	// ============================================================================
 
-	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<USquareButton> Button_AttributeMenu;
-
 	UFUNCTION()
 	void OpenAttributeMenu();
 
@@ -82,9 +79,6 @@ public:
 	// ============================================================================
 	// Spell Menu
 	// ============================================================================
-
-	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<USquareButton> Button_SpellMenu;
 
 	UFUNCTION()
 	void OpenSpellMenu();
@@ -105,9 +99,6 @@ public:
 	// ============================================================================
 	// Pause Menu
 	// ============================================================================
-
-	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<USquareButton> Button_PauseMenu;
 
 	UFUNCTION()
 	void OpenPauseMenu();

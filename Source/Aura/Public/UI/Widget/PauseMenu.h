@@ -17,8 +17,6 @@ class AURA_API UPauseMenu : public UClosableWidget
 	GENERATED_BODY()
 
 public:
-	UPauseMenu(const FObjectInitializer& ObjectInitializer);
-
 	/* Begin IClosableWidgetInterface */
 	virtual void CloseMenu() override;
 	/* End IClosableWidgetInterface */
