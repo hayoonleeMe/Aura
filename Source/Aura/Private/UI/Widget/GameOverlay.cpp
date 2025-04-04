@@ -17,6 +17,7 @@
 #include "UI/Widget/StageInfoHUD.h"
 #include "UI/Widget/StageStartAlert.h"
 #include "UI/Widget/StageWaitingTimer.h"
+#include "UI/Widget/TutorialMenu.h"
 
 UGameOverlay::UGameOverlay(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -243,6 +244,52 @@ void UGameOverlay::OnPauseMenuClosed()
 	PauseMenu = nullptr;
 	SetRenderOpacity(1.f);
 	SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+}
+
+void UGameOverlay::OpenTutorialMenu()
+{
+	if (PauseMenu)
+	{
+		return;
+	}
+	
+	if (TutorialMenu)
+	{
+		TutorialMenu->CloseMenu();
+		TutorialMenu = nullptr;
+	}
+	else
+	{
+		if (AttributeMenu)
+		{
+			// Remove AttributeMenu if exists
+			AttributeMenu->CloseMenu();
+			AttributeMenu = nullptr;
+		}
+		if (SpellMenu)
+		{
+			// Remove AttributeMenu if exists
+			SpellMenu->CloseMenu();
+			SpellMenu = nullptr;
+		}
+		
+		// Open TutorialMenu
+		TutorialMenu = CreateWidget<UTutorialMenu>(this, TutorialMenuClass);
+		TutorialMenu->GetOnRemovedDelegate().AddUObject(this, &ThisClass::OnTutorialMenuClosed);
+		TutorialMenu->SetAlignmentInViewport({ 0.5f, 0.5f });
+		if (GEngine && GEngine->GameViewport)
+		{
+			FVector2D ViewportSize;
+			GEngine->GameViewport->GetViewportSize(ViewportSize);
+			TutorialMenu->SetPositionInViewport(ViewportSize * 0.5f);
+		}
+		TutorialMenu->AddToViewport();
+	}
+}
+
+void UGameOverlay::OnTutorialMenuClosed()
+{
+	TutorialMenu = nullptr;
 }
 
 void UGameOverlay::OnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount)

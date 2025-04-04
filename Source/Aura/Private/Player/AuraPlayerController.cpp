@@ -228,6 +228,10 @@ void AAuraPlayerController::SetupInputComponent()
 	{
 		AuraInputComponent->BindAction(IA_PauseMenu, ETriggerEvent::Started, this, &ThisClass::OnMenuActionStarted, EGameMenuType::PauseMenu);
 	}
+	if (IA_TutorialMenu)
+	{
+		AuraInputComponent->BindAction(IA_TutorialMenu, ETriggerEvent::Started, this, &ThisClass::OnMenuActionStarted, EGameMenuType::TutorialMenu);
+	}
 	
 	// Bind UI Context
 	if (IA_CloseUI)
