@@ -10,5 +10,6 @@ enum class EGameMenuType : uint8
 {
 	AttributeMenu,
 	SpellMenu,
-	PauseMenu
+	PauseMenu,
+	TutorialMenu
 };

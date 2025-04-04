@@ -33,5 +33,9 @@ void AAuraHUD::OpenMenu(EGameMenuType GameMenuType) const
 		{
 			GameOverlay->OpenPauseMenu();
 		}
+		else if (GameMenuType == EGameMenuType::TutorialMenu)
+		{
+			GameOverlay->OpenTutorialMenu();
+		}
 	}
 }

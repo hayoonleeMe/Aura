@@ -7,6 +7,7 @@
 #include "Types/StageStatus.h"
 #include "GameOverlay.generated.h"
 
+class UTutorialMenu;
 class UGameEndAlert;
 class URespawnTimer;
 struct FGameplayTag;
@@ -110,6 +111,20 @@ public:
 	TObjectPtr<UPauseMenu> PauseMenu;
 
 	void OnPauseMenuClosed();
+
+	// ============================================================================
+	// Tutorial Menu
+	// ============================================================================
+
+	void OpenTutorialMenu();
+
+	UPROPERTY(EditDefaultsOnly, Category="Tutorial Menu")
+	TSubclassOf<UTutorialMenu> TutorialMenuClass;
+
+	UPROPERTY()
+	TObjectPtr<UTutorialMenu> TutorialMenu;
+
+	void OnTutorialMenuClosed();
 
 	// ============================================================================
 	// Stage
