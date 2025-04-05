@@ -124,6 +124,12 @@ private:
 
 	void CursorTrace();
 
+	// CursorTrace 활성화/비활성화
+	void EnableCursorTrace(bool bEnabled);
+	
+	// CursorTrace()를 호출할 수 있는지 여부
+	bool bCursorTraceEnabled = true;
+
 	// Cached Target HitResult Under Cursor
 	FHitResult TargetHitResult;
 
