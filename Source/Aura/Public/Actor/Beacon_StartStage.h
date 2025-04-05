@@ -12,6 +12,7 @@ class UBoxComponent;
 
 /**
  * 다음 스테이지를 시작하는 상호작용이 가능한 Beacon Actor
+ * 하나의 플레이어와 한번만 상호작용 할 수 있다.
  */
 UCLASS()
 class AURA_API ABeacon_StartStage : public AActor, public IInteractionInterface
@@ -39,6 +40,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	TObjectPtr<USoundBase> InteractSound;
+
+	// 현재 기기의 플레이어와 상호작용 했는지
+	bool bHasInteractedWithPlayer = false;
 
 	// ============================================================================
 	// Tooltip

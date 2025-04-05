@@ -36,7 +36,10 @@ void ABeacon_StartStage::HighlightActor()
 {
 	MeshComponent->SetRenderCustomDepth(true);
 
-	TooltipWidgetComponent->SetVisibility(true);
+	if (!bHasInteractedWithPlayer)
+	{
+		TooltipWidgetComponent->SetVisibility(true);
+	}
 }
 
 void ABeacon_StartStage::UnHighlightActor()
@@ -48,11 +51,17 @@ void ABeacon_StartStage::UnHighlightActor()
 
 void ABeacon_StartStage::Interact()
 {
-	if (InteractSound)
+	if (!bHasInteractedWithPlayer)
 	{
-		UGameplayStatics::PlaySound2D(this, InteractSound);
+		if (InteractSound)
+		{
+			UGameplayStatics::PlaySound2D(this, InteractSound);
+		}
+		ServerInteract();
+		bHasInteractedWithPlayer = true;
+
+		TooltipWidgetComponent->SetVisibility(false);
 	}
-	ServerInteract();
 }
 
 void ABeacon_StartStage::ServerInteract_Implementation()
