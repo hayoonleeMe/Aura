@@ -26,6 +26,7 @@ public:
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
 	virtual void Interact() override;
+	virtual float GetOverrideArriveAcceptanceRadius() const override { return 150.f; }
 	/* End InteractionInterface */
 
 private:
