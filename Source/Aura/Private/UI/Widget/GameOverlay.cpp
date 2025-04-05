@@ -75,6 +75,7 @@ void UGameOverlay::NativeConstruct()
 		GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([this]()
 		{
 			AddPreStageHUDWidget();
+			OpenTutorialMenu();
 		}));
 	}
 }
