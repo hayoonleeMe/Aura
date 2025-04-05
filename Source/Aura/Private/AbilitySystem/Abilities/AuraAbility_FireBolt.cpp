@@ -150,8 +150,7 @@ void UAuraAbility_FireBolt::SpawnFireBolts() const
 
 	// Projectile 발사 방향 계산
 	const FVector TargetLocation = AuraASC->CursorTargetWeakPtr.IsValid() ? AuraASC->CursorTargetWeakPtr->GetActorLocation() : CachedImpactPoint;
-	const FVector StartLocation = AuraASC->CursorTargetWeakPtr.IsValid() ? CombatSocketLocation : AvatarActor->GetActorLocation();
-	const FVector CentralDirection = TargetLocation - StartLocation;
+	const FVector CentralDirection = TargetLocation - AvatarActor->GetActorLocation();
 	TArray<FVector> Directions;
 	UAuraBlueprintLibrary::GetSpreadDirections(Directions, NumFireBolts, SpreadAngle, CentralDirection);
 
