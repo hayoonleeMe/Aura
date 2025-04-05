@@ -343,10 +343,9 @@ void AAuraCharacter::InitAbilityActorInfo()
 
 		if (IsLocallyControlled())
 		{
-			if (APlayerController* PC = GetController<APlayerController>())
+			if (AAuraPlayerController* AuraPC = GetController<AAuraPlayerController>())
 			{
-				// Enable Input
-				PC->EnableInput(PC);
+				AuraPC->EnableAbilityInput();
 			}
 		}
 	}
@@ -392,12 +391,6 @@ void AAuraCharacter::InitializeAttributes()
 
 void AAuraCharacter::HandleDeathLocally()
 {
-	// Disable Input
-	if (APlayerController* PC = GetController<APlayerController>())
-	{
-		PC->DisableInput(PC);
-	}
-
 	// Disable Movement
 	if (UCharacterMovementComponent* MoveComponent = GetCharacterMovement())
 	{
@@ -430,6 +423,14 @@ void AAuraCharacter::HandleDeathLocally()
 		FGameplayTagContainer QueryTags;
 		QueryTags.AddTag(AuraGameplayTags::EffectRules_PerLife);
 		AbilitySystemComponent->RemoveActiveEffectsWithTags(QueryTags);
+	}
+
+	if (IsLocallyControlled())
+	{
+		if (AAuraPlayerController* AuraPC = GetController<AAuraPlayerController>())
+		{
+			AuraPC->DisableAbilityInput();
+		}
 	}
 }
 

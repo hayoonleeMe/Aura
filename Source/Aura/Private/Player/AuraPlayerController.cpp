@@ -98,6 +98,27 @@ void AAuraPlayerController::RemoveUIMappingContext() const
 	}
 }
 
+void AAuraPlayerController::EnableAbilityInput()
+{
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		--AbilityInputBlockCount;
+		if (AbilityInputBlockCount == 0)
+		{
+			Subsystem->AddMappingContext(AbilityContext, 0);
+		}
+	}	
+}
+
+void AAuraPlayerController::DisableAbilityInput()
+{
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		++AbilityInputBlockCount;
+		Subsystem->RemoveMappingContext(AbilityContext);
+	}	
+}
+
 void AAuraPlayerController::CursorTrace()
 {
 	// Caching Target HitResult

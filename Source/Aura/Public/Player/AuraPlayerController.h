@@ -57,6 +57,9 @@ public:
 	virtual void RemoveUIMappingContext() const override;
 	/* End PlayerInterface */
 
+	void EnableAbilityInput();
+	void DisableAbilityInput();
+
 	AActor* GetTargetActorFromCursor() const { return TargetFromCurrentFrame.Get(); }
 
 	// Damage를 나타내는 DamageIndicator Widget을 화면에 표시한다.
@@ -147,6 +150,10 @@ private:
 	void PollInit();
 	bool bValidGameStateBaseInClient = false;
 	FTimerHandle PollingTimerHandle;
+
+	// Ability Input을 비활성화한 횟수
+	// 0일 때만 Ability Input Mapping Context를 추가할 수 있다.
+	int32 AbilityInputBlockCount = 0;
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
 	TObjectPtr<UInputMappingContext> AbilityContext;
