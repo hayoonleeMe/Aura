@@ -37,6 +37,7 @@ void UGameOverlay::NativeConstruct()
 	check(StageInfoHUDClass);
 	check(StageWaitingTimerClass);
 	check(StageStartAlertClass);
+	check(PreStageHUDClass);
 
 	/* Game Overlay */
 	AAuraPlayerController* AuraPC = CastChecked<AAuraPlayerController>(GetOwningPlayer());
@@ -67,6 +68,15 @@ void UGameOverlay::NativeConstruct()
 	/* Spell Menu */
 	AuraASC->OnSpellAbilityChangedDelegate.AddUObject(this, &ThisClass::OnSpellChanged);
 	AuraASC->OnEquippedSpellAbilityChangedDelegate.AddUObject(this, &ThisClass::OnEquippedSpellChanged);
+
+	if (GetWorld())
+	{
+		// GameOverlay Widget보다 이후에 생성하기 위해 Native Construct 다음 프레임에 추가
+		GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([this]()
+		{
+			AddPreStageHUDWidget();
+		}));
+	}
 }
 
 void UGameOverlay::OnRespawnStarted(float RespawnTimerEndSeconds)
@@ -330,6 +340,12 @@ void UGameOverlay::OnStageStatusChanged(EStageStatus StageStatus, int32 StageNum
 	}
 	else
 	{
+		// Remove PreStageHUD Widget
+		if (PreStageHUD)
+		{
+			PreStageHUD->RemoveFromParent();
+			PreStageHUD = nullptr;
+		}
 		// Remove StageWaiting widget
 		if (StageWaitingTimer)
 		{
@@ -359,4 +375,13 @@ void UGameOverlay::OnTotalEnemyCountChanged(int32 TotalEnemyCount) const
 	{
 		StageInfoHUD->UpdateTotalEnemyCount(TotalEnemyCount);
 	}
+}
+
+void UGameOverlay::AddPreStageHUDWidget()
+{
+	PreStageHUD = CreateWidget(this, PreStageHUDClass);
+	PreStageHUD->AddToViewport();
+
+	// NamedSlot_StageWaiting 위치에 PreStageHUD widget 표시
+	NamedSlot_StageWaiting->AddChild(PreStageHUD);
 }

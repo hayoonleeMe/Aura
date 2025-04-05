@@ -124,6 +124,22 @@ void AStageGameMode::OnRespawnTimerFinished(APlayerController* ControllerToRespa
 	}));
 }
 
+void AStageGameMode::OnPlayerReady()
+{
+	++ReadyPlayerCount;
+
+	if (GetWorld() && ReadyPlayerCount == GetWorld()->GetNumPlayerControllers())
+	{
+		// 모든 플레이어 레디 완료
+		StartStage();
+
+		if (StartStageBeacon)
+		{
+			StartStageBeacon->Destroy();
+		}
+	}
+}
+
 void AStageGameMode::HandlePlayerRetire()
 {
 	++RetiredPlayerCount;
@@ -205,6 +221,24 @@ void AStageGameMode::EndStage()
 	}
 }
 
+void AStageGameMode::OnStageBeaconInteracted()
+{
+	if (StageNumber > 1)
+	{
+		StartStage();
+
+		if (StartStageBeacon)
+		{
+			StartStageBeacon->Destroy();
+		}
+	}
+	else
+	{
+		// stage 시작 전 초반
+		OnPlayerReady();
+	}
+}
+
 void AStageGameMode::InitData()
 {
 	if (!GetWorld())
@@ -272,7 +306,7 @@ void AStageGameMode::PollInit()
 	GetWorldTimerManager().ClearTimer(PollingTimerHandle);
 
 	InitData();
-	WaitStageStart();
+	SpawnStartStageBeacon();
 }
 
 void AStageGameMode::StartWaitingTimer()

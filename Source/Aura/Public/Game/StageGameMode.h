@@ -32,6 +32,7 @@ public:
 	void WaitStageStart();
 	void StartStage();
 	void EndStage();
+	void OnStageBeaconInteracted();
 
 	// 가능하면 리스폰 수행
 	void RequestPlayerRespawn(APlayerController* PlayerController);
@@ -54,6 +55,11 @@ private:
 
 	// 최대 진행할 수 있는 Stage 수
 	int32 MaxStageNumber = INDEX_NONE;
+
+	// 준비된 플레이어 수
+	int32 ReadyPlayerCount = 0;
+
+	void OnPlayerReady();
 
 	// ============================================================================
 	// Game End
