@@ -27,4 +27,7 @@ private:
 
 	// TargetActor와 상호작용
 	void Interact();
+
+	// ArriveAcceptanceRadius의 기본값 캐싱 
+	float InitialArriveAcceptanceRadius = 0.f;
 };
