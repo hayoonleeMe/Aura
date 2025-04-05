@@ -53,8 +53,8 @@ public:
 	virtual void IndicateAbilityActivateCostFail() override;
 	virtual void IndicateAbilityActivateCooldownFail() override;
 	virtual void NotifyEnemyDead() override;
-	virtual void AddUIMappingContext() const override;
-	virtual void RemoveUIMappingContext() const override;
+	virtual void EnableUIInput() override;
+	virtual void DisableUIInput() override;
 	/* End PlayerInterface */
 
 	void EnableAbilityInput();

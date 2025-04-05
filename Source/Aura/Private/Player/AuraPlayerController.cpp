@@ -80,22 +80,22 @@ void AAuraPlayerController::NotifyEnemyDead()
 	}
 }
 
-void AAuraPlayerController::AddUIMappingContext() const
+void AAuraPlayerController::EnableUIInput()
 {
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(UIContext, 1);
-		Subsystem->RemoveMappingContext(AbilityContext);
 	}
+	DisableAbilityInput();
 }
 
-void AAuraPlayerController::RemoveUIMappingContext() const
+void AAuraPlayerController::DisableUIInput()
 {
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->RemoveMappingContext(UIContext);
-		Subsystem->AddMappingContext(AbilityContext, 0);
 	}
+	EnableAbilityInput();
 }
 
 void AAuraPlayerController::EnableAbilityInput()
