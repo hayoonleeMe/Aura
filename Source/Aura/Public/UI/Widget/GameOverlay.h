@@ -156,4 +156,12 @@ public:
 	
 	UPROPERTY()
 	TObjectPtr<UStageStartAlert> StageStartAlert;
+
+	UPROPERTY(EditDefaultsOnly, Category="Stage")
+	TSubclassOf<UUserWidget> PreStageHUDClass;
+	
+	UPROPERTY()
+	TObjectPtr<UUserWidget> PreStageHUD;
+
+	void AddPreStageHUDWidget();
 };
