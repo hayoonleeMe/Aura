@@ -53,9 +53,12 @@ public:
 	virtual void IndicateAbilityActivateCostFail() override;
 	virtual void IndicateAbilityActivateCooldownFail() override;
 	virtual void NotifyEnemyDead() override;
-	virtual void AddUIMappingContext() const override;
-	virtual void RemoveUIMappingContext() const override;
+	virtual void EnableUIInput() override;
+	virtual void DisableUIInput() override;
 	/* End PlayerInterface */
+
+	void EnableAbilityInput();
+	void DisableAbilityInput();
 
 	AActor* GetTargetActorFromCursor() const { return TargetFromCurrentFrame.Get(); }
 
@@ -147,6 +150,10 @@ private:
 	void PollInit();
 	bool bValidGameStateBaseInClient = false;
 	FTimerHandle PollingTimerHandle;
+
+	// Ability Input을 비활성화한 횟수
+	// 0일 때만 Ability Input Mapping Context를 추가할 수 있다.
+	int32 AbilityInputBlockCount = 0;
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
 	TObjectPtr<UInputMappingContext> AbilityContext;

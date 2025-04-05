@@ -14,9 +14,9 @@ void ABaseHUD::RegisterWidget(UObject* Object)
 		// 처음 UI 위젯이 열릴 때만 UI Input
 		if (CurrentWidgetStack.IsEmpty())
 		{
-			if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(GetOwningPlayerController()))
+			if (IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(GetOwningPlayerController()))
 			{
-				PlayerInterface->AddUIMappingContext();
+				PlayerInterface->EnableUIInput();
 			}
 		}
 	
@@ -35,9 +35,9 @@ void ABaseHUD::UnregisterCurrentWidget()
 	// 열린 UI 위젯이 없으면 Input 되돌리기
 	if (CurrentWidgetStack.IsEmpty())
 	{
-		if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(GetOwningPlayerController()))
+		if (IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(GetOwningPlayerController()))
 		{
-			PlayerInterface->RemoveUIMappingContext();
+			PlayerInterface->DisableUIInput();
 		}
 	}
 }

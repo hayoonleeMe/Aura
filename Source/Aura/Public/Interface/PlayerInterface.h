@@ -85,9 +85,9 @@ public:
 	// Input
 	// ============================================================================
 
-	// UI IMC를 추가하고, Ability IMC를 제거한다.
-	virtual void AddUIMappingContext() const {}
+	// UI Input Mapping Context를 활성화하고, Ability Input Mapping Context를 비활성화한다.
+	virtual void EnableUIInput() {}
 
-	// UI IMC를 제거하고, 다시 Ability IMC를 추가한다.
-	virtual void RemoveUIMappingContext() const {}
+	// UI Input Mapping Context를 비활성화하고, Ability Input Mapping Context를 활성화한다.
+	virtual void DisableUIInput() {}
 };
