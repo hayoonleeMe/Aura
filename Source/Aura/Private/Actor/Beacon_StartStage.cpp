@@ -59,7 +59,6 @@ void ABeacon_StartStage::ServerInteract_Implementation()
 {
 	if (AStageGameMode* StageGameMode = GetWorld() ? GetWorld()->GetAuthGameMode<AStageGameMode>() : nullptr)
 	{
-		StageGameMode->StartStage();
+		StageGameMode->OnStageBeaconInteracted();
 	}
-	Destroy();
 }
