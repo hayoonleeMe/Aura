@@ -8,6 +8,7 @@
 #include "Components/WidgetComponent.h"
 #include "Game/StageGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 ABeacon_StartStage::ABeacon_StartStage()
 {
@@ -53,15 +54,30 @@ void ABeacon_StartStage::Interact()
 {
 	if (!bHasInteractedWithPlayer)
 	{
+		bHasInteractedWithPlayer = true;
+		
 		if (InteractSound)
 		{
 			UGameplayStatics::PlaySound2D(this, InteractSound);
 		}
-		ServerInteract();
-		bHasInteractedWithPlayer = true;
 
 		TooltipWidgetComponent->SetVisibility(false);
+
+		StartGlowTimeline(DynamicMaterialInstance);
 	}
+}
+
+void ABeacon_StartStage::OnGlowTimelineFinished()
+{
+	ServerInteract();
+}
+
+void ABeacon_StartStage::BeginPlay()
+{
+	Super::BeginPlay();
+
+	DynamicMaterialInstance = UMaterialInstanceDynamic::Create(MeshComponent->GetMaterial(0), this);
+	MeshComponent->SetMaterial(0, DynamicMaterialInstance);
 }
 
 void ABeacon_StartStage::ServerInteract_Implementation()

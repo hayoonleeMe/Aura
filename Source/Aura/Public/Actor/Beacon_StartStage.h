@@ -29,12 +29,25 @@ public:
 	virtual float GetOverrideArriveAcceptanceRadius() const override { return 150.f; }
 	/* End InteractionInterface */
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartGlowTimeline(UMaterialInstanceDynamic* MaterialInstanceDynamic);
+
+	UFUNCTION(BlueprintCallable)
+	void OnGlowTimelineFinished();
+
+protected:
+	virtual void BeginPlay() override;
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UBoxComponent> BoxComponent;
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
+
+	// for Glow Effect
+	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UMaterialInstanceDynamic> DynamicMaterialInstance;
 
 	UFUNCTION(Server, Reliable)
 	void ServerInteract();
