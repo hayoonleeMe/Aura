@@ -31,6 +31,10 @@ ABeacon_StartStage::ABeacon_StartStage()
 	TooltipWidgetComponent->SetDrawAtDesiredSize(true);
 	TooltipWidgetComponent->SetPivot(FVector2D(0.f, 0.5f));
 	TooltipWidgetComponent->SetRelativeLocation(FVector(0.f, 50.f, 0.f));
+
+	MeshComponent->SetCanEverAffectNavigation(true);
+	BoxComponent->SetCanEverAffectNavigation(false);
+	TooltipWidgetComponent->SetCanEverAffectNavigation(false);
 }
 
 void ABeacon_StartStage::HighlightActor()

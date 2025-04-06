@@ -5,6 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "AuraBlueprintLibrary.h"
 #include "MultiplayerSessionsSubsystem.h"
 #include "Actor/SpawnEnemyVolume.h"
 #include "Algo/RandomShuffle.h"
@@ -31,6 +32,9 @@ AStageGameMode::AStageGameMode()
 	/* End Stage Delay Timer */
 	EndStageDelay = 4.f;
 	EndStageDelayTimerDelegate = FTimerDelegate::CreateUObject(this, &ThisClass::EndStage);
+
+	/* Beacon */
+	BeaconSpawnDistance = 500.f;
 
 	/* Spawn Enemy */
 	SpawnWaitTime = 2.f;
@@ -325,15 +329,31 @@ void AStageGameMode::OnWaitingTimeFinished()
 
 void AStageGameMode::SpawnStartStageBeacon()
 {
-	if (IsValid(StartStageBeacon))
-	{
-		return;
-	}
-
 	check(StartStageBeaconClass);
 	
+	if (IsValid(StartStageBeacon))
+	{
+		StartStageBeacon->Destroy();
+	}
+	
+	// Spawn Location 결정
+	FVector SpawnLocation(0.f);
+	
+	TArray<AActor*> AlivePawns;
+	UAuraBlueprintLibrary::GetAlivePawnsFromPlayers(GetWorld(), AlivePawns);
+	if (AlivePawns.Num())
+	{
+		// 살아있는 플레이어를 기준으로 Beacon 위치 계산
+		if (const AActor* AlivePawn = AlivePawns[0])
+		{
+			const FVector Direction = AlivePawn->GetActorLocation().GetSafeNormal();	// to 0, 0, 0
+			SpawnLocation = AlivePawn->GetActorLocation() + -Direction * BeaconSpawnDistance;
+			SpawnLocation.Z = 0.f;
+		}
+	}
+	
 	SpawnParams.bDeferConstruction = false;
-	StartStageBeacon = GetWorld()->SpawnActor<AActor>(StartStageBeaconClass, SpawnParams);
+	StartStageBeacon = GetWorld()->SpawnActor<AActor>(StartStageBeaconClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
 }
 
 void AStageGameMode::AsyncSpawnEnemies()
