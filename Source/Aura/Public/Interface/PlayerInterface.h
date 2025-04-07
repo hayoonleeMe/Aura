@@ -92,6 +92,12 @@ public:
 	// UI Input Mapping Context를 비활성화하고, Ability Input Mapping Context를 활성화한다.
 	virtual void DisableUIInput() {}
 
+	// 모든 Input Mapping Context를 비활성화하고 Cinematic Context만 활성화한다.
+	virtual void EnableCinematicInput() {}
+
+	// Cinematic Context를 비활성화하고 기존 Input Mapping Context를 활성화한다.
+	virtual void DisableCinematicInput() {}
+
 	// ============================================================================
 	// Level Sequence
 	// ============================================================================

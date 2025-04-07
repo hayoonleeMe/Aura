@@ -111,6 +111,7 @@ void ABeacon_StartStage::PlaySpawnBeaconLevelSequence()
 		NewLocation.Z = 0.f;
 		PlayerInterface->SetLevelSequenceActorLocation(TEXT("SpawnBeacon"), NewLocation);
 		PlayerInterface->PlayLevelSequence(TEXT("SpawnBeacon"));
+		PlayerInterface->EnableCinematicInput();
 	}
 }
 
@@ -124,6 +125,11 @@ void ABeacon_StartStage::OnLevelSequenceStop(const FName& LevelSequenceTag)
 	if (const AAuraHUD* AuraHUD = PlayerController ? PlayerController->GetHUD<AAuraHUD>() : nullptr)
 	{
 		AuraHUD->ShowGameOverlay(true);
+	}
+
+	if (IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(PlayerController))
+	{
+		PlayerInterface->DisableCinematicInput();
 	}
 }
 

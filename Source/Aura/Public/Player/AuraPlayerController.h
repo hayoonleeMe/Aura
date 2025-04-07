@@ -57,6 +57,8 @@ public:
 	virtual void NotifyEnemyDead() override;
 	virtual void EnableUIInput() override;
 	virtual void DisableUIInput() override;
+	virtual void EnableCinematicInput() override;
+	virtual void DisableCinematicInput() override;
 	virtual FOnLevelSequenceStopSignature* GetOnLevelSequenceStopDelegate() const override;
 	virtual void PlayLevelSequence(const FName& LevelSequenceTag) override;
 	virtual void StopLevelSequence(const FName& LevelSequenceTag) override;
@@ -155,9 +157,19 @@ private:
 	bool bValidGameStateBaseInClient = false;
 	FTimerHandle PollingTimerHandle;
 
+	// 현재 적용된 Input Mapping Context 상태를 저장하는 플래그
+	uint8 IMCFlags = 0;
+
+	void StoreInputMappingContextState();
+	void RestoreInputMappingContextState();
+
 	// Ability Input을 비활성화한 횟수
 	// 0일 때만 Ability Input Mapping Context를 추가할 수 있다.
 	int32 AbilityInputBlockCount = 0;
+
+	// Cinematic Input을 활성화한 횟수
+	// 0일 때만 Cinematic Input Mapping Context를 제거할 수 있다.
+	int32 CinematicInputAddCount = 0;
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
 	TObjectPtr<UInputMappingContext> AbilityContext;
@@ -167,6 +179,9 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
 	TObjectPtr<UInputMappingContext> UIContext;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
+	TObjectPtr<UInputMappingContext> CinematicContext;
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
 	TObjectPtr<UInputAction> IA_AttributeMenu;
@@ -188,6 +203,12 @@ private:
 
 	// CloseUI Input Action이 Started 될 때 호출되는 콜백 함수
 	void OnCloseUIActionStarted();
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
+	TObjectPtr<UInputAction> IA_CloseCinematic;
+
+	// CloseCinematic Input Action이 Started 될 때 호출되는 콜백 함수
+	void OnCloseCinematicActionStarted();
 
 	// ============================================================================
 	// GAS

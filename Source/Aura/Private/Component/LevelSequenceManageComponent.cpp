@@ -77,6 +77,11 @@ void ULevelSequenceManageComponent::StopLevelSequence(const FName& LevelSequence
 	}
 }
 
+void ULevelSequenceManageComponent::StopCurrentPlayingLevelSequence()
+{
+	StopLevelSequence(CurrentPlayingLevelSequenceTag);
+}
+
 void ULevelSequenceManageComponent::SetLevelSequenceActorLocation(const FName& LevelSequenceTag, const FVector& NewLocation)
 {
 	if (LevelSequenceActorMap.Contains(LevelSequenceTag))

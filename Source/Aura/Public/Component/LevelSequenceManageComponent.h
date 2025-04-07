@@ -30,6 +30,7 @@ public:
 
 	void PlayLevelSequence(const FName& LevelSequenceTag);
 	void StopLevelSequence(const FName& LevelSequenceTag);
+	void StopCurrentPlayingLevelSequence();
 
 	void SetLevelSequenceActorLocation(const FName& LevelSequenceTag, const FVector& NewLocation);
 
