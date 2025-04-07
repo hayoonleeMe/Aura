@@ -77,11 +77,6 @@ public:
 	FORCEINLINE int32 GetUsedLifeCount() const { return UsedLifeCount; }
 	FORCEINLINE void UseLifeCount() { ++UsedLifeCount; }
 
-	// AAuraGameStateBase에서 캐싱한 Level Sequence Player가 종료될 때 호출되는 콜백 함수
-	// ViewTarget을 플레이어 캐릭터로 되돌린다.
-	UFUNCTION()
-	void OnLevelSequencePlayerStop();
-
 	// ============================================================================
 	// Stage
 	// ============================================================================
@@ -118,9 +113,6 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 	virtual void OnPossess(APawn* InPawn) override;
-
-	// AAuraGameStateBase에 캐싱된 PauseMenu Level Sequence Actor를 PlayerController의 Pawn에 부착한다.
-	void AttachPauseMenuLevelSequenceActorToPawn() const;
 	
 private:
 	// ============================================================================
@@ -236,4 +228,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<ULevelSequenceManageComponent> LevelSequenceManageComponent;
+
+	// PauseMenu Level Sequence Actor를 PlayerController의 Pawn에 부착한다.
+	void AttachPauseMenuLevelSequenceActorToPawn() const;
 };

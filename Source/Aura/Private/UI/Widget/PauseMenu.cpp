@@ -3,12 +3,9 @@
 
 #include "UI/Widget/PauseMenu.h"
 
-#include "AuraBlueprintLibrary.h"
-#include "LevelSequenceActor.h"
-#include "LevelSequencePlayer.h"
 #include "MultiplayerSessionsSubsystem.h"
 #include "Components/Button.h"
-#include "Game/AuraGameStateBase.h"
+#include "Interface/PlayerInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "UI/HUD/BaseHUD.h"
 #include "UI/Widget/SquareButton.h"
@@ -30,20 +27,18 @@ void UPauseMenu::NativeConstruct()
 	Button_ExitAura->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnExitAuraButtonClicked);
 
 	// PauseMenu Level Sequence 재생
-	const AAuraGameStateBase* AuraGameStateBase = UAuraBlueprintLibrary::GetAuraGameStateBaseChecked(GetWorld());
-	if (AuraGameStateBase->PauseMenuLevelSequenceActor && AuraGameStateBase->PauseMenuLevelSequenceActor->SequencePlayer)
+	if (IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(GetOwningPlayer()))
 	{
-		AuraGameStateBase->PauseMenuLevelSequenceActor->SequencePlayer->Play();
+		PlayerInterface->PlayLevelSequence(TEXT("PauseMenu"));
 	}
 }
 
 void UPauseMenu::NativeDestruct()
 {
 	// PauseMenu Level Sequence 정지
-	const AAuraGameStateBase* AuraGameStateBase = UAuraBlueprintLibrary::GetAuraGameStateBaseChecked(GetWorld());
-	if (AuraGameStateBase->PauseMenuLevelSequenceActor && AuraGameStateBase->PauseMenuLevelSequenceActor->SequencePlayer)
+	if (IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(GetOwningPlayer()))
 	{
-		AuraGameStateBase->PauseMenuLevelSequenceActor->SequencePlayer->Stop();
+		PlayerInterface->StopLevelSequence(TEXT("PauseMenu"));
 	}
 	
 	Super::NativeDestruct();
