@@ -10,6 +10,7 @@
 #include "Types/StageStatus.h"
 #include "AuraPlayerController.generated.h"
 
+class ULevelSequenceManageComponent;
 class UInputAction;
 class UWidgetComponent;
 class UDamageIndicatorComponent;
@@ -45,6 +46,7 @@ class AURA_API AAuraPlayerController : public APlayerController, public IPlayerI
 	GENERATED_BODY()
 
 public:
+	AAuraPlayerController();
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void OnRep_Pawn() override;
 
@@ -55,6 +57,9 @@ public:
 	virtual void NotifyEnemyDead() override;
 	virtual void EnableUIInput() override;
 	virtual void DisableUIInput() override;
+	virtual ULevelSequenceManageComponent* GetLevelSequenceManageComponent() const override { return LevelSequenceManageComponent; }
+	virtual void PlayLevelSequence(const FName& LevelSequenceTag) override;
+	virtual void StopLevelSequence(const FName& LevelSequenceTag) override;
 	/* End PlayerInterface */
 
 	void EnableAbilityInput();
@@ -71,11 +76,6 @@ public:
 
 	FORCEINLINE int32 GetUsedLifeCount() const { return UsedLifeCount; }
 	FORCEINLINE void UseLifeCount() { ++UsedLifeCount; }
-
-	// AAuraGameStateBase에서 캐싱한 Level Sequence Player가 종료될 때 호출되는 콜백 함수
-	// ViewTarget을 플레이어 캐릭터로 되돌린다.
-	UFUNCTION()
-	void OnLevelSequencePlayerStop();
 
 	// ============================================================================
 	// Stage
@@ -113,9 +113,6 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 	virtual void OnPossess(APawn* InPawn) override;
-
-	// AAuraGameStateBase에 캐싱된 PauseMenu Level Sequence Actor를 PlayerController의 Pawn에 부착한다.
-	void AttachPauseMenuLevelSequenceActorToPawn() const;
 	
 private:
 	// ============================================================================
@@ -224,4 +221,14 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UWidgetComponent> CooldownCastFailIndicatorComponent;
+
+	// ============================================================================
+	// Level Sequence
+	// ============================================================================
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<ULevelSequenceManageComponent> LevelSequenceManageComponent;
+
+	// PauseMenu Level Sequence Actor를 PlayerController의 Pawn에 부착한다.
+	void AttachPauseMenuLevelSequenceActorToPawn() const;
 };

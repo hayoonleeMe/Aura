@@ -9,6 +9,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Aura/Aura.h"
 #include "Character/AuraEnemy.h"
+#include "Component/LevelSequenceManageComponent.h"
 #include "Framework/Application/NavigationConfig.h"
 #include "Game/AuraGameStateBase.h"
 #include "Input/AuraInputComponent.h"
@@ -16,6 +17,12 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "UI/HUD/AuraHUD.h"
 #include "UI/Widget/DamageIndicatorComponent.h"
+
+AAuraPlayerController::AAuraPlayerController()
+{
+	LevelSequenceManageComponent = CreateDefaultSubobject<ULevelSequenceManageComponent>(TEXT("Level Sequence Manage Component"));
+	LevelSequenceManageComponent->SetLevelSequenceTags({TEXT("PauseMenu")});
+}
 
 void AAuraPlayerController::PlayerTick(float DeltaTime)
 {
@@ -32,13 +39,7 @@ void AAuraPlayerController::OnRep_Pawn()
 {
 	Super::OnRep_Pawn();
 
-	if (GetPawn() && bValidGameStateBaseInClient)
-	{
-		// Pawn이 설정되어 클라이언트로 Replicate 될 때
-		// 이미 GameStateBase가 유효한 시점이라면 Level Sequence Actor를 Pawn에 부착한다.
-		// 아직 GameStateBase가 유효하지 않은 첫 초기화 시점이라면 PollInit()에서 수행한다.
-		AttachPauseMenuLevelSequenceActorToPawn();
-	}
+	AttachPauseMenuLevelSequenceActorToPawn();
 }
 
 void AAuraPlayerController::IndicateAbilityActivateCostFail()
@@ -103,6 +104,22 @@ void AAuraPlayerController::DisableUIInput()
 	EnableAbilityInput();
 
 	EnableCursorTrace(true);
+}
+
+void AAuraPlayerController::PlayLevelSequence(const FName& LevelSequenceTag)
+{
+	if (LevelSequenceManageComponent)
+	{
+		LevelSequenceManageComponent->PlayLevelSequence(LevelSequenceTag);
+	}
+}
+
+void AAuraPlayerController::StopLevelSequence(const FName& LevelSequenceTag)
+{
+	if (LevelSequenceManageComponent)
+	{
+		LevelSequenceManageComponent->StopLevelSequence(LevelSequenceTag);
+	}
 }
 
 void AAuraPlayerController::EnableAbilityInput()
@@ -185,11 +202,6 @@ void AAuraPlayerController::ClientIndicateDamage_Implementation(float Damage, bo
 		const FVector RandomLocation = TargetLocation + UKismetMathLibrary::RandomUnitVector() * FMath::RandRange(DamageIndicatorComponent->WidgetSpawnMinDist, DamageIndicatorComponent->WidgetSpawnMaxDist);
 		DamageIndicatorComponent->SetWorldLocation(RandomLocation);
 	}
-}
-
-void AAuraPlayerController::OnLevelSequencePlayerStop()
-{
-	SetViewTarget(GetPawn());
 }
 
 void AAuraPlayerController::ClientOnStageStatusChanged_Implementation(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount)
@@ -294,18 +306,10 @@ void AAuraPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	// 서버에서 Level Sequence Actor를 Pawn에 부착한다.
-	AttachPauseMenuLevelSequenceActorToPawn();
-}
-
-void AAuraPlayerController::AttachPauseMenuLevelSequenceActorToPawn() const
-{
 	if (IsLocalController())
 	{
-		if (const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr)
-		{
-			AuraGameStateBase->AttachPauseMenuLevelSequenceActorToPawn(GetPawn());
-		}
+		// Level Sequence Actor를 Pawn에 부착한다.
+		AttachPauseMenuLevelSequenceActorToPawn();
 	}
 }
 
@@ -318,10 +322,6 @@ void AAuraPlayerController::PollInit()
 			bValidGameStateBaseInClient = true;
 			BindAbilityInput();
 			GetWorldTimerManager().ClearTimer(PollingTimerHandle);
-
-			// 클라이언트에서 초기화 시 Level Sequence Actor를 Pawn에 부착한다.
-			// 이후부터는 OnRep_Pawn에서 수행한다.
-			AttachPauseMenuLevelSequenceActorToPawn();
 
 			// Notify for client
 			OnGameStateBaseValidInClientDelegate.Broadcast();
@@ -396,4 +396,12 @@ UAuraAbilitySystemComponent* AAuraPlayerController::GetAuraAbilitySystemComponen
 		AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn()));
 	}
 	return AuraAbilitySystemComponent;
+}
+
+void AAuraPlayerController::AttachPauseMenuLevelSequenceActorToPawn() const
+{
+	if (LevelSequenceManageComponent)
+	{
+		LevelSequenceManageComponent->AttachLevelSequenceActorToPawn(TEXT("PauseMenu"), GetPawn(), true);
+	}
 }
