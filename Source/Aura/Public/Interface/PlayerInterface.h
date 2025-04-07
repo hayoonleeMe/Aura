@@ -3,10 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Types/LevelSequenceManageType.h"
 #include "UObject/Interface.h"
 #include "PlayerInterface.generated.h"
-
-class ULevelSequenceManageComponent;
 
 // This class does not need to be modified.
 UINTERFACE()
@@ -97,7 +96,8 @@ public:
 	// Level Sequence
 	// ============================================================================
 
-	virtual ULevelSequenceManageComponent* GetLevelSequenceManageComponent() const { return nullptr; }
+	virtual FOnLevelSequenceStopSignature* GetOnLevelSequenceStopDelegate() const { return nullptr; }
 	virtual void PlayLevelSequence(const FName& LevelSequenceTag) {}
 	virtual void StopLevelSequence(const FName& LevelSequenceTag) {}
+	virtual void SetLevelSequenceActorLocation(const FName& LevelSequenceTag, const FVector& NewLocation) {}
 };

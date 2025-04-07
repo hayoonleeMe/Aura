@@ -4,7 +4,6 @@
 #include "Actor/Beacon_StartStage.h"
 
 #include "Aura/Aura.h"
-#include "Component/LevelSequenceManageComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Game/StageGameMode.h"
@@ -93,30 +92,25 @@ void ABeacon_StartStage::PlaySpawnBeaconLevelSequence()
 {
 	SetActorHiddenInGame(true);
 
-	// Disable Input
-	APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController<APlayerController>() : nullptr;
-	if (PC)
-	{
-		PC->DisableInput(PC);
-	}
+	APlayerController* PlayerController = GetWorld() ? GetWorld()->GetFirstPlayerController<APlayerController>() : nullptr;
 	
 	// Hide HUD
-	if (const AAuraHUD* AuraHUD = PC ? PC->GetHUD<AAuraHUD>() : nullptr)
+	if (const AAuraHUD* AuraHUD = PlayerController ? PlayerController->GetHUD<AAuraHUD>() : nullptr)
 	{
 		AuraHUD->ShowGameOverlay(false);
 	}
 
 	// Play
-	if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr))
+	if (IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(PlayerController))
 	{
-		if (ULevelSequenceManageComponent* LevelSequenceManageComponent = PlayerInterface->GetLevelSequenceManageComponent())
+		if (FOnLevelSequenceStopSignature* OnLevelSequenceStopSignature = PlayerInterface->GetOnLevelSequenceStopDelegate())
 		{
-			FVector NewLocation = GetActorLocation();
-			NewLocation.Z = 0.f;
-			LevelSequenceManageComponent->SetLevelSequenceActorLocation(TEXT("SpawnBeacon"), NewLocation);
-			LevelSequenceManageComponent->OnLevelSequenceStopDelegate.AddUObject(this, &ThisClass::OnLevelSequenceStop);
-			LevelSequenceManageComponent->PlayLevelSequence(TEXT("SpawnBeacon"));
+			OnLevelSequenceStopSignature->AddUObject(this, &ThisClass::OnLevelSequenceStop);
 		}
+		FVector NewLocation = GetActorLocation();
+		NewLocation.Z = 0.f;
+		PlayerInterface->SetLevelSequenceActorLocation(TEXT("SpawnBeacon"), NewLocation);
+		PlayerInterface->PlayLevelSequence(TEXT("SpawnBeacon"));
 	}
 }
 
@@ -124,15 +118,10 @@ void ABeacon_StartStage::OnLevelSequenceStop(const FName& LevelSequenceTag)
 {
 	SetActorHiddenInGame(false);
 
-	// Enable Input
-	APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController<APlayerController>() : nullptr;
-	if (PC)
-	{
-		PC->EnableInput(PC);
-	}
-	
+	APlayerController* PlayerController = GetWorld() ? GetWorld()->GetFirstPlayerController<APlayerController>() : nullptr;
+
 	// Show HUD
-	if (const AAuraHUD* AuraHUD = PC ? PC->GetHUD<AAuraHUD>() : nullptr)
+	if (const AAuraHUD* AuraHUD = PlayerController ? PlayerController->GetHUD<AAuraHUD>() : nullptr)
 	{
 		AuraHUD->ShowGameOverlay(true);
 	}

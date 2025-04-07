@@ -106,6 +106,15 @@ void AAuraPlayerController::DisableUIInput()
 	EnableCursorTrace(true);
 }
 
+FOnLevelSequenceStopSignature* AAuraPlayerController::GetOnLevelSequenceStopDelegate() const
+{
+	if (LevelSequenceManageComponent)
+	{
+		return &LevelSequenceManageComponent->OnLevelSequenceStopDelegate;
+	}
+	return nullptr;
+}
+
 void AAuraPlayerController::PlayLevelSequence(const FName& LevelSequenceTag)
 {
 	if (LevelSequenceManageComponent)
@@ -119,6 +128,14 @@ void AAuraPlayerController::StopLevelSequence(const FName& LevelSequenceTag)
 	if (LevelSequenceManageComponent)
 	{
 		LevelSequenceManageComponent->StopLevelSequence(LevelSequenceTag);
+	}
+}
+
+void AAuraPlayerController::SetLevelSequenceActorLocation(const FName& LevelSequenceTag, const FVector& NewLocation)
+{
+	if (LevelSequenceManageComponent)
+	{
+		LevelSequenceManageComponent->SetLevelSequenceActorLocation(LevelSequenceTag, NewLocation);
 	}
 }
 
