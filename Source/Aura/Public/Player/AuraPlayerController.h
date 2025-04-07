@@ -10,6 +10,7 @@
 #include "Types/StageStatus.h"
 #include "AuraPlayerController.generated.h"
 
+class ULevelSequenceManageComponent;
 class UInputAction;
 class UWidgetComponent;
 class UDamageIndicatorComponent;
@@ -45,6 +46,7 @@ class AURA_API AAuraPlayerController : public APlayerController, public IPlayerI
 	GENERATED_BODY()
 
 public:
+	AAuraPlayerController();
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void OnRep_Pawn() override;
 
@@ -224,4 +226,11 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UWidgetComponent> CooldownCastFailIndicatorComponent;
+
+	// ============================================================================
+	// Level Sequence
+	// ============================================================================
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<ULevelSequenceManageComponent> LevelSequenceManageComponent;
 };

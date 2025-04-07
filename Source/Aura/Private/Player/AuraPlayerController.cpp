@@ -9,6 +9,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Aura/Aura.h"
 #include "Character/AuraEnemy.h"
+#include "Component/LevelSequenceManageComponent.h"
 #include "Framework/Application/NavigationConfig.h"
 #include "Game/AuraGameStateBase.h"
 #include "Input/AuraInputComponent.h"
@@ -16,6 +17,12 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "UI/HUD/AuraHUD.h"
 #include "UI/Widget/DamageIndicatorComponent.h"
+
+AAuraPlayerController::AAuraPlayerController()
+{
+	LevelSequenceManageComponent = CreateDefaultSubobject<ULevelSequenceManageComponent>(TEXT("Level Sequence Manage Component"));
+	LevelSequenceManageComponent->SetLevelSequenceTags({TEXT("PauseMenu")});
+}
 
 void AAuraPlayerController::PlayerTick(float DeltaTime)
 {
