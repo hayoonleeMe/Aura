@@ -21,7 +21,7 @@
 AAuraPlayerController::AAuraPlayerController()
 {
 	LevelSequenceManageComponent = CreateDefaultSubobject<ULevelSequenceManageComponent>(TEXT("Level Sequence Manage Component"));
-	LevelSequenceManageComponent->SetLevelSequenceTags({TEXT("PauseMenu")});
+	LevelSequenceManageComponent->SetLevelSequenceTags({TEXT("PauseMenu"), TEXT("SpawnBeacon")});
 }
 
 void AAuraPlayerController::PlayerTick(float DeltaTime)
