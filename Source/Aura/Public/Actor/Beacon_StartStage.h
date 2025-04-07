@@ -58,6 +58,10 @@ private:
 	// 현재 기기의 플레이어와 상호작용 했는지
 	bool bHasInteractedWithPlayer = false;
 
+	void PlaySpawnBeaconLevelSequence();
+	
+	void OnLevelSequenceStop(const FName& LevelSequenceTag);
+
 	// ============================================================================
 	// Tooltip
 	// ============================================================================

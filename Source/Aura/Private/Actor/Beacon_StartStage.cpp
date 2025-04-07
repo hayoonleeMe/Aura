@@ -4,11 +4,14 @@
 #include "Actor/Beacon_StartStage.h"
 
 #include "Aura/Aura.h"
+#include "Component/LevelSequenceManageComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Game/StageGameMode.h"
+#include "Interface/PlayerInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "UI/HUD/AuraHUD.h"
 
 ABeacon_StartStage::ABeacon_StartStage()
 {
@@ -82,6 +85,57 @@ void ABeacon_StartStage::BeginPlay()
 
 	DynamicMaterialInstance = UMaterialInstanceDynamic::Create(MeshComponent->GetMaterial(0), this);
 	MeshComponent->SetMaterial(0, DynamicMaterialInstance);
+
+	PlaySpawnBeaconLevelSequence();
+}
+
+void ABeacon_StartStage::PlaySpawnBeaconLevelSequence()
+{
+	SetActorHiddenInGame(true);
+
+	// Disable Input
+	APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController<APlayerController>() : nullptr;
+	if (PC)
+	{
+		PC->DisableInput(PC);
+	}
+	
+	// Hide HUD
+	if (const AAuraHUD* AuraHUD = PC ? PC->GetHUD<AAuraHUD>() : nullptr)
+	{
+		AuraHUD->ShowGameOverlay(false);
+	}
+
+	// Play
+	if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr))
+	{
+		if (ULevelSequenceManageComponent* LevelSequenceManageComponent = PlayerInterface->GetLevelSequenceManageComponent())
+		{
+			FVector NewLocation = GetActorLocation();
+			NewLocation.Z = 0.f;
+			LevelSequenceManageComponent->SetLevelSequenceActorLocation(TEXT("SpawnBeacon"), NewLocation);
+			LevelSequenceManageComponent->OnLevelSequenceStopDelegate.AddUObject(this, &ThisClass::OnLevelSequenceStop);
+			LevelSequenceManageComponent->PlayLevelSequence(TEXT("SpawnBeacon"));
+		}
+	}
+}
+
+void ABeacon_StartStage::OnLevelSequenceStop(const FName& LevelSequenceTag)
+{
+	SetActorHiddenInGame(false);
+
+	// Enable Input
+	APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController<APlayerController>() : nullptr;
+	if (PC)
+	{
+		PC->EnableInput(PC);
+	}
+	
+	// Show HUD
+	if (const AAuraHUD* AuraHUD = PC ? PC->GetHUD<AAuraHUD>() : nullptr)
+	{
+		AuraHUD->ShowGameOverlay(true);
+	}
 }
 
 void ABeacon_StartStage::ServerInteract_Implementation()
