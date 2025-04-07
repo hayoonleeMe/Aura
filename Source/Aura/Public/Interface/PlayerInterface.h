@@ -6,6 +6,8 @@
 #include "UObject/Interface.h"
 #include "PlayerInterface.generated.h"
 
+class ULevelSequenceManageComponent;
+
 // This class does not need to be modified.
 UINTERFACE()
 class UPlayerInterface : public UInterface
@@ -90,4 +92,12 @@ public:
 
 	// UI Input Mapping Context를 비활성화하고, Ability Input Mapping Context를 활성화한다.
 	virtual void DisableUIInput() {}
+
+	// ============================================================================
+	// Level Sequence
+	// ============================================================================
+
+	virtual ULevelSequenceManageComponent* GetLevelSequenceManageComponent() const { return nullptr; }
+	virtual void PlayLevelSequence(const FName& LevelSequenceTag) {}
+	virtual void StopLevelSequence(const FName& LevelSequenceTag) {}
 };

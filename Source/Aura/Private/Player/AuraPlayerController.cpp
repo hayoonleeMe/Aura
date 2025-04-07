@@ -112,6 +112,22 @@ void AAuraPlayerController::DisableUIInput()
 	EnableCursorTrace(true);
 }
 
+void AAuraPlayerController::PlayLevelSequence(const FName& LevelSequenceTag)
+{
+	if (LevelSequenceManageComponent)
+	{
+		LevelSequenceManageComponent->PlayLevelSequence(LevelSequenceTag);
+	}
+}
+
+void AAuraPlayerController::StopLevelSequence(const FName& LevelSequenceTag)
+{
+	if (LevelSequenceManageComponent)
+	{
+		LevelSequenceManageComponent->StopLevelSequence(LevelSequenceTag);
+	}
+}
+
 void AAuraPlayerController::EnableAbilityInput()
 {
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))

@@ -57,6 +57,9 @@ public:
 	virtual void NotifyEnemyDead() override;
 	virtual void EnableUIInput() override;
 	virtual void DisableUIInput() override;
+	virtual ULevelSequenceManageComponent* GetLevelSequenceManageComponent() const override { return LevelSequenceManageComponent; }
+	virtual void PlayLevelSequence(const FName& LevelSequenceTag) override;
+	virtual void StopLevelSequence(const FName& LevelSequenceTag) override;
 	/* End PlayerInterface */
 
 	void EnableAbilityInput();
