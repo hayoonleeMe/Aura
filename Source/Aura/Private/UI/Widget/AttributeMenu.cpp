@@ -9,7 +9,7 @@
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Data/AttributeConfig.h"
-#include "Game/AuraGameStateBase.h"
+#include "Interface/PlayerInterface.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/Widget/AttributePointsRow.h"
 #include "UI/Widget/FramedValue.h"
@@ -27,9 +27,10 @@ void UAttributeMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	const AAuraGameStateBase* AuraGameStateBase = UAuraBlueprintLibrary::GetAuraGameStateBaseChecked(GetWorld());
-	AttributeConfig = AuraGameStateBase->AttributeConfig;
-	check(AttributeConfig);
+	if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(GetOwningPlayer()))
+	{
+		AttributeConfig = PlayerInterface->GetAttributeConfig();
+	}
 	
 	Button_Close->InternalButton->OnClicked.AddDynamic(this, &ThisClass::CloseMenu);
 

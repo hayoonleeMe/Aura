@@ -6,6 +6,8 @@
 #include "AbilitySystemComponent.h"
 #include "AuraAbilitySystemComponent.generated.h"
 
+class UAuraInputConfig;
+
 // Spell이 Unlock 된 이후로, Spell의 변경된 정보를 전달하는 델레게이트
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnSpellAbilityChangedSignature, const FGameplayTag& /* SpellTag */);
 
@@ -24,6 +26,7 @@ class AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
 	GENERATED_BODY()
 
 public:
+	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
 	virtual void OnRep_ActivateAbilities() override;
 
 	bool IsInitialized() const { return bInitialized; }
@@ -119,6 +122,9 @@ public:
 private:
 	// ASC가 초기화됐는지 여부
 	bool bInitialized = false;
+
+	UPROPERTY()
+	TObjectPtr<UAuraInputConfig> AuraInputConfig;
 	
 	// ============================================================================
 	// Spell

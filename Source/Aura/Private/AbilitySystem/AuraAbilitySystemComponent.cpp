@@ -8,8 +8,22 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "Data/AuraInputConfig.h"
-#include "Game/AuraGameStateBase.h"
 #include "Interface/PlayerInterface.h"
+#include "GameFramework/PlayerController.h"
+
+void UAuraAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor)
+{
+	Super::InitAbilityActorInfo(InOwnerActor, InAvatarActor);
+
+	// Initial Caching
+	if (!AuraInputConfig)
+	{
+		if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(AbilityActorInfo.IsValid() ? AbilityActorInfo->PlayerController : nullptr))
+		{
+			AuraInputConfig = PlayerInterface->GetAuraInputConfig();
+		}
+	}
+}
 
 void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
 {
@@ -56,9 +70,6 @@ void UAuraAbilitySystemComponent::OnAbilityFailed(const UGameplayAbility* Abilit
 
 void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities, int32 InLevel)
 {
-	const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr;
-	check(AuraGameStateBase && AuraGameStateBase->AuraInputConfig);
-	
 	for (const TSubclassOf<UGameplayAbility>& AbilityClass : Abilities)
 	{
 		FGameplayAbilitySpec AbilitySpec(AbilityClass, InLevel);
@@ -66,7 +77,7 @@ void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGamepla
 		{
 			if (AuraGameplayAbility->StartupInputTag.IsValid())
 			{
-				AbilitySpec.InputID = AuraGameStateBase->AuraInputConfig->GetInputIDForInputTag(AuraGameplayAbility->StartupInputTag);
+				AbilitySpec.InputID = AuraInputConfig->GetInputIDForInputTag(AuraGameplayAbility->StartupInputTag);
 			}
 			GiveAbility(AbilitySpec);
 		}
@@ -185,11 +196,8 @@ void UAuraAbilitySystemComponent::ServerHandleEquipSpell_Implementation(const FG
 		return;
 	}
 
-	const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr;
-	check(AuraGameStateBase && AuraGameStateBase->AuraInputConfig);
-
 	// Input에 이미 Spell이 장착되어 있다면
-	const int32 EquippedInputID = AuraGameStateBase->AuraInputConfig->GetInputIDForInputTag(InputTag);
+	const int32 EquippedInputID = AuraInputConfig->GetInputIDForInputTag(InputTag);
 	if (FGameplayAbilitySpec* EquippedSpellSpec = FindAbilitySpecFromInputID(EquippedInputID))
 	{
 		// Input의 이미 장착된 Spell을 장착 해제
@@ -203,14 +211,14 @@ void UAuraAbilitySystemComponent::ServerHandleEquipSpell_Implementation(const FG
 	}
 
 	// 장착하고자 하는 Spell이 다른 Input에 장착되어 있다면, 그 Input에서 장착 해제
-	const FGameplayTag PrevInputTag = AuraGameStateBase->AuraInputConfig->GetInputTagForInputID(SpellSpecToEquip->InputID);
+	const FGameplayTag PrevInputTag = AuraInputConfig->GetInputTagForInputID(SpellSpecToEquip->InputID);
 	if (PrevInputTag.IsValid())
 	{
 		UnEquipSpell(SpellSpecToEquip, PrevInputTag, false);
 	}
 	
 	// InputID를 설정해 장착
-	SpellSpecToEquip->InputID = AuraGameStateBase->AuraInputConfig->GetInputIDForInputTag(InputTag);
+	SpellSpecToEquip->InputID = AuraInputConfig->GetInputIDForInputTag(InputTag);
 
 	// InputTag에 Spell을 장착했음을 전달
 	ClientBroadcastEquippedSpellChange(true, InputTag, SpellTagToEquip);
@@ -326,16 +334,13 @@ FGameplayTag UAuraAbilitySystemComponent::GetSpellTagForSpellSpec(const FGamepla
 
 void UAuraAbilitySystemComponent::GetSpellAndInputTagPairs(TArray<TTuple<FGameplayTag, FGameplayTag>>& OutArray)
 {
-	const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr;
-	check(AuraGameStateBase && AuraGameStateBase->AuraInputConfig);
-	
 	for (FGameplayAbilitySpec& SpellSpec : GetActivatableAbilities())
 	{
 		const FGameplayTag SpellTag = GetSpellTagForSpellSpec(&SpellSpec);
 		if (SpellTag.IsValid())
 		{
 			// 등록하지 않은 Spell은 InputTag가 없으므로 유효한지 체크하지 않고 Add
-			const FGameplayTag InputTag = AuraGameStateBase->AuraInputConfig->GetInputTagForInputID(SpellSpec.InputID);
+			const FGameplayTag InputTag = AuraInputConfig->GetInputTagForInputID(SpellSpec.InputID);
 			OutArray.Add({ SpellTag, InputTag });
 		}
 	}

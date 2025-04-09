@@ -6,11 +6,6 @@
 #include "GameFramework/GameStateBase.h"
 #include "AuraGameStateBase.generated.h"
 
-class UAttributeConfig;
-class USpellConfig;
-class UAuraInputConfig;
-class UInputMappingContext;
-
 /**
  * 
  */
@@ -21,24 +16,6 @@ class AURA_API AAuraGameStateBase : public AGameStateBase
 
 public:
 	AAuraGameStateBase();
-	
-	UPROPERTY(EditDefaultsOnly, Category="Aura")
-	TObjectPtr<UInputMappingContext> AbilityContext;
-
-	UPROPERTY(EditDefaultsOnly, Category="Aura")
-	TObjectPtr<UInputMappingContext> CommonContext;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Aura")
-	TObjectPtr<UInputMappingContext> UIContext;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Aura")
-	TObjectPtr<UAuraInputConfig> AuraInputConfig;
-
-	UPROPERTY(EditDefaultsOnly, Category="Aura")
-	TObjectPtr<USpellConfig> SpellConfig;
-
-	UPROPERTY(EditDefaultsOnly, Category="Aura")
-	TObjectPtr<UAttributeConfig> AttributeConfig;
 
 	// ============================================================================
 	// Respawn

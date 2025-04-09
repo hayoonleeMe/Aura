@@ -13,7 +13,6 @@
 #include "Components/RichTextBlock.h"
 #include "Components/TextBlock.h"
 #include "Data/SpellConfig.h"
-#include "Game/AuraGameStateBase.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/Widget/EquippedSpellGlobeButton.h"
@@ -38,9 +37,10 @@ void USpellMenu::NativeConstruct()
 
 	check(SpellEquipSound);
 
-	const AAuraGameStateBase* AuraGameStateBase = UAuraBlueprintLibrary::GetAuraGameStateBaseChecked(GetWorld());
-	SpellConfig = AuraGameStateBase->SpellConfig;
-	check(SpellConfig);
+	if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(GetOwningPlayer()))
+	{
+		SpellConfig = PlayerInterface->GetSpellConfig();
+	}
 
 	/* Spell Menu */
 	Button_SpendPoint->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnSpendPointButtonClicked);
@@ -106,15 +106,7 @@ void USpellMenu::NativeConstruct()
 		EquippedSpellRow->GlobeButton_Passive_2
 	};
 
-	AAuraPlayerController* AuraPC = CastChecked<AAuraPlayerController>(GetOwningPlayer());
-	if (AuraPC->HasAuthority() || AuraPC->IsValidGameStateBaseInClient())
-	{
-		BroadcastInitialValues();
-	}
-	else
-	{
-		AuraPC->OnGameStateBaseValidInClientDelegate.AddUObject(this, &ThisClass::BroadcastInitialValues);
-	}
+	BroadcastInitialValues();
 }
 
 void USpellMenu::BroadcastInitialValues()

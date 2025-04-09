@@ -10,6 +10,8 @@
 #include "Types/StageStatus.h"
 #include "AuraPlayerController.generated.h"
 
+class UAttributeConfig;
+class USpellConfig;
 class ULevelSequenceManageComponent;
 class UInputAction;
 class UWidgetComponent;
@@ -18,9 +20,6 @@ class USplineComponent;
 class UAuraAbilitySystemComponent;
 class UInputMappingContext;
 class UAuraInputConfig;
-
-// 클라이언트에서 GameStateBase가 유효해질 때 Broadcast
-DECLARE_MULTICAST_DELEGATE(FOnGameStateBaseValidInClientSignature);
 
 // Stage Status가 변경됨을 알리는 델레게이트
 DECLARE_DELEGATE_FourParams(FOnStageStatusChangedSignature, EStageStatus /*StageStatus*/, int32 /*StageNumber*/, double /*WaitingTimerEndSeconds*/, int32 /*TotalEnemyCount*/);
@@ -59,6 +58,9 @@ public:
 	virtual void DisableUIInput() override;
 	virtual void EnableCinematicInput() override;
 	virtual void DisableCinematicInput() override;
+	virtual UAuraInputConfig* GetAuraInputConfig() const override { return AuraInputConfig; }
+	virtual USpellConfig* GetSpellConfig() const override { return SpellConfig; }
+	virtual UAttributeConfig* GetAttributeConfig() const override { return AttributeConfig; }
 	virtual FOnLevelSequenceStopSignature* GetOnLevelSequenceStopDelegate() const override;
 	virtual void PlayLevelSequence(const FName& LevelSequenceTag) override;
 	virtual void StopLevelSequence(const FName& LevelSequenceTag) override;
@@ -73,9 +75,6 @@ public:
 	// Damage를 나타내는 DamageIndicator Widget을 화면에 표시한다.
 	UFUNCTION(Client, Reliable)
 	void ClientIndicateDamage(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const;
-
-	bool IsValidGameStateBaseInClient() const { return bValidGameStateBaseInClient; }
-	FOnGameStateBaseValidInClientSignature OnGameStateBaseValidInClientDelegate;
 
 	FORCEINLINE int32 GetUsedLifeCount() const { return UsedLifeCount; }
 	FORCEINLINE void UseLifeCount() { ++UsedLifeCount; }
@@ -152,11 +151,6 @@ private:
 	// Input Event와 Ability 연동
 	void BindAbilityInput();
 
-	// 클라이언트에서 BindAbilityInput()를 수행하기 위해 Polling
-	void PollInit();
-	bool bValidGameStateBaseInClient = false;
-	FTimerHandle PollingTimerHandle;
-
 	// 현재 적용된 Input Mapping Context 상태를 저장하는 플래그
 	uint8 IMCFlags = 0;
 
@@ -209,6 +203,19 @@ private:
 
 	// CloseCinematic Input Action이 Started 될 때 호출되는 콜백 함수
 	void OnCloseCinematicActionStarted();
+
+	// ============================================================================
+	// Data
+	// ============================================================================
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Data")
+	TObjectPtr<UAuraInputConfig> AuraInputConfig;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Data")
+	TObjectPtr<USpellConfig> SpellConfig;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Data")
+	TObjectPtr<UAttributeConfig> AttributeConfig;
 
 	// ============================================================================
 	// GAS
