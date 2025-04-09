@@ -6,11 +6,12 @@
 #include "Aura/Aura.h"
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
-#include "Game/StageGameMode.h"
 #include "Interface/PlayerInterface.h"
+#include "Interface/StageSystemInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "UI/HUD/AuraHUD.h"
+#include "GameFramework/GameModeBase.h"
 
 ABeacon_StartStage::ABeacon_StartStage()
 {
@@ -135,8 +136,8 @@ void ABeacon_StartStage::OnLevelSequenceStop(const FName& LevelSequenceTag)
 
 void ABeacon_StartStage::ServerInteract_Implementation()
 {
-	if (AStageGameMode* StageGameMode = GetWorld() ? GetWorld()->GetAuthGameMode<AStageGameMode>() : nullptr)
+	if (IStageSystemInterface* StageSystemInterface = Cast<IStageSystemInterface>(GetWorld() ? GetWorld()->GetAuthGameMode() : nullptr))
 	{
-		StageGameMode->OnStageBeaconInteracted();
+		StageSystemInterface->OnStageBeaconInteracted();
 	}
 }
