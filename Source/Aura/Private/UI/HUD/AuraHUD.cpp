@@ -48,6 +48,14 @@ void AAuraHUD::ShowGameOverlay(bool bShow) const
 	}
 }
 
+void AAuraHUD::ShowPreStageHUD() const
+{
+	if (GameOverlay)
+	{
+		GameOverlay->ShowPreStageHUD();
+	}
+}
+
 void AAuraHUD::ShowAllMenuShortcutAlert(const TArray<TTuple<EGameMenuType, FKey>>& MenuKeys) const
 {
 	if (GameOverlay)

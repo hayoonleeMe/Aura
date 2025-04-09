@@ -118,4 +118,11 @@ public:
 	virtual void PlayLevelSequence(const FName& LevelSequenceTag) {}
 	virtual void StopLevelSequence(const FName& LevelSequenceTag) {}
 	virtual void SetLevelSequenceActorLocation(const FName& LevelSequenceTag, const FVector& NewLocation) {}
+
+	// ============================================================================
+	// Gameplay
+	// ============================================================================
+
+	// 게임 초기에 수행하는 로직 처리
+	virtual void HandleInitialLogic() const {}
 };
