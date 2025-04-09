@@ -68,16 +68,6 @@ void UGameOverlay::NativeConstruct()
 	/* Spell Menu */
 	AuraASC->OnSpellAbilityChangedDelegate.AddUObject(this, &ThisClass::OnSpellChanged);
 	AuraASC->OnEquippedSpellAbilityChangedDelegate.AddUObject(this, &ThisClass::OnEquippedSpellChanged);
-
-	if (GetWorld())
-	{
-		// GameOverlay Widget보다 이후에 생성하기 위해 Native Construct 다음 프레임에 추가
-		GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([this]()
-		{
-			AddPreStageHUDWidget();
-			OpenTutorialMenu();
-		}));
-	}
 }
 
 void UGameOverlay::OnRespawnStarted(float RespawnTimerEndSeconds)
@@ -376,7 +366,7 @@ void UGameOverlay::OnTotalEnemyCountChanged(int32 TotalEnemyCount) const
 	}
 }
 
-void UGameOverlay::AddPreStageHUDWidget()
+void UGameOverlay::ShowPreStageHUD()
 {
 	PreStageHUD = CreateWidget(this, PreStageHUDClass);
 	PreStageHUD->AddToViewport();
