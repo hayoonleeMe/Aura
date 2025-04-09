@@ -8,6 +8,7 @@
 #include "Types/StageStatus.h"
 #include "StageGameMode.generated.h"
 
+class AAuraGameStateBase;
 struct FOnAttributeChangeData;
 class UMultiplayerSessionsSubsystem;
 class AAuraEnemy;
@@ -61,6 +62,12 @@ private:
 	int32 ReadyPlayerCount = 0;
 
 	void OnPlayerReady();
+
+	UPROPERTY()
+	TObjectPtr<AAuraGameStateBase> StageGameState;
+
+	void SpawnStartStageBeacon() const;
+	void DestroyStartStageBeacon() const;
 
 	// ============================================================================
 	// Game End
@@ -117,31 +124,14 @@ private:
 	FTimerDelegate EndStageDelayTimerDelegate;
 
 	// ============================================================================
-	// Beacon
-	// ============================================================================
-
-	// Stage를 시작하는 Beacon Actor
-	UPROPERTY(EditDefaultsOnly, Category="Aura|Beacon")
-	TSubclassOf<AActor> StartStageBeaconClass;
-
-	UPROPERTY()
-	TObjectPtr<AActor> StartStageBeacon;
-
-	void SpawnStartStageBeacon();
-
-	// 플레이어로부터 Beacon을 스폰할 거리
-	UPROPERTY(EditDefaultsOnly, Category="Aura|Beacon")
-	float BeaconSpawnDistance;
-
-	// ============================================================================
 	// Spawn Enemy
 	// ============================================================================
 
 	// Enemy를 소환하는 Volume의 범위를 나타내는 Box
 	FBox SpawnEnemyVolumeBox;
 	
-	// 이 게임 모드에서 액터를 스폰하는 데 사용할 파라미터
-	FActorSpawnParameters SpawnParams;
+	// Enemy를 스폰할 때 사용할 파라미터
+	FActorSpawnParameters EnemySpawnParams;
 
 	// 스폰한 Enemy가 죽을 때를 알리는 델레게이트의 콜백 함수
 	UFUNCTION()
@@ -222,9 +212,6 @@ private:
 	// ============================================================================
 	// Helper
 	// ============================================================================
-
-	// SimulatedProxy의 Auth Player Controller 반환
-	APlayerController* GetSimulatedPlayerController() const;
 
 	// 모든 로컬 플레이어의 UI에 StageStatus를 표시
 	void BroadcastStageStatusChangeToAllLocalPlayers() const;

@@ -33,9 +33,6 @@ AStageGameMode::AStageGameMode()
 	EndStageDelay = 4.f;
 	EndStageDelayTimerDelegate = FTimerDelegate::CreateUObject(this, &ThisClass::EndStage);
 
-	/* Beacon */
-	BeaconSpawnDistance = 500.f;
-
 	/* Spawn Enemy */
 	SpawnWaitTime = 2.f;
 	RandomDeviation = 1.f;
@@ -136,11 +133,23 @@ void AStageGameMode::OnPlayerReady()
 	{
 		// 모든 플레이어 레디 완료
 		StartStage();
+		DestroyStartStageBeacon();
+	}
+}
 
-		if (StartStageBeacon)
-		{
-			StartStageBeacon->Destroy();
-		}
+void AStageGameMode::SpawnStartStageBeacon() const
+{
+	if (StageGameState)
+	{
+		StageGameState->SpawnStartStageBeacon();
+	}
+}
+
+void AStageGameMode::DestroyStartStageBeacon() const
+{
+	if (StageGameState)
+	{
+		StageGameState->DestroyStartStageBeacon();
 	}
 }
 
@@ -230,11 +239,7 @@ void AStageGameMode::OnStageBeaconInteracted()
 	if (StageNumber > 1)
 	{
 		StartStage();
-
-		if (StartStageBeacon)
-		{
-			StartStageBeacon->Destroy();
-		}
+		DestroyStartStageBeacon();
 	}
 	else
 	{
@@ -263,16 +268,20 @@ void AStageGameMode::InitData()
 		SpawnEnemyVolumeBox = FBox(Location - BoxExtent, Location + BoxExtent);
 	}
 	
-	// Caching SpawnParams for spawning enemies, beacons
-	// Actor의 Ownership 설정을 위해 SimulatedProxy가 사용하는 PlayerController를 Owner로 설정
-	SpawnParams.Owner = GetSimulatedPlayerController();
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	// Actor의 Ownership 설정을 위해 SimulatedProxy PlayerController를 Owner로 설정
+	EnemySpawnParams.Owner = UAuraBlueprintLibrary::GetSimulatedPlayerController(GetWorld());
+	EnemySpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	EnemySpawnParams.bDeferConstruction = true;
 
+	// Caching Game State Base
+	StageGameState = GetGameState<AAuraGameStateBase>();
+	check(StageGameState);
+	
 	// Caching Respawn Data
-	if (const AAuraGameStateBase* AuraGameStateBase = GetGameState<AAuraGameStateBase>())
+	if (StageGameState)
 	{
-		TotalLifeCount = AuraGameStateBase->TotalLifeCount;
-		RespawnTime = AuraGameStateBase->RespawnTime;
+		TotalLifeCount = StageGameState->GetTotalLifeCount();
+		RespawnTime = StageGameState->GetRespawnTime();
 	}
 
 	// Caching MultiplayerSessionsSubsystem and Bind Callback
@@ -320,40 +329,8 @@ void AStageGameMode::StartWaitingTimer()
 
 void AStageGameMode::OnWaitingTimeFinished()
 {
-	if (IsValid(StartStageBeacon))
-	{
-		StartStageBeacon->Destroy();
-	}
+	DestroyStartStageBeacon();
 	StartStage();
-}
-
-void AStageGameMode::SpawnStartStageBeacon()
-{
-	check(StartStageBeaconClass);
-	
-	if (IsValid(StartStageBeacon))
-	{
-		StartStageBeacon->Destroy();
-	}
-	
-	// Spawn Location 결정
-	FVector SpawnLocation(0.f);
-	
-	TArray<AActor*> AlivePawns;
-	UAuraBlueprintLibrary::GetAlivePawnsFromPlayers(GetWorld(), AlivePawns);
-	if (AlivePawns.Num())
-	{
-		// 살아있는 플레이어를 기준으로 Beacon 위치 계산
-		if (const AActor* AlivePawn = AlivePawns[0])
-		{
-			const FVector Direction = AlivePawn->GetActorLocation().GetSafeNormal();	// to 0, 0, 0
-			SpawnLocation = AlivePawn->GetActorLocation() + -Direction * BeaconSpawnDistance;
-			SpawnLocation.Z = 0.f;
-		}
-	}
-	
-	SpawnParams.bDeferConstruction = false;
-	StartStageBeacon = GetWorld()->SpawnActor<AActor>(StartStageBeaconClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
 }
 
 void AStageGameMode::AsyncSpawnEnemies()
@@ -398,13 +375,12 @@ void AStageGameMode::SpawnEnemy(TSubclassOf<AAuraEnemy> Class)
 {
 	check(Class);
 
-	SpawnParams.bDeferConstruction = true;
 	
 	// Find Random Point
 	const FVector RandomPoint = UKismetMathLibrary::RandomPointInBoundingBox_Box(SpawnEnemyVolumeBox);
 	const FTransform SpawnTransform(RandomPoint);
 
-	if (AAuraEnemy* Enemy = GetWorld()->SpawnActor<AAuraEnemy>(Class, SpawnTransform, SpawnParams))
+	if (AAuraEnemy* Enemy = GetWorld()->SpawnActor<AAuraEnemy>(Class, SpawnTransform, EnemySpawnParams))
 	{
 		++NumStageSpawnedEnemies;
 
@@ -419,13 +395,11 @@ void AStageGameMode::RequestSpawnEnemy(const TSubclassOf<AAuraEnemy>& EnemyClass
 {
 	check(EnemyClass);
 
-	SpawnParams.bDeferConstruction = true;
-
 	FVector SpawnLocation = SpawnTransform.GetTranslation();
 	SpawnLocation.Z = bOverrideLocationZ ? SpawnEnemyVolumeBox.Min.Z : SpawnLocation.Z;
 	SpawnTransform.SetTranslation(SpawnLocation);
 
-	if (AAuraEnemy* Enemy = GetWorld()->SpawnActor<AAuraEnemy>(EnemyClass, SpawnTransform, SpawnParams))
+	if (AAuraEnemy* Enemy = GetWorld()->SpawnActor<AAuraEnemy>(EnemyClass, SpawnTransform, EnemySpawnParams))
 	{
 		++TotalEnemyCount;
 		
@@ -470,21 +444,6 @@ void AStageGameMode::PrepareEnemySpawn()
 	Algo::RandomShuffle(RandomEnemyInfos);
 	
 	TotalEnemyCount = RandomEnemyInfos.Num();
-}
-
-APlayerController* AStageGameMode::GetSimulatedPlayerController() const
-{
-	if (GetWorld())
-	{
-		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
-		{
-			if (It->IsValid() && !It->Get()->IsLocalController())
-			{
-				return It->Get();
-			}
-		}
-	}
-	return nullptr;
 }
 
 void AStageGameMode::BroadcastStageStatusChangeToAllLocalPlayers() const

@@ -6,16 +6,15 @@
 #include "Aura/Aura.h"
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
-#include "Interface/PlayerInterface.h"
 #include "Interface/StageSystemInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInstanceDynamic.h"
-#include "UI/HUD/AuraHUD.h"
 #include "GameFramework/GameModeBase.h"
 
 ABeacon_StartStage::ABeacon_StartStage()
 {
 	bReplicates = true;
+	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Component"));
 	SetRootComponent(BoxComponent);
@@ -79,59 +78,17 @@ void ABeacon_StartStage::OnGlowTimelineFinished()
 	ServerInteract();
 }
 
+void ABeacon_StartStage::SetMeshComponentHiddenInGame(bool bNewHidden) const
+{
+	MeshComponent->SetHiddenInGame(bNewHidden);
+}
+
 void ABeacon_StartStage::BeginPlay()
 {
 	Super::BeginPlay();
 
 	DynamicMaterialInstance = UMaterialInstanceDynamic::Create(MeshComponent->GetMaterial(0), this);
 	MeshComponent->SetMaterial(0, DynamicMaterialInstance);
-
-	PlaySpawnBeaconLevelSequence();
-}
-
-void ABeacon_StartStage::PlaySpawnBeaconLevelSequence()
-{
-	MeshComponent->SetHiddenInGame(true);
-
-	APlayerController* PlayerController = GetWorld() ? GetWorld()->GetFirstPlayerController<APlayerController>() : nullptr;
-	
-	// Hide HUD
-	if (const AAuraHUD* AuraHUD = PlayerController ? PlayerController->GetHUD<AAuraHUD>() : nullptr)
-	{
-		AuraHUD->ShowGameOverlay(false);
-	}
-
-	// Play
-	if (IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(PlayerController))
-	{
-		if (FOnLevelSequenceStopSignature* OnLevelSequenceStopSignature = PlayerInterface->GetOnLevelSequenceStopDelegate())
-		{
-			OnLevelSequenceStopSignature->AddUObject(this, &ThisClass::OnLevelSequenceStop);
-		}
-		FVector NewLocation = GetActorLocation();
-		NewLocation.Z = 0.f;
-		PlayerInterface->SetLevelSequenceActorLocation(TEXT("SpawnBeacon"), NewLocation);
-		PlayerInterface->PlayLevelSequence(TEXT("SpawnBeacon"));
-		PlayerInterface->EnableCinematicInput();
-	}
-}
-
-void ABeacon_StartStage::OnLevelSequenceStop(const FName& LevelSequenceTag)
-{
-	MeshComponent->SetHiddenInGame(false);
-
-	APlayerController* PlayerController = GetWorld() ? GetWorld()->GetFirstPlayerController<APlayerController>() : nullptr;
-
-	// Show HUD
-	if (const AAuraHUD* AuraHUD = PlayerController ? PlayerController->GetHUD<AAuraHUD>() : nullptr)
-	{
-		AuraHUD->ShowGameOverlay(true);
-	}
-
-	if (IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(PlayerController))
-	{
-		PlayerInterface->DisableCinematicInput();
-	}
 }
 
 void ABeacon_StartStage::ServerInteract_Implementation()

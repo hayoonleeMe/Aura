@@ -240,6 +240,21 @@ UAuraAttributeSet* UAuraBlueprintLibrary::GetAuraAttributeSetChecked(const APlay
 	return CastChecked<UAuraAttributeSet>(CastChecked<AAuraPlayerState>(PlayerController->PlayerState)->GetAttributeSet());
 }
 
+APlayerController* UAuraBlueprintLibrary::GetSimulatedPlayerController(const UWorld* World)
+{
+	if (World)
+	{
+		for (FConstPlayerControllerIterator It = World->GetPlayerControllerIterator(); It; ++It)
+		{
+			if (It->IsValid() && !It->Get()->IsLocalController())
+			{
+				return It->Get();
+			}
+		}
+	}
+	return nullptr;
+}
+
 void UAuraBlueprintLibrary::GetSpreadDirections(TArray<FVector>& OutDirections, int32 NumDirections, float SpreadAngle, const FVector& CentralDirection)
 {
 	const float TotalAngle = (NumDirections - 1) * SpreadAngle;
