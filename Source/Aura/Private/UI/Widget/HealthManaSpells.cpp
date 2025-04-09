@@ -8,10 +8,8 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Data/SpellConfig.h"
-#include "Game/AuraGameStateBase.h"
 #include "Player/AuraPlayerController.h"
 #include "UI/Widget/EquippedSpellGlobe.h"
-#include "UI/Widget/XPBar.h"
 
 void UHealthManaSpells::NativeConstruct()
 {
@@ -35,22 +33,15 @@ void UHealthManaSpells::NativeConstruct()
 	InputTagToSpellGlobeMap.Add(Globe_Passive_1->InputTag, Globe_Passive_1);
 	InputTagToSpellGlobeMap.Add(Globe_Passive_2->InputTag, Globe_Passive_2);
 
-	const AAuraGameStateBase* AuraGameStateBase = UAuraBlueprintLibrary::GetAuraGameStateBaseChecked(GetWorld());
-	SpellConfig = AuraGameStateBase->SpellConfig;
-	check(SpellConfig);
+	if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(GetOwningPlayer()))
+	{
+		SpellConfig = PlayerInterface->GetSpellConfig();
+	}
 
 	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayer());
 	AuraASC->OnEquippedSpellAbilityChangedDelegate.AddUObject(this, &ThisClass::OnEquippedSpellChanged);
 
-	AAuraPlayerController* AuraPC = CastChecked<AAuraPlayerController>(GetOwningPlayer());
-	if (AuraPC->HasAuthority() || AuraPC->IsValidGameStateBaseInClient())
-	{
-		BroadcastInitialValues();
-	}
-	else
-	{
-		AuraPC->OnGameStateBaseValidInClientDelegate.AddUObject(this, &ThisClass::BroadcastInitialValues);
-	}
+	BroadcastInitialValues();
 }
 
 void UHealthManaSpells::BroadcastInitialValues()

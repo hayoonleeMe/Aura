@@ -3,7 +3,6 @@
 
 #include "UI/Widget/LifeCounter.h"
 
-#include "AuraBlueprintLibrary.h"
 #include "Components/HorizontalBox.h"
 #include "Components/HorizontalBoxSlot.h"
 #include "Components/Image.h"
@@ -20,15 +19,17 @@ void ULifeCounter::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	const AAuraGameStateBase* AuraGameStateBase = UAuraBlueprintLibrary::GetAuraGameStateBaseChecked(GetWorld());
-	for (int32 i = 1; i <= AuraGameStateBase->TotalLifeCount; ++i)
+	if (const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr)
 	{
-		if (UImage* Image = NewObject<UImage>(this, UImage::StaticClass()))
+		for (int32 i = 1; i <= AuraGameStateBase->TotalLifeCount; ++i)
 		{
-			Image->SetBrush(HeartBrush);
-			if (UHorizontalBoxSlot* BoxSlot = HorizontalBox->AddChildToHorizontalBox(Image))
+			if (UImage* Image = NewObject<UImage>(this, UImage::StaticClass()))
 			{
-				BoxSlot->SetPadding(FMargin(0.f, 0.f, RightPadding, 0.f));
+				Image->SetBrush(HeartBrush);
+				if (UHorizontalBoxSlot* BoxSlot = HorizontalBox->AddChildToHorizontalBox(Image))
+				{
+					BoxSlot->SetPadding(FMargin(0.f, 0.f, RightPadding, 0.f));
+				}
 			}
 		}
 	}

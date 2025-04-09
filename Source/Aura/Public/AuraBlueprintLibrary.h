@@ -98,7 +98,6 @@ public:
 
 	static UAuraAbilitySystemComponent* GetAuraAbilitySystemComponentChecked(const APlayerController* PlayerController);
 	static UAuraAttributeSet* GetAuraAttributeSetChecked(const APlayerController* PlayerController);
-	static AAuraGameStateBase* GetAuraGameStateBaseChecked(const UWorld* World);
 
 	// ============================================================================
 	// Math

@@ -7,6 +7,10 @@
 #include "UObject/Interface.h"
 #include "PlayerInterface.generated.h"
 
+class UAuraInputConfig;
+class UAttributeConfig;
+class USpellConfig;
+
 // This class does not need to be modified.
 UINTERFACE()
 class UPlayerInterface : public UInterface
@@ -97,6 +101,14 @@ public:
 
 	// Cinematic Context를 비활성화하고 기존 Input Mapping Context를 활성화한다.
 	virtual void DisableCinematicInput() {}
+
+	// ============================================================================
+	// Data
+	// ============================================================================
+
+	virtual UAuraInputConfig* GetAuraInputConfig() const { return nullptr; }
+	virtual USpellConfig* GetSpellConfig() const { return nullptr; }
+	virtual UAttributeConfig* GetAttributeConfig() const { return nullptr; }
 
 	// ============================================================================
 	// Level Sequence

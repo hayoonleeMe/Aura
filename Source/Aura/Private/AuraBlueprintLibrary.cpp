@@ -21,7 +21,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerState.h"
 #include "Types/DamageEffectParams.h"
-#include "Game/AuraGameStateBase.h"
 
 UEnemyClassConfig* UAuraBlueprintLibrary::GetEnemyClassConfig(const UObject* WorldContextObject)
 {
@@ -239,12 +238,6 @@ UAuraAttributeSet* UAuraBlueprintLibrary::GetAuraAttributeSetChecked(const APlay
 {
 	check(PlayerController);
 	return CastChecked<UAuraAttributeSet>(CastChecked<AAuraPlayerState>(PlayerController->PlayerState)->GetAttributeSet());
-}
-
-AAuraGameStateBase* UAuraBlueprintLibrary::GetAuraGameStateBaseChecked(const UWorld* World)
-{
-	check(World);
-	return World->GetGameState<AAuraGameStateBase>();
 }
 
 void UAuraBlueprintLibrary::GetSpreadDirections(TArray<FVector>& OutDirections, int32 NumDirections, float SpreadAngle, const FVector& CentralDirection)

@@ -11,7 +11,6 @@
 #include "Character/AuraEnemy.h"
 #include "Component/LevelSequenceManageComponent.h"
 #include "Framework/Application/NavigationConfig.h"
-#include "Game/AuraGameStateBase.h"
 #include "Input/AuraInputComponent.h"
 #include "Interface/InteractionInterface.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -291,6 +290,9 @@ void AAuraPlayerController::BeginPlay()
 	check(CommonContext);
 	check(UIContext);
 	check(CinematicContext);
+	check(AuraInputConfig);
+	check(SpellConfig);
+	check(AttributeConfig);
 	
 	// Add Input Mapping Context
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
@@ -312,14 +314,7 @@ void AAuraPlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 
 	// Bind Ability Context
-	if (HasAuthority())
-	{
-		BindAbilityInput();
-	}
-	else
-	{
-		GetWorldTimerManager().SetTimer(PollingTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::PollInit), 0.1f,true);
-	}
+	BindAbilityInput();
 
 	UAuraInputComponent* AuraInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
 	
@@ -362,22 +357,6 @@ void AAuraPlayerController::OnPossess(APawn* InPawn)
 	{
 		// Level Sequence Actor를 Pawn에 부착한다.
 		AttachPauseMenuLevelSequenceActorToPawn();
-	}
-}
-
-void AAuraPlayerController::PollInit()
-{
-	if (!HasAuthority() && !bValidGameStateBaseInClient)
-	{
-		if (GetWorld() && GetWorld()->GetGameState())
-		{
-			bValidGameStateBaseInClient = true;
-			BindAbilityInput();
-			GetWorldTimerManager().ClearTimer(PollingTimerHandle);
-
-			// Notify for client
-			OnGameStateBaseValidInClientDelegate.Broadcast();
-		}
 	}
 }
 
@@ -478,13 +457,9 @@ void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag, int32 In
 
 void AAuraPlayerController::BindAbilityInput()
 {
-	const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr;
-	if (AuraGameStateBase && AuraGameStateBase->AuraInputConfig)
-	{
-		/* Bind Action */
-		UAuraInputComponent* AuraInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
-		AuraInputComponent->BindAbilityActions(AuraGameStateBase->AuraInputConfig, this, &ThisClass::AbilityInputPressed, &ThisClass::AbilityInputReleased);
-	}
+	/* Bind Action */
+	UAuraInputComponent* AuraInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
+	AuraInputComponent->BindAbilityActions(AuraInputConfig, this, &ThisClass::AbilityInputPressed, &ThisClass::AbilityInputReleased);
 }
 
 UAuraAbilitySystemComponent* AAuraPlayerController::GetAuraAbilitySystemComponent()
