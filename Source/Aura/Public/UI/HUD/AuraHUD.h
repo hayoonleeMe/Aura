@@ -29,6 +29,9 @@ public:
 	// GameOverlay의 RenderOpacity를 변경해 표시하거나 숨긴다.
 	void ShowGameOverlay(bool bShow) const;
 
+	// 모든 메뉴의 단축키를 알리는 Alert Widget을 표시
+	void ShowAllMenuShortcutAlert(const TArray<TTuple<EGameMenuType, FKey>>& MenuKeys) const;
+
 private:
 	// ============================================================================
 	// Overlay

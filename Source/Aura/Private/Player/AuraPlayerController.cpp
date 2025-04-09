@@ -166,6 +166,45 @@ void AAuraPlayerController::SetLevelSequenceActorLocation(const FName& LevelSequ
 	}
 }
 
+void AAuraPlayerController::ShowAllMenuShortcutAlert() const
+{
+  	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+	const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>();
+	if (Subsystem && AuraHUD)
+	{
+		// 유효한 Key Query를 위해 즉시 RebuildControlMappings를 수행  
+		FModifyContextOptions Options;
+		Options.bForceImmediately = true;
+		Subsystem->RequestRebuildControlMappings(Options);
+
+		// 메뉴와 메뉴를 여는 Input Key
+		TArray<TTuple<EGameMenuType, FKey>> MenuKeys;
+		
+		const TArray<FKey> TutorialMenuKeys(Subsystem->QueryKeysMappedToAction(IA_TutorialMenu));
+		if (TutorialMenuKeys.Num())
+		{
+			MenuKeys.Add({EGameMenuType::TutorialMenu, TutorialMenuKeys[0]});
+		}
+		const TArray<FKey> AttributeMenuKeys(Subsystem->QueryKeysMappedToAction(IA_AttributeMenu));
+		if (AttributeMenuKeys.Num())
+		{
+			MenuKeys.Add({EGameMenuType::AttributeMenu, AttributeMenuKeys[0]});
+		}
+		const TArray<FKey> SpellMenuKeys(Subsystem->QueryKeysMappedToAction(IA_SpellMenu));
+		if (SpellMenuKeys.Num())
+		{
+			MenuKeys.Add({EGameMenuType::SpellMenu, SpellMenuKeys[0]});
+		}
+		const TArray<FKey> PauseMenuKeys(Subsystem->QueryKeysMappedToAction(IA_PauseMenu));
+		if (PauseMenuKeys.Num())
+		{
+			MenuKeys.Add({EGameMenuType::PauseMenu, PauseMenuKeys[0]});
+		}
+
+		AuraHUD->ShowAllMenuShortcutAlert(MenuKeys);
+	}
+}
+
 void AAuraPlayerController::EnableAbilityInput()
 {
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))

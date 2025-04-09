@@ -67,6 +67,9 @@ public:
 	virtual void SetLevelSequenceActorLocation(const FName& LevelSequenceTag, const FVector& NewLocation) override;
 	/* End PlayerInterface */
 
+	// 모든 메뉴에 대한 MenuShortcutAlert Widget을 표시한다.
+	void ShowAllMenuShortcutAlert() const;
+
 	void EnableAbilityInput();
 	void DisableAbilityInput();
 
