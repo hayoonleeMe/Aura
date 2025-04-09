@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AuraGameModeBase.h"
+#include "Interface/StageSystemInterface.h"
 #include "Types/StageStatus.h"
 #include "StageGameMode.generated.h"
 
@@ -16,7 +17,7 @@ class UStageConfig;
  * Stage를 관리하는 Game Mode
  */
 UCLASS()
-class AURA_API AStageGameMode : public AAuraGameModeBase
+class AURA_API AStageGameMode : public AAuraGameModeBase, public IStageSystemInterface
 {
 	GENERATED_BODY()
 
@@ -29,16 +30,16 @@ public:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 #endif
 
+	/* Begin IStageSystemInterface */
+	virtual void OnStageBeaconInteracted() override;
+	virtual void RequestPlayerRespawn(APlayerController* PlayerController) override;
+	virtual void RequestSpawnEnemy(const TSubclassOf<AAuraEnemy>& EnemyClass, FTransform SpawnTransform, bool bOverrideLocationZ) override;
+	/* End IStageSystemInterface */
+
 	void WaitStageStart();
 	void StartStage();
 	void EndStage();
-	void OnStageBeaconInteracted();
 
-	// 가능하면 리스폰 수행
-	void RequestPlayerRespawn(APlayerController* PlayerController);
-
-	void RequestSpawnEnemy(const TSubclassOf<AAuraEnemy>& EnemyClass, FTransform SpawnTransform, bool bOverrideLocationZ);
-	
 private:
 	// ============================================================================
 	// Stage

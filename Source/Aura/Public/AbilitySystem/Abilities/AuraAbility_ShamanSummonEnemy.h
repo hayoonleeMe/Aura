@@ -50,9 +50,6 @@ private:
 	// 소환된 Enemy 수
 	int32 NumSummonedEnemies = 0;
 
-	UPROPERTY()
-	TObjectPtr<AStageGameMode> StageGameMode;
-
 	// 비동기적으로 Enemy 소환
 	// RandomDelay마다 설정한 Enemy 중 랜덤한 Enemy를 하나 소환하고, MaxSummonCount만큼 소환할 때까지 반복한다.
 	void AsyncSpawnEnemies();

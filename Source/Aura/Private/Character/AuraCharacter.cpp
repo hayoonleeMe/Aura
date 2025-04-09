@@ -16,11 +16,12 @@
 #include "Component/ObjectPoolComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
-#include "Game/StageGameMode.h"
+#include "Interface/StageSystemInterface.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
 #include "UI/Widget/PlayerNameplate.h"
+#include "GameFramework/GameModeBase.h"
 
 AAuraCharacter::AAuraCharacter()
 {
@@ -116,9 +117,9 @@ void AAuraCharacter::Die()
 {
 	Super::Die();
 
-	if (AStageGameMode* StageGameMode = GetWorld()->GetAuthGameMode<AStageGameMode>())
+	if (IStageSystemInterface* StageSystemInterface = Cast<IStageSystemInterface>(GetWorld() ? GetWorld()->GetAuthGameMode() : nullptr))
 	{
-		StageGameMode->RequestPlayerRespawn(GetController<APlayerController>());
+		StageSystemInterface->RequestPlayerRespawn(GetController<APlayerController>());
 	}
 }
 

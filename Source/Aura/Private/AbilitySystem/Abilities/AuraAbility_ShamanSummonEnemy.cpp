@@ -9,8 +9,9 @@
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Character/AuraEnemy.h"
-#include "Game/StageGameMode.h"
 #include "Interface/CombatInterface.h"
+#include "Interface/StageSystemInterface.h"
+#include "GameFramework/GameModeBase.h"
 
 UAuraAbility_ShamanSummonEnemy::UAuraAbility_ShamanSummonEnemy()
 {
@@ -88,7 +89,6 @@ void UAuraAbility_ShamanSummonEnemy::EndAbility(const FGameplayAbilitySpecHandle
 void UAuraAbility_ShamanSummonEnemy::OnEventReceived(FGameplayEventData Payload)
 {
 	// Spawn Enemy
-	StageGameMode = GetWorld()->GetAuthGameMode<AStageGameMode>();	
 	MaxSummonCount = GetNumEnemies();
 	AsyncSpawnEnemies();
 }
@@ -116,9 +116,9 @@ void UAuraAbility_ShamanSummonEnemy::AsyncSpawnEnemies()
 			const FVector RandomPoint = AvatarActor->GetActorLocation() + RandomDir * FMath::RandRange(SpawnMinDistance, SpawnMaxDistance);
 			const FTransform SpawnTransform(AvatarActor->GetActorRotation(), RandomPoint);
 
-			if (StageGameMode)
+			if (IStageSystemInterface* StageSystemInterface = Cast<IStageSystemInterface>(GetWorld() ? GetWorld()->GetAuthGameMode() : nullptr))
 			{
-				StageGameMode->RequestSpawnEnemy(GetRandomEnemyClass(), SpawnTransform, true);
+				StageSystemInterface->RequestSpawnEnemy(GetRandomEnemyClass(), SpawnTransform, true);
 			}
 		}
 
