@@ -90,7 +90,7 @@ void ABeacon_StartStage::BeginPlay()
 
 void ABeacon_StartStage::PlaySpawnBeaconLevelSequence()
 {
-	SetActorHiddenInGame(true);
+	MeshComponent->SetHiddenInGame(true);
 
 	APlayerController* PlayerController = GetWorld() ? GetWorld()->GetFirstPlayerController<APlayerController>() : nullptr;
 	
@@ -117,7 +117,7 @@ void ABeacon_StartStage::PlaySpawnBeaconLevelSequence()
 
 void ABeacon_StartStage::OnLevelSequenceStop(const FName& LevelSequenceTag)
 {
-	SetActorHiddenInGame(false);
+	MeshComponent->SetHiddenInGame(false);
 
 	APlayerController* PlayerController = GetWorld() ? GetWorld()->GetFirstPlayerController<APlayerController>() : nullptr;
 
