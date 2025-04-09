@@ -163,5 +163,6 @@ public:
 	UPROPERTY()
 	TObjectPtr<UUserWidget> PreStageHUD;
 
-	void AddPreStageHUDWidget();
+	// PreStageHUD Widget 표시
+	void ShowPreStageHUD();
 };
