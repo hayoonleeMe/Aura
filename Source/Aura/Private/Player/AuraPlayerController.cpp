@@ -21,7 +21,7 @@
 AAuraPlayerController::AAuraPlayerController()
 {
 	LevelSequenceManageComponent = CreateDefaultSubobject<ULevelSequenceManageComponent>(TEXT("Level Sequence Manage Component"));
-	LevelSequenceManageComponent->SetLevelSequenceTags({TEXT("PauseMenu")});
+	LevelSequenceManageComponent->SetLevelSequenceTags({TEXT("PauseMenu"), TEXT("SpawnBeacon")});
 }
 
 void AAuraPlayerController::PlayerTick(float DeltaTime)
@@ -106,6 +106,43 @@ void AAuraPlayerController::DisableUIInput()
 	EnableCursorTrace(true);
 }
 
+void AAuraPlayerController::EnableCinematicInput()
+{
+	StoreInputMappingContextState();
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->ClearAllMappings();
+		
+		++CinematicInputAddCount;
+		Subsystem->AddMappingContext(CinematicContext, 0);
+	}
+	
+	EnableCursorTrace(false);
+}
+
+void AAuraPlayerController::DisableCinematicInput()
+{
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{	
+		--CinematicInputAddCount;
+		if (CinematicInputAddCount == 0)
+		{
+			Subsystem->RemoveMappingContext(CinematicContext);
+		}
+	}
+	RestoreInputMappingContextState();
+	EnableCursorTrace(true);
+}
+
+FOnLevelSequenceStopSignature* AAuraPlayerController::GetOnLevelSequenceStopDelegate() const
+{
+	if (LevelSequenceManageComponent)
+	{
+		return &LevelSequenceManageComponent->OnLevelSequenceStopDelegate;
+	}
+	return nullptr;
+}
+
 void AAuraPlayerController::PlayLevelSequence(const FName& LevelSequenceTag)
 {
 	if (LevelSequenceManageComponent)
@@ -119,6 +156,14 @@ void AAuraPlayerController::StopLevelSequence(const FName& LevelSequenceTag)
 	if (LevelSequenceManageComponent)
 	{
 		LevelSequenceManageComponent->StopLevelSequence(LevelSequenceTag);
+	}
+}
+
+void AAuraPlayerController::SetLevelSequenceActorLocation(const FName& LevelSequenceTag, const FVector& NewLocation)
+{
+	if (LevelSequenceManageComponent)
+	{
+		LevelSequenceManageComponent->SetLevelSequenceActorLocation(LevelSequenceTag, NewLocation);
 	}
 }
 
@@ -245,6 +290,7 @@ void AAuraPlayerController::BeginPlay()
 	check(AbilityContext);
 	check(CommonContext);
 	check(UIContext);
+	check(CinematicContext);
 	
 	// Add Input Mapping Context
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
@@ -300,6 +346,12 @@ void AAuraPlayerController::SetupInputComponent()
 	{
 		AuraInputComponent->BindAction(IA_CloseUI, ETriggerEvent::Started, this, &ThisClass::OnCloseUIActionStarted);
 	}
+
+	// Bind Cinematic Context
+	if (IA_CloseCinematic)
+	{
+		AuraInputComponent->BindAction(IA_CloseCinematic, ETriggerEvent::Started, this, &ThisClass::OnCloseCinematicActionStarted);
+	}
 }
 
 void AAuraPlayerController::OnPossess(APawn* InPawn)
@@ -329,6 +381,44 @@ void AAuraPlayerController::PollInit()
 	}
 }
 
+void AAuraPlayerController::StoreInputMappingContextState()
+{
+	if (const UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		if (Subsystem->HasMappingContext(CommonContext))
+		{
+			IMCFlags |= 1 << 0;
+		}
+		if (Subsystem->HasMappingContext(AbilityContext))
+		{
+			IMCFlags |= 1 << 1;
+		}
+		if (Subsystem->HasMappingContext(UIContext))
+		{
+			IMCFlags |= 1 << 2;
+		}
+	}
+}
+
+void AAuraPlayerController::RestoreInputMappingContextState()
+{
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		if (IMCFlags & 1 << 0)
+		{
+			Subsystem->AddMappingContext(CommonContext, 0);		// TODO : Priority
+		}
+		if (IMCFlags & 1 << 1)
+		{
+			Subsystem->AddMappingContext(AbilityContext, 0);
+		}
+		if (IMCFlags & 1 << 2)
+		{
+			Subsystem->AddMappingContext(UIContext, 1);
+		}
+	}
+}
+
 void AAuraPlayerController::OnMenuActionStarted(EGameMenuType GameMenuType)
 {
 	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())
@@ -342,6 +432,14 @@ void AAuraPlayerController::OnCloseUIActionStarted()
 	if (ABaseHUD* BaseHUD = GetHUD<ABaseHUD>())
 	{
 		BaseHUD->CloseCurrentWidget();
+	}
+}
+
+void AAuraPlayerController::OnCloseCinematicActionStarted()
+{
+	if (LevelSequenceManageComponent)
+	{
+		LevelSequenceManageComponent->StopCurrentPlayingLevelSequence();
 	}
 }
 

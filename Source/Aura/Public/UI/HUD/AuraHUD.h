@@ -26,6 +26,9 @@ public:
 	// GameMenuType에 해당하는 메뉴를 연다.
 	void OpenMenu(EGameMenuType GameMenuType) const;
 
+	// GameOverlay의 RenderOpacity를 변경해 표시하거나 숨긴다.
+	void ShowGameOverlay(bool bShow) const;
+
 private:
 	// ============================================================================
 	// Overlay

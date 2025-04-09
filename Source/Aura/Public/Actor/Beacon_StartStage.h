@@ -26,8 +26,17 @@ public:
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
 	virtual void Interact() override;
-	virtual float GetOverrideArriveAcceptanceRadius() const override { return 150.f; }
+	virtual float GetOverrideArriveAcceptanceRadius() const override { return 80.f; }
 	/* End InteractionInterface */
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartGlowTimeline(UMaterialInstanceDynamic* MaterialInstanceDynamic);
+
+	UFUNCTION(BlueprintCallable)
+	void OnGlowTimelineFinished();
+
+protected:
+	virtual void BeginPlay() override;
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -35,6 +44,10 @@ private:
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
+
+	// for Glow Effect
+	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UMaterialInstanceDynamic> DynamicMaterialInstance;
 
 	UFUNCTION(Server, Reliable)
 	void ServerInteract();
@@ -44,6 +57,10 @@ private:
 
 	// 현재 기기의 플레이어와 상호작용 했는지
 	bool bHasInteractedWithPlayer = false;
+
+	void PlaySpawnBeaconLevelSequence();
+	
+	void OnLevelSequenceStop(const FName& LevelSequenceTag);
 
 	// ============================================================================
 	// Tooltip

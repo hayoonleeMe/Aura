@@ -39,3 +39,11 @@ void AAuraHUD::OpenMenu(EGameMenuType GameMenuType) const
 		}
 	}
 }
+
+void AAuraHUD::ShowGameOverlay(bool bShow) const
+{
+	if (GameOverlay)
+	{
+		GameOverlay->SetRenderOpacity(bShow ? 1.f : 0.f);
+	}
+}

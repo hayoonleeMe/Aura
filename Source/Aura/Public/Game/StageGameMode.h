@@ -128,6 +128,10 @@ private:
 
 	void SpawnStartStageBeacon();
 
+	// 플레이어로부터 Beacon을 스폰할 거리
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Beacon")
+	float BeaconSpawnDistance;
+
 	// ============================================================================
 	// Spawn Enemy
 	// ============================================================================

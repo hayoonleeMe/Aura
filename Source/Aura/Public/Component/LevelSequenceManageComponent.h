@@ -4,13 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Types/LevelSequenceManageType.h"
 #include "LevelSequenceManageComponent.generated.h"
 
 class ULevelSequence;
 class ALevelSequenceActor;
-
-// Level Sequence가 멈추면 Broadcast하고 해당 Level Sequence Tag를 전달한다.
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnLevelSequenceStopSignature, const FName& /*LevelSequenceTag*/);
 
 /**
  * Level Sequence를 관리하는 Actor Component
@@ -32,6 +30,7 @@ public:
 
 	void PlayLevelSequence(const FName& LevelSequenceTag);
 	void StopLevelSequence(const FName& LevelSequenceTag);
+	void StopCurrentPlayingLevelSequence();
 
 	void SetLevelSequenceActorLocation(const FName& LevelSequenceTag, const FVector& NewLocation);
 
