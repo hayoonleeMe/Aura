@@ -19,9 +19,9 @@ void ULifeCounter::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	if (const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr)
+	if (const AAuraGameStateBase* StageGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr)
 	{
-		for (int32 i = 1; i <= AuraGameStateBase->TotalLifeCount; ++i)
+		for (int32 i = 1; i <= StageGameStateBase->GetTotalLifeCount(); ++i)
 		{
 			if (UImage* Image = NewObject<UImage>(this, UImage::StaticClass()))
 			{

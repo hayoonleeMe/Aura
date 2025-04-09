@@ -99,6 +99,9 @@ public:
 	static UAuraAbilitySystemComponent* GetAuraAbilitySystemComponentChecked(const APlayerController* PlayerController);
 	static UAuraAttributeSet* GetAuraAttributeSetChecked(const APlayerController* PlayerController);
 
+	// SimulatedProxy의 Auth Player Controller 반환
+	static APlayerController* GetSimulatedPlayerController(const UWorld* World);
+
 	// ============================================================================
 	// Math
 	// ============================================================================

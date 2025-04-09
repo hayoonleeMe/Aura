@@ -6,6 +6,8 @@
 #include "GameFramework/GameStateBase.h"
 #include "AuraGameStateBase.generated.h"
 
+class ABeacon_StartStage;
+
 /**
  * 
  */
@@ -16,7 +18,18 @@ class AURA_API AAuraGameStateBase : public AGameStateBase
 
 public:
 	AAuraGameStateBase();
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	void SpawnStartStageBeacon();
+	void DestroyStartStageBeacon() const;
+
+	int32 GetTotalLifeCount() const { return TotalLifeCount; }
+	float GetRespawnTime() const { return RespawnTime; }
+
+protected:
+	virtual void BeginPlay() override;
+
+private:
 	// ============================================================================
 	// Respawn
 	// ============================================================================
@@ -28,4 +41,30 @@ public:
 	// 리스폰에 걸리는 시간
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Respawn")
 	float RespawnTime;
+
+	// ============================================================================
+	// Beacon
+	// ============================================================================
+
+	// Stage를 시작하는 Beacon Actor
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Beacon")
+	TSubclassOf<ABeacon_StartStage> StartStageBeaconClass;
+
+	UPROPERTY(ReplicatedUsing = OnRep_StartStageBeacon)
+	TObjectPtr<ABeacon_StartStage> StartStageBeacon;
+
+	UFUNCTION()
+	void OnRep_StartStageBeacon();
+
+	// 플레이어로부터 Beacon을 스폰할 거리
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Beacon")
+	float BeaconSpawnDistance;
+
+	void PlaySpawnBeaconLevelSequence();
+
+	void OnLevelSequenceStop(const FName& LevelSequenceTag);
+
+	// 첫번째 Spawn Beacon Level Sequence가 끝나기를 기다리는 중
+	// true라면, 첫 Spawn Beacon Level Sequence가 끝날 때 초기 로직 처리
+	bool bWaitingForFirstLevelSequenceStop = true;
 };

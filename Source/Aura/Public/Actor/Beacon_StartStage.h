@@ -12,6 +12,7 @@ class UBoxComponent;
 
 /**
  * 다음 스테이지를 시작하는 상호작용이 가능한 Beacon Actor
+ * 
  * 하나의 플레이어와 한번만 상호작용 할 수 있다.
  */
 UCLASS()
@@ -35,6 +36,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnGlowTimelineFinished();
 
+	// 해당 액터를 숨기기 위해 MeshComponent의 HiddenInGame 변경
+	// Replicate되지 않음
+	void SetMeshComponentHiddenInGame(bool bNewHidden) const;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -57,10 +62,6 @@ private:
 
 	// 현재 기기의 플레이어와 상호작용 했는지
 	bool bHasInteractedWithPlayer = false;
-
-	void PlaySpawnBeaconLevelSequence();
-	
-	void OnLevelSequenceStop(const FName& LevelSequenceTag);
 
 	// ============================================================================
 	// Tooltip
