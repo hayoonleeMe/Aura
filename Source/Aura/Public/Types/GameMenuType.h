@@ -13,3 +13,19 @@ enum class EGameMenuType : uint8
 	PauseMenu,
 	TutorialMenu
 };
+
+inline const TCHAR* LexToString(EGameMenuType GameMenuType)
+{
+	switch (GameMenuType)
+	{
+	case EGameMenuType::AttributeMenu:
+		return TEXT("Attribute Menu");
+	case EGameMenuType::SpellMenu:
+		return TEXT("Spell Menu");
+	case EGameMenuType::PauseMenu:
+		return TEXT("Pause Menu");
+	case EGameMenuType::TutorialMenu:
+		return TEXT("Tutorial Menu");
+	}
+	return TEXT("");
+}

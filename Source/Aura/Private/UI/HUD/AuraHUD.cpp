@@ -47,3 +47,11 @@ void AAuraHUD::ShowGameOverlay(bool bShow) const
 		GameOverlay->SetRenderOpacity(bShow ? 1.f : 0.f);
 	}
 }
+
+void AAuraHUD::ShowAllMenuShortcutAlert(const TArray<TTuple<EGameMenuType, FKey>>& MenuKeys) const
+{
+	if (GameOverlay)
+	{
+		GameOverlay->ShowAllMenuShortcutAlert(MenuKeys);
+	}
+}

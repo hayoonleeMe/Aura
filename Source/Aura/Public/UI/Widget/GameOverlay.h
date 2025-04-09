@@ -4,9 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Types/GameMenuType.h"
 #include "Types/StageStatus.h"
 #include "GameOverlay.generated.h"
 
+class UVerticalBox;
+class UMenuShortcutAlert;
 class UTutorialMenu;
 class UGameEndAlert;
 class URespawnTimer;
@@ -165,4 +168,25 @@ public:
 
 	// PreStageHUD Widget 표시
 	void ShowPreStageHUD();
+
+	// 모든 메뉴의 단축키를 알리는 Alert Widget을 표시
+	void ShowAllMenuShortcutAlert(const TArray<TTuple<EGameMenuType, FKey>>& MenuKeys);
+
+	UPROPERTY(EditDefaultsOnly, Category="Stage")
+	TSubclassOf<UMenuShortcutAlert> MenuShortcutAlertClass;
+
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UVerticalBox> Box_MenuShortcutAlert;
+
+	// MenuShortcutAlert Widget을 추가한 뒤 표시할 시간
+	UPROPERTY(EditDefaultsOnly, Category="Stage")
+	float MenuShortcutAlertDisplayTime;
+
+	void OnMenuShortcutAlertDisplayTimeEnded();
+
+	UPROPERTY(Transient, meta=(BindWidgetAnim))
+	TObjectPtr<UWidgetAnimation> MenuShortcutAlertSlide;
+
+	UPROPERTY(Transient, meta=(BindWidgetAnim))
+	TObjectPtr<UWidgetAnimation> MenuShortcutAlertFadeIn;
 };

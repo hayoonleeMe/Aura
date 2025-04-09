@@ -6,11 +6,14 @@
 #include "AuraBlueprintLibrary.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "Animation/WidgetAnimation.h"
 #include "Components/NamedSlot.h"
+#include "Components/VerticalBox.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/Widget/AttributeMenu.h"
 #include "UI/Widget/GameEndAlert.h"
+#include "UI/Widget/MenuShortcutAlert.h"
 #include "UI/Widget/PauseMenu.h"
 #include "UI/Widget/RespawnTimer.h"
 #include "UI/Widget/SpellMenu.h"
@@ -23,6 +26,7 @@ UGameOverlay::UGameOverlay(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	SetIsFocusable(true);
+	MenuShortcutAlertDisplayTime = 7.f;
 }
 
 void UGameOverlay::NativeConstruct()
@@ -38,6 +42,7 @@ void UGameOverlay::NativeConstruct()
 	check(StageWaitingTimerClass);
 	check(StageStartAlertClass);
 	check(PreStageHUDClass);
+	check(MenuShortcutAlertClass);
 
 	/* Game Overlay */
 	AAuraPlayerController* AuraPC = CastChecked<AAuraPlayerController>(GetOwningPlayer());
@@ -373,4 +378,31 @@ void UGameOverlay::ShowPreStageHUD()
 
 	// NamedSlot_StageWaiting 위치에 PreStageHUD widget 표시
 	NamedSlot_StageWaiting->AddChild(PreStageHUD);
+}
+
+void UGameOverlay::ShowAllMenuShortcutAlert(const TArray<TTuple<EGameMenuType, FKey>>& MenuKeys)
+{
+	for (const TTuple<EGameMenuType, FKey>& Tuple : MenuKeys)
+	{
+		if (UMenuShortcutAlert* AlertWidget = CreateWidget<UMenuShortcutAlert>(this, MenuShortcutAlertClass))
+		{
+			AlertWidget->SetText(Tuple.Key, Tuple.Value);
+			Box_MenuShortcutAlert->AddChildToVerticalBox(AlertWidget);
+		}
+	}
+
+	PlayAnimationForward(MenuShortcutAlertSlide);
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::OnMenuShortcutAlertDisplayTimeEnded), MenuShortcutAlertDisplayTime, false);
+}
+
+void UGameOverlay::OnMenuShortcutAlertDisplayTimeEnded()
+{
+	PlayAnimationForward(MenuShortcutAlertFadeIn);
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([this]()
+	{
+		Box_MenuShortcutAlert->RemoveFromParent();
+		Box_MenuShortcutAlert = nullptr;
+	}), MenuShortcutAlertFadeIn->GetEndTime(), false);
 }
