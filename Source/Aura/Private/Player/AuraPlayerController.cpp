@@ -166,6 +166,20 @@ void AAuraPlayerController::SetLevelSequenceActorLocation(const FName& LevelSequ
 	}
 }
 
+void AAuraPlayerController::HandleInitialLogic() const
+{
+	ShowPreStageHUD();
+	ShowAllMenuShortcutAlert();
+}
+
+void AAuraPlayerController::ShowPreStageHUD() const
+{
+	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())
+	{
+		AuraHUD->ShowPreStageHUD();
+	}
+}
+
 void AAuraPlayerController::ShowAllMenuShortcutAlert() const
 {
   	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());

@@ -65,7 +65,11 @@ public:
 	virtual void PlayLevelSequence(const FName& LevelSequenceTag) override;
 	virtual void StopLevelSequence(const FName& LevelSequenceTag) override;
 	virtual void SetLevelSequenceActorLocation(const FName& LevelSequenceTag, const FVector& NewLocation) override;
+	virtual void HandleInitialLogic() const override;
 	/* End PlayerInterface */
+
+	// PreStageHUD Widget을 표시한다.
+	void ShowPreStageHUD() const;
 
 	// 모든 메뉴에 대한 MenuShortcutAlert Widget을 표시한다.
 	void ShowAllMenuShortcutAlert() const;

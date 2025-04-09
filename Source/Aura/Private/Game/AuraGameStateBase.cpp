@@ -7,6 +7,7 @@
 #include "Actor/Beacon_StartStage.h"
 #include "Interface/PlayerInterface.h"
 #include "Net/UnrealNetwork.h"
+#include "UI/HUD/AuraHUD.h"
 
 AAuraGameStateBase::AAuraGameStateBase()
 {
@@ -141,5 +142,12 @@ void AAuraGameStateBase::OnLevelSequenceStop(const FName& LevelSequenceTag)
 	if (IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(PlayerController))
 	{
 		PlayerInterface->DisableCinematicInput();
+
+		// 처음 한번만 Initial Logic 처리
+		if (bWaitingForFirstLevelSequenceStop)
+		{
+			bWaitingForFirstLevelSequenceStop = false;
+			PlayerInterface->HandleInitialLogic();
+		}
 	}
 }
