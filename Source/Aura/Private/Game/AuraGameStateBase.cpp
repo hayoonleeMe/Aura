@@ -73,16 +73,7 @@ void AAuraGameStateBase::BeginPlay()
 
 	check(StartStageBeaconClass);
 
-	// Add Delegate
-	if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(GetWorld() ? GetWorld()->GetFirstPlayerController<APlayerController>() : nullptr))
 	{
-		if (FOnLevelSequenceStopSignature* OnLevelSequenceStopDelegate = PlayerInterface->GetOnLevelSequenceStopDelegate())
-		{
-			if (!OnLevelSequenceStopDelegate->IsBoundToObject(this))
-			{
-				OnLevelSequenceStopDelegate->AddUObject(this, &ThisClass::OnLevelSequenceStop);
-			}
-		}
 	}
 }
 
@@ -111,6 +102,14 @@ void AAuraGameStateBase::PlaySpawnBeaconLevelSequence()
 	// Play
 	if (IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(PlayerController))
 	{
+		// Add Delegate
+		if (FOnLevelSequenceStopSignature* OnLevelSequenceStopDelegate = PlayerInterface->GetOnLevelSequenceStopDelegate())
+		{
+			if (!OnLevelSequenceStopDelegate->IsBoundToObject(this))
+			{
+				OnLevelSequenceStopDelegate->AddUObject(this, &ThisClass::OnLevelSequenceStop);
+			}
+		}
 		FVector NewLocation = StartStageBeacon->GetActorLocation();
 		NewLocation.Z = 0.f;
 		PlayerInterface->SetLevelSequenceActorLocation(TEXT("SpawnBeacon"), NewLocation);
