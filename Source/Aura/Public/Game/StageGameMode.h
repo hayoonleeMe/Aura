@@ -35,6 +35,7 @@ public:
 	virtual void OnStageBeaconInteracted() override;
 	virtual void RequestPlayerRespawn(APlayerController* PlayerController) override;
 	virtual void RequestSpawnEnemy(const TSubclassOf<AAuraEnemy>& EnemyClass, FTransform SpawnTransform, bool bOverrideLocationZ) override;
+	virtual void OnPlayerASCInitialized(APlayerController* PC) override;
 	/* End IStageSystemInterface */
 
 	void WaitStageStart();
@@ -229,4 +230,9 @@ private:
 
 	// PollInit()을 통한 적절한 시점에서 호출되어 초기화 수행
 	void InitData();
+
+	// Ability System Component가 초기화된 플레이어를 저장하는 Set
+	// 플레이어의 ASC가 초기화되면 ServerRPC를 통해 추가된다.
+	UPROPERTY()
+	TSet<APlayerController*> ASCInitializedPlayers;
 };

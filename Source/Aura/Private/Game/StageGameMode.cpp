@@ -309,13 +309,11 @@ void AStageGameMode::InitData()
 
 void AStageGameMode::PollInit()
 {
-	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	if (ASCInitializedPlayers.Num() != GetWorld()->GetNumPlayerControllers())
 	{
-		if (!It->IsValid() || !IsValid(It->Get()->AcknowledgedPawn))
-		{
-			return;
-		}
+		return;
 	}
+	
 	GetWorldTimerManager().ClearTimer(PollingTimerHandle);
 
 	InitData();
@@ -410,6 +408,11 @@ void AStageGameMode::RequestSpawnEnemy(const TSubclassOf<AAuraEnemy>& EnemyClass
 
 		BroadcastTotalEnemyCountChangeToAllLocalPlayers();
 	}
+}
+
+void AStageGameMode::OnPlayerASCInitialized(APlayerController* PC)
+{
+	ASCInitializedPlayers.Add(PC);
 }
 
 void AStageGameMode::OnEnemyDead()

@@ -324,11 +324,20 @@ void AAuraCharacter::InitAbilityActorInfo()
 		}
 
 		// Overlay Widget 초기화
-		if (const APlayerController* PC = GetController<APlayerController>())
+		if (APlayerController* PC = GetController<APlayerController>())
 		{
 			if (AAuraHUD* AuraHUD = PC->GetHUD<AAuraHUD>())
 			{
 				AuraHUD->InitOverlay();
+			}
+
+			if (PC->IsLocalController())
+			{
+				if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(PC))
+				{
+					// Stage를 시작하기 위해 ASC 초기화를 ServerRPC로 전송
+					AuraPC->ServerNotifyASCInitToGameMode();
+				}
 			}
 		}
 	}

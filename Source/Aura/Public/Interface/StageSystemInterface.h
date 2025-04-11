@@ -26,4 +26,5 @@ public:
 	virtual void OnStageBeaconInteracted() {}
 	virtual void RequestPlayerRespawn(APlayerController* PlayerController) {}
 	virtual void RequestSpawnEnemy(const TSubclassOf<AAuraEnemy>& EnemyClass, FTransform SpawnTransform, bool bOverrideLocationZ) {}
+	virtual void OnPlayerASCInitialized(APlayerController* PC) {}
 };

@@ -13,9 +13,11 @@
 #include "Framework/Application/NavigationConfig.h"
 #include "Input/AuraInputComponent.h"
 #include "Interface/InteractionInterface.h"
+#include "Interface/StageSystemInterface.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "UI/HUD/AuraHUD.h"
 #include "UI/Widget/DamageIndicatorComponent.h"
+#include "GameFramework/GameModeBase.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
@@ -238,6 +240,14 @@ void AAuraPlayerController::DisableAbilityInput()
 		++AbilityInputBlockCount;
 		Subsystem->RemoveMappingContext(AbilityContext);
 	}	
+}
+
+void AAuraPlayerController::ServerNotifyASCInitToGameMode_Implementation()
+{
+	if (IStageSystemInterface* StageSystemInterface = Cast<IStageSystemInterface>(GetWorld() ? GetWorld()->GetAuthGameMode() : nullptr))
+	{
+		StageSystemInterface->OnPlayerASCInitialized(this);
+	}
 }
 
 void AAuraPlayerController::CursorTrace()
