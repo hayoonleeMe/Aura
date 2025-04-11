@@ -90,6 +90,10 @@ public:
 	// Stage
 	// ============================================================================
 
+	// AStageGameMode에 플레이어의 ASC가 초기화됐음을 알린다.
+	UFUNCTION(Server, Reliable)
+	void ServerNotifyASCInitToGameMode();
+
 	UFUNCTION(Client, Reliable)
 	void ClientOnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount);
 
