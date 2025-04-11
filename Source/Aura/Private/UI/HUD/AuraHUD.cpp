@@ -44,7 +44,7 @@ void AAuraHUD::ShowGameOverlay(bool bShow) const
 {
 	if (GameOverlay)
 	{
-		GameOverlay->SetRenderOpacity(bShow ? 1.f : 0.f);
+		GameOverlay->SetVisibility(bShow ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 	}
 }
 
