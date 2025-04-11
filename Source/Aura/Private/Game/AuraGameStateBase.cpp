@@ -8,6 +8,7 @@
 #include "Game/AuraGameInstance.h"
 #include "Interface/PlayerInterface.h"
 #include "Net/UnrealNetwork.h"
+#include "Player/AuraLocalPlayer.h"
 #include "UI/HUD/AuraHUD.h"
 
 AAuraGameStateBase::AAuraGameStateBase()
@@ -128,6 +129,10 @@ void AAuraGameStateBase::PlaySpawnBeaconLevelSequence()
 		if (UAuraGameInstance* AuraGameInstance = GetGameInstance<UAuraGameInstance>())
 		{
 			AuraGameInstance->ShowBlackScreenOverlay(false);
+		}
+		if (UAuraLocalPlayer* AuraLocalPlayer = GetWorld() ? GetWorld()->GetFirstLocalPlayerFromController<UAuraLocalPlayer>() : nullptr)
+		{
+			AuraLocalPlayer->SetSceneViewColorBlack(false);
 		}
 	}
 }
