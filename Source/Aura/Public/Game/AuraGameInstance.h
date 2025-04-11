@@ -27,6 +27,9 @@ public:
 	// LoadingOverlay Widget을 생성하거나 제거
 	// 위젯이 레벨이 변경되도 제거되지 않도록 구현
 	void DisplayLoadingOverlay(bool bDisplay);
+
+	// 전체 화면을 까맣게 가리는 위젯을 표시한다.
+	void ShowBlackScreenOverlay(bool bShow);
 	
 private:
 	// 유저가 세션 초대를 수락했을 때 호출할 콜백 함수
@@ -41,12 +44,23 @@ private:
 	// AuraOnJoinSessionCompleteDelegate 핸들
 	FDelegateHandle OnJoinSessionCompleteDelegateHandle;
 
+	// ============================================================================
+	// Overlay
+	// ============================================================================
+
 	// 로딩 중임을 나타내는 LoadingOverlay Widget
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> LoadingOverlayClass;
 
 	UPROPERTY()
 	TObjectPtr<UUserWidget> LoadingOverlay;
+
+	// 전체 화면을 까맣게 가리는 Overlay Widget 
+	UPROPERTY()
+	TObjectPtr<UUserWidget> BlackScreenOverlay;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> BlackScreenOverlayClass;
 
 	// ============================================================================
 	// Sound
