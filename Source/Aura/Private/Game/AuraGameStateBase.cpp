@@ -80,6 +80,12 @@ void AAuraGameStateBase::BeginPlay()
 	{
 		AuraGameInstance->ShowBlackScreenOverlay(true);
 	}
+
+	// 입력 비활성화
+	if (APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr)
+	{
+		PC->DisableInput(PC);
+	}
 }
 
 void AAuraGameStateBase::OnRep_StartStageBeacon()
@@ -133,6 +139,12 @@ void AAuraGameStateBase::PlaySpawnBeaconLevelSequence()
 		if (UAuraLocalPlayer* AuraLocalPlayer = GetWorld() ? GetWorld()->GetFirstLocalPlayerFromController<UAuraLocalPlayer>() : nullptr)
 		{
 			AuraLocalPlayer->SetSceneViewColorBlack(false);
+		}
+
+		// 입력 활성화
+		if (APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr)
+		{
+			PC->EnableInput(PC);
 		}
 	}
 }
