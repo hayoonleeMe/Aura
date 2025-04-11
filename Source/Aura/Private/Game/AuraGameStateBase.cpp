@@ -5,6 +5,7 @@
 
 #include "AuraBlueprintLibrary.h"
 #include "Actor/Beacon_StartStage.h"
+#include "Game/AuraGameInstance.h"
 #include "Interface/PlayerInterface.h"
 #include "Net/UnrealNetwork.h"
 #include "UI/HUD/AuraHUD.h"
@@ -73,7 +74,10 @@ void AAuraGameStateBase::BeginPlay()
 
 	check(StartStageBeaconClass);
 
+	// 게임이 시작하고 모든 플레이어가 연결되는 딜레이를 가리기 위해 BlackScreenOverlay 표시
+	if (UAuraGameInstance* AuraGameInstance = GetGameInstance<UAuraGameInstance>())
 	{
+		AuraGameInstance->ShowBlackScreenOverlay(true);
 	}
 }
 
@@ -115,6 +119,16 @@ void AAuraGameStateBase::PlaySpawnBeaconLevelSequence()
 		PlayerInterface->SetLevelSequenceActorLocation(TEXT("SpawnBeacon"), NewLocation);
 		PlayerInterface->PlayLevelSequence(TEXT("SpawnBeacon"));
 		PlayerInterface->EnableCinematicInput();
+	}
+
+	// 처음 게임에 진입하면 BlackScreenOverlay가 표시되어 있으므로 Level Sequence를 재생하기 전에 숨김
+	// 까맣게 변경한 화면을 원래대로 되돌린다.
+	if (bWaitingForFirstLevelSequenceStop)	
+	{
+		if (UAuraGameInstance* AuraGameInstance = GetGameInstance<UAuraGameInstance>())
+		{
+			AuraGameInstance->ShowBlackScreenOverlay(false);
+		}
 	}
 }
 
