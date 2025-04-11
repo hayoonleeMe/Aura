@@ -140,3 +140,26 @@ void UAuraGameInstance::DisplayLoadingOverlay(bool bDisplay)
 		}
 	}
 }
+
+void UAuraGameInstance::ShowBlackScreenOverlay(bool bShow)
+{
+	if (bShow)
+	{
+		if (!BlackScreenOverlay && BlackScreenOverlayClass)
+		{
+			BlackScreenOverlay = CreateWidget(this, BlackScreenOverlayClass, TEXT("BlackScreenOverlay"));
+		}
+		if (BlackScreenOverlay)
+		{
+			BlackScreenOverlay->AddToViewport(100);
+		}
+	}
+	else
+	{
+		if (BlackScreenOverlay)
+		{
+			BlackScreenOverlay->RemoveFromParent();
+			BlackScreenOverlay = nullptr;
+		}
+	}
+}
