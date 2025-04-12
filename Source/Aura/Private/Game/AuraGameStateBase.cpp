@@ -69,6 +69,11 @@ void AAuraGameStateBase::DestroyStartStageBeacon() const
 	}
 }
 
+bool AAuraGameStateBase::IsStartStageBeaconValid() const
+{
+	return IsValid(StartStageBeacon);
+}
+
 void AAuraGameStateBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -170,6 +175,7 @@ void AAuraGameStateBase::OnLevelSequenceStop(const FName& LevelSequenceTag)
 	if (IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(PlayerController))
 	{
 		PlayerInterface->DisableCinematicInput();
+		PlayerInterface->FlushPendingStageWaitingBroadcast();
 
 		// 처음 한번만 Initial Logic 처리
 		if (bWaitingForFirstLevelSequenceStop)

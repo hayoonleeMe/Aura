@@ -26,6 +26,8 @@ public:
 	int32 GetTotalLifeCount() const { return TotalLifeCount; }
 	float GetRespawnTime() const { return RespawnTime; }
 
+	bool IsStartStageBeaconValid() const;
+
 protected:
 	virtual void BeginPlay() override;
 
