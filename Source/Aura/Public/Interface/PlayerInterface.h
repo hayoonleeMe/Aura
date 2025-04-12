@@ -125,4 +125,7 @@ public:
 
 	// 게임 초기에 수행하는 로직 처리
 	virtual void HandleInitialLogic() const {}
+
+	// 실행되지 못한 AAuraPlayerController::PendingStageWaitingBroadcastParams를 처리한다.
+	virtual void FlushPendingStageWaitingBroadcast() {}
 };

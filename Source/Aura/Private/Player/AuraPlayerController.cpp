@@ -11,6 +11,7 @@
 #include "Character/AuraEnemy.h"
 #include "Component/LevelSequenceManageComponent.h"
 #include "Framework/Application/NavigationConfig.h"
+#include "Game/AuraGameStateBase.h"
 #include "Input/AuraInputComponent.h"
 #include "Interface/InteractionInterface.h"
 #include "Interface/StageSystemInterface.h"
@@ -313,10 +314,42 @@ void AAuraPlayerController::ClientIndicateDamage_Implementation(float Damage, bo
 
 void AAuraPlayerController::ClientOnStageStatusChanged_Implementation(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount)
 {
-	if (OnStageStatusChangedDelegate.IsBound())
+	if (StageStatus == EStageStatus::Waiting)
 	{
-		OnStageStatusChangedDelegate.Execute(StageStatus, StageNumber, WaitingTimerEndSeconds, TotalEnemyCount);
+		if (const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr)
+		{
+			if (AuraGameStateBase->IsStartStageBeaconValid())
+			{
+				if (OnStageStatusChangedDelegate.IsBound())
+				{
+					OnStageStatusChangedDelegate.Execute(StageStatus, StageNumber, WaitingTimerEndSeconds, TotalEnemyCount);
+				}	
+			}
+			else
+			{
+				PendingStageWaitingBroadcastParams.Add({ StageNumber, WaitingTimerEndSeconds, TotalEnemyCount });
+			}
+		}
 	}
+	else
+	{
+		if (OnStageStatusChangedDelegate.IsBound())
+		{
+			OnStageStatusChangedDelegate.Execute(StageStatus, StageNumber, WaitingTimerEndSeconds, TotalEnemyCount);
+		}
+	}
+}
+
+void AAuraPlayerController::FlushPendingStageWaitingBroadcast()
+{
+	for (const StageWaitingBroadcastParam& Param : PendingStageWaitingBroadcastParams)
+	{
+		if (OnStageStatusChangedDelegate.IsBound())
+		{
+			OnStageStatusChangedDelegate.Execute(EStageStatus::Waiting, Param.StageNumber, Param.WaitingTimerEndSeconds, Param.TotalEnemyCount);
+		}	
+	}
+	PendingStageWaitingBroadcastParams.Empty();
 }
 
 void AAuraPlayerController::ClientOnTotalEnemyCountChanged_Implementation(int32 TotalEnemyCount)

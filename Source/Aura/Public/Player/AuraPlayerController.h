@@ -66,6 +66,7 @@ public:
 	virtual void StopLevelSequence(const FName& LevelSequenceTag) override;
 	virtual void SetLevelSequenceActorLocation(const FName& LevelSequenceTag, const FVector& NewLocation) override;
 	virtual void HandleInitialLogic() const override;
+	virtual void FlushPendingStageWaitingBroadcast() override;
 	/* End PlayerInterface */
 
 	// PreStageHUD Widget을 표시한다.
@@ -271,4 +272,20 @@ private:
 
 	// PauseMenu Level Sequence Actor를 PlayerController의 Pawn에 부착한다.
 	void AttachPauseMenuLevelSequenceActorToPawn() const;
+
+	// ============================================================================
+	// Stage
+	// ============================================================================
+
+	struct StageWaitingBroadcastParam
+	{
+		int32 StageNumber;
+		double WaitingTimerEndSeconds;
+		int32 TotalEnemyCount;
+	};
+
+	// StartStageBeacon이 생성되고 SpawnBeacon Level Sequence가 종료된 후, Waiting Stage Status에 대한 OnStageStatusChangedDelegate를 호출한다.
+	// 클라이언트에서 StartStageBeacon이 아직 Replicate되지 않은 경우에는 Broadcast를 처리할 수 없으므로, 필요한 파라미터를 임시로 저장해 둔다.
+	// StartStageBeacon의 생성과 Level Sequence 완료 후, 저장된 파라미터들을 Flush하여 Broadcast를 수행한다.
+	TArray<StageWaitingBroadcastParam> PendingStageWaitingBroadcastParams;
 };
