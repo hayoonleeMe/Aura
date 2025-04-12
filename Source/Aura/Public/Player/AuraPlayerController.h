@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
 #include "GameFramework/PlayerController.h"
 #include "Interface/PlayerInterface.h"
 #include "Types/GameMenuType.h"
@@ -58,6 +57,7 @@ public:
 	virtual void DisableUIInput() override;
 	virtual void EnableCinematicInput() override;
 	virtual void DisableCinematicInput() override;
+	virtual FKey GetInteractKeyMappedToAction() const override;
 	virtual UAuraInputConfig* GetAuraInputConfig() const override { return AuraInputConfig; }
 	virtual USpellConfig* GetSpellConfig() const override { return SpellConfig; }
 	virtual UAttributeConfig* GetAttributeConfig() const override { return AttributeConfig; }
@@ -157,8 +157,8 @@ private:
 	// Input
 	// ============================================================================
 
-	void AbilityInputPressed(FGameplayTag InputTag, int32 InputID);
-	void AbilityInputReleased(FGameplayTag InputTag, int32 InputID);
+	void AbilityInputPressed(int32 InputID);
+	void AbilityInputReleased(int32 InputID);
 
 	// Input Event와 Ability 연동
 	void BindAbilityInput();

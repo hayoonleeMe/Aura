@@ -38,4 +38,5 @@ public:
 
 	int32 GetInputIDForInputTag(const FGameplayTag& InputTag);
 	FGameplayTag GetInputTagForInputID(int32 InputID);
+	const UInputAction* GetInputActionForInputTag(const FGameplayTag& InputTag) const;
 };

@@ -8,7 +8,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Aura/Aura.h"
-#include "Character/AuraEnemy.h"
 #include "Component/LevelSequenceManageComponent.h"
 #include "Framework/Application/NavigationConfig.h"
 #include "Game/AuraGameStateBase.h"
@@ -134,6 +133,19 @@ void AAuraPlayerController::DisableCinematicInput()
 	}
 	RestoreInputMappingContextState();
 	EnableCursorTrace(true);
+}
+
+FKey AAuraPlayerController::GetInteractKeyMappedToAction() const
+{
+	if (const UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		const TArray<FKey> InteractKeys(Subsystem->QueryKeysMappedToAction(AuraInputConfig->GetInputActionForInputTag(AuraGameplayTags::InputTag_Interact)));
+		if (InteractKeys.Num())
+		{
+			return InteractKeys[0];
+		}
+	}
+	return FKey();
 }
 
 FOnLevelSequenceStopSignature* AAuraPlayerController::GetOnLevelSequenceStopDelegate() const
@@ -518,32 +530,15 @@ void AAuraPlayerController::OnCloseCinematicActionStarted()
 	}
 }
 
-void AAuraPlayerController::AbilityInputPressed(FGameplayTag InputTag, int32 InputID)
+void AAuraPlayerController::AbilityInputPressed(int32 InputID)
 {
-	if (InputTag == AuraGameplayTags::InputTag_LMB)
-	{
-		// TargetActor가 Enemy가 아니면 InputTag_LMB Abort
-		if (TargetFromCurrentFrame.IsValid() && !TargetFromCurrentFrame->IsA<AAuraEnemy>())
-		{
-			return;
-		}
-	}
-	else if (InputTag == AuraGameplayTags::InputTag_Interact)
-	{
-		// TargetActor가 없거나 Enemy면 InputTag_Interact Abort
-		if (!TargetFromCurrentFrame.IsValid() || TargetFromCurrentFrame->IsA<AAuraEnemy>())
-		{
-			return;
-		}
-	}
-	
 	if (GetAuraAbilitySystemComponent())
 	{
 		AuraAbilitySystemComponent->AbilityInputPressed(InputID);
 	}
 }
 
-void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag, int32 InputID)
+void AAuraPlayerController::AbilityInputReleased(int32 InputID)
 {
 	if (GetAuraAbilitySystemComponent())
 	{
