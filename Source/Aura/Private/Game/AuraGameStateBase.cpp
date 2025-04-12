@@ -100,8 +100,6 @@ void AAuraGameStateBase::PlaySpawnBeaconLevelSequence()
 		return;
 	}
 	
-	StartStageBeacon->SetMeshComponentHiddenInGame(true);
-	
 	APlayerController* PlayerController = GetWorld() ? GetWorld()->GetFirstPlayerController<APlayerController>() : nullptr;
 	
 	// Hide HUD

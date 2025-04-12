@@ -89,6 +89,9 @@ void ABeacon_StartStage::BeginPlay()
 
 	DynamicMaterialInstance = UMaterialInstanceDynamic::Create(MeshComponent->GetMaterial(0), this);
 	MeshComponent->SetMaterial(0, DynamicMaterialInstance);
+
+	// SpawnBeacon Level Sequence가 끝나고 다시 표시
+	SetMeshComponentHiddenInGame(true);
 }
 
 void ABeacon_StartStage::ServerInteract_Implementation()
