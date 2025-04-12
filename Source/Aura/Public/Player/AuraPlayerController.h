@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
 #include "GameFramework/PlayerController.h"
 #include "Interface/PlayerInterface.h"
 #include "Types/GameMenuType.h"
@@ -157,8 +156,8 @@ private:
 	// Input
 	// ============================================================================
 
-	void AbilityInputPressed(FGameplayTag InputTag, int32 InputID);
-	void AbilityInputReleased(FGameplayTag InputTag, int32 InputID);
+	void AbilityInputPressed(int32 InputID);
+	void AbilityInputReleased(int32 InputID);
 
 	// Input Event와 Ability 연동
 	void BindAbilityInput();
