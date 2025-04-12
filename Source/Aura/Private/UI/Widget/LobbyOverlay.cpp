@@ -45,7 +45,7 @@ void ULobbyOverlay::NativeConstruct()
 	}
 
 	Button_Start->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnStartButtonClicked);
-	Button_Exit->InternalButton->OnClicked.AddDynamic(this, &ThisClass::CloseMenu);
+	Button_Exit->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnExitButtonClicked);
 	if (GetOwningPlayer() && !GetOwningPlayer()->HasAuthority())
 	{
 		// Start 버튼은 서버에서만 표시
@@ -64,23 +64,32 @@ void ULobbyOverlay::NativeDestruct()
 	{
 		GetWorld()->GetTimerManager().ClearTimer(RefreshFriendsListTimerHandle);
 	}
+
+	// 로비에서 게임 시작 시 MainMenuMusic 중단
+	if (!bExit)
+	{
+		if (UAuraGameInstance* AuraGameInstance = GetGameInstance<UAuraGameInstance>())
+		{
+			AuraGameInstance->StopMainMenuMusic();
+		}
+	}
 	
 	Super::NativeDestruct();
 }
 
 void ULobbyOverlay::OnStartButtonClicked()
 {
-	// 로비에서 게임 시작 시 MainMenuMusic 중단
-	if (UAuraGameInstance* AuraGameInstance = GetGameInstance<UAuraGameInstance>())
-	{
-		AuraGameInstance->StopMainMenuMusic();
-	}
-	
 	const APlayerController* PlayerController = GetOwningPlayer();
 	if (PlayerController && PlayerController->HasAuthority() && GetWorld())
 	{
 		GetWorld()->ServerTravel(TEXT("/Game/Maps/StartupMap?listen"));
 	}
+}
+
+void ULobbyOverlay::OnExitButtonClicked()
+{
+	bExit = true;
+	CloseMenu();
 }
 
 void ULobbyOverlay::OnDestroySessionComplete(bool bWasSuccessful) const
