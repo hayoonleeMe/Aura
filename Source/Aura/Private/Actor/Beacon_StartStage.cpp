@@ -10,6 +10,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "GameFramework/GameModeBase.h"
+#include "Interface/PlayerInterface.h"
+#include "UI/Widget/ToolTip_Beacon_StartStage.h"
 
 ABeacon_StartStage::ABeacon_StartStage()
 {
@@ -89,6 +91,15 @@ void ABeacon_StartStage::BeginPlay()
 
 	DynamicMaterialInstance = UMaterialInstanceDynamic::Create(MeshComponent->GetMaterial(0), this);
 	MeshComponent->SetMaterial(0, DynamicMaterialInstance);
+
+	// ToolTip Text 설정
+	if (const UToolTip_Beacon_StartStage* ToolTipWidget = Cast<UToolTip_Beacon_StartStage>(TooltipWidgetComponent->GetWidget()))
+	{
+		if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr))
+		{
+			ToolTipWidget->SetKeyText(PlayerInterface->GetInteractKeyMappedToAction().ToString());
+		}
+	}
 
 	// SpawnBeacon Level Sequence가 끝나고 다시 표시
 	SetMeshComponentHiddenInGame(true);
