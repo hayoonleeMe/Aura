@@ -57,6 +57,7 @@ public:
 	virtual void DisableUIInput() override;
 	virtual void EnableCinematicInput() override;
 	virtual void DisableCinematicInput() override;
+	virtual FKey GetInteractKeyMappedToAction() const override;
 	virtual UAuraInputConfig* GetAuraInputConfig() const override { return AuraInputConfig; }
 	virtual USpellConfig* GetSpellConfig() const override { return SpellConfig; }
 	virtual UAttributeConfig* GetAttributeConfig() const override { return AttributeConfig; }

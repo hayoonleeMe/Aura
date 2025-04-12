@@ -135,6 +135,19 @@ void AAuraPlayerController::DisableCinematicInput()
 	EnableCursorTrace(true);
 }
 
+FKey AAuraPlayerController::GetInteractKeyMappedToAction() const
+{
+	if (const UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		const TArray<FKey> InteractKeys(Subsystem->QueryKeysMappedToAction(AuraInputConfig->GetInputActionForInputTag(AuraGameplayTags::InputTag_Interact)));
+		if (InteractKeys.Num())
+		{
+			return InteractKeys[0];
+		}
+	}
+	return FKey();
+}
+
 FOnLevelSequenceStopSignature* AAuraPlayerController::GetOnLevelSequenceStopDelegate() const
 {
 	if (LevelSequenceManageComponent)

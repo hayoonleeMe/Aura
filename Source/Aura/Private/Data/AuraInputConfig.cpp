@@ -32,3 +32,18 @@ FGameplayTag UAuraInputConfig::GetInputTagForInputID(int32 InputID)
 	}
 	return FGameplayTag::EmptyTag;
 }
+
+const UInputAction* UAuraInputConfig::GetInputActionForInputTag(const FGameplayTag& InputTag) const
+{
+	if (InputTag.IsValid())
+	{
+		for (const FAbilityInputMapping& Mapping : AbilityInputActions)
+		{
+			if (Mapping.InputTag.MatchesTagExact(InputTag))
+			{
+				return Mapping.InputAction;
+			}
+		}
+	}
+	return nullptr;
+}

@@ -102,6 +102,9 @@ public:
 	// Cinematic Context를 비활성화하고 기존 Input Mapping Context를 활성화한다.
 	virtual void DisableCinematicInput() {}
 
+	// Interact Input Action에 등록된 Key를 찾아 반환한다.
+	virtual FKey GetInteractKeyMappedToAction() const { return FKey(); }
+
 	// ============================================================================
 	// Data
 	// ============================================================================
