@@ -202,6 +202,12 @@ void UGraphicsOptionMenu::UpdateQualityOptionsComboBox() const
 
 void UGraphicsOptionMenu::OnWindowModeOptionChanged(FName SelectedItem, ESelectInfo::Type SelectionType)
 {
+	// UOptionComboBoxRow::SetComboBoxOptions()에서 수행하는 ComboBox->ClearOptions()에 의해 SelectedOption이 None이 되는 경우는 무시
+	if (SelectedItem.IsNone())
+	{
+		return;
+	}
+	
 	const EWindowMode::Type NewWindowMode = MakeWindowModeEnum(SelectedItem);
 	bWindowModeChanged = OriginalGraphicsOptions.WindowMode != NewWindowMode;
 	AuraGameUserSettings->SetFullscreenMode(NewWindowMode);
@@ -213,6 +219,12 @@ void UGraphicsOptionMenu::OnWindowModeOptionChanged(FName SelectedItem, ESelectI
 
 void UGraphicsOptionMenu::OnResolutionOptionChanged(FName SelectedItem, ESelectInfo::Type SelectionType)
 {
+	// UOptionComboBoxRow::SetComboBoxOptions()에서 수행하는 ComboBox->ClearOptions()에 의해 SelectedOption이 None이 되는 경우는 무시
+	if (SelectedItem.IsNone())
+	{
+		return;
+	}
+	
 	const FIntPoint NewResolution = MakeResolutionIntPoint(SelectedItem);
 	bResolutionChanged = OriginalGraphicsOptions.Resolution != NewResolution;
 	AuraGameUserSettings->SetScreenResolution(NewResolution);
