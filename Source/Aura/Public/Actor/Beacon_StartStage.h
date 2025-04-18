@@ -28,6 +28,7 @@ public:
 	virtual void UnHighlightActor() override;
 	virtual void Interact() override;
 	virtual float GetOverrideArriveAcceptanceRadius() const override { return 80.f; }
+	virtual bool CanTryInteract() const override { return true; }
 	/* End InteractionInterface */
 
 	UFUNCTION(BlueprintImplementableEvent)

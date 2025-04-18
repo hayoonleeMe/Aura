@@ -19,6 +19,31 @@ UAuraAbility_TryInteract::UAuraAbility_TryInteract()
 	InitialArriveAcceptanceRadius = ArriveAcceptanceRadius;
 }
 
+bool UAuraAbility_TryInteract::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
+{
+	if (!Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags))
+	{
+		return false;
+	}
+	const APawn* AvatarPawn = Cast<APawn>(GetAvatarActorFromActorInfo());
+	if (!AvatarPawn)
+	{
+		return false;
+	}
+	const AAuraPlayerController* AuraPC = AvatarPawn->GetController<AAuraPlayerController>();
+	if (!AuraPC)
+	{
+		return false;
+	}
+	const IInteractionInterface* InteractionInterface = Cast<IInteractionInterface>(AuraPC->GetTargetActorFromCursor());
+	if (!InteractionInterface || !InteractionInterface->CanTryInteract())
+	{
+		return false;
+	}
+	return true;
+}
+
 void UAuraAbility_TryInteract::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                                const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -33,7 +58,7 @@ void UAuraAbility_TryInteract::ActivateAbility(const FGameplayAbilitySpecHandle 
 	}
 	const IInteractionInterface* InteractionInterface = Cast<IInteractionInterface>(TargetActor);
 
-	if (!IsValid(TargetActor) || !InteractionInterface)
+	if (!IsValid(TargetActor) || !InteractionInterface || !InteractionInterface->CanTryInteract())
 	{
 		K2_EndAbility();
 		return;

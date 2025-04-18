@@ -38,6 +38,7 @@ public:
 	/* Begin InteractionInterface */
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
+	virtual bool CanTryInteract() const override { return false; }
 	/* End InteractionInterface */
 
 	// Enemy가 스폰될 때 레벨 값
