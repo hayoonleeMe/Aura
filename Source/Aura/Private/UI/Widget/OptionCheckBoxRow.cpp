@@ -5,9 +5,8 @@
 
 #include "Components/CheckBox.h"
 
-void UOptionCheckBoxRow::NativeConstruct()
+void UOptionCheckBoxRow::SetIsChecked(bool bChecked) const
 {
-	Super::NativeConstruct();
-
-	CheckBox->SetCheckedState(bChecked ? ECheckBoxState::Checked : ECheckBoxState::Unchecked);
+	CheckBox->SetIsChecked(bChecked);
+	CheckBox->OnCheckStateChanged.Broadcast(bChecked);
 }

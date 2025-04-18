@@ -56,7 +56,7 @@ void UGraphicsOptionMenu::NativeConstruct()
 	Row_WindowMode->SetComboBoxOptions(GetWindowModeOptions(), MakeWindowModeOption(AuraGameUserSettings->GetFullscreenMode()));
 	Row_Resolution->SetComboBoxOptions(GetResolutionOptions(), MakeResolutionOption(AuraGameUserSettings->GetScreenResolution()));
 	Row_Brightness->InitializeSliderValue(AuraGameUserSettings->GetBrightnessValue());
-	Row_VerticalSync->bChecked = AuraGameUserSettings->IsVSyncEnabled();
+	Row_VerticalSync->SetIsChecked(AuraGameUserSettings->IsVSyncEnabled());
 	Row_FPSLimit->SetComboBoxOptions(GetFPSLimitOptions(), FPSLimitOptions[int32(AuraGameUserSettings->GetFrameRateLimit())]);
 	
 	Row_Preset->SetComboBoxOptions(GetPresetOptions(), PresetOptions[AuraGameUserSettings->GetOverallScalabilityLevelIgnoringResolutionQuality()]);
@@ -141,7 +141,7 @@ void UGraphicsOptionMenu::RevertChanges()
 	if (bVerticalSyncChanged)
 	{
 		AuraGameUserSettings->SetVSyncEnabled(OriginalGraphicsOptions.bVerticalSync);
-		Row_VerticalSync->CheckBox->SetIsChecked(OriginalGraphicsOptions.bVerticalSync);
+		Row_VerticalSync->SetIsChecked(OriginalGraphicsOptions.bVerticalSync);
 		bVerticalSyncChanged = false;
 	}
 	if (bFPSLimitChanged)
