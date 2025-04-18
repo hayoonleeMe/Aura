@@ -26,7 +26,7 @@
 AStageGameMode::AStageGameMode()
 {
 	/* Waiting Timer */
-	WaitingTime = 10.f;
+	WaitingTime = 30.f;
 	WaitingTimerDelegate = FTimerDelegate::CreateUObject(this, &ThisClass::OnWaitingTimeFinished);
 	
 	/* End Stage Delay Timer */
