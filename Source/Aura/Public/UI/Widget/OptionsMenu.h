@@ -22,6 +22,8 @@ class AURA_API UOptionsMenu : public UClosableWidget
 	GENERATED_BODY()
 
 public:
+	UOptionsMenu(const FObjectInitializer& ObjectInitializer);
+	
 	/* Begin IClosableWidgetInterface */
 	virtual void CloseMenu() override;
 	/* End IClosableWidgetInterface */
