@@ -26,6 +26,8 @@ public:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UComboBoxKey> ComboBox;
 
+	bool IsComboBoxOpen() const;
+
 	/** Called when the widget is needed for the content. */
 	UFUNCTION()
 	UWidget* GetContentWidget(FName Item);

@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "GraphicsOptionMenu.generated.h"
 
+class UScrollBox;
 class UAuraGameUserSettings;
 class UOptionCheckBoxRow;
 class UOptionButtonRow;
@@ -51,6 +52,7 @@ class AURA_API UGraphicsOptionMenu : public UUserWidget
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 public:
 	// 변경사항이 적용되고 수행
@@ -63,6 +65,9 @@ public:
 	bool HasOptionChanged() const;
 
 	FOnOptionChangedSignature OnOptionChangedDelegate;
+
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UScrollBox> ScrollBox;
 
 	// Graphic Quality Options의 ComboBox Selected Option 업데이트
 	void UpdateQualityOptionsComboBox() const;

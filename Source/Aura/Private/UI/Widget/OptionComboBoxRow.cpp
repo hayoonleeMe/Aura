@@ -15,6 +15,11 @@ void UOptionComboBoxRow::NativeConstruct()
 	ComboBox->OnSelectionChanged.AddDynamic(this, &ThisClass::OnSelectionChanged);
 }
 
+bool UOptionComboBoxRow::IsComboBoxOpen() const
+{
+	return ComboBox && ComboBox->IsOpen();
+}
+
 UWidget* UOptionComboBoxRow::GetContentWidget(FName Item)
 {
 	if (Item.IsNone())

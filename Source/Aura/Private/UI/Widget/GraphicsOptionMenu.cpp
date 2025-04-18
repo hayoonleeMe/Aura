@@ -6,6 +6,7 @@
 #include "Components/Button.h"
 #include "Components/CheckBox.h"
 #include "Components/ComboBoxKey.h"
+#include "Components/ScrollBox.h"
 #include "Components/Slider.h"
 #include "GameUserSettings/AuraGameUserSettings.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -83,6 +84,20 @@ void UGraphicsOptionMenu::NativeDestruct()
 
 	// 적용되지 않은 옵션을 원래대로 되돌림
 	RevertChanges();
+}
+
+void UGraphicsOptionMenu::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	const bool bOpen = Row_WindowMode->IsComboBoxOpen() || Row_Resolution->IsComboBoxOpen() || Row_FPSLimit->IsComboBoxOpen() || Row_Preset->IsComboBoxOpen() || Row_ViewDistance->IsComboBoxOpen() || Row_AntiAliasing->IsComboBoxOpen() || Row_PostProcessing->IsComboBoxOpen() || Row_Shadows->IsComboBoxOpen() || Row_GlobalIllumination->IsComboBoxOpen() || Row_Reflections->IsComboBoxOpen() || Row_Textures->IsComboBoxOpen() || Row_Effects->IsComboBoxOpen() || Row_Shading->IsComboBoxOpen();
+	
+	const EConsumeMouseWheel NewEnum = bOpen ? EConsumeMouseWheel::Never : EConsumeMouseWheel::WhenScrollingPossible;
+	
+	if (ScrollBox->GetConsumeMouseWheel() != NewEnum)
+	{
+		ScrollBox->SetConsumeMouseWheel(NewEnum);
+	}
 }
 
 void UGraphicsOptionMenu::OnOptionSaved()
