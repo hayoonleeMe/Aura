@@ -189,6 +189,9 @@ private:
 	uint8 bEffectChanged:1;
 	uint8 bShadingChanged:1;
 
+	// Alt + Enter로 Fullscreen 모드를 변경할 때 호출됨
+	// WindowMode, Resolution Option을 업데이트
+	void OnToggleFullscreen(bool bFullscreen);
 
 	static TArray<FName> GetWindowModeOptions();
 

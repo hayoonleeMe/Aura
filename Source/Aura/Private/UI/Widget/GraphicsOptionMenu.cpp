@@ -45,6 +45,12 @@ void UGraphicsOptionMenu::NativeConstruct()
 	AuraGameUserSettings = CastChecked<UAuraGameUserSettings>(GEngine ? GEngine->GetGameUserSettings() : nullptr);
 	OriginalGraphicsOptions = FOriginalGraphicsOptions(AuraGameUserSettings);
 
+	// Alt + Enter로 Fullscreen 모드를 변경할 때 콜백 함수 등록
+	if (GEngine && GEngine->GameViewport)
+	{
+		GEngine->GameViewport->OnToggleFullscreen().AddUObject(this, &ThisClass::OnToggleFullscreen);
+	}
+
 	// Update ComboBox Option
 	Row_WindowMode->SetComboBoxOptions(GetWindowModeOptions(), MakeWindowModeOption(AuraGameUserSettings->GetFullscreenMode()));
 	Row_Resolution->SetComboBoxOptions(GetResolutionOptions(), MakeResolutionOption(AuraGameUserSettings->GetScreenResolution()));
@@ -388,6 +394,18 @@ void UGraphicsOptionMenu::OnShadingOptionChanged(FName SelectedItem, ESelectInfo
 	AuraGameUserSettings->SetShadingQuality(NewShading);
 	OnOptionChangedDelegate.Broadcast();
 	UpdatePresetOption();
+}
+
+void UGraphicsOptionMenu::OnToggleFullscreen(bool bFullscreen)
+{
+	// Update Resolution Options
+	Row_WindowMode->SetComboBoxOptions(GetWindowModeOptions(), MakeWindowModeOption(AuraGameUserSettings->GetFullscreenMode()));
+	
+	// 이 콜백 함수가 호출되면 이미 UGameUserSettings의 Resolution Setting이 적용된 후 이므로 변경 여부 초기화 
+	bWindowModeChanged = bResolutionChanged = false;
+	OriginalGraphicsOptions.WindowMode = AuraGameUserSettings->GetFullscreenMode();
+	OriginalGraphicsOptions.Resolution = AuraGameUserSettings->GetScreenResolution();
+	OnOptionChangedDelegate.Broadcast();
 }
 
 TArray<FName> UGraphicsOptionMenu::GetWindowModeOptions()
