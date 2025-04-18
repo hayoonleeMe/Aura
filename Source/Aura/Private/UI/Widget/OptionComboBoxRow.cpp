@@ -90,6 +90,11 @@ void UOptionComboBoxRow::SetComboBoxOptions(const TArray<FName>& Options, const 
 	ComboBox->SetSelectedOption(ValidSelectedOption);
 }
 
+void UOptionComboBoxRow::SetSelectedOption(const FName& SelectedOption) const
+{
+	ComboBox->SetSelectedOption(SelectedOption); 
+}
+
 void UOptionComboBoxRow::OnSelectionChanged(FName SelectedItem, ESelectInfo::Type SelectionType)
 {
 	// ComboBox->ClearOptions()가 호출되면서 SelectedOption이 None으로 설정되어 이 콜백 함수가 호출되는 경우 무시

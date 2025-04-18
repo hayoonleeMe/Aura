@@ -58,7 +58,17 @@ void UGraphicsOptionMenu::NativeConstruct()
 	Row_Brightness->InitializeSliderValue(AuraGameUserSettings->GetBrightnessValue());
 	Row_VerticalSync->bChecked = AuraGameUserSettings->IsVSyncEnabled();
 	Row_FPSLimit->SetComboBoxOptions(GetFPSLimitOptions(), FPSLimitOptions[int32(AuraGameUserSettings->GetFrameRateLimit())]);
-	UpdateQualityOptionsComboBox();
+	
+	Row_Preset->SetComboBoxOptions(GetPresetOptions(), PresetOptions[AuraGameUserSettings->GetOverallScalabilityLevelIgnoringResolutionQuality()]);
+	Row_ViewDistance->SetComboBoxOptions(GetViewDistanceQualityOptions(), ViewDistanceQualityOptions[AuraGameUserSettings->GetViewDistanceQuality()]);
+	Row_AntiAliasing->SetComboBoxOptions(GetOffToEpicQualityOptions(), OffToEpicQualityOptions[AuraGameUserSettings->GetAntiAliasingQuality()]);
+	Row_PostProcessing->SetComboBoxOptions(GetLowToEpicQualityOptions(), LowToEpicQualityOptions[AuraGameUserSettings->GetPostProcessingQuality()]);
+	Row_Shadows->SetComboBoxOptions(GetOffToEpicQualityOptions(), OffToEpicQualityOptions[AuraGameUserSettings->GetShadowQuality()]);
+	Row_GlobalIllumination->SetComboBoxOptions(GetLowToEpicQualityOptions(), LowToEpicQualityOptions[AuraGameUserSettings->GetGlobalIlluminationQuality()]);
+	Row_Reflections->SetComboBoxOptions(GetLowToEpicQualityOptions(), LowToEpicQualityOptions[AuraGameUserSettings->GetReflectionQuality()]);
+	Row_Textures->SetComboBoxOptions(GetLowToEpicQualityOptions(), LowToEpicQualityOptions[AuraGameUserSettings->GetTextureQuality()]);
+	Row_Effects->SetComboBoxOptions(GetLowToEpicQualityOptions(), LowToEpicQualityOptions[AuraGameUserSettings->GetVisualEffectQuality()]);
+	Row_Shading->SetComboBoxOptions(GetLowToEpicQualityOptions(), LowToEpicQualityOptions[AuraGameUserSettings->GetShadingQuality()]);
 
 	Row_WindowMode->ComboBox->OnSelectionChanged.AddDynamic(this, &ThisClass::OnWindowModeOptionChanged);
 	Row_Resolution->ComboBox->OnSelectionChanged.AddDynamic(this, &ThisClass::OnResolutionOptionChanged);
@@ -207,20 +217,6 @@ bool UGraphicsOptionMenu::HasOptionChanged() const
 	return bWindowModeChanged || bResolutionChanged || bBrightnessChanged || bVerticalSyncChanged || bFPSLimitChanged || bPresetChanged || bViewDistanceChanged || bAntiAliasingChanged || bPostProcessingChanged || bShadowChanged || bGlobalIlluminationChanged || bReflectionChanged || bTextureChanged || bEffectChanged || bShadingChanged;
 }
 
-void UGraphicsOptionMenu::UpdateQualityOptionsComboBox() const
-{
-	Row_Preset->SetComboBoxOptions(GetPresetOptions(), PresetOptions[AuraGameUserSettings->GetOverallScalabilityLevelIgnoringResolutionQuality()]);
-	Row_ViewDistance->SetComboBoxOptions(GetViewDistanceQualityOptions(), ViewDistanceQualityOptions[AuraGameUserSettings->GetViewDistanceQuality()]);
-	Row_AntiAliasing->SetComboBoxOptions(GetOffToEpicQualityOptions(), OffToEpicQualityOptions[AuraGameUserSettings->GetAntiAliasingQuality()]);
-	Row_PostProcessing->SetComboBoxOptions(GetLowToEpicQualityOptions(), LowToEpicQualityOptions[AuraGameUserSettings->GetPostProcessingQuality()]);
-	Row_Shadows->SetComboBoxOptions(GetOffToEpicQualityOptions(), OffToEpicQualityOptions[AuraGameUserSettings->GetShadowQuality()]);
-	Row_GlobalIllumination->SetComboBoxOptions(GetLowToEpicQualityOptions(), LowToEpicQualityOptions[AuraGameUserSettings->GetGlobalIlluminationQuality()]);
-	Row_Reflections->SetComboBoxOptions(GetLowToEpicQualityOptions(), LowToEpicQualityOptions[AuraGameUserSettings->GetReflectionQuality()]);
-	Row_Textures->SetComboBoxOptions(GetLowToEpicQualityOptions(), LowToEpicQualityOptions[AuraGameUserSettings->GetTextureQuality()]);
-	Row_Effects->SetComboBoxOptions(GetLowToEpicQualityOptions(), LowToEpicQualityOptions[AuraGameUserSettings->GetVisualEffectQuality()]);
-	Row_Shading->SetComboBoxOptions(GetLowToEpicQualityOptions(), LowToEpicQualityOptions[AuraGameUserSettings->GetShadingQuality()]);
-}
-
 void UGraphicsOptionMenu::OnWindowModeOptionChanged(FName SelectedItem, ESelectInfo::Type SelectionType)
 {
 	// UOptionComboBoxRow::SetComboBoxOptions()에서 수행하는 ComboBox->ClearOptions()에 의해 SelectedOption이 None이 되는 경우는 무시
@@ -283,7 +279,16 @@ void UGraphicsOptionMenu::OnAutoDetectButtonClicked()
 	// ResolutionQuality는 항상 100으로 고정
 	AuraGameUserSettings->SetResolutionScaleValueEx(100.f);
 
-	UpdateQualityOptionsComboBox();
+	Row_Preset->SetSelectedOption(PresetOptions[AuraGameUserSettings->GetOverallScalabilityLevelIgnoringResolutionQuality()]);
+	Row_ViewDistance->SetSelectedOption(ViewDistanceQualityOptions[AuraGameUserSettings->GetViewDistanceQuality()]);
+	Row_AntiAliasing->SetSelectedOption(OffToEpicQualityOptions[AuraGameUserSettings->GetAntiAliasingQuality()]);
+	Row_PostProcessing->SetSelectedOption(LowToEpicQualityOptions[AuraGameUserSettings->GetPostProcessingQuality()]);
+	Row_Shadows->SetSelectedOption(OffToEpicQualityOptions[AuraGameUserSettings->GetShadowQuality()]);
+	Row_GlobalIllumination->SetSelectedOption(LowToEpicQualityOptions[AuraGameUserSettings->GetGlobalIlluminationQuality()]);
+	Row_Reflections->SetSelectedOption(LowToEpicQualityOptions[AuraGameUserSettings->GetReflectionQuality()]);
+	Row_Textures->SetSelectedOption(LowToEpicQualityOptions[AuraGameUserSettings->GetTextureQuality()]);
+	Row_Effects->SetSelectedOption(LowToEpicQualityOptions[AuraGameUserSettings->GetVisualEffectQuality()]);
+	Row_Shading->SetSelectedOption(LowToEpicQualityOptions[AuraGameUserSettings->GetShadingQuality()]);
 	
 	bPresetChanged = OriginalGraphicsOptions.Preset != AuraGameUserSettings->GetOverallScalabilityLevelIgnoringResolutionQuality();
 	bViewDistanceChanged = OriginalGraphicsOptions.ViewDistance != AuraGameUserSettings->GetViewDistanceQuality();
@@ -413,8 +418,8 @@ void UGraphicsOptionMenu::OnShadingOptionChanged(FName SelectedItem, ESelectInfo
 
 void UGraphicsOptionMenu::OnToggleFullscreen(bool bFullscreen)
 {
-	// Update Resolution Options
-	Row_WindowMode->SetComboBoxOptions(GetWindowModeOptions(), MakeWindowModeOption(AuraGameUserSettings->GetFullscreenMode()));
+	// 이후 OnWindowModeOptionChanged()에서 Resolution 옵션 업데이트
+	Row_WindowMode->SetSelectedOption(MakeWindowModeOption(AuraGameUserSettings->GetFullscreenMode()));
 	
 	// 이 콜백 함수가 호출되면 이미 UGameUserSettings의 Resolution Setting이 적용된 후 이므로 변경 여부 초기화 
 	bWindowModeChanged = bResolutionChanged = false;

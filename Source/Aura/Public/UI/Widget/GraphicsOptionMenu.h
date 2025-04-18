@@ -68,9 +68,6 @@ public:
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UScrollBox> ScrollBox;
-
-	// Graphic Quality Options의 ComboBox Selected Option 업데이트
-	void UpdateQualityOptionsComboBox() const;
 	
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UOptionComboBoxRow> Row_WindowMode;

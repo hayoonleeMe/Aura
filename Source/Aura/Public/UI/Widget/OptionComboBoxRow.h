@@ -48,6 +48,7 @@ public:
 	UTextBlock* MakeItemTextBlock(const FName& Option);
 
 	void SetComboBoxOptions(const TArray<FName>& Options, const FName& SelectedOption);
+	void SetSelectedOption(const FName& SelectedOption) const;
 
 	UFUNCTION()
 	void OnSelectionChanged(FName SelectedItem, ESelectInfo::Type SelectionType);
