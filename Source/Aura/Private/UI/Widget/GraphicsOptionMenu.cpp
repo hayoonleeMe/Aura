@@ -8,6 +8,7 @@
 #include "Components/ComboBoxKey.h"
 #include "Components/Slider.h"
 #include "GameUserSettings/AuraGameUserSettings.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "UI/Widget/OptionButtonRow.h"
 #include "UI/Widget/OptionCheckBoxRow.h"
 #include "UI/Widget/OptionComboBoxRow.h"
@@ -45,8 +46,8 @@ void UGraphicsOptionMenu::NativeConstruct()
 	OriginalGraphicsOptions = FOriginalGraphicsOptions(AuraGameUserSettings);
 
 	// Update ComboBox Option
-	Row_WindowMode->SetComboBoxOptions(GetWindowModeOptions(), WindowModeOptions[AuraGameUserSettings->GetFullscreenMode()]);
-	Row_Resolution->SetComboBoxOptions(GetResolutionOptions(), ResolutionOptions[AuraGameUserSettings->GetScreenResolution()]);
+	Row_WindowMode->SetComboBoxOptions(GetWindowModeOptions(), MakeWindowModeOption(AuraGameUserSettings->GetFullscreenMode()));
+	Row_Resolution->SetComboBoxOptions(GetResolutionOptions(), MakeResolutionOption(AuraGameUserSettings->GetScreenResolution()));
 	Row_Brightness->InitializeSliderValue(AuraGameUserSettings->GetBrightnessValue());
 	Row_VerticalSync->bChecked = AuraGameUserSettings->IsVSyncEnabled();
 	Row_FPSLimit->SetComboBoxOptions(GetFPSLimitOptions(), FPSLimitOptions[int32(AuraGameUserSettings->GetFrameRateLimit())]);
@@ -91,13 +92,13 @@ void UGraphicsOptionMenu::RevertChanges()
 	if(bWindowModeChanged)
 	{
 		AuraGameUserSettings->SetFullscreenMode(OriginalGraphicsOptions.WindowMode);
-		Row_WindowMode->ComboBox->SetSelectedOption(WindowModeOptions[OriginalGraphicsOptions.WindowMode]);
+		Row_WindowMode->ComboBox->SetSelectedOption(MakeWindowModeOption(OriginalGraphicsOptions.WindowMode));
 		bWindowModeChanged = false;
 	}
 	if (bResolutionChanged)
 	{
 		AuraGameUserSettings->SetScreenResolution(OriginalGraphicsOptions.Resolution);
-		Row_Resolution->ComboBox->SetSelectedOption(ResolutionOptions[OriginalGraphicsOptions.Resolution]);
+		Row_Resolution->ComboBox->SetSelectedOption(MakeResolutionOption(OriginalGraphicsOptions.Resolution));
 		bResolutionChanged = false;
 	}
 	if (bBrightnessChanged)
@@ -201,15 +202,18 @@ void UGraphicsOptionMenu::UpdateQualityOptionsComboBox() const
 
 void UGraphicsOptionMenu::OnWindowModeOptionChanged(FName SelectedItem, ESelectInfo::Type SelectionType)
 {
-	const EWindowMode::Type NewWindowMode = WindowModeOptions_Reversed[SelectedItem];
+	const EWindowMode::Type NewWindowMode = MakeWindowModeEnum(SelectedItem);
 	bWindowModeChanged = OriginalGraphicsOptions.WindowMode != NewWindowMode;
 	AuraGameUserSettings->SetFullscreenMode(NewWindowMode);
 	OnOptionChangedDelegate.Broadcast();
+
+	// Update Resolution Option
+	Row_Resolution->SetComboBoxOptions(GetResolutionOptions(), MakeResolutionOption(AuraGameUserSettings->GetScreenResolution()));
 }
 
 void UGraphicsOptionMenu::OnResolutionOptionChanged(FName SelectedItem, ESelectInfo::Type SelectionType)
 {
-	const FIntPoint NewResolution = ResolutionOptions_Reversed[SelectedItem];
+	const FIntPoint NewResolution = MakeResolutionIntPoint(SelectedItem);
 	bResolutionChanged = OriginalGraphicsOptions.Resolution != NewResolution;
 	AuraGameUserSettings->SetScreenResolution(NewResolution);
 	OnOptionChangedDelegate.Broadcast();
@@ -374,24 +378,88 @@ void UGraphicsOptionMenu::OnShadingOptionChanged(FName SelectedItem, ESelectInfo
 	UpdatePresetOption();
 }
 
-TArray<FName> UGraphicsOptionMenu::GetWindowModeOptions() const
+TArray<FName> UGraphicsOptionMenu::GetWindowModeOptions()
 {
 	TArray<FName> Options;
-	for (const auto& Pair : WindowModeOptions)
+	for (int32 Index = 0; Index < EWindowMode::NumWindowModes; ++Index)
 	{
-		Options.Add(Pair.Value);
+		Options.Add(LexToString(EWindowMode::ConvertIntToWindowMode(Index)));
 	}
 	return Options;
 }
 
+FName UGraphicsOptionMenu::MakeWindowModeOption(EWindowMode::Type WindowMode)
+{
+	return FName(LexToString(WindowMode));
+}
+
+EWindowMode::Type UGraphicsOptionMenu::MakeWindowModeEnum(const FName& WindowMode)
+{
+	for (int32 Index = 0; Index < EWindowMode::NumWindowModes; ++Index)
+	{
+		if (WindowMode == MakeWindowModeOption(EWindowMode::ConvertIntToWindowMode(Index)))
+		{
+			return EWindowMode::ConvertIntToWindowMode(Index);
+		}
+	}
+	return EWindowMode::NumWindowModes;
+}
+
+FName UGraphicsOptionMenu::MakeResolutionOption(const FIntPoint& Res)
+{
+	return FName(FString::Printf(TEXT("%d x %d"), Res.X, Res.Y));
+}
+
+FIntPoint UGraphicsOptionMenu::MakeResolutionIntPoint(const FName& Res)
+{
+	// "123 x 123" 꼴의 FName을 FIntPoint(123, 123) 형태로 변환
+	
+	FString Str = Res.ToString();
+	Str.RemoveSpacesInline();
+	
+	FString Left;
+	FString Right;
+	Str.Split(TEXT("x"), &Left, &Right);
+
+	FIntPoint RetIntPoint;
+	RetIntPoint.X = FCString::Atoi(*Left);
+	RetIntPoint.Y = FCString::Atoi(*Right);
+
+	return RetIntPoint;
+}
+
 TArray<FName> UGraphicsOptionMenu::GetResolutionOptions() const
 {
-	TArray<FName> Options;
-	for (const auto& Pair : ResolutionOptions)
+	TArray<FName> RetOptions;
+
+	if (AuraGameUserSettings->GetFullscreenMode() == EWindowMode::WindowedFullscreen)
 	{
-		Options.Add(Pair.Value);
+		RetOptions.Add(MakeResolutionOption(AuraGameUserSettings->GetDesktopResolution()));
 	}
-	return Options;
+	else if (AuraGameUserSettings->GetFullscreenMode() == EWindowMode::Fullscreen)
+	{
+		TArray<FIntPoint> SupportedFullscreenResolutions;
+		if (UKismetSystemLibrary::GetSupportedFullscreenResolutions(SupportedFullscreenResolutions))
+		{
+			for (const FIntPoint& Res : SupportedFullscreenResolutions)
+			{
+				RetOptions.Add(MakeResolutionOption(Res));
+			}
+		}
+	}
+	else // Windowed
+	{
+		TArray<FIntPoint> ConvenientFullscreenResolutions;
+		if (UKismetSystemLibrary::GetConvenientWindowedResolutions(ConvenientFullscreenResolutions))
+		{
+			for (const FIntPoint& Res : ConvenientFullscreenResolutions)
+			{
+				RetOptions.Add(MakeResolutionOption(Res));
+			}
+		}	
+	}
+
+	return RetOptions;
 }
 
 TArray<FName> UGraphicsOptionMenu::GetFPSLimitOptions() const
