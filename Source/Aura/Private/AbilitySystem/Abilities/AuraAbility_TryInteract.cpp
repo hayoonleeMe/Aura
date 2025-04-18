@@ -33,7 +33,7 @@ void UAuraAbility_TryInteract::ActivateAbility(const FGameplayAbilitySpecHandle 
 	}
 	const IInteractionInterface* InteractionInterface = Cast<IInteractionInterface>(TargetActor);
 
-	if (!IsValid(TargetActor) || !InteractionInterface)
+	if (!IsValid(TargetActor) || !InteractionInterface || !InteractionInterface->CanTryInteract())
 	{
 		K2_EndAbility();
 		return;

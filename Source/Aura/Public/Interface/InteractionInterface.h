@@ -32,4 +32,6 @@ public:
 
 	// 상호작용 할 액터까지 이동할 때 목적지 도착 인정 범위를 Override 하기 위해 구현해야 함
 	virtual float GetOverrideArriveAcceptanceRadius() const { return 0.f; }
+
+	virtual bool CanTryInteract() const = 0;
 };
