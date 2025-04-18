@@ -25,7 +25,6 @@
 UGameOverlay::UGameOverlay(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	SetIsFocusable(true);
 	MenuShortcutAlertDisplayTime = 7.f;
 }
 

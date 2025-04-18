@@ -16,12 +16,9 @@ class AURA_API UOptionCheckBoxRow : public UUserWidget
 {
 	GENERATED_BODY()
 
-protected:
-	virtual void NativeConstruct() override;
-
 public:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UCheckBox> CheckBox;
 
-	bool bChecked = false;
+	void SetIsChecked(bool bChecked) const;
 };

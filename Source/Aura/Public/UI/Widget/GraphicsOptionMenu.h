@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "GraphicsOptionMenu.generated.h"
 
+class UScrollBox;
 class UAuraGameUserSettings;
 class UOptionCheckBoxRow;
 class UOptionButtonRow;
@@ -51,6 +52,7 @@ class AURA_API UGraphicsOptionMenu : public UUserWidget
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 public:
 	// 변경사항이 적용되고 수행
@@ -64,8 +66,8 @@ public:
 
 	FOnOptionChangedSignature OnOptionChangedDelegate;
 
-	// Graphic Quality Options의 ComboBox Selected Option 업데이트
-	void UpdateQualityOptionsComboBox() const;
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UScrollBox> ScrollBox;
 	
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UOptionComboBoxRow> Row_WindowMode;
@@ -189,37 +191,25 @@ private:
 	uint8 bEffectChanged:1;
 	uint8 bShadingChanged:1;
 
-	const TMap<EWindowMode::Type, FName> WindowModeOptions
-	{
-		{ EWindowMode::Fullscreen, TEXT("Full Screen") },
-		{ EWindowMode::WindowedFullscreen, TEXT("Windowed Full Screen") },
-		{ EWindowMode::Windowed, TEXT("Windowed") }
-	};
- 
-	const TMap<FName, EWindowMode::Type> WindowModeOptions_Reversed
-	{
-		{ TEXT("Full Screen"), EWindowMode::Fullscreen },
-		{ TEXT("Windowed Full Screen"), EWindowMode::WindowedFullscreen },
-		{ TEXT("Windowed"), EWindowMode::Windowed }
-	};
+	// Alt + Enter로 Fullscreen 모드를 변경할 때 호출됨
+	// WindowMode, Resolution Option을 업데이트
+	void OnToggleFullscreen(bool bFullscreen);
 
-	TArray<FName> GetWindowModeOptions() const;
-				
-	const TMap<FIntPoint, FName> ResolutionOptions
-	{
-		{ FIntPoint{ 1280, 720 }, TEXT("1280 x 720") },
-		{ FIntPoint{ 1600, 900 }, TEXT("1600 x 900") },
-		{ FIntPoint{ 1920, 1080 }, TEXT("1920 x 1080") }
-	};
- 
-	const TMap<FName, FIntPoint> ResolutionOptions_Reversed
-	{
-		{ TEXT("1280 x 720"), FIntPoint{ 1280, 720 } },
-		{ TEXT("1600 x 900"), FIntPoint{ 1600, 900 } },
-		{ TEXT("1920 x 1080"), FIntPoint{ 1920, 1080 } }
-	};
+	static TArray<FName> GetWindowModeOptions();
 
+	// EWindowMode WindowMode를 나타내는 FName Option을 반환한다.
+	static FName MakeWindowModeOption(EWindowMode::Type WindowMode);
+
+	// FName WindowMode에 해당하는 EWindowMode enum을 반환한다.
+	static EWindowMode::Type MakeWindowModeEnum(const FName& WindowMode);
+	
 	TArray<FName> GetResolutionOptions() const;
+
+	// FIntPoint Res를 나타내는 FName Option을 반환한다.
+	static FName MakeResolutionOption(const FIntPoint& Res);
+
+	// FName Res에 해당하는 FIntPoint를 반환한다.
+	static FIntPoint MakeResolutionIntPoint(const FName& Res);
  
 	const TMap<int32, FName> FPSLimitOptions
     {

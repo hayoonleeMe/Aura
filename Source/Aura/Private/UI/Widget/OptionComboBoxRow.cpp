@@ -3,9 +3,7 @@
 
 #include "UI/Widget/OptionComboBoxRow.h"
 
-#include "Components/Border.h"
 #include "Components/ComboBoxKey.h"
-#include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
 
 void UOptionComboBoxRow::NativeConstruct()
@@ -17,14 +15,29 @@ void UOptionComboBoxRow::NativeConstruct()
 	ComboBox->OnSelectionChanged.AddDynamic(this, &ThisClass::OnSelectionChanged);
 }
 
+bool UOptionComboBoxRow::IsComboBoxOpen() const
+{
+	return ComboBox && ComboBox->IsOpen();
+}
+
 UWidget* UOptionComboBoxRow::GetContentWidget(FName Item)
 {
+	if (Item.IsNone())
+	{
+		return nullptr;
+	}
+	
 	ContentWidgetTextBlock->SetText(FText::FromName(Item));
 	return ContentWidgetTextBlock;
 }
 
 UWidget* UOptionComboBoxRow::GetItemWidget(FName Item)
 {
+	if (Item.IsNone() || !ItemWidgets.Contains(Item))
+	{
+		return nullptr;
+	}
+	
 	return ItemWidgets[Item];
 }
 
@@ -43,37 +56,65 @@ UTextBlock* UOptionComboBoxRow::MakeItemTextBlock(const FName& Option)
 
 void UOptionComboBoxRow::SetComboBoxOptions(const TArray<FName>& Options, const FName& SelectedOption)
 {
-	ItemWidgets.Empty();
+	// SelectedOption이 None으로 설정되어 OnSelectionChanged 이벤트가 발생함
+	ComboBox->ClearOptions();
 	
 	for (const FName& Option : Options)
 	{
 		ComboBox->AddOption(Option);
+		
 		// Caching Item Widget
-		ItemWidgets.Add(Option, MakeItemTextBlock(Option));
+		if (!ItemWidgets.Contains(Option))
+		{
+			ItemWidgets.Add(Option, MakeItemTextBlock(Option));
+		}
 	}
 
 	// Caching Content Widget
-	ContentWidgetTextBlock = MakeItemTextBlock(SelectedOption);
-	if (ContentWidgetTextBlock)
+	if (!ContentWidgetTextBlock)
 	{
-		ContentWidgetTextBlock->SetClipping(EWidgetClipping::ClipToBoundsAlways);
+		ContentWidgetTextBlock = MakeItemTextBlock(FName());
+		if (ContentWidgetTextBlock)
+		{
+			ContentWidgetTextBlock->SetClipping(EWidgetClipping::ClipToBoundsAlways);
+		}
 	}
-	
-	ComboBox->SetSelectedOption(SelectedOption);
+
+	// SelectedOption이 Options에 존재하지 않으면 마지막 옵션을 선택
+	FName ValidSelectedOption = SelectedOption;
+	if (!Options.Contains(SelectedOption))
+	{
+		ValidSelectedOption = Options.Last();
+	}
+
+	ComboBox->SetSelectedOption(ValidSelectedOption);
+}
+
+void UOptionComboBoxRow::SetSelectedOption(const FName& SelectedOption) const
+{
+	ComboBox->SetSelectedOption(SelectedOption); 
 }
 
 void UOptionComboBoxRow::OnSelectionChanged(FName SelectedItem, ESelectInfo::Type SelectionType)
 {
-	// SelectedItem 강조를 위한 Text 색상 변경
-	for (const auto& Pair : ItemWidgets)
+	// ComboBox->ClearOptions()가 호출되면서 SelectedOption이 None으로 설정되어 이 콜백 함수가 호출되는 경우 무시
+	if (SelectedItem.IsNone())
 	{
-		if (Pair.Key == SelectedItem)
+		return;
+	}
+
+	if (PrevSelectedOption != SelectedItem)
+	{
+		if (ItemWidgets.Contains(PrevSelectedOption) && ItemWidgets[PrevSelectedOption])
 		{
-			Pair.Value->SetColorAndOpacity(ComboBox->GetItemStyle().SelectedTextColor);
+			// 이전에 선택된 옵션 Item의 Text Color를 기본으로 업데이트
+			ItemWidgets[PrevSelectedOption]->SetColorAndOpacity(ComboBox->GetItemStyle().TextColor);
 		}
-		else
+		if (ItemWidgets.Contains(SelectedItem) && ItemWidgets[SelectedItem])
 		{
-			Pair.Value->SetColorAndOpacity(ComboBox->GetItemStyle().TextColor);
+			// 새로 선택된 옵션 Item의 Text Color를 선택됨을 나타내는 전용 색상으로 업데이트
+			ItemWidgets[SelectedItem]->SetColorAndOpacity(ComboBox->GetItemStyle().SelectedTextColor);
 		}
+		PrevSelectedOption = SelectedItem;
 	}
 }

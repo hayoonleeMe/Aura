@@ -11,6 +11,12 @@
 #include "UI/Widget/GraphicsOptionMenu.h"
 #include "UI/Widget/SoundOptionMenu.h"
 
+UOptionsMenu::UOptionsMenu(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	SetIsFocusable(true);
+}
+
 void UOptionsMenu::CloseMenu()
 {
 	Super::CloseMenu();
@@ -21,6 +27,8 @@ void UOptionsMenu::CloseMenu()
 void UOptionsMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	SetUserFocus(GetOwningPlayer());
 
 	AuraGameUserSettings = CastChecked<UAuraGameUserSettings>(GEngine ? GEngine->GetGameUserSettings() : nullptr);
 

@@ -26,12 +26,16 @@ public:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UComboBoxKey> ComboBox;
 
+	bool IsComboBoxOpen() const;
+
+	/** Called when the widget is needed for the content. */
 	UFUNCTION()
 	UWidget* GetContentWidget(FName Item);
 
 	UPROPERTY()
 	TObjectPtr<UTextBlock> ContentWidgetTextBlock;
 	
+	/** Called when the widget is needed for the item. */
 	UFUNCTION()
 	UWidget* GetItemWidget(FName Item);
 
@@ -44,7 +48,11 @@ public:
 	UTextBlock* MakeItemTextBlock(const FName& Option);
 
 	void SetComboBoxOptions(const TArray<FName>& Options, const FName& SelectedOption);
+	void SetSelectedOption(const FName& SelectedOption) const;
 
 	UFUNCTION()
 	void OnSelectionChanged(FName SelectedItem, ESelectInfo::Type SelectionType);
+
+	// ComboBox에서 이전에 선택했던 옵션
+	FName PrevSelectedOption;
 };
