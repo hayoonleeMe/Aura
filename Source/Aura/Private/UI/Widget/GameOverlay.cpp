@@ -252,13 +252,13 @@ void UGameOverlay::OpenPauseMenu()
 	PauseMenu->AddToViewport(1);
 
 	// GameOverlay 숨김
-	SetRenderOpacity(0.f);
+	SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UGameOverlay::OnPauseMenuClosed()
 {
 	PauseMenu = nullptr;
-	SetRenderOpacity(1.f);
+	SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 }
 
 void UGameOverlay::OpenTutorialMenu()
