@@ -33,7 +33,7 @@ void UAuraGameUserSettings::InitializeGameUserSettings(const UWorld* World)
 	{
 		// 게임 첫 실행이면 초기 설정 저장하고 Graphic Quality 옵션 자동 설정
 		bFirstRun = false;
-		ApplyCustomSettings(false, GetWorld());
+		ApplyCustomSettings(false, World);
 		SetGraphicOptionByAutoDetect();
 	}
 	else
