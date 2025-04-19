@@ -13,13 +13,18 @@ void UAuraGameUserSettings::SetToDefaults()
 	Super::SetToDefaults();
 
 	bFirstRun = true;
-	BrightnessValue = 5.f;
-	MasterVolumeValue = 10.f;
+	BrightnessValue = static_cast<int32>(MaxUIBrightness * 0.5f);
+	MasterVolumeValue = static_cast<int32>(MaxUIVolume);
 }
 
 float UAuraGameUserSettings::GetClampedBrightnessValue() const
 {
-	return UKismetMathLibrary::MapRangeClamped(BrightnessValue, 0.f, 10.f, -2.f, 2.f);
+	return UKismetMathLibrary::MapRangeClamped(BrightnessValue, 0.f, MaxUIBrightness, MinAppliedBrightness, MaxAppliedBrightness);
+}
+
+float UAuraGameUserSettings::GetClampedVolumeValue() const
+{
+	return UKismetMathLibrary::MapRangeClamped(MasterVolumeValue, 0.f, MaxUIVolume, 0.f, MaxAppliedVolume);
 }
 
 void UAuraGameUserSettings::InitializeGameUserSettings(const UWorld* World)
@@ -48,7 +53,7 @@ void UAuraGameUserSettings::ApplyCustomSettings(bool bCheckForCommandLineOverrid
 		// Sound
 		if (const UAuraGameInstance* AuraGameInstance = World->GetGameInstance<UAuraGameInstance>())
 		{
-			AuraGameInstance->SetMasterSoundVolume(MasterVolumeValue / 10.f);
+			AuraGameInstance->SetMasterSoundVolume(GetClampedVolumeValue());
 		}
 
 		// Screen Brightness

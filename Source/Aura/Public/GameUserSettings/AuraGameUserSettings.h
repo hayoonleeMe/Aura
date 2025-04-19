@@ -25,6 +25,7 @@ public:
 
 	void SetMasterVolumeValue(int32 InValue) { MasterVolumeValue = InValue; }
 	int32 GetMasterVolumeValue() const { return MasterVolumeValue; }
+	float GetClampedVolumeValue() const;
 
 	// 게임이 실행될 때 GameUserSettings를 초기화하고 적용
 	void InitializeGameUserSettings(const UWorld* World);
@@ -49,12 +50,28 @@ private:
 	uint8 bFirstRun : 1;
 	
 	// 화면 밝기 옵션
-	// 0 ~ 10 => -2 ~ 2
+	// 0 ~ MaxUIBrightness => MinAppliedBrightness ~ MaxAppliedBrightness
 	UPROPERTY(config)
 	int32 BrightnessValue;
 
-	// 전체 음량 옵션
-	// 0 ~ 10 => 0 ~ 1
+	// 전체 사운드 볼륨 옵션
+	// 0 ~ MaxUIVolume => 0 ~ MaxAppliedVolume
 	UPROPERTY(config)
 	int32 MasterVolumeValue;
+
+public:
+	// UI에서 설정할 수 있는 최대 화면 밝기
+	static constexpr float MaxUIBrightness = 10.f;
+
+	// 실제 적용되는 최소 화면 밝기
+	static constexpr float MinAppliedBrightness = -2.f;
+	
+	// 실제 적용되는 최대 화면 밝기
+	static constexpr float MaxAppliedBrightness = 2.f;
+	
+	// UI에서 설정할 수 있는 최대 사운드 볼륨
+	static constexpr float MaxUIVolume = 10.f;
+
+	// 실제 적용되는 최대 사운드 볼륨
+	static constexpr float MaxAppliedVolume = 4.f;
 };

@@ -45,7 +45,7 @@ void UAuraGameInstance::SetMasterSoundVolume(float Volume) const
 {
 	if (MasterSoundClass)
 	{
-		MasterSoundClass->Properties.Volume = FMath::Clamp(Volume, 0.f, 1.f);
+		MasterSoundClass->Properties.Volume = Volume;
 	}
 }
 
