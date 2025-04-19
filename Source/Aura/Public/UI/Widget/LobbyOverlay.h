@@ -45,11 +45,8 @@ public:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<USquareButton> Button_Exit;
 
-	UFUNCTION()
-	void OnExitButtonClicked();
-
 	// Destroy Session 작업이 완료됐을 때의 콜백 함수
-	void OnDestroySessionComplete(bool bWasSuccessful) const;
+	void OnDestroySessionComplete(bool bWasSuccessful);
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Text_HostPlayerName;
@@ -88,6 +85,6 @@ public:
 	void EnableInviteButton(bool bInCanInvite);
 
 private:
-	// Exit Button으로 MainMenu로 나갈 때 true
+	// MainMenu로 나갈 때 true
 	bool bExit = false;
 };

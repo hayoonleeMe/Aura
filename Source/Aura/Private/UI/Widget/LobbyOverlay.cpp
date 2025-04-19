@@ -45,7 +45,7 @@ void ULobbyOverlay::NativeConstruct()
 	}
 
 	Button_Start->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnStartButtonClicked);
-	Button_Exit->InternalButton->OnClicked.AddDynamic(this, &ThisClass::OnExitButtonClicked);
+	Button_Exit->InternalButton->OnClicked.AddDynamic(this, &ThisClass::CloseMenu);
 	if (GetOwningPlayer() && !GetOwningPlayer()->HasAuthority())
 	{
 		// Start 버튼은 서버에서만 표시
@@ -86,16 +86,11 @@ void ULobbyOverlay::OnStartButtonClicked()
 	}
 }
 
-void ULobbyOverlay::OnExitButtonClicked()
-{
-	bExit = true;
-	CloseMenu();
-}
-
-void ULobbyOverlay::OnDestroySessionComplete(bool bWasSuccessful) const
+void ULobbyOverlay::OnDestroySessionComplete(bool bWasSuccessful)
 {
 	if (bWasSuccessful)
 	{
+		bExit = true;
 		if (UGameInstance* GameInstance = GetGameInstance())
 		{
 			GameInstance->ReturnToMainMenu();
