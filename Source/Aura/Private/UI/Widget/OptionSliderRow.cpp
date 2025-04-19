@@ -13,7 +13,15 @@ void UOptionSliderRow::NativeConstruct()
 	Slider->OnValueChanged.AddDynamic(this, &ThisClass::OnSliderValueChanged);
 }
 
-void UOptionSliderRow::InitializeSliderValue(int32 Value) const
+void UOptionSliderRow::InitializeSlider(float MinValue, float MaxValue, float StepSize, int32 Value) const
+{
+	Slider->SetMinValue(MinValue);
+	Slider->SetMaxValue(MaxValue);
+	Slider->SetStepSize(StepSize);
+	SetSliderValue(Value);
+}
+
+void UOptionSliderRow::SetSliderValue(int32 Value) const
 {
 	Slider->SetValue(Value);
 	Text_Value->SetText(FText::AsNumber(Value));

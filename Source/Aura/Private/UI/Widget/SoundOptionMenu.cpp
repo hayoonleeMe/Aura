@@ -21,7 +21,7 @@ void USoundOptionMenu::NativeConstruct()
 	AuraGameUserSettings = CastChecked<UAuraGameUserSettings>(GEngine ? GEngine->GetGameUserSettings() : nullptr);
 	OriginalSoundOptions = FOriginalSoundOptions(AuraGameUserSettings);
 
-	Row_MasterVolume->InitializeSliderValue(AuraGameUserSettings->GetMasterVolumeValue());
+	Row_MasterVolume->InitializeSlider(0.f, UAuraGameUserSettings::MaxUIVolume, 1.f, AuraGameUserSettings->GetMasterVolumeValue());
 	Row_MasterVolume->Slider->OnValueChanged.AddDynamic(this, &ThisClass::OnMasterVolumeOptionChanged);
 }
 
@@ -46,7 +46,7 @@ void USoundOptionMenu::RevertChanges()
 	if (bMasterVolumeChanged)
 	{
 		AuraGameUserSettings->SetMasterVolumeValue(OriginalSoundOptions.MasterVolume);
-		Row_MasterVolume->InitializeSliderValue(OriginalSoundOptions.MasterVolume);
+		Row_MasterVolume->SetSliderValue(OriginalSoundOptions.MasterVolume);
 		bMasterVolumeChanged = false;
 	}
 }

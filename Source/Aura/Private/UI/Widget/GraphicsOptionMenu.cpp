@@ -55,7 +55,7 @@ void UGraphicsOptionMenu::NativeConstruct()
 	// Update ComboBox Option
 	Row_WindowMode->SetComboBoxOptions(GetWindowModeOptions(), MakeWindowModeOption(AuraGameUserSettings->GetFullscreenMode()));
 	Row_Resolution->SetComboBoxOptions(GetResolutionOptions(), MakeResolutionOption(AuraGameUserSettings->GetScreenResolution()));
-	Row_Brightness->InitializeSliderValue(AuraGameUserSettings->GetBrightnessValue());
+	Row_Brightness->InitializeSlider(0.f, UAuraGameUserSettings::MaxUIBrightness, 1.f, AuraGameUserSettings->GetBrightnessValue());
 	Row_VerticalSync->SetIsChecked(AuraGameUserSettings->IsVSyncEnabled());
 	Row_FPSLimit->SetComboBoxOptions(GetFPSLimitOptions(), FPSLimitOptions[int32(AuraGameUserSettings->GetFrameRateLimit())]);
 	
@@ -135,7 +135,7 @@ void UGraphicsOptionMenu::RevertChanges()
 	if (bBrightnessChanged)
 	{
 		AuraGameUserSettings->SetBrightnessValue(OriginalGraphicsOptions.Brightness);
-		Row_Brightness->InitializeSliderValue(OriginalGraphicsOptions.Brightness);
+		Row_Brightness->SetSliderValue(OriginalGraphicsOptions.Brightness);
 		bBrightnessChanged = false;
 	}
 	if (bVerticalSyncChanged)
