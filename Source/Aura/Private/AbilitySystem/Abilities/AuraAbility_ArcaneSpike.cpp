@@ -20,7 +20,6 @@ UAuraAbility_ArcaneSpike::UAuraAbility_ArcaneSpike()
 	BlockAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_Offensive);
 	DamageTypeTag = AuraGameplayTags::Damage_Type_Arcane;
 	DebuffTag = AuraGameplayTags::Debuff_Enfeeble;
-	StartupInputTag = AuraGameplayTags::InputTag_Q;
 	MaxCastRange = 1400.f;
 	CachedTargetLocation = FVector::ZeroVector;
 }
