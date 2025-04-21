@@ -8,11 +8,11 @@
 #include "Types/StageStatus.h"
 #include "StageGameMode.generated.h"
 
+class UScalableStageConfig;
 class AAuraGameStateBase;
 struct FOnAttributeChangeData;
 class UMultiplayerSessionsSubsystem;
 class AAuraEnemy;
-class UStageConfig;
 
 /**
  * Stage를 관리하는 Game Mode
@@ -48,7 +48,7 @@ private:
 	// ============================================================================
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Stage")
-	TObjectPtr<UStageConfig> StageConfig;
+	TObjectPtr<UScalableStageConfig> ScalableStageConfig;
 
 	// 현재 상태
 	EStageStatus StageStatus = EStageStatus::Waiting;
@@ -69,6 +69,26 @@ private:
 
 	void SpawnStartStageBeacon() const;
 	void DestroyStartStageBeacon() const;
+
+	// 난이도 계산 시 사용할 최소 EnemySpawnLevel 기반 값 (너무 낮은 난이도를 방지하기 위한 하한선)
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Stage")
+	float MinEnemySpawnLevelDifficulty;
+
+	// 난이도 계산 시 EnemySpawnLevel에 곱해질 가중치
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Stage")
+	float EnemySpawnLevelDifficultyWeight;
+
+	// 스테이지 번호를 난이도에 적용할 때 사용하는 지수값
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Stage")
+	float StageNumberDifficultyExponent;
+
+	// 추가 플레이어 1명당 난이도 증가 비율
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Stage")
+	float DifficultyIncreaseRatePerExtraPlayer;
+
+	// EnemySpawnLevel에 따라 적 위험도를 스케일링하기 위한 비율
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Stage")
+	float ThreatScalingPerEnemySpawnLevel;
 
 	// ============================================================================
 	// Game End
@@ -177,7 +197,7 @@ private:
 	void OnPlayerLevelAttributeChanged(const FOnAttributeChangeData& Data);
 
 	// AAuraEnemy 타입 Enemy 소환
-	void SpawnEnemy(TSubclassOf<AAuraEnemy> Class);
+	void SpawnEnemy(const TSubclassOf<AAuraEnemy>& EnemyClass);
 
 	// 비동기적으로 Enemy 소환
 	// RandomDelay마다 랜덤한 수의 랜덤한 Enemy를 소환하고, 현재 스테이지에서 정해진 수만큼 모두 소환할 때까지 반복한다.
@@ -185,15 +205,12 @@ private:
 	FTimerHandle SpawnDelayTimerHandle;
 	FTimerDelegate SpawnDelayTimerDelegate;
 
-	// Enemy를 소환할 때 종류에 상관없이 랜덤하게 소환할 수 있도록 설정한다.
-	// 현재 스테이지에 정해진 모든 Enemy 정보를 하나의 배열에 저장하고, 이를 Shuffle하여 랜덤한 수만큼 소환하는 방식을 사용한다.
+	// 소환할 Enemy Class
+	UPROPERTY()
+	TArray<TSubclassOf<AAuraEnemy>> EnemiesToSpawn;
+
+	// 스테이지 난이도와 적의 위협 수치를 토대로 소환할 Enemy를 결정한다.
 	void PrepareEnemySpawn();
-	
-	// EnemyClass를 나타내는 uint8 값을 저장하는 배열
-	TArray<uint8> RandomEnemyInfos;
-	
-	// uint8 <-> EnemyClass 간의 변환 매핑을 저장하는 맵
-	TMap<uint8, TSubclassOf<AAuraEnemy>> EnemyClassTable;
 
 	// ============================================================================
 	// Respawn

@@ -8,15 +8,14 @@
 #include "AuraBlueprintLibrary.h"
 #include "MultiplayerSessionsSubsystem.h"
 #include "Actor/SpawnEnemyVolume.h"
-#include "Algo/RandomShuffle.h"
 #include "Character/AuraEnemy.h"
 #include "Components/BoxComponent.h"
-#include "Data/StageConfig.h"
 #include "Game/AuraGameStateBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Player/AuraPlayerController.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "Data/ScalableStageConfig.h"
 
 // For Test in PIE
 #if WITH_EDITOR
@@ -25,6 +24,13 @@
 
 AStageGameMode::AStageGameMode()
 {
+	/* Stage */
+	MinEnemySpawnLevelDifficulty = 6.f;
+	EnemySpawnLevelDifficultyWeight = 1.7f;
+	StageNumberDifficultyExponent = 1.6f;
+	DifficultyIncreaseRatePerExtraPlayer = 0.5f;
+	ThreatScalingPerEnemySpawnLevel = 0.04f;
+	
 	/* Waiting Timer */
 	WaitingTime = 30.f;
 	WaitingTimerDelegate = FTimerDelegate::CreateUObject(this, &ThisClass::OnWaitingTimeFinished);
@@ -256,8 +262,8 @@ void AStageGameMode::InitData()
 	}
 	
 	// Caching MaxStageNumber
-	check(StageConfig);
-	MaxStageNumber = StageConfig->GetMaxStageNumber();
+	check(ScalableStageConfig);
+	MaxStageNumber = ScalableStageConfig->MaxStage;
 	check(MaxStageNumber > 0);
 
 	// Caching SpawnEnemyVolumeExtent
@@ -331,34 +337,6 @@ void AStageGameMode::OnWaitingTimeFinished()
 	StartStage();
 }
 
-void AStageGameMode::AsyncSpawnEnemies()
-{
-	check(StageConfig);
-
-	const int32 MaxStageEnemyCount = RandomEnemyInfos.Num();
-	if (NumStageSpawnedEnemies < MaxStageEnemyCount)
-	{
-		// 소환할 수 결정
-		const int32 RandCount = FMath::RandRange(1, MaxSpawnCountPerBatch);
-		const int32 SpawnCount = FMath::Min(MaxStageEnemyCount - NumStageSpawnedEnemies, RandCount);
-
-		// SpawnCount 만큼 소환
-		for (int32 Index = 0; Index < SpawnCount; ++Index)
-		{
-			const TSubclassOf<AAuraEnemy>& EnemyClass = EnemyClassTable[RandomEnemyInfos[NumStageSpawnedEnemies]];
-			SpawnEnemy(EnemyClass);
-		}
-
-		// RandomDelay가 지난 뒤 다시 소환
-		GetWorldTimerManager().SetTimer(SpawnDelayTimerHandle, SpawnDelayTimerDelegate, GetRandomDelay(), false);
-	}
-	else
-	{
-		// 모든 Enemy를 소환하면 스테이지를 종료할 수 있도록 설정
-		bFinishSpawn = true;
-	}
-}
-
 void AStageGameMode::OnPlayerLevelAttributeChanged(const FOnAttributeChangeData& Data)
 {
 	if (GetWorld())
@@ -369,19 +347,16 @@ void AStageGameMode::OnPlayerLevelAttributeChanged(const FOnAttributeChangeData&
 	}
 }
 
-void AStageGameMode::SpawnEnemy(TSubclassOf<AAuraEnemy> Class)
+void AStageGameMode::SpawnEnemy(const TSubclassOf<AAuraEnemy>& EnemyClass)
 {
-	check(Class);
-
+	check(EnemyClass);
 	
 	// Find Random Point
 	const FVector RandomPoint = UKismetMathLibrary::RandomPointInBoundingBox_Box(SpawnEnemyVolumeBox);
 	const FTransform SpawnTransform(RandomPoint);
 
-	if (AAuraEnemy* Enemy = GetWorld()->SpawnActor<AAuraEnemy>(Class, SpawnTransform, EnemySpawnParams))
+	if (AAuraEnemy* Enemy = GetWorld()->SpawnActor<AAuraEnemy>(EnemyClass, SpawnTransform, EnemySpawnParams))
 	{
-		++NumStageSpawnedEnemies;
-
 		Enemy->SpawnDefaultController();
 		Enemy->OnCharacterDeadDelegate.AddDynamic(this, &ThisClass::OnEnemyDead);
 		Enemy->SpawnLevel = FMath::RoundToInt32(EnemySpawnLevel);
@@ -425,28 +400,66 @@ void AStageGameMode::OnEnemyDead()
 	}
 }
 
+void AStageGameMode::AsyncSpawnEnemies()
+{
+	const int32 MaxStageEnemyCount = EnemiesToSpawn.Num();
+	if (NumStageSpawnedEnemies < MaxStageEnemyCount)
+	{
+		// 소환할 수 결정
+		const int32 RandCount = FMath::RandRange(1, MaxSpawnCountPerBatch);
+		const int32 SpawnCount = FMath::Min(MaxStageEnemyCount - NumStageSpawnedEnemies, RandCount);
+
+		// SpawnCount 만큼 소환
+		for (int32 Index = 0; Index < SpawnCount; ++Index)
+		{
+			SpawnEnemy(EnemiesToSpawn[NumStageSpawnedEnemies + Index]);
+		}
+		NumStageSpawnedEnemies += SpawnCount;
+
+		// RandomDelay가 지난 뒤 다시 소환
+		GetWorldTimerManager().SetTimer(SpawnDelayTimerHandle, SpawnDelayTimerDelegate, GetRandomDelay(), false);
+	}
+	else
+	{
+		// 모든 Enemy를 소환하면 스테이지를 종료할 수 있도록 설정
+		bFinishSpawn = true;
+	}
+}
+
 void AStageGameMode::PrepareEnemySpawn()
 {
 	bFinishSpawn = false;
 	NumStageSpawnedEnemies = NumDeadEnemies = 0;
-	
-	RandomEnemyInfos.Empty();
-	EnemyClassTable.Empty();
 
-	// 소환해야 할 모든 Enemy 정보를 하나의 배열에 저장하고 Shuffle
-	const TArray<FSpawnEnemyInfo>& SpawnEnemyInfoArray = StageConfig->GetSpawnEnemyInfosForStageNumberChecked(StageNumber);
-	for (uint8 Index = 0; Index < SpawnEnemyInfoArray.Num(); ++Index)
+	EnemiesToSpawn.Empty();
+	
+	// 난이도 계산
+	float Difficulty = FMath::Max(MinEnemySpawnLevelDifficulty, EnemySpawnLevel * EnemySpawnLevelDifficultyWeight) + FMath::Pow(StageNumber, StageNumberDifficultyExponent);
+	// 추가 플레이어 1명당 난이도 50% 증가
+	Difficulty *= 1.f + DifficultyIncreaseRatePerExtraPlayer * (GetNumPlayers() - 1);
+
+	const float ThreatScale = 1.f + EnemySpawnLevel * ThreatScalingPerEnemySpawnLevel;
+	int32 MaxIndex = ScalableStageConfig->SpawnEnemyInfos.Num() - 1;
+	float Weight = 0.f;
+
+	// 소환할 적 결정
+	while (MaxIndex >= 0)
 	{
-		// SpawnEnemyInfoArray의 Index를 해당 EnemyClass를 나타내는 uint8 값으로 사용한다.
-		EnemyClassTable.Add(Index, SpawnEnemyInfoArray[Index].EnemyClass);
-		for (int32 Count = 0; Count < SpawnEnemyInfoArray[Index].SpawnCount; ++Count)
+		const FScalableSpawnEnemyInfo& RandomEnemyInfo = ScalableStageConfig->SpawnEnemyInfos[FMath::RandRange(0, MaxIndex)];
+		if (Weight + RandomEnemyInfo.ThreatValue * ThreatScale <= Difficulty)
 		{
-			RandomEnemyInfos.Add(Index);
+			Weight += RandomEnemyInfo.ThreatValue * ThreatScale;
+			EnemiesToSpawn.Add(RandomEnemyInfo.EnemyClass);
+		}
+
+		// SpawnEnemyInfos는 ThreatValue 기준 오름차순 정렬된 배열이므로 MaxIndex를 이용해 가장 ThreatValue가 높은 Enemy를 제외
+		while (MaxIndex >= 0 && Weight + ScalableStageConfig->SpawnEnemyInfos[MaxIndex].ThreatValue * ThreatScale > Difficulty)
+		{
+			--MaxIndex;
 		}
 	}
-	Algo::RandomShuffle(RandomEnemyInfos);
-	
-	TotalEnemyCount = RandomEnemyInfos.Num();
+
+	TotalEnemyCount = EnemiesToSpawn.Num();
 }
 
 void AStageGameMode::BroadcastStageStatusChangeToAllLocalPlayers() const
