@@ -154,7 +154,6 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 				float IntelligenceValue = 0.f;
 				ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics.IntelligenceDef, EvaluateParameters, IntelligenceValue);
 				const float IntelligenceDamageCoefficient = UAuraBlueprintLibrary::GetIntelligenceDamageCoefficientByValue(SourceASC->GetAvatarActor(), IntelligenceValue);
-				UE_LOG(LogTemp, Warning, TEXT("%hs, IntelligenceValue %f, Coef %f"), __FUNCTION__, IntelligenceValue, IntelligenceDamageCoefficient);
 				DamageTypeValue += DamageTypeValue * IntelligenceDamageCoefficient;
 			}
 			
