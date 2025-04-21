@@ -55,6 +55,24 @@ float UAuraBlueprintLibrary::GetCriticalHitResistanceCoefficientByLevel(const UO
 	return 0.f;
 }
 
+float UAuraBlueprintLibrary::GetStrengthDamageCoefficientByValue(const UObject* WorldContextObject, float Value)
+{
+	if (const AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject)))
+	{
+		return AuraGameModeBase->StrengthDamageCoefficientCurve.GetValueAtLevel(Value);
+	}
+	return 0.f;
+}
+
+float UAuraBlueprintLibrary::GetIntelligenceDamageCoefficientByValue(const UObject* WorldContextObject, float Value)
+{
+	if (const AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject)))
+	{
+		return AuraGameModeBase->IntelligenceDamageCoefficientCurve.GetValueAtLevel(Value);
+	}
+	return 0.f;
+}
+
 bool UAuraBlueprintLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
 {
 	check(Params.TargetAbilitySystemComponent);

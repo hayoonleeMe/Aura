@@ -45,6 +45,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static float GetCriticalHitResistanceCoefficientByLevel(const UObject* WorldContextObject, float Level);
 
+	// Strength Value에 해당하는 StrengthDamageCoefficient 값을 반환
+	UFUNCTION(BlueprintCallable)
+	static float GetStrengthDamageCoefficientByValue(const UObject* WorldContextObject, float Value);
+
+	// Intelligence Value에 해당하는 IntelligenceDamageCoefficient 값을 반환
+	UFUNCTION(BlueprintCallable)
+	static float GetIntelligenceDamageCoefficientByValue(const UObject* WorldContextObject, float Value);
+
 	// TargetAbilitySystemComponent에 Damage Effect를 적용한다.
 	// 적용 성공 여부를 반환한다.
 	UFUNCTION(BlueprintCallable)
