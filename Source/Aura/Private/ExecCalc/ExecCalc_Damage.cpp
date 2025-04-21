@@ -15,6 +15,8 @@
 // 구조체로 Capture할 Attribute 관리 및 설정
 struct AuraDamageStatics
 {
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Strength);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Intelligence);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(ArmorPenetration);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(BlockChance);
@@ -28,6 +30,8 @@ struct AuraDamageStatics
 
 	AuraDamageStatics()
 	{
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Strength, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Intelligence, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Armor, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArmorPenetration, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, BlockChance, Target, false);
@@ -56,6 +60,8 @@ static const TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition>& GetT
 	if (Map.IsEmpty())
 	{
 		const AuraDamageStatics& DamageStatics = GetDamageStatics();
+		Map.Add(AuraGameplayTags::Attributes_Primary_Strength, DamageStatics.StrengthDef);
+		Map.Add(AuraGameplayTags::Attributes_Primary_Intelligence, DamageStatics.IntelligenceDef);
 		Map.Add(AuraGameplayTags::Attributes_Secondary_Armor, DamageStatics.ArmorDef);
 		Map.Add(AuraGameplayTags::Attributes_Secondary_ArmorPenetration, DamageStatics.ArmorPenetrationDef);
 		Map.Add(AuraGameplayTags::Attributes_Secondary_BlockChance, DamageStatics.BlockChanceDef);
@@ -74,6 +80,8 @@ UExecCalc_Damage::UExecCalc_Damage()
 {
 	// Capture할 Attribute 등록
 	const AuraDamageStatics& DamageStatics = GetDamageStatics(); 
+	RelevantAttributesToCapture.Add(DamageStatics.StrengthDef);
+	RelevantAttributesToCapture.Add(DamageStatics.IntelligenceDef);
 	RelevantAttributesToCapture.Add(DamageStatics.ArmorDef);
 	RelevantAttributesToCapture.Add(DamageStatics.ArmorPenetrationDef);
 	RelevantAttributesToCapture.Add(DamageStatics.BlockChanceDef);
@@ -132,6 +140,24 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageTypeTag, false);
 		if (DamageTypeValue > 0.f)
 		{
+			if (DamageTypeTag.MatchesTag(AuraGameplayTags::Damage_Type_Physical))
+			{
+				// Increase Physical Damage
+				float StrengthValue = 0.f;
+				ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics.StrengthDef, EvaluateParameters, StrengthValue);
+				const float StrengthDamageCoefficient = UAuraBlueprintLibrary::GetStrengthDamageCoefficientByValue(SourceASC->GetAvatarActor(), StrengthValue);
+				DamageTypeValue += DamageTypeValue * StrengthDamageCoefficient;
+			}
+			else
+			{
+				// Increase Magical Damage
+				float IntelligenceValue = 0.f;
+				ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics.IntelligenceDef, EvaluateParameters, IntelligenceValue);
+				const float IntelligenceDamageCoefficient = UAuraBlueprintLibrary::GetIntelligenceDamageCoefficientByValue(SourceASC->GetAvatarActor(), IntelligenceValue);
+				UE_LOG(LogTemp, Warning, TEXT("%hs, IntelligenceValue %f, Coef %f"), __FUNCTION__, IntelligenceValue, IntelligenceDamageCoefficient);
+				DamageTypeValue += DamageTypeValue * IntelligenceDamageCoefficient;
+			}
+			
 			// Target Resistance Attribute Value By DamageType
 			float ResistanceValue = 0.f;
 			ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(CaptureDef, EvaluateParameters, ResistanceValue);

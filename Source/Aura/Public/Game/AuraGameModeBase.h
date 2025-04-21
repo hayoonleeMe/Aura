@@ -41,4 +41,12 @@ public:
 	// CriticalHitResistanceCoefficient 값을 저장하는 Curve
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Damage Calculation Coefficients")
 	FScalableFloat CriticalHitResistanceCoefficientCurve;
+
+	// StrengthDamageCoefficient 값을 저장하는 Curve
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Damage Calculation Coefficients")
+	FScalableFloat StrengthDamageCoefficientCurve;
+
+	// IntelligenceDamageCoefficient 값을 저장하는 Curve
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Damage Calculation Coefficients")
+	FScalableFloat IntelligenceDamageCoefficientCurve;
 };
