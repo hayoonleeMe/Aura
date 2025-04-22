@@ -135,6 +135,10 @@ private:
 
 	void CursorTrace();
 
+	// Cursor Target에 대한 Highlight 활성화 여부
+	bool bEnableHighlight = true;
+	void EnableHighlight(bool bEnabled);
+
 	// Cached Target HitResult Under Cursor
 	FHitResult TargetHitResult;
 

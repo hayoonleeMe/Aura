@@ -89,6 +89,8 @@ void AAuraPlayerController::EnableUIInput()
 		Subsystem->AddMappingContext(UIContext, 1);
 	}
 	DisableAbilityInput();
+
+	EnableHighlight(false);
 }
 
 void AAuraPlayerController::DisableUIInput()
@@ -98,6 +100,8 @@ void AAuraPlayerController::DisableUIInput()
 		Subsystem->RemoveMappingContext(UIContext);
 	}
 	EnableAbilityInput();
+
+	EnableHighlight(true);
 }
 
 void AAuraPlayerController::EnableCinematicInput()
@@ -111,7 +115,7 @@ void AAuraPlayerController::EnableCinematicInput()
 		Subsystem->AddMappingContext(CinematicContext, 0);
 	}
 	
-	EnableCursorTrace(false);
+	EnableHighlight(false);
 }
 
 void AAuraPlayerController::DisableCinematicInput()
@@ -125,7 +129,8 @@ void AAuraPlayerController::DisableCinematicInput()
 		}
 	}
 	RestoreInputMappingContextState();
-	EnableCursorTrace(true);
+
+	EnableHighlight(true);
 }
 
 FKey AAuraPlayerController::GetInteractKeyMappedToAction() const
@@ -261,19 +266,40 @@ void AAuraPlayerController::CursorTrace()
 	// Caching Target HitResult
 	GetHitResultUnderCursor(ECC_Target, false, TargetHitResult);
 
-	// Highlight Target
-	TargetFromPrevFrame = TargetFromCurrentFrame;
-	TargetFromCurrentFrame = IsValid(TargetHitResult.GetActor()) && TargetHitResult.GetActor()->Implements<UInteractionInterface>() ? TargetHitResult.GetActor() : nullptr;
-	if (TargetFromPrevFrame != TargetFromCurrentFrame)
+	if (bEnableHighlight)
 	{
-		if (IInteractionInterface* PrevInteractionInterface = Cast<IInteractionInterface>(TargetFromPrevFrame))
+		// Highlight Target
+		TargetFromPrevFrame = TargetFromCurrentFrame;
+		TargetFromCurrentFrame = IsValid(TargetHitResult.GetActor()) && TargetHitResult.GetActor()->Implements<UInteractionInterface>() ? TargetHitResult.GetActor() : nullptr;
+		if (TargetFromPrevFrame != TargetFromCurrentFrame)
 		{
-			PrevInteractionInterface->UnHighlightActor();
+			if (IInteractionInterface* PrevInteractionInterface = Cast<IInteractionInterface>(TargetFromPrevFrame))
+			{
+				PrevInteractionInterface->UnHighlightActor();
+			}
+			if (IInteractionInterface* CurrentInteractionInterface = Cast<IInteractionInterface>(TargetFromCurrentFrame))
+			{
+				CurrentInteractionInterface->HighlightActor();
+			}		
+		}	
+	}
+}
+
+void AAuraPlayerController::EnableHighlight(bool bEnabled)
+{
+	if (bEnabled)
+	{
+		bEnableHighlight = true;
+	}
+	else
+	{
+		bEnableHighlight = false;
+		if (IInteractionInterface* InteractionInterface = Cast<IInteractionInterface>(TargetFromCurrentFrame))
+		{
+			InteractionInterface->UnHighlightActor();
 		}
-		if (IInteractionInterface* CurrentInteractionInterface = Cast<IInteractionInterface>(TargetFromCurrentFrame))
-		{
-			CurrentInteractionInterface->HighlightActor();
-		}		
+		TargetFromCurrentFrame = nullptr;
+		TargetFromPrevFrame = nullptr;
 	}
 }
 
