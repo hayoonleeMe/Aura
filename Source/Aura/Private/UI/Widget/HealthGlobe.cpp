@@ -8,6 +8,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "UI/Widget/ToolTip_CurrentMaxValue.h"
+#include "GameFramework/PlayerState.h"
 
 UHealthGlobe::UHealthGlobe(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -21,7 +22,7 @@ void UHealthGlobe::NativeConstruct()
 
 	check(ToolTipWidgetClass);
 
-	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayer());
+	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayerState());
 	AuraASC->GetGameplayAttributeValueChangeDelegate(UAuraAttributeSet::GetHealthAttribute()).AddWeakLambda(this, [this](const FOnAttributeChangeData& Data)
 	{
 		UpdateHealth(Data.NewValue);
@@ -31,7 +32,7 @@ void UHealthGlobe::NativeConstruct()
 		UpdateMaxHealth(Data.NewValue);
 	});
 
-	const UAuraAttributeSet* AuraAS = UAuraBlueprintLibrary::GetAuraAttributeSetChecked(GetOwningPlayer());
+	const UAuraAttributeSet* AuraAS = UAuraBlueprintLibrary::GetAuraAttributeSetChecked(GetOwningPlayerState());
 	UpdateHealth(AuraAS->GetHealth());
 	UpdateMaxHealth(AuraAS->GetMaxHealth());
 }

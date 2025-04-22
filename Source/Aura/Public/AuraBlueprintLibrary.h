@@ -104,8 +104,8 @@ public:
 	// 구할 수 없으면 0.f을 반환한다.
 	static float GetServerWorldTimeSecondsAsFloat(const UWorld* World);
 
-	static UAuraAbilitySystemComponent* GetAuraAbilitySystemComponentChecked(const APlayerController* PlayerController);
-	static UAuraAttributeSet* GetAuraAttributeSetChecked(const APlayerController* PlayerController);
+	static UAuraAbilitySystemComponent* GetAuraAbilitySystemComponentChecked(APlayerState* PlayerState);
+	static UAuraAttributeSet* GetAuraAttributeSetChecked(APlayerState* PlayerState);
 
 	// SimulatedProxy의 Auth Player Controller 반환
 	static APlayerController* GetSimulatedPlayerController(const UWorld* World);

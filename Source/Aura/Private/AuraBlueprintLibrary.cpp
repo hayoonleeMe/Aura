@@ -246,16 +246,15 @@ float UAuraBlueprintLibrary::GetServerWorldTimeSecondsAsFloat(const UWorld* Worl
 	return GameStateBase ? GameStateBase->GetServerWorldTimeSeconds() : 0.0;
 }
 
-UAuraAbilitySystemComponent* UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(const APlayerController* PlayerController)
+UAuraAbilitySystemComponent* UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(APlayerState* PlayerState)
 {
-	UAbilitySystemComponent* ASC = PlayerController ? UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(PlayerController->GetPawn()) : nullptr;
-	return CastChecked<UAuraAbilitySystemComponent>(ASC);
+	UAbilitySystemComponent* ASC = PlayerState ? UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(PlayerState) : nullptr;
+	return CastChecked<UAuraAbilitySystemComponent>(ASC);	
 }
 
-UAuraAttributeSet* UAuraBlueprintLibrary::GetAuraAttributeSetChecked(const APlayerController* PlayerController)
+UAuraAttributeSet* UAuraBlueprintLibrary::GetAuraAttributeSetChecked(APlayerState* PlayerState)
 {
-	check(PlayerController);
-	return CastChecked<UAuraAttributeSet>(CastChecked<AAuraPlayerState>(PlayerController->PlayerState)->GetAttributeSet());
+	return CastChecked<UAuraAttributeSet>(CastChecked<AAuraPlayerState>(PlayerState)->GetAttributeSet());
 }
 
 APlayerController* UAuraBlueprintLibrary::GetSimulatedPlayerController(const UWorld* World)

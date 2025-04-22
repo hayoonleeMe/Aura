@@ -79,7 +79,7 @@ void UAttributeMenu::NativeConstruct()
 	UpdateAttributePointsChange(AuraPS->GetAttributePoints());
 
 	// Attribute Row의 값을 업데이트
-	const UAuraAttributeSet* AuraAS = UAuraBlueprintLibrary::GetAuraAttributeSetChecked(GetOwningPlayer());
+	const UAuraAttributeSet* AuraAS = UAuraBlueprintLibrary::GetAuraAttributeSetChecked(GetOwningPlayerState());
 	for (const TTuple<FGameplayTag, FGameplayAttribute>& Tuple : AuraAS->TagToAttributeMap)
 	{
 		UpdateAttributeValueChange(Tuple.Key, Tuple.Value.GetNumericValue(AuraAS));
