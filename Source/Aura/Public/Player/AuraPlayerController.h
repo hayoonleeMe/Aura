@@ -139,6 +139,10 @@ private:
 	bool bEnableHighlight = true;
 	void EnableHighlight(bool bEnabled);
 
+	// Cursor Target에 대한 TargetHitResult Caching 활성화 여부
+	bool bEnableCachingTargetHitResult = true;
+	void EnableCachingTargetHitResult(bool bEnabled);
+
 	// Cached Target HitResult Under Cursor
 	FHitResult TargetHitResult;
 
@@ -270,6 +274,8 @@ private:
 
 	// PauseMenu Level Sequence Actor를 PlayerController의 Pawn에 부착한다.
 	void AttachPauseMenuLevelSequenceActorToPawn() const;
+
+	void OnLevelSequencePlayerStop(const FName& LevelSequenceTag);
 
 	// ============================================================================
 	// Stage

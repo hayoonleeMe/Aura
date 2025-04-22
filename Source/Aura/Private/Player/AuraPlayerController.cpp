@@ -23,6 +23,7 @@ AAuraPlayerController::AAuraPlayerController()
 {
 	LevelSequenceManageComponent = CreateDefaultSubobject<ULevelSequenceManageComponent>(TEXT("Level Sequence Manage Component"));
 	LevelSequenceManageComponent->SetLevelSequenceTags({TEXT("PauseMenu"), TEXT("SpawnBeacon")});
+	LevelSequenceManageComponent->OnLevelSequenceStopDelegate.AddUObject(this, &ThisClass::OnLevelSequencePlayerStop);
 }
 
 void AAuraPlayerController::PlayerTick(float DeltaTime)
@@ -157,6 +158,8 @@ FOnLevelSequenceStopSignature* AAuraPlayerController::GetOnLevelSequenceStopDele
 
 void AAuraPlayerController::PlayLevelSequence(const FName& LevelSequenceTag)
 {
+	EnableCachingTargetHitResult(false);
+	
 	if (LevelSequenceManageComponent)
 	{
 		LevelSequenceManageComponent->PlayLevelSequence(LevelSequenceTag);
@@ -263,8 +266,11 @@ void AAuraPlayerController::ServerNotifyASCInitToGameMode_Implementation()
 
 void AAuraPlayerController::CursorTrace()
 {
-	// Caching Target HitResult
-	GetHitResultUnderCursor(ECC_Target, false, TargetHitResult);
+	if (bEnableCachingTargetHitResult)
+	{
+		// Caching Target HitResult
+		GetHitResultUnderCursor(ECC_Target, false, TargetHitResult);
+	}
 
 	if (bEnableHighlight)
 	{
@@ -300,6 +306,27 @@ void AAuraPlayerController::EnableHighlight(bool bEnabled)
 		}
 		TargetFromCurrentFrame = nullptr;
 		TargetFromPrevFrame = nullptr;
+	}
+}
+
+void AAuraPlayerController::EnableCachingTargetHitResult(bool bEnabled)
+{
+	if (bEnabled)
+	{
+		GetWorldTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([this]()
+		{
+			// 재생 중인 Level Sequence가 없을 때만 활성화
+			if (!LevelSequenceManageComponent->IsPlayingLevelSequence())
+			{
+				// 다음 프레임에 수행해 잘못된 커서 위치에서 CursorTrace() 호출을 방지
+				bEnableCachingTargetHitResult = true;
+			}
+		}));
+	}
+	else
+	{
+		bEnableCachingTargetHitResult = false;
+		TargetHitResult = FHitResult();
 	}
 }
 
@@ -565,4 +592,9 @@ void AAuraPlayerController::AttachPauseMenuLevelSequenceActorToPawn() const
 	{
 		LevelSequenceManageComponent->AttachLevelSequenceActorToPawn(TEXT("PauseMenu"), GetPawn(), true);
 	}
+}
+
+void AAuraPlayerController::OnLevelSequencePlayerStop(const FName& LevelSequenceTag)
+{
+	EnableCachingTargetHitResult(true);
 }

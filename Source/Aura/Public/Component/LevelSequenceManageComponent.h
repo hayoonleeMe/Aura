@@ -32,6 +32,8 @@ public:
 	void StopLevelSequence(const FName& LevelSequenceTag);
 	void StopCurrentPlayingLevelSequence();
 
+	bool IsPlayingLevelSequence() const;
+
 	void SetLevelSequenceActorLocation(const FName& LevelSequenceTag, const FVector& NewLocation);
 
 protected:

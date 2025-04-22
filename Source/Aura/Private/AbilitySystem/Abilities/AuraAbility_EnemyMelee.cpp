@@ -15,6 +15,7 @@ UAuraAbility_EnemyMelee::UAuraAbility_EnemyMelee()
 	AbilityTags.AddTag(AuraGameplayTags::Abilities_EnemyAttack);
 	bCanAttackMultiTarget = true;
 	DamageTypeTag = AuraGameplayTags::Damage_Type_Physical;
+	bNeedCursorTargetHitResult = false;
 }
 
 void UAuraAbility_EnemyMelee::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

@@ -31,6 +31,8 @@ protected:
 	// 매 실행마다 초기화되어야 하는 내부 변수 초기화
 	// 하위 클래스의 InstancingPolicy가 InstancedPerActor인 경우에는 해당 함수 호출 필요
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+
+	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const override;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Damage")
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
@@ -71,6 +73,10 @@ protected:
 
 	// UAuraAbilitySystemComponent의 TargetActorWeakPtr를 초기화해야 하는 지를 나타냄 
 	uint8 bShouldClearTargetActor : 1;
+
+	// AAuraPlayerController::CursorTrace()에서 커서 위치에 Trace를 수행한 TargetHitResult를 사용하는 어빌리티인지 나타낸다.
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Damage")
+	uint8 bNeedCursorTargetHitResult : 1;
 
 	// ============================================================================
 	// Debuff
