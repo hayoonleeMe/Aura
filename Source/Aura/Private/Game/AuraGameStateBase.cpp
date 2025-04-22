@@ -110,6 +110,7 @@ void AAuraGameStateBase::PlaySpawnBeaconLevelSequence()
 	// Hide HUD
 	if (const AAuraHUD* AuraHUD = PlayerController ? PlayerController->GetHUD<AAuraHUD>() : nullptr)
 	{
+		AuraHUD->CloseAllMenu();
 		AuraHUD->ShowGameOverlay(false);
 	}
 

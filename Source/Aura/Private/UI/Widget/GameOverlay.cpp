@@ -74,6 +74,30 @@ void UGameOverlay::NativeConstruct()
 	AuraASC->OnEquippedSpellAbilityChangedDelegate.AddUObject(this, &ThisClass::OnEquippedSpellChanged);
 }
 
+void UGameOverlay::CloseAllMenu()
+{
+	if (AttributeMenu)
+	{
+		AttributeMenu->CloseMenu();
+		AttributeMenu = nullptr;
+	}
+	if (SpellMenu)
+	{
+		SpellMenu->CloseMenu();
+		SpellMenu = nullptr;
+	}
+	if (PauseMenu)
+	{
+		PauseMenu->CloseMenu();
+		PauseMenu = nullptr;
+	}
+	if (TutorialMenu)
+	{
+		TutorialMenu->CloseMenu();
+		TutorialMenu = nullptr;
+	}
+}
+
 void UGameOverlay::OnRespawnStarted(float RespawnTimerEndSeconds)
 {
 	if (RespawnTimerEndSeconds > 0.0)

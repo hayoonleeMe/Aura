@@ -29,6 +29,9 @@ public:
 	// GameOverlay의 RenderOpacity를 변경해 표시하거나 숨긴다.
 	void ShowGameOverlay(bool bShow) const;
 
+	// 현재 열린 모든 메뉴를 닫는다.
+	void CloseAllMenu() const;
+
 	// PreStageHUD Widget 표시
 	void ShowPreStageHUD() const;
 

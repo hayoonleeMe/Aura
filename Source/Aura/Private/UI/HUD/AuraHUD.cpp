@@ -48,6 +48,14 @@ void AAuraHUD::ShowGameOverlay(bool bShow) const
 	}
 }
 
+void AAuraHUD::CloseAllMenu() const
+{
+	if (GameOverlay)
+	{
+		GameOverlay->CloseAllMenu();
+	}
+}
+
 void AAuraHUD::ShowPreStageHUD() const
 {
 	if (GameOverlay)
