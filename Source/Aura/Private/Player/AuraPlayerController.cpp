@@ -30,10 +30,7 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	// only called if the PlayerController has a PlayerInput object. it will not be called in non-locally controlled PlayerController.
 	Super::PlayerTick(DeltaTime);
 
-	if (bCursorTraceEnabled)
-	{
-		CursorTrace();
-	}
+	CursorTrace();
 }
 
 void AAuraPlayerController::OnRep_Pawn()
@@ -92,8 +89,6 @@ void AAuraPlayerController::EnableUIInput()
 		Subsystem->AddMappingContext(UIContext, 1);
 	}
 	DisableAbilityInput();
-
-	EnableCursorTrace(false);
 }
 
 void AAuraPlayerController::DisableUIInput()
@@ -103,8 +98,6 @@ void AAuraPlayerController::DisableUIInput()
 		Subsystem->RemoveMappingContext(UIContext);
 	}
 	EnableAbilityInput();
-
-	EnableCursorTrace(true);
 }
 
 void AAuraPlayerController::EnableCinematicInput()
@@ -281,28 +274,6 @@ void AAuraPlayerController::CursorTrace()
 		{
 			CurrentInteractionInterface->HighlightActor();
 		}		
-	}
-}
-
-void AAuraPlayerController::EnableCursorTrace(bool bEnabled)
-{
-	if (bEnabled)
-	{
-		// 다음 프레임에 수행해 잘못된 커서 위치에서 CursorTrace() 호출을 방지 (Pause Menu)
-		GetWorldTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([this]()
-		{
-			bCursorTraceEnabled = true;
-		}));
-	}
-	else
-	{
-		bCursorTraceEnabled = false;
-		if (IInteractionInterface* InteractionInterface = Cast<IInteractionInterface>(TargetFromCurrentFrame))
-		{
-			InteractionInterface->UnHighlightActor();
-		}
-		TargetFromCurrentFrame = nullptr;
-		TargetFromPrevFrame = nullptr;
 	}
 }
 
