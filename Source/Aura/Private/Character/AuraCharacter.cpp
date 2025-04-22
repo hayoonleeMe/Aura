@@ -127,16 +127,6 @@ void AAuraCharacter::Die()
 	}
 }
 
-void AAuraCharacter::OnPassiveSpellActivated(const FGameplayTag& SpellTag) const
-{
-	MulticastActivatePassiveSpellNiagaraComponent(SpellTag);
-}
-
-void AAuraCharacter::OnPassiveSpellDeactivated(const FGameplayTag& SpellTag) const
-{
-	MulticastDeactivatePassiveSpellNiagaraComponent(SpellTag);
-}
-
 int32 AAuraCharacter::GetAttributePoints() const
 {
 	const AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
@@ -271,38 +261,6 @@ void AAuraCharacter::ServerAddSpellPointForTest_Implementation()
 	AddToSpellPoints(1);
 }
 
-void AAuraCharacter::MulticastActivatePassiveSpellNiagaraComponent_Implementation(const FGameplayTag& SpellTag) const
-{
-	if (SpellTag.MatchesTagExact(AuraGameplayTags::Abilities_Passive_HaloOfProtection))
-	{
-		HaloOfProtectionComponent->Activate();
-	}
-	else if (SpellTag.MatchesTagExact(AuraGameplayTags::Abilities_Passive_HealthSiphon))
-	{
-		HealthSiphonComponent->Activate();
-	}
-	else if (SpellTag.MatchesTagExact(AuraGameplayTags::Abilities_Passive_ManaSiphon))
-	{
-		ManaSiphonComponent->Activate();
-	}
-}
-
-void AAuraCharacter::MulticastDeactivatePassiveSpellNiagaraComponent_Implementation(const FGameplayTag& SpellTag) const
-{
-	if (SpellTag.MatchesTagExact(AuraGameplayTags::Abilities_Passive_HaloOfProtection))
-	{
-		HaloOfProtectionComponent->DeactivateImmediate();
-	}
-	else if (SpellTag.MatchesTagExact(AuraGameplayTags::Abilities_Passive_HealthSiphon))
-	{
-		HealthSiphonComponent->DeactivateImmediate();
-	}
-	else if (SpellTag.MatchesTagExact(AuraGameplayTags::Abilities_Passive_ManaSiphon))
-	{
-		ManaSiphonComponent->DeactivateImmediate();
-	}
-}
-
 void AAuraCharacter::InitAbilityActorInfo()
 {
 	AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
@@ -314,6 +272,30 @@ void AAuraCharacter::InitAbilityActorInfo()
 
 	// 무적 Effect Material 표시를 위해 Invincibility Tag Changed Delegate에 콜백 함수 등록
 	AuraASC->RegisterGameplayTagEvent(AuraGameplayTags::Gameplay_Invincibility).AddUObject(this, &ThisClass::OnInvincibilityTagChanged);
+
+	// Halo Of Protection Passive Ability Tag
+	AuraASC->RegisterGameplayTagEvent(AuraGameplayTags::Abilities_Passive_HaloOfProtection).AddUObject(this, &ThisClass::OnHaloOfProtectionSiphonTagChanged);
+	if (AuraASC->GetTagCount(AuraGameplayTags::Abilities_Passive_HaloOfProtection) > 0)
+	{
+		// 이벤트를 등록하기 전에 이미 패시브 어빌리티가 실행된 상태라면 호출해줌
+		OnHaloOfProtectionSiphonTagChanged(AuraGameplayTags::Abilities_Passive_HaloOfProtection, AuraASC->GetTagCount(AuraGameplayTags::Abilities_Passive_HaloOfProtection));
+	}
+
+	// Health Siphon Passive Ability Tag
+	AuraASC->RegisterGameplayTagEvent(AuraGameplayTags::Abilities_Passive_HealthSiphon).AddUObject(this, &ThisClass::OnHealthSiphonTagChanged);
+	if (AuraASC->GetTagCount(AuraGameplayTags::Abilities_Passive_HealthSiphon) > 0)
+	{
+		// 이벤트를 등록하기 전에 이미 패시브 어빌리티가 실행된 상태라면 호출해줌
+		OnHealthSiphonTagChanged(AuraGameplayTags::Abilities_Passive_HealthSiphon, AuraASC->GetTagCount(AuraGameplayTags::Abilities_Passive_HealthSiphon));
+	}
+
+	// Mana Siphon Passive Ability Tag
+	AuraASC->RegisterGameplayTagEvent(AuraGameplayTags::Abilities_Passive_ManaSiphon).AddUObject(this, &ThisClass::OnManaSiphonTagChanged);
+	if (AuraASC->GetTagCount(AuraGameplayTags::Abilities_Passive_ManaSiphon) > 0)
+	{
+		// 이벤트를 등록하기 전에 이미 패시브 어빌리티가 실행된 상태라면 호출해줌
+		OnManaSiphonTagChanged(AuraGameplayTags::Abilities_Passive_ManaSiphon, AuraASC->GetTagCount(AuraGameplayTags::Abilities_Passive_ManaSiphon));
+	}
 
 	// 가장 처음 게임이 시작했을 때
 	if (!AuraASC->IsInitialized())
@@ -348,9 +330,6 @@ void AAuraCharacter::InitAbilityActorInfo()
 	else
 	{
 		/* Respawn */
-		
-		// 모든 Passive Ability 실행
-		AuraASC->ActivateAllPassiveSpells();
 
 		// 리스폰 무적 적용
 		AuraASC->ApplyEffectSpecToSelfWithSetByCaller(InvincibilityEffectClass, AuraGameplayTags::Gameplay_Invincibility, RespawnInvincibilityTime);
@@ -363,6 +342,9 @@ void AAuraCharacter::InitAbilityActorInfo()
 			}
 		}
 	}
+
+	// 모든 Passive Ability 실행
+	AuraASC->ActivateAllPassiveSpells();
 
 	if (HasAuthority())
 	{
@@ -445,6 +427,51 @@ void AAuraCharacter::HandleDeathLocally()
 		{
 			AuraPC->DisableAbilityInput();
 		}
+	}
+}
+
+void AAuraCharacter::OnHaloOfProtectionSiphonTagChanged(const FGameplayTag Tag, int32 NewCount) const
+{
+	if (NewCount > 0)
+	{
+		if (!HaloOfProtectionComponent->IsActive())
+		{
+			HaloOfProtectionComponent->Activate();
+		}
+	}
+	else
+	{
+		HaloOfProtectionComponent->DeactivateImmediate();
+	}
+}
+
+void AAuraCharacter::OnHealthSiphonTagChanged(const FGameplayTag Tag, int32 NewCount) const
+{
+	if (NewCount > 0)
+	{
+		if (!HealthSiphonComponent->IsActive())
+		{
+			HealthSiphonComponent->Activate();
+		}
+	}
+	else
+	{
+		HealthSiphonComponent->DeactivateImmediate();
+	}
+}
+
+void AAuraCharacter::OnManaSiphonTagChanged(const FGameplayTag Tag, int32 NewCount) const
+{
+	if (NewCount > 0)
+	{
+		if (!ManaSiphonComponent->IsActive())
+		{
+			ManaSiphonComponent->Activate();
+		}
+	}
+	else
+	{
+		ManaSiphonComponent->DeactivateImmediate();
 	}
 }
 
