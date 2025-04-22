@@ -7,13 +7,16 @@
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Interface/PlayerInterface.h"
 #include "Types/DamageEffectParams.h"
+#include "GameFramework/PlayerController.h"
 
 UAuraDamageAbility::UAuraDamageAbility()
 {
 	bFinishMontage = false;
 	bFinishAttack = false;
 	bShouldClearTargetActor = false;
+	bNeedCursorTargetHitResult = true;
 }
 
 void UAuraDamageAbility::MakeDamageEffectParams(FDamageEffectParams& OutParams, AActor* TargetActor) const
@@ -46,6 +49,25 @@ void UAuraDamageAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	bFinishMontage = false;
 	bFinishAttack = false;
 	bShouldClearTargetActor = false;
+}
+
+bool UAuraDamageAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags,
+	const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
+{
+	if (!Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags))
+	{
+		return false;
+	}
+
+	if (IsLocallyControlled() && bNeedCursorTargetHitResult)
+	{
+		if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(ActorInfo ? ActorInfo->PlayerController : nullptr))
+		{
+			return PlayerInterface->GetTargetHitResult().IsValidBlockingHit();
+		}
+	}
+
+	return true;
 }
 
 void UAuraDamageAbility::PlayAttackMontage(UAnimMontage* MontageToPlay, bool bEndOnBlendOut)

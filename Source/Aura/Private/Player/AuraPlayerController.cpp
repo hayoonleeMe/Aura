@@ -23,6 +23,7 @@ AAuraPlayerController::AAuraPlayerController()
 {
 	LevelSequenceManageComponent = CreateDefaultSubobject<ULevelSequenceManageComponent>(TEXT("Level Sequence Manage Component"));
 	LevelSequenceManageComponent->SetLevelSequenceTags({TEXT("PauseMenu"), TEXT("SpawnBeacon")});
+	LevelSequenceManageComponent->OnLevelSequenceStopDelegate.AddUObject(this, &ThisClass::OnLevelSequencePlayerStop);
 }
 
 void AAuraPlayerController::PlayerTick(float DeltaTime)
@@ -30,10 +31,7 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	// only called if the PlayerController has a PlayerInput object. it will not be called in non-locally controlled PlayerController.
 	Super::PlayerTick(DeltaTime);
 
-	if (bCursorTraceEnabled)
-	{
-		CursorTrace();
-	}
+	CursorTrace();
 }
 
 void AAuraPlayerController::OnRep_Pawn()
@@ -93,7 +91,7 @@ void AAuraPlayerController::EnableUIInput()
 	}
 	DisableAbilityInput();
 
-	EnableCursorTrace(false);
+	EnableHighlight(false);
 }
 
 void AAuraPlayerController::DisableUIInput()
@@ -104,7 +102,7 @@ void AAuraPlayerController::DisableUIInput()
 	}
 	EnableAbilityInput();
 
-	EnableCursorTrace(true);
+	EnableHighlight(true);
 }
 
 void AAuraPlayerController::EnableCinematicInput()
@@ -118,7 +116,7 @@ void AAuraPlayerController::EnableCinematicInput()
 		Subsystem->AddMappingContext(CinematicContext, 0);
 	}
 	
-	EnableCursorTrace(false);
+	EnableHighlight(false);
 }
 
 void AAuraPlayerController::DisableCinematicInput()
@@ -132,7 +130,8 @@ void AAuraPlayerController::DisableCinematicInput()
 		}
 	}
 	RestoreInputMappingContextState();
-	EnableCursorTrace(true);
+
+	EnableHighlight(true);
 }
 
 FKey AAuraPlayerController::GetInteractKeyMappedToAction() const
@@ -159,6 +158,8 @@ FOnLevelSequenceStopSignature* AAuraPlayerController::GetOnLevelSequenceStopDele
 
 void AAuraPlayerController::PlayLevelSequence(const FName& LevelSequenceTag)
 {
+	EnableCachingTargetHitResult(false);
+	
 	if (LevelSequenceManageComponent)
 	{
 		LevelSequenceManageComponent->PlayLevelSequence(LevelSequenceTag);
@@ -265,44 +266,67 @@ void AAuraPlayerController::ServerNotifyASCInitToGameMode_Implementation()
 
 void AAuraPlayerController::CursorTrace()
 {
-	// Caching Target HitResult
-	GetHitResultUnderCursor(ECC_Target, false, TargetHitResult);
-
-	// Highlight Target
-	TargetFromPrevFrame = TargetFromCurrentFrame;
-	TargetFromCurrentFrame = IsValid(TargetHitResult.GetActor()) && TargetHitResult.GetActor()->Implements<UInteractionInterface>() ? TargetHitResult.GetActor() : nullptr;
-	if (TargetFromPrevFrame != TargetFromCurrentFrame)
+	if (bEnableCachingTargetHitResult)
 	{
-		if (IInteractionInterface* PrevInteractionInterface = Cast<IInteractionInterface>(TargetFromPrevFrame))
+		// Caching Target HitResult
+		GetHitResultUnderCursor(ECC_Target, false, TargetHitResult);
+	}
+
+	if (bEnableHighlight)
+	{
+		// Highlight Target
+		TargetFromPrevFrame = TargetFromCurrentFrame;
+		TargetFromCurrentFrame = IsValid(TargetHitResult.GetActor()) && TargetHitResult.GetActor()->Implements<UInteractionInterface>() ? TargetHitResult.GetActor() : nullptr;
+		if (TargetFromPrevFrame != TargetFromCurrentFrame)
 		{
-			PrevInteractionInterface->UnHighlightActor();
-		}
-		if (IInteractionInterface* CurrentInteractionInterface = Cast<IInteractionInterface>(TargetFromCurrentFrame))
-		{
-			CurrentInteractionInterface->HighlightActor();
-		}		
+			if (IInteractionInterface* PrevInteractionInterface = Cast<IInteractionInterface>(TargetFromPrevFrame))
+			{
+				PrevInteractionInterface->UnHighlightActor();
+			}
+			if (IInteractionInterface* CurrentInteractionInterface = Cast<IInteractionInterface>(TargetFromCurrentFrame))
+			{
+				CurrentInteractionInterface->HighlightActor();
+			}		
+		}	
 	}
 }
 
-void AAuraPlayerController::EnableCursorTrace(bool bEnabled)
+void AAuraPlayerController::EnableHighlight(bool bEnabled)
 {
 	if (bEnabled)
 	{
-		// 다음 프레임에 수행해 잘못된 커서 위치에서 CursorTrace() 호출을 방지 (Pause Menu)
-		GetWorldTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([this]()
-		{
-			bCursorTraceEnabled = true;
-		}));
+		bEnableHighlight = true;
 	}
 	else
 	{
-		bCursorTraceEnabled = false;
+		bEnableHighlight = false;
 		if (IInteractionInterface* InteractionInterface = Cast<IInteractionInterface>(TargetFromCurrentFrame))
 		{
 			InteractionInterface->UnHighlightActor();
 		}
 		TargetFromCurrentFrame = nullptr;
 		TargetFromPrevFrame = nullptr;
+	}
+}
+
+void AAuraPlayerController::EnableCachingTargetHitResult(bool bEnabled)
+{
+	if (bEnabled)
+	{
+		GetWorldTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([this]()
+		{
+			// 재생 중인 Level Sequence가 없을 때만 활성화
+			if (!LevelSequenceManageComponent->IsPlayingLevelSequence())
+			{
+				// 다음 프레임에 수행해 잘못된 커서 위치에서 CursorTrace() 호출을 방지
+				bEnableCachingTargetHitResult = true;
+			}
+		}));
+	}
+	else
+	{
+		bEnableCachingTargetHitResult = false;
+		TargetHitResult = FHitResult();
 	}
 }
 
@@ -568,4 +592,9 @@ void AAuraPlayerController::AttachPauseMenuLevelSequenceActorToPawn() const
 	{
 		LevelSequenceManageComponent->AttachLevelSequenceActorToPawn(TEXT("PauseMenu"), GetPawn(), true);
 	}
+}
+
+void AAuraPlayerController::OnLevelSequencePlayerStop(const FName& LevelSequenceTag)
+{
+	EnableCachingTargetHitResult(true);
 }

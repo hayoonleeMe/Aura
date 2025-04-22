@@ -82,6 +82,18 @@ void ULevelSequenceManageComponent::StopCurrentPlayingLevelSequence()
 	StopLevelSequence(CurrentPlayingLevelSequenceTag);
 }
 
+bool ULevelSequenceManageComponent::IsPlayingLevelSequence() const
+{
+	if (LevelSequenceActorMap.Contains(CurrentPlayingLevelSequenceTag))
+	{
+		if (const ALevelSequenceActor* LevelSequenceActor = LevelSequenceActorMap[CurrentPlayingLevelSequenceTag])
+		{
+			return LevelSequenceActor->SequencePlayer && LevelSequenceActor->SequencePlayer->IsPlaying();
+		}
+	}
+	return false;
+}
+
 void ULevelSequenceManageComponent::SetLevelSequenceActorLocation(const FName& LevelSequenceTag, const FVector& NewLocation)
 {
 	if (LevelSequenceActorMap.Contains(LevelSequenceTag))

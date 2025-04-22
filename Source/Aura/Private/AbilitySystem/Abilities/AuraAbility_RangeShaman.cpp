@@ -8,4 +8,5 @@
 UAuraAbility_RangeShaman::UAuraAbility_RangeShaman()
 {
 	DamageTypeTag = AuraGameplayTags::Damage_Type_Fire;
+	bNeedCursorTargetHitResult = false;
 }
