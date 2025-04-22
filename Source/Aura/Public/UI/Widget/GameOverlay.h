@@ -45,6 +45,9 @@ public:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<ULifeCounter> LifeCounter;
 
+	// 현재 열린 모든 메뉴를 닫는다.
+	void CloseAllMenu();
+
 	// ============================================================================
 	// Respawn Timer
 	// ============================================================================
