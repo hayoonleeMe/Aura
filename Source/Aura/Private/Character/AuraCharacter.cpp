@@ -28,6 +28,10 @@ AAuraCharacter::AAuraCharacter()
 	// 리스폰 시 Enemy를 피해 항상 스폰되도록
 	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
+	// SKM의 Animation과 Bone이 렌더링되지 않아도 업데이트되도록 설정
+	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
+	WeaponMeshComponent->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
+
 	/* Role */
 	RoleTag = AuraGameplayTags::Role_Player;
 	
