@@ -9,6 +9,7 @@
 #include "Components/ProgressBar.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "UI/Widget/ToolTip_XPBar.h"
+#include "GameFramework/PlayerState.h"
 
 UXPBar::UXPBar(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -22,7 +23,7 @@ void UXPBar::NativeConstruct()
 
 	check(ToolTipWidgetClass);
 
-	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayer());
+	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayerState());
 	AuraASC->GetGameplayAttributeValueChangeDelegate(UAuraAttributeSet::GetXPAttribute()).AddWeakLambda(this, [this](const FOnAttributeChangeData& Data)
 	{
 		UpdateXPChange(Data.NewValue);
@@ -32,7 +33,7 @@ void UXPBar::NativeConstruct()
 		UpdateLevelChange(Data.NewValue);
 	});
 
-	const UAuraAttributeSet* AuraAS = UAuraBlueprintLibrary::GetAuraAttributeSetChecked(GetOwningPlayer());
+	const UAuraAttributeSet* AuraAS = UAuraBlueprintLibrary::GetAuraAttributeSetChecked(GetOwningPlayerState());
 	UpdateXPChange(AuraAS->GetXP());
 	UpdateLevelChange(AuraAS->GetLevel());
 }

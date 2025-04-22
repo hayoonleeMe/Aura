@@ -51,7 +51,7 @@ void USpellMenu::NativeConstruct()
 	AuraPS->OnSpellPointsChangedDelegate.AddUObject(this, &ThisClass::UpdateSpellPointsChange);
 
 	/* Spell Tree */
-	AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayer());
+	AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayerState());
 	AuraASC->OnActivatableAbilitiesReplicatedDelegate.AddUObject(this, &ThisClass::OnSpellGiven);
 	
 	OffensiveSpellTree->GlobeButton_1->OnSpellGlobeButtonSelectedDelegate.BindUObject(this, &ThisClass::OnSpellGlobeButtonSelected);
@@ -166,7 +166,7 @@ bool USpellMenu::CanSpendPoint() const
 		if (const UAuraGameplayAbility* AuraAbilityCDO = SpellAbilityClass->GetDefaultObject<UAuraGameplayAbility>())
 		{
 			// 현재 플레이어의 레벨이 Spell을 Unlock 할 수 있는 레벨인지 반환
-			const int32 PlayerLevel = UAuraBlueprintLibrary::GetAuraAttributeSetChecked(GetOwningPlayer())->GetLevel();
+			const int32 PlayerLevel = UAuraBlueprintLibrary::GetAuraAttributeSetChecked(GetOwningPlayerState())->GetLevel();
 			return PlayerLevel >= AuraAbilityCDO->UnlockRequiredLevel;
 		}
 	}

@@ -7,6 +7,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Components/Button.h"
 #include "UI/Widget/SquareButton.h"
+#include "GameFramework/PlayerState.h"
 
 void UTextValueButtonRow::NativeConstruct()
 {
@@ -17,6 +18,6 @@ void UTextValueButtonRow::NativeConstruct()
 
 void UTextValueButtonRow::OnUpgradeButtonClicked()
 {
-	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayer());
+	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayerState());
 	AuraASC->ServerUpgradeAttribute(AttributeTag);
 }

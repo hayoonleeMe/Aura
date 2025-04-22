@@ -10,6 +10,7 @@
 #include "Data/SpellConfig.h"
 #include "Player/AuraPlayerController.h"
 #include "UI/Widget/EquippedSpellGlobe.h"
+#include "GameFramework/PlayerState.h"
 
 void UHealthManaSpells::NativeConstruct()
 {
@@ -38,7 +39,7 @@ void UHealthManaSpells::NativeConstruct()
 		SpellConfig = PlayerInterface->GetSpellConfig();
 	}
 
-	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayer());
+	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayerState());
 	AuraASC->OnEquippedSpellAbilityChangedDelegate.AddUObject(this, &ThisClass::OnEquippedSpellChanged);
 
 	BroadcastInitialValues();
@@ -46,7 +47,7 @@ void UHealthManaSpells::NativeConstruct()
 
 void UHealthManaSpells::BroadcastInitialValues()
 {
-	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayer());
+	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayerState());
 	TArray<TTuple<FGameplayTag, FGameplayTag>> StartupSpells;
 	AuraASC->GetSpellAndInputTagPairs(StartupSpells);
 	
@@ -66,7 +67,7 @@ void UHealthManaSpells::OnEquippedSpellChanged(bool bEquipped, const FGameplayTa
 
 void UHealthManaSpells::UpdateEquippedSpellCooldown(bool bEquipped, const FGameplayTag& SpellTag, UEquippedSpellGlobe* SpellGlobe)
 {
-	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayer());
+	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayerState());
 	if (const FGameplayAbilitySpec* SpellSpec = AuraASC->GetSpellSpecForSpellTag(SpellTag))
 	{
 		// Spell Cooldown Tag는 하나만 존재한다고 가정
