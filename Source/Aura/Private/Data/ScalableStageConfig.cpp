@@ -10,12 +10,14 @@ void UScalableStageConfig::PostLoad()
 	SortAscendingSpawnEnemyInfosByThreatValue();
 }
 
+#if WITH_EDITOR
 void UScalableStageConfig::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
 	SortAscendingSpawnEnemyInfosByThreatValue();
 }
+#endif
 
 void UScalableStageConfig::SortAscendingSpawnEnemyInfosByThreatValue()
 {
