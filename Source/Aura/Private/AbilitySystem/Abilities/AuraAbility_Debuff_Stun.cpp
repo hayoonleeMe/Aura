@@ -11,6 +11,9 @@ UAuraAbility_Debuff_Stun::UAuraAbility_Debuff_Stun()
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::ServerOnly;
 	AbilityTags.AddTag(AuraGameplayTags::Debuff_Stun);
+	CancelAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_Offensive);
+	CancelAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_EnemyAttack);
+	CancelAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_ShamanSummonEnemy);
 }
 
 void UAuraAbility_Debuff_Stun::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
