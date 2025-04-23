@@ -198,10 +198,15 @@ void UAuraAbility_ArcaneSpike::SpawnArcaneShard() const
 
 FVector UAuraAbility_ArcaneSpike::GetAdjustedTargetLocation(const FVector& StartLocation,  const FVector& TargetLocation, const FCollisionQueryParams& QueryParams) const
 {
-	FHitResult HitResult;
-	if (GetWorld()->SweepSingleByChannel(HitResult, StartLocation, TargetLocation, FQuat::Identity, ECC_OnlyWall, FCollisionShape::MakeSphere(EffectiveRadius), QueryParams))
+	FHitResult LineHitResult;
+	if (GetWorld()->LineTraceSingleByChannel(LineHitResult, StartLocation, TargetLocation, ECC_OnlyWall, QueryParams))
 	{
-		return HitResult.ImpactPoint + HitResult.ImpactNormal * EffectiveRadius;
+		return LineHitResult.ImpactPoint + LineHitResult.ImpactNormal * EffectiveRadius;
+	}
+	FHitResult SweepHitResult;
+	if (GetWorld()->SweepSingleByChannel(SweepHitResult, TargetLocation, TargetLocation + TargetLocation.GetSafeNormal() * EffectiveRadius , FQuat::Identity, ECC_OnlyWall, FCollisionShape::MakeSphere(EffectiveRadius), QueryParams))
+	{
+		return SweepHitResult.ImpactPoint + SweepHitResult.ImpactNormal * EffectiveRadius;
 	}
 	return TargetLocation;
 }
