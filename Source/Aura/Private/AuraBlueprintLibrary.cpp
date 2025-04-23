@@ -188,6 +188,12 @@ FVector UAuraBlueprintLibrary::GetActorFeetLocation(const AActor* Actor)
 	{
 		return Character->GetNavAgentLocation();
 	}
+	if (Actor && Actor->IsRootComponentMovable())
+	{
+		FVector ActorLocation = Actor->GetActorLocation();
+		ActorLocation.Z = 0.f;
+		return ActorLocation;
+	}
 	return FVector::ZeroVector;
 }
 
