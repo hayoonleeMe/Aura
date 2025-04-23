@@ -70,4 +70,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UWidgetComponent> TooltipWidgetComponent;
+
+	// ToolTip Widget의 Text가 제대로 설정됐는지
+	bool bHasSetToolTipWidgetText = false;
 };
