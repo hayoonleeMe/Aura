@@ -47,6 +47,19 @@ void ABeacon_StartStage::HighlightActor()
 
 	if (!bHasInteractedWithPlayer)
 	{
+		// 처음 표시할 때 ToolTip Widget Text 설정
+		if (!bHasSetToolTipWidgetText)
+		{
+			if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr))
+			{
+				if (const UToolTip_Beacon_StartStage* ToolTipWidget = Cast<UToolTip_Beacon_StartStage>(TooltipWidgetComponent->GetWidget()))
+				{
+					ToolTipWidget->SetKeyText(PlayerInterface->GetInteractKeyMappedToAction().ToString());
+					bHasSetToolTipWidgetText = true;
+				}
+			}
+		}
+		
 		TooltipWidgetComponent->SetVisibility(true);
 	}
 }
@@ -91,15 +104,6 @@ void ABeacon_StartStage::BeginPlay()
 
 	DynamicMaterialInstance = UMaterialInstanceDynamic::Create(MeshComponent->GetMaterial(0), this);
 	MeshComponent->SetMaterial(0, DynamicMaterialInstance);
-
-	// ToolTip Text 설정
-	if (const UToolTip_Beacon_StartStage* ToolTipWidget = Cast<UToolTip_Beacon_StartStage>(TooltipWidgetComponent->GetWidget()))
-	{
-		if (const IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr))
-		{
-			ToolTipWidget->SetKeyText(PlayerInterface->GetInteractKeyMappedToAction().ToString());
-		}
-	}
 
 	// SpawnBeacon Level Sequence가 끝나고 다시 표시
 	SetMeshComponentHiddenInGame(true);
