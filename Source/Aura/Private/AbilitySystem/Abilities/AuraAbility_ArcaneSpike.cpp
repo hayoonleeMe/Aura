@@ -209,7 +209,7 @@ FVector UAuraAbility_ArcaneSpike::GetAdjustedTargetLocation(const FVector& Start
 		}
 	}
 	FHitResult SweepHitResult;
-	if (GetWorld()->SweepSingleByChannel(SweepHitResult, TargetLocation, TargetLocation + TargetLocation.GetSafeNormal() * EffectiveRadius , FQuat::Identity, ECC_OnlyWall, FCollisionShape::MakeSphere(EffectiveRadius), QueryParams))
+	if (GetWorld()->SweepSingleByChannel(SweepHitResult, TargetLocation + -TargetLocation.GetSafeNormal() * EffectiveRadius, TargetLocation, FQuat::Identity, ECC_OnlyWall, FCollisionShape::MakeSphere(EffectiveRadius), QueryParams))
 	{
 		return SweepHitResult.ImpactPoint + SweepHitResult.ImpactNormal * EffectiveRadius;
 	}
