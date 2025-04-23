@@ -28,6 +28,9 @@ public:
 
 	bool IsStartStageBeaconValid() const;
 
+	// Stage Status changed to Started
+	void OnStageStarted() const;
+
 protected:
 	virtual void BeginPlay() override;
 

@@ -74,6 +74,16 @@ bool AAuraGameStateBase::IsStartStageBeaconValid() const
 	return IsValid(StartStageBeacon);
 }
 
+void AAuraGameStateBase::OnStageStarted() const
+{
+	// Stage가 시작하면 SpawnBeacon Level Sequence 종료
+	// 실제 Level Sequence를 종료하는 로직에서 실행 중인지 판별하므로 체크 생략
+	if (IPlayerInterface* PlayerInterface = Cast<IPlayerInterface>(GetWorld() ? GetWorld()->GetFirstPlayerController<APlayerController>() : nullptr))
+	{
+		PlayerInterface->StopLevelSequence(TEXT("SpawnBeacon"));
+	}
+}
+
 void AAuraGameStateBase::BeginPlay()
 {
 	Super::BeginPlay();

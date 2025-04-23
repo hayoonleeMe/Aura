@@ -369,6 +369,11 @@ void AAuraPlayerController::ClientOnStageStatusChanged_Implementation(EStageStat
 	}
 	else
 	{
+		if (const AAuraGameStateBase* AuraGameStateBase = GetWorld() ? GetWorld()->GetGameState<AAuraGameStateBase>() : nullptr)
+		{
+			// Stage가 시작하면 SpawnBeacon Level Sequence 종료
+			AuraGameStateBase->OnStageStarted();
+		}
 		if (OnStageStatusChangedDelegate.IsBound())
 		{
 			OnStageStatusChangedDelegate.Execute(StageStatus, StageNumber, WaitingTimerEndSeconds, TotalEnemyCount);
