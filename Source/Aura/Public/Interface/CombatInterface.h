@@ -80,10 +80,4 @@ public:
 
 	// 해당 Enemy를 죽일 때 얻을 수 있는 XP 값을 반환 
 	virtual int32 GetXPReward() { return 0; }
-
-	// SpellTag에 해당하는 Passive Spell이 활성화 됐음을 알림
-	virtual void OnPassiveSpellActivated(const FGameplayTag& SpellTag) const {}
-
-	// SpellTag에 해당하는 Passive Spell이 비활성화 됐음을 알림
-	virtual void OnPassiveSpellDeactivated(const FGameplayTag& SpellTag) const {}
 };

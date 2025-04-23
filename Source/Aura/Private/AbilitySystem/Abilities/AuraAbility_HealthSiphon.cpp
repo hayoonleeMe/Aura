@@ -6,7 +6,6 @@
 #include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
-#include "Interface/CombatInterface.h"
 
 UAuraAbility_HealthSiphon::UAuraAbility_HealthSiphon()
 {
@@ -44,28 +43,6 @@ void UAuraAbility_HealthSiphon::ActivateAbility(const FGameplayAbilitySpecHandle
 	{
 		WaitGameplayEvent->EventReceived.AddDynamic(this, &ThisClass::OnEventReceived);
 		WaitGameplayEvent->ReadyForActivation();
-	}
-
-	if (HasAuthority(&CurrentActivationInfo))
-	{
-		if (const ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo()))
-		{
-			CombatInterface->OnPassiveSpellActivated(AuraGameplayTags::Abilities_Passive_HealthSiphon);
-		}
-	}
-}
-
-void UAuraAbility_HealthSiphon::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
-{
-	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-
-	if (HasAuthority(&CurrentActivationInfo))
-	{
-		if (const ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo()))
-		{
-			CombatInterface->OnPassiveSpellDeactivated(AuraGameplayTags::Abilities_Passive_HealthSiphon);
-		}
 	}
 }
 

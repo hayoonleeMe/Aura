@@ -32,8 +32,6 @@ public:
 
 	/* Begin CombatInterface */
 	virtual void Die() override;
-	virtual void OnPassiveSpellActivated(const FGameplayTag& SpellTag) const override;
-	virtual void OnPassiveSpellDeactivated(const FGameplayTag& SpellTag) const override;
 	/* End CombatInterface */
 
 	/* Begin PlayerInterface */
@@ -119,17 +117,17 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UNiagaraComponent> HaloOfProtectionComponent;
 
+	void OnHaloOfProtectionSiphonTagChanged(const FGameplayTag Tag, int32 NewCount) const;
+	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UNiagaraComponent> HealthSiphonComponent;
 
+	void OnHealthSiphonTagChanged(const FGameplayTag Tag, int32 NewCount) const;
+	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UNiagaraComponent> ManaSiphonComponent;
 
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastActivatePassiveSpellNiagaraComponent(const FGameplayTag& SpellTag) const;
-
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastDeactivatePassiveSpellNiagaraComponent(const FGameplayTag& SpellTag) const;
+	void OnManaSiphonTagChanged(const FGameplayTag Tag, int32 NewCount) const;
 
 	// ============================================================================
 	// Invincibility

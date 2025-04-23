@@ -80,12 +80,6 @@ void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGamepla
 				AbilitySpec.InputID = AuraInputConfig->GetInputIDForInputTag(AuraGameplayAbility->StartupInputTag);
 			}
 			GiveAbility(AbilitySpec);
-
-			// 패시브 스펠은 바로 실행
-			if (AuraGameplayAbility->AbilityTags.HasTag(AuraGameplayTags::Abilities_Passive))
-			{
-				TryActivateAbility(AbilitySpec.Handle);
-			}
 		}
 	}
 }
