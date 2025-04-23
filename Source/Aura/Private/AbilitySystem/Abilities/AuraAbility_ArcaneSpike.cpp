@@ -154,13 +154,15 @@ void UAuraAbility_ArcaneSpike::SpawnArcaneShard() const
 	TArray<FVector> TargetLocations;
 	if (NumArcaneShards == 1)
 	{
-		const FVector FinalTargetLocation = GetAdjustedTargetLocation(StartLocation, TargetLocation, QueryParams);
+		const FVector FinalTargetLocation = GetAdjustedTargetLocation(StartLocation, TargetLocation, QueryParams, true);
 		TargetLocations.Add(FinalTargetLocation);
 		CueParameters.Location = FinalTargetLocation;
 		UAuraBlueprintLibrary::ExecuteGameplayCueWithParams(AvatarActor, AuraGameplayTags::GameplayCue_ArcaneShard, CueParameters);
 	}
 	else
 	{
+		TargetLocation = GetAdjustedTargetLocation(StartLocation, TargetLocation, QueryParams, true);
+		
 		// TargetLocation 주위의 랜덤한 지점에 Arcane Shard를 소환한다.
 		const float RandAngle = FMath::RandRange(0.f, 180.f);
 		const float Angle = 360.f / NumArcaneShards;
@@ -168,7 +170,7 @@ void UAuraAbility_ArcaneSpike::SpawnArcaneShard() const
 		{
 			FVector Offset = FVector::ForwardVector * FMath::RandRange(EffectiveRadius, FinalEffectiveRadius);
 			FVector FinalTargetLocation = TargetLocation + Offset.RotateAngleAxis(RandAngle + Angle * Index, FVector::UpVector);
-			FinalTargetLocation = GetAdjustedTargetLocation(StartLocation, FinalTargetLocation, QueryParams);
+			FinalTargetLocation = GetAdjustedTargetLocation(StartLocation, FinalTargetLocation, QueryParams, false);
 			TargetLocations.Add(FinalTargetLocation);
 			CueParameters.Location = FinalTargetLocation;
 			UAuraBlueprintLibrary::ExecuteGameplayCueWithParams(AvatarActor, AuraGameplayTags::GameplayCue_ArcaneShard, CueParameters);
@@ -196,12 +198,15 @@ void UAuraAbility_ArcaneSpike::SpawnArcaneShard() const
 	}
 }
 
-FVector UAuraAbility_ArcaneSpike::GetAdjustedTargetLocation(const FVector& StartLocation,  const FVector& TargetLocation, const FCollisionQueryParams& QueryParams) const
+FVector UAuraAbility_ArcaneSpike::GetAdjustedTargetLocation(const FVector& StartLocation,  const FVector& TargetLocation, const FCollisionQueryParams& QueryParams, bool bDoLineTrace) const
 {
-	FHitResult LineHitResult;
-	if (GetWorld()->LineTraceSingleByChannel(LineHitResult, StartLocation, TargetLocation, ECC_OnlyWall, QueryParams))
+	if (bDoLineTrace)
 	{
-		return LineHitResult.ImpactPoint + LineHitResult.ImpactNormal * EffectiveRadius;
+		FHitResult LineHitResult;
+		if (GetWorld()->LineTraceSingleByChannel(LineHitResult, StartLocation, TargetLocation, ECC_OnlyWall, QueryParams))
+		{
+			return LineHitResult.ImpactPoint + LineHitResult.ImpactNormal * EffectiveRadius;
+		}
 	}
 	FHitResult SweepHitResult;
 	if (GetWorld()->SweepSingleByChannel(SweepHitResult, TargetLocation, TargetLocation + TargetLocation.GetSafeNormal() * EffectiveRadius , FQuat::Identity, ECC_OnlyWall, FCollisionShape::MakeSphere(EffectiveRadius), QueryParams))
