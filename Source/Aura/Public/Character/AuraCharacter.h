@@ -74,9 +74,10 @@ public:
 	void ServerAddSpellPointForTest();
 	
 protected:
+	virtual void BeginPlay() override;
+	
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeAttributes() override;
-
 	virtual void HandleDeathLocally() override;
 
 private:
