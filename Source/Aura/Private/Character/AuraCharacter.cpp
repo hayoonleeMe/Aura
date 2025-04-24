@@ -19,7 +19,6 @@
 #include "Interface/StageSystemInterface.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
-#include "UI/HUD/AuraHUD.h"
 #include "UI/Widget/PlayerNameplate.h"
 #include "GameFramework/GameModeBase.h"
 
@@ -317,21 +316,12 @@ void AAuraCharacter::InitAbilityActorInfo()
 			AuraASC->AbilityFailedCallbacks.AddUObject(AuraASC, &UAuraAbilitySystemComponent::OnAbilityFailed);
 		}
 
-		// Overlay Widget 초기화
-		if (APlayerController* PC = GetController<APlayerController>())
+		if (AAuraPlayerController* AuraPC = GetController<AAuraPlayerController>())
 		{
-			if (AAuraHUD* AuraHUD = PC->GetHUD<AAuraHUD>())
+			if (AuraPC->IsLocalController())
 			{
-				AuraHUD->InitOverlay();
-			}
-
-			if (PC->IsLocalController())
-			{
-				if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(PC))
-				{
-					// Stage를 시작하기 위해 ASC 초기화를 ServerRPC로 전송
-					AuraPC->ServerNotifyASCInitToGameMode();
-				}
+				// Stage를 시작하기 위해 ASC 초기화를 ServerRPC로 전송
+				AuraPC->ServerNotifyASCInitToGameMode();
 			}
 		}
 	}

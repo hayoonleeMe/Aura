@@ -184,6 +184,11 @@ void AAuraPlayerController::SetLevelSequenceActorLocation(const FName& LevelSequ
 
 void AAuraPlayerController::HandleInitialLogic() const
 {
+	// GameOverlay Widget 초기화
+	if (AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())
+	{
+		AuraHUD->InitOverlay();
+	}
 	ShowPreStageHUD();
 	ShowAllMenuShortcutAlert();
 }
