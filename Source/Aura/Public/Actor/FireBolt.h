@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AuraProjectile.h"
+#include "PooledProjectile.h"
 #include "FireBolt.generated.h"
 
 class UNiagaraComponent;
@@ -12,7 +12,7 @@ class UNiagaraComponent;
  * Fire Niagara System과 Fire Impact Effect를 포함해 FireBolt를 나타내는 Projectile Class
  */
 UCLASS()
-class AURA_API AFireBolt : public AAuraProjectile
+class AURA_API AFireBolt : public APooledProjectile
 {
 	GENERATED_BODY()
 
@@ -23,4 +23,6 @@ protected:
 	// VFX
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UNiagaraComponent> FireEffectComponent;
+
+	virtual void SetInUse(bool bInUse) override;
 };
