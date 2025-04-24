@@ -261,6 +261,14 @@ void AAuraCharacter::ServerAddSpellPointForTest_Implementation()
 	AddToSpellPoints(1);
 }
 
+void AAuraCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// PlayerName 표시
+	InitializePlayerNameplateWidget();
+}
+
 void AAuraCharacter::InitAbilityActorInfo()
 {
 	AAuraPlayerState* AuraPS = GetPlayerStateChecked<AAuraPlayerState>();
@@ -352,8 +360,8 @@ void AAuraCharacter::InitAbilityActorInfo()
 	}
 	AuraASC->SetInitialized();
 
-	// 캐릭터 스폰 시 생명 주기 함수 호출이 어긋나므로 다음 프레임에 호출해 해결
-	GetWorldTimerManager().SetTimerForNextTick(FTimerDelegate::CreateUObject(this, &ThisClass::InitializePlayerNameplateWidget));
+	// PlayerName 표시
+	InitializePlayerNameplateWidget();
 
 	// Audio Listener를 캐릭터로 설정
 	if (APlayerController* PlayerController = GetController<APlayerController>())
