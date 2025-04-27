@@ -4,21 +4,27 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
+#include "Interface/ObjectPoolInterface.h"
 #include "AuraGameStateBase.generated.h"
 
+class UObjectPoolComponent;
 class ABeacon_StartStage;
 
 /**
  * 
  */
 UCLASS()
-class AURA_API AAuraGameStateBase : public AGameStateBase
+class AURA_API AAuraGameStateBase : public AGameStateBase, public IObjectPoolInterface
 {
 	GENERATED_BODY()
 
 public:
 	AAuraGameStateBase();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	/* Begin ObjectPoolInterface */
+	virtual AActor* SpawnFromPool(EPooledActorType PooledActorType, const FTransform& SpawnTransform, bool bSetInUse) override;
+	/* End ObjectPoolInterface */
 
 	void SpawnStartStageBeacon();
 	void DestroyStartStageBeacon() const;
@@ -72,4 +78,20 @@ private:
 	// 첫번째 Spawn Beacon Level Sequence가 끝나기를 기다리는 중
 	// true라면, 첫 Spawn Beacon Level Sequence가 끝날 때 초기 로직 처리
 	bool bWaitingForFirstLevelSequenceStop = true;
+
+	// ============================================================================
+	// Pool 
+	// ============================================================================
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UObjectPoolComponent> FireBoltPoolComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UObjectPoolComponent> FireBallPoolComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UObjectPoolComponent> EmberBoltPoolComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UObjectPoolComponent> RockPoolComponent;
 };

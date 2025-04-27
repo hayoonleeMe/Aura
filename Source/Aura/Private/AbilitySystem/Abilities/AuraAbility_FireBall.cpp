@@ -13,6 +13,7 @@
 #include "Aura/Aura.h"
 #include "Interface/CombatInterface.h"
 #include "Interface/ObjectPoolInterface.h"
+#include "GameFramework/GameStateBase.h"
 
 UAuraAbility_FireBall::UAuraAbility_FireBall()
 {
@@ -197,15 +198,19 @@ void UAuraAbility_FireBall::SpawnFireBalls() const
 		SpawnTransform.SetRotation(Rotation.Quaternion());
 
 		// Object Pooling instead of spawn actor
-		if (IObjectPoolInterface* ObjectPoolInterface = Cast<IObjectPoolInterface>(AvatarActor))
+		if (IObjectPoolInterface* ObjectPoolInterface = Cast<IObjectPoolInterface>(GetWorld() ? GetWorld()->GetGameState() : nullptr))
 		{
-			if (AFireBall* FireBall = ObjectPoolInterface->SpawnFromPool<AFireBall>(EPooledActorType::FireBall, SpawnTransform))
+			if (const APooledProjectile* ProjectileCDO = ProjectileClass->GetDefaultObject<APooledProjectile>())
 			{
-				// Projectile로 데미지를 입히기 위해 설정
-				MakeDamageEffectParams(FireBall->DamageEffectParams, nullptr);
+				if (AFireBall* FireBall = ObjectPoolInterface->SpawnFromPool<AFireBall>(ProjectileCDO->GetPooledActorType(), SpawnTransform, false))
+				{
+					// Projectile로 데미지를 입히기 위해 설정
+					FireBall->DamageEffectParams = MakeDamageEffectParams(nullptr);
 
-				// FireBall 폭발 후 EmberBolt를 Spawn하기 위해 옵션 설정
-				FireBall->SetEmberBoltOptions(GetNumEmberBoltsByLevel(GetAbilityLevel()), GetEmberBoltDamageByLevel(GetAbilityLevel()), EmberBoltClass);
+					// FireBall 폭발 후 EmberBolt를 Spawn하기 위해 옵션 설정
+					FireBall->SetEmberBoltOptions(GetNumEmberBoltsByLevel(GetAbilityLevel()), GetEmberBoltDamageByLevel(GetAbilityLevel()), EmberBoltClass);
+					FireBall->SetInUse(true);
+				}
 			}
 		}	
 	}

@@ -15,8 +15,7 @@ void UObjectPoolComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	// 로컬에서만 Pool에서 유효한 액터를 찾으므로, 불필요한 Replicate를 줄이기 위해 Owner Only 조건을 추가
-	DOREPLIFETIME_CONDITION(UObjectPoolComponent, Pool, COND_OwnerOnly);
+	DOREPLIFETIME(UObjectPoolComponent, Pool);
 }
 
 void UObjectPoolComponent::BeginPlay()
@@ -68,7 +67,7 @@ UPooledActorComponent* UObjectPoolComponent::FindAvailable() const
 	return nullptr;
 }
 
-AActor* UObjectPoolComponent::SpawnFromPool(const FTransform& SpawnTransform) const
+AActor* UObjectPoolComponent::SpawnFromPool(const FTransform& SpawnTransform, bool bSetInUse) const
 {
 	UPooledActorComponent* PooledActorComponent = FindAvailable();
 	
@@ -83,7 +82,11 @@ AActor* UObjectPoolComponent::SpawnFromPool(const FTransform& SpawnTransform) co
 	{
 		Actor->SetActorTransform(SpawnTransform);
 	}
-	PooledActorComponent->SetInUse(true);
+
+	if (bSetInUse)
+	{
+		PooledActorComponent->SetInUse(true);
+	}
 	
 	return Actor;
 }

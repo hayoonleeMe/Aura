@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AuraProjectile.h"
+#include "PooledProjectile.h"
 #include "Rock.generated.h"
 
 /**
  * Rock Static Mesh Component와 Rock Impact Effect를 포함해 Rock을 나타내는 Projectile Class
  */
 UCLASS()
-class AURA_API ARock : public AAuraProjectile
+class AURA_API ARock : public APooledProjectile
 {
 	GENERATED_BODY()
 
@@ -22,4 +22,6 @@ private:
 	// VFX
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
+
+	virtual void OnSetInUse(bool bInUse) override;
 };

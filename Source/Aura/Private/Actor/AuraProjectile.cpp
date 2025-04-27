@@ -10,8 +10,6 @@
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "Kismet/GameplayStatics.h"
-
 
 AAuraProjectile::AAuraProjectile()
 {
@@ -70,7 +68,7 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 	
 	if (ImpactCueTag.IsValid())
 	{
-		UAuraBlueprintLibrary::ExecuteGameplayCue(GetOwner(), ImpactCueTag, GetActorLocation());
+		UAuraBlueprintLibrary::ExecuteGameplayCue(DamageEffectParams.SourceAbilitySystemComponent, ImpactCueTag, GetActorLocation());
 	}
 
 	Destroy();

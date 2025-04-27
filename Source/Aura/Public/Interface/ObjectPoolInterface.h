@@ -23,11 +23,11 @@ class AURA_API IObjectPoolInterface
 
 public:
 	// PooledActorType에 해당하는 Object Pool에서 사용할 수 있는 Actor를 가져와 SpawnTransform을 설정하고 반환한다.
-	virtual AActor* SpawnFromPool(EPooledActorType PooledActorType, const FTransform& SpawnTransform) { return nullptr; }
+	virtual AActor* SpawnFromPool(EPooledActorType PooledActorType, const FTransform& SpawnTransform, bool bSetInUse) { return nullptr; }
 
 	template<class T>
-	T* SpawnFromPool(EPooledActorType PooledActorType, const FTransform& SpawnTransform)
+	T* SpawnFromPool(EPooledActorType PooledActorType, const FTransform& SpawnTransform, bool bSetInUse)
 	{
-		return Cast<T>(SpawnFromPool(PooledActorType, SpawnTransform));
+		return Cast<T>(SpawnFromPool(PooledActorType, SpawnTransform, bSetInUse));
 	}
 };

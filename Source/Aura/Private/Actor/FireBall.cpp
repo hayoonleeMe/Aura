@@ -4,15 +4,12 @@
 #include "Actor/FireBall.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
-#include "AbilitySystemComponent.h"
 #include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "NiagaraComponent.h"
-#include "Component/PooledActorComponent.h"
-#include "Components/AudioComponent.h"
-#include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Interface/ObjectPoolInterface.h"
+#include "GameFramework/GameStateBase.h"
 
 AFireBall::AFireBall()
 {
@@ -23,15 +20,7 @@ AFireBall::AFireBall()
 	FireEffectComponent->SetupAttachment(GetRootComponent());
 	ImpactCueTag = AuraGameplayTags::GameplayCue_FireBallImpact;
 
-	PooledActorComponent = CreateDefaultSubobject<UPooledActorComponent>(TEXT("Pooled Actor Component"));
-    PooledActorComponent->bAutoActivate = true;
-}
-
-void AFireBall::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-	
-	PooledActorComponent->SetInUseDelegate.BindUObject(this, &ThisClass::SetInUse);
+	PooledActorType = EPooledActorType::FireBall;
 }
 
 void AFireBall::SetEmberBoltOptions(int32 InNumEmberBolts, float InEmberBoltDamage, const TSubclassOf<AAuraProjectile>& InEmberBoltClass)
@@ -45,35 +34,9 @@ void AFireBall::SetEmberBoltOptions(int32 InNumEmberBolts, float InEmberBoltDama
 void AFireBall::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
                                 bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!IsValidOverlap(OtherActor))
-	{
-		return;
-	}
-
-	// Can apply damage only in server
-	if (HasAuthority())
-	{
-		if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
-		{
-			DamageEffectParams.TargetAbilitySystemComponent = TargetASC;	
-			UAuraBlueprintLibrary::ApplyDamageEffect(DamageEffectParams);
-		}
-	}
-
-	if (ImpactCueTag.IsValid())
-	{
-		UAuraBlueprintLibrary::ExecuteGameplayCue(GetOwner(), ImpactCueTag, GetActorLocation());
-	}
-
+	Super::OnSphereOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+	
 	SpawnEmberBolts();
-
-	PooledActorComponent->SetInUse(false);
-}
-
-bool AFireBall::IsValidOverlap(const AActor* TargetActor) const
-{
-	const AActor* SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent ? DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor() : nullptr;
-	return IsValid(SourceAvatarActor) && IsValid(TargetActor) && SourceAvatarActor != TargetActor && UAuraBlueprintLibrary::IsNotFriend(SourceAvatarActor, TargetActor);
 }
 
 void AFireBall::SpawnEmberBolts() const
@@ -93,36 +56,32 @@ void AFireBall::SpawnEmberBolts() const
 		SpawnTransform.SetRotation(Rotation.Quaternion());
 
 		// Object Pooling instead of spawn actor
-		if (IObjectPoolInterface* ObjectPoolInterface = Cast<IObjectPoolInterface>(GetOwner()))
+		if (IObjectPoolInterface* ObjectPoolInterface = Cast<IObjectPoolInterface>(GetWorld() ? GetWorld()->GetGameState() : nullptr))
 		{
-			if (AAuraProjectile* AuraProjectile = ObjectPoolInterface->SpawnFromPool<AAuraProjectile>(EPooledActorType::EmberBolt, SpawnTransform))
+			if (const APooledProjectile* ProjectileCDO = EmberBoltClass->GetDefaultObject<APooledProjectile>())
 			{
-				// Projectile로 데미지를 입히기 위해 설정
-				AuraProjectile->DamageEffectParams = DamageEffectParams;
-				AuraProjectile->DamageEffectParams.BaseDamage = EmberBoltDamage;
+				if (APooledProjectile* PooledProjectile = ObjectPoolInterface->SpawnFromPool<APooledProjectile>(ProjectileCDO->GetPooledActorType(), SpawnTransform, false))
+				{
+					// Projectile로 데미지를 입히기 위해 설정
+					PooledProjectile->DamageEffectParams = DamageEffectParams;
+					PooledProjectile->DamageEffectParams.BaseDamage = EmberBoltDamage;
+					PooledProjectile->SetInUse(true);
+				}
 			}
 		}	
 	}
 }
 
-void AFireBall::SetInUse(bool bInUse) const
+void AFireBall::OnSetInUse(bool bInUse)
 {
+	Super::OnSetInUse(bInUse);
+	
 	if (bInUse)
 	{
-		ProjectileMovementComponent->Velocity = GetActorForwardVector() * ProjectileMovementComponent->InitialSpeed;
-		ProjectileMovementComponent->Activate();
-		SphereComponent->Activate();
-		if (LoopingSoundComponent->GetSound())
-		{
-			LoopingSoundComponent->Activate();
-		}
 		FireEffectComponent->Activate();
 	}
 	else
 	{
-		ProjectileMovementComponent->Deactivate();
-		SphereComponent->Deactivate();
-		LoopingSoundComponent->Deactivate();
 		FireEffectComponent->Deactivate();
 	}
 }

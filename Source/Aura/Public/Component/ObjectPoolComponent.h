@@ -26,7 +26,8 @@ public:
 	UPooledActorComponent* FindAvailable() const;
 
 	// Object Pool에서 사용할 수 있는 Actor를 가져와 SpawnTransform을 설정하고 반환한다.
-	AActor* SpawnFromPool(const FTransform& SpawnTransform) const;
+	// bSetInUse가 true이면, Pool에서 꺼내면서 바로 사용 중으로 설정한다.
+	AActor* SpawnFromPool(const FTransform& SpawnTransform, bool bSetInUse) const;
 
 protected:
 	virtual void BeginPlay() override;

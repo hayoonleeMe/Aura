@@ -24,6 +24,8 @@ ARock::ARock()
 	MeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	ImpactCueTag = AuraGameplayTags::GameplayCue_RockImpact;
+
+	PooledActorType = EPooledActorType::Rock; 
 }
 
 void ARock::Tick(float DeltaTime)
@@ -32,5 +34,12 @@ void ARock::Tick(float DeltaTime)
 
 	// Random Rotate Effect
 	MeshComponent->AddLocalRotation(UKismetMathLibrary::RandomRotator(true) * DeltaTime);
+}
+
+void ARock::OnSetInUse(bool bInUse)
+{
+	Super::OnSetInUse(bInUse);
+
+	MeshComponent->SetHiddenInGame(!bInUse);
 }
 

@@ -3,15 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FireBolt_Pooled.h"
+#include "FireBolt.h"
 #include "EmberBolt.generated.h"
 
 /**
  * FireBall Projectile이 폭발한 뒤 주변으로 발사되는 EmberBolt Projectile
- * Object Pool에 의해 관리된다.
  */
 UCLASS()
-class AURA_API AEmberBolt : public AFireBolt_Pooled
+class AURA_API AEmberBolt : public AFireBolt
 {
 	GENERATED_BODY()
 

@@ -7,6 +7,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AuraBlueprintLibrary.generated.h"
 
+class UAbilitySystemComponent;
 class UAuraAbilitySystemComponent;
 class AAuraGameStateBase;
 class UAuraAttributeSet;
@@ -64,7 +65,7 @@ public:
 
 	// CueLocation을 GameplayCueParameters로 전달하고 Replicate되는 GameplayCueNotify_Static을 실행
 	UFUNCTION(BlueprintCallable)
-	static void ExecuteGameplayCue(AActor* OwnerActor, const FGameplayTag& CueTag, const FVector& CueLocation);
+	static void ExecuteGameplayCue(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTag& CueTag, const FVector& CueLocation);
 
 	UFUNCTION(BlueprintCallable)
 	static void ExecuteGameplayCueWithParams(AActor* OwnerActor, const FGameplayTag& CueTag, const FGameplayCueParameters& CueParameters);

@@ -5,6 +5,7 @@
 
 #include "AuraBlueprintLibrary.h"
 #include "Actor/Beacon_StartStage.h"
+#include "Component/ObjectPoolComponent.h"
 #include "Game/AuraGameInstance.h"
 #include "Interface/PlayerInterface.h"
 #include "Net/UnrealNetwork.h"
@@ -19,6 +20,23 @@ AAuraGameStateBase::AAuraGameStateBase()
 
 	/* Beacon */
 	BeaconSpawnDistance = 500.f;
+
+	/* Pool */
+	FireBoltPoolComponent = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("Projectile Pool Component"));
+	FireBoltPoolComponent->SetPoolSize(100);
+	FireBoltPoolComponent->bAutoActivate = true;
+
+	FireBallPoolComponent = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("FireBall Pool Component"));
+	FireBallPoolComponent->SetPoolSize(30);
+	FireBallPoolComponent->bAutoActivate = true;
+
+	EmberBoltPoolComponent = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("EmberBolt Pool Component"));
+	EmberBoltPoolComponent->SetPoolSize(90);
+	EmberBoltPoolComponent->bAutoActivate = true;
+
+	RockPoolComponent = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("Rock Pool Component"));
+	RockPoolComponent->SetPoolSize(50);
+	RockPoolComponent->bAutoActivate = true;
 }
 
 void AAuraGameStateBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -26,6 +44,27 @@ void AAuraGameStateBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AAuraGameStateBase, StartStageBeacon);
+}
+
+AActor* AAuraGameStateBase::SpawnFromPool(EPooledActorType PooledActorType, const FTransform& SpawnTransform, bool bSetInUse)
+{
+	if (PooledActorType == EPooledActorType::FireBolt)
+	{
+		return FireBoltPoolComponent->SpawnFromPool(SpawnTransform, bSetInUse);
+	}
+	if (PooledActorType == EPooledActorType::FireBall)
+	{
+		return FireBallPoolComponent->SpawnFromPool(SpawnTransform, bSetInUse);
+	}
+	if (PooledActorType == EPooledActorType::EmberBolt)
+	{
+		return EmberBoltPoolComponent->SpawnFromPool(SpawnTransform, bSetInUse);
+	}
+	if (PooledActorType == EPooledActorType::Rock)
+	{
+		return RockPoolComponent->SpawnFromPool(SpawnTransform, bSetInUse);
+	}
+	return nullptr;
 }
 
 /* Called on Server Only */

@@ -118,7 +118,7 @@ void UAuraAbility_ChainLightning::OnEventReceived(FGameplayEventData Payload)
 
 void UAuraAbility_ChainLightning::CastLightningBeam() const
 {
-	const UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo());
+	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo());
 	AActor* AvatarActor = GetAvatarActorFromActorInfo();
 	if (!AuraASC || !IsValid(AvatarActor) || !AvatarActor->HasAuthority())	// Only Spawn in Server
 	{
@@ -156,7 +156,7 @@ void UAuraAbility_ChainLightning::CastLightningBeam() const
 	}
 
 	// Spawn Beam from Player to Target
-	UAuraBlueprintLibrary::ExecuteGameplayCue(AvatarActor, AuraGameplayTags::GameplayCue_LightningBeam, TargetLocation);
+	UAuraBlueprintLibrary::ExecuteGameplayCue(AuraASC, AuraGameplayTags::GameplayCue_LightningBeam, TargetLocation);
 
 	// First Target이 없다면 Damage를 입히지 않기 위해 Early Return
 	if (!IsValid(FirstTargetActor))
@@ -199,7 +199,7 @@ void UAuraAbility_ChainLightning::CastLightningBeam() const
 		}
 		
 		// Spawn Beam CurrentTarget To NearestTarget
-		UAuraBlueprintLibrary::ExecuteGameplayCue(CurrentTarget, AuraGameplayTags::GameplayCue_LightningBeam, NearestTarget->GetActorLocation());
+		UAuraBlueprintLibrary::ExecuteGameplayCue(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(CurrentTarget), AuraGameplayTags::GameplayCue_LightningBeam, NearestTarget->GetActorLocation());
 		
 		SelectedActors.Add(NearestTarget);
 		CurrentTarget = NearestTarget; 
@@ -211,8 +211,7 @@ void UAuraAbility_ChainLightning::CastLightningBeam() const
 	
 	for (AActor* Actor : SelectedActors)
 	{
-		FDamageEffectParams DamageEffectParams;
-		MakeDamageEffectParams(DamageEffectParams, Actor);
+		FDamageEffectParams DamageEffectParams = MakeDamageEffectParams(Actor);
 		if (Actor != FirstTargetActor)
 		{
 			// 연쇄될 때마다 데미지 감소

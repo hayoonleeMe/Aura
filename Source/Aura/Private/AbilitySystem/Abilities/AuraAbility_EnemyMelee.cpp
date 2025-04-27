@@ -71,8 +71,7 @@ void UAuraAbility_EnemyMelee::OnEventReceived(FGameplayEventData Payload)
 	if (GetWorld()->OverlapMultiByChannel(OverlapResults, CombatSocketTransform.GetLocation(), CombatSocketTransform.GetRotation(), ECC_Visibility, CollisionShape, QueryParams))
 	{
 		// Apply Damage
-		FDamageEffectParams DamageEffectParams;
-		MakeDamageEffectParams(DamageEffectParams, nullptr);	// Need to set TargetAbilitySystemComponent
+		FDamageEffectParams DamageEffectParams = MakeDamageEffectParams(nullptr);	// Need to set TargetAbilitySystemComponent
 		for (const FOverlapResult& OverlapResult : OverlapResults)
 		{
 			AActor* TargetActor = OverlapResult.GetActor();
@@ -84,7 +83,7 @@ void UAuraAbility_EnemyMelee::OnEventReceived(FGameplayEventData Payload)
 					if (UAuraBlueprintLibrary::ApplyDamageEffect(DamageEffectParams))
 					{
 						// 성공적으로 데미지를 입힐 때 Impact Cue 실행
-						UAuraBlueprintLibrary::ExecuteGameplayCue(TargetActor, AuraGameplayTags::GameplayCue_EnemyMeleeImpact, TargetActor->GetActorLocation());
+						UAuraBlueprintLibrary::ExecuteGameplayCue(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor), AuraGameplayTags::GameplayCue_EnemyMeleeImpact, TargetActor->GetActorLocation());
 					}
 				}
 			}

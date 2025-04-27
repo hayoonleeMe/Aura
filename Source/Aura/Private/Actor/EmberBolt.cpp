@@ -9,4 +9,6 @@ AEmberBolt::AEmberBolt()
 {
 	ProjectileMovementComponent->InitialSpeed = 700.f;
 	ProjectileMovementComponent->MaxSpeed = 700.f;
+
+	PooledActorType = EPooledActorType::EmberBolt;
 }
