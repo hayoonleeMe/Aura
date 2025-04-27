@@ -40,7 +40,7 @@ void UAuraProjectileAbility::SpawnProjectile(const FVector& TargetLocation, cons
 	if (AAuraProjectile* AuraProjectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(ProjectileClass, SpawnTransform, OwningActor, Cast<APawn>(OwningActor), ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
 	{
 		// Projectile로 데미지를 입히기 위해 설정
-		MakeDamageEffectParams(AuraProjectile->DamageEffectParams, nullptr);
+		AuraProjectile->DamageEffectParams = MakeDamageEffectParams(nullptr);
 		AuraProjectile->FinishSpawning(SpawnTransform);
 	}
 }
@@ -71,10 +71,11 @@ void UAuraProjectileAbility::SpawnPooledProjectile(const FVector& TargetLocation
 	{
 		if (const APooledProjectile* ProjectileCDO = ProjectileClass->GetDefaultObject<APooledProjectile>())
 		{
-			if (AAuraProjectile* AuraProjectile = ObjectPoolInterface->SpawnFromPool<AAuraProjectile>(ProjectileCDO->GetPooledActorType(), SpawnTransform))
+			if (APooledProjectile* PooledProjectile = ObjectPoolInterface->SpawnFromPool<APooledProjectile>(ProjectileCDO->GetPooledActorType(), SpawnTransform, false))
 			{
 				// Projectile로 데미지를 입히기 위해 설정
-				MakeDamageEffectParams(AuraProjectile->DamageEffectParams, nullptr);
+				PooledProjectile->DamageEffectParams = MakeDamageEffectParams(nullptr);
+				PooledProjectile->SetInUse(true);
 			}
 		}
 	}

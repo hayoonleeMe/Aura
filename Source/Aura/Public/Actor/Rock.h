@@ -23,5 +23,5 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
 
-	virtual void SetInUse(bool bInUse) override;
+	virtual void OnSetInUse(bool bInUse) override;
 };

@@ -71,8 +71,7 @@ void UAuraAbility_EnemyMelee::OnEventReceived(FGameplayEventData Payload)
 	if (GetWorld()->OverlapMultiByChannel(OverlapResults, CombatSocketTransform.GetLocation(), CombatSocketTransform.GetRotation(), ECC_Visibility, CollisionShape, QueryParams))
 	{
 		// Apply Damage
-		FDamageEffectParams DamageEffectParams;
-		MakeDamageEffectParams(DamageEffectParams, nullptr);	// Need to set TargetAbilitySystemComponent
+		FDamageEffectParams DamageEffectParams = MakeDamageEffectParams(nullptr);	// Need to set TargetAbilitySystemComponent
 		for (const FOverlapResult& OverlapResult : OverlapResults)
 		{
 			AActor* TargetActor = OverlapResult.GetActor();

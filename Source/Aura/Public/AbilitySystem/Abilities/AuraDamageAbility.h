@@ -20,7 +20,7 @@ public:
 	UAuraDamageAbility();
 	
 	UFUNCTION(BlueprintCallable)
-	void MakeDamageEffectParams(FDamageEffectParams& OutParams, AActor* TargetActor) const;
+	FDamageEffectParams MakeDamageEffectParams(AActor* TargetActor) const;
 
 	// DamageCurve에서 Level에 따른 Damage Value를 반환한다.
 	float GetDamageByLevel(int32 Level) const;

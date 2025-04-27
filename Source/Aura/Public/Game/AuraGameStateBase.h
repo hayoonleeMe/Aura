@@ -23,7 +23,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/* Begin ObjectPoolInterface */
-	virtual AActor* SpawnFromPool(EPooledActorType PooledActorType, const FTransform& SpawnTransform) override;
+	virtual AActor* SpawnFromPool(EPooledActorType PooledActorType, const FTransform& SpawnTransform, bool bSetInUse) override;
 	/* End ObjectPoolInterface */
 
 	void SpawnStartStageBeacon();

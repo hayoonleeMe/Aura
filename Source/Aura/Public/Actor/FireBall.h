@@ -35,5 +35,5 @@ private:
 
 	void SpawnEmberBolts() const;
 
-	virtual void SetInUse(bool bInUse) override;
+	virtual void OnSetInUse(bool bInUse) override;
 };

@@ -19,17 +19,19 @@ UAuraDamageAbility::UAuraDamageAbility()
 	bNeedCursorTargetHitResult = true;
 }
 
-void UAuraDamageAbility::MakeDamageEffectParams(FDamageEffectParams& OutParams, AActor* TargetActor) const
+FDamageEffectParams UAuraDamageAbility::MakeDamageEffectParams(AActor* TargetActor) const
 {
-	OutParams.WorldContextObject = GetAvatarActorFromActorInfo();
-	OutParams.SourceAbilitySystemComponent = GetAbilitySystemComponentFromActorInfo();
-	OutParams.TargetAbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
-	OutParams.DamageEffectClass = DamageEffectClass;
-	OutParams.BaseDamage = GetDamageByLevel(GetAbilityLevel());
-	OutParams.DamageTypeTag = DamageTypeTag;
-	OutParams.AbilityLevel = GetAbilityLevel();
-	OutParams.DebuffTag = DebuffTag;
-	OutParams.DebuffChance = GetDebuffChanceByLevel(GetAbilityLevel());
+	FDamageEffectParams RetParams;
+	RetParams.WorldContextObject = GetAvatarActorFromActorInfo();
+	RetParams.SourceAbilitySystemComponent = GetAbilitySystemComponentFromActorInfo();
+	RetParams.TargetAbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+	RetParams.DamageEffectClass = DamageEffectClass;
+	RetParams.BaseDamage = GetDamageByLevel(GetAbilityLevel());
+	RetParams.DamageTypeTag = DamageTypeTag;
+	RetParams.AbilityLevel = GetAbilityLevel();
+	RetParams.DebuffTag = DebuffTag;
+	RetParams.DebuffChance = GetDebuffChanceByLevel(GetAbilityLevel());
+	return RetParams;
 }
 
 float UAuraDamageAbility::GetDamageByLevel(int32 Level) const

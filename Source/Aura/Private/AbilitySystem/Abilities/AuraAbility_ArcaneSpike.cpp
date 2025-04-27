@@ -190,11 +190,9 @@ void UAuraAbility_ArcaneSpike::SpawnArcaneShard() const
 	}
 
 	// Apply Damage Effect
-	FDamageEffectParams DamageEffectParams;
 	for (AActor* Enemy : EnemiesToApplyDamage)
 	{
-		MakeDamageEffectParams(DamageEffectParams, Enemy);
-		UAuraBlueprintLibrary::ApplyDamageEffect(DamageEffectParams);
+		UAuraBlueprintLibrary::ApplyDamageEffect(MakeDamageEffectParams(Enemy));
 	}
 }
 

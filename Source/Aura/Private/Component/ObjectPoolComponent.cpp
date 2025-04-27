@@ -67,7 +67,7 @@ UPooledActorComponent* UObjectPoolComponent::FindAvailable() const
 	return nullptr;
 }
 
-AActor* UObjectPoolComponent::SpawnFromPool(const FTransform& SpawnTransform) const
+AActor* UObjectPoolComponent::SpawnFromPool(const FTransform& SpawnTransform, bool bSetInUse) const
 {
 	UPooledActorComponent* PooledActorComponent = FindAvailable();
 	
@@ -82,7 +82,11 @@ AActor* UObjectPoolComponent::SpawnFromPool(const FTransform& SpawnTransform) co
 	{
 		Actor->SetActorTransform(SpawnTransform);
 	}
-	PooledActorComponent->SetInUse(true);
+
+	if (bSetInUse)
+	{
+		PooledActorComponent->SetInUse(true);
+	}
 	
 	return Actor;
 }

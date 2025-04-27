@@ -184,10 +184,11 @@ void UAuraAbility_FireBolt::SpawnFireBolts() const
 		{
 			if (const APooledProjectile* ProjectileCDO = ProjectileClass->GetDefaultObject<APooledProjectile>())
 			{
-				if (AAuraProjectile* AuraProjectile = ObjectPoolInterface->SpawnFromPool<AAuraProjectile>(ProjectileCDO->GetPooledActorType(), SpawnTransform))
+				if (APooledProjectile* PooledProjectile = ObjectPoolInterface->SpawnFromPool<APooledProjectile>(ProjectileCDO->GetPooledActorType(), SpawnTransform, false))
 				{
 					// Projectile로 데미지를 입히기 위해 설정
-					MakeDamageEffectParams(AuraProjectile->DamageEffectParams, nullptr);
+					PooledProjectile->DamageEffectParams = MakeDamageEffectParams(nullptr);
+					PooledProjectile->SetInUse(true);
 				}
 			}
 		}	

@@ -211,8 +211,7 @@ void UAuraAbility_ChainLightning::CastLightningBeam() const
 	
 	for (AActor* Actor : SelectedActors)
 	{
-		FDamageEffectParams DamageEffectParams;
-		MakeDamageEffectParams(DamageEffectParams, Actor);
+		FDamageEffectParams DamageEffectParams = MakeDamageEffectParams(Actor);
 		if (Actor != FirstTargetActor)
 		{
 			// 연쇄될 때마다 데미지 감소

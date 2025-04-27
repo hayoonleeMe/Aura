@@ -46,23 +46,23 @@ void AAuraGameStateBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(AAuraGameStateBase, StartStageBeacon);
 }
 
-AActor* AAuraGameStateBase::SpawnFromPool(EPooledActorType PooledActorType, const FTransform& SpawnTransform)
+AActor* AAuraGameStateBase::SpawnFromPool(EPooledActorType PooledActorType, const FTransform& SpawnTransform, bool bSetInUse)
 {
 	if (PooledActorType == EPooledActorType::FireBolt)
 	{
-		return FireBoltPoolComponent->SpawnFromPool(SpawnTransform);
+		return FireBoltPoolComponent->SpawnFromPool(SpawnTransform, bSetInUse);
 	}
 	if (PooledActorType == EPooledActorType::FireBall)
 	{
-		return FireBallPoolComponent->SpawnFromPool(SpawnTransform);
+		return FireBallPoolComponent->SpawnFromPool(SpawnTransform, bSetInUse);
 	}
 	if (PooledActorType == EPooledActorType::EmberBolt)
 	{
-		return EmberBoltPoolComponent->SpawnFromPool(SpawnTransform);
+		return EmberBoltPoolComponent->SpawnFromPool(SpawnTransform, bSetInUse);
 	}
 	if (PooledActorType == EPooledActorType::Rock)
 	{
-		return RockPoolComponent->SpawnFromPool(SpawnTransform);
+		return RockPoolComponent->SpawnFromPool(SpawnTransform, bSetInUse);
 	}
 	return nullptr;
 }

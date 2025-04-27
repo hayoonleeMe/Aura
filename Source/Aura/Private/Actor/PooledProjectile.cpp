@@ -15,11 +15,16 @@ APooledProjectile::APooledProjectile()
 {
 	PooledActorComponent = CreateDefaultSubobject<UPooledActorComponent>(TEXT("Pooled Actor Component"));
 	PooledActorComponent->bAutoActivate = true;
-	PooledActorComponent->SetInUseDelegate.BindUObject(this, &ThisClass::SetInUse);
+	PooledActorComponent->SetInUseDelegate.BindUObject(this, &ThisClass::OnSetInUse);
+}
+
+void APooledProjectile::SetInUse(bool bInUse) const
+{
+	PooledActorComponent->SetInUse(bInUse);
 }
 
 void APooledProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-	bool bFromSweep, const FHitResult& SweepResult)
+                                        bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (!IsValidOverlap(OtherActor))
 	{
@@ -50,7 +55,7 @@ bool APooledProjectile::IsValidOverlap(const AActor* TargetActor) const
 	return IsValid(SourceAvatarActor) && IsValid(TargetActor) && SourceAvatarActor != TargetActor && UAuraBlueprintLibrary::IsNotFriend(SourceAvatarActor, TargetActor);
 }
 
-void APooledProjectile::SetInUse(bool bInUse)
+void APooledProjectile::OnSetInUse(bool bInUse)
 {
 	if (bInUse)
 	{

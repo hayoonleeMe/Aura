@@ -202,13 +202,14 @@ void UAuraAbility_FireBall::SpawnFireBalls() const
 		{
 			if (const APooledProjectile* ProjectileCDO = ProjectileClass->GetDefaultObject<APooledProjectile>())
 			{
-				if (AFireBall* FireBall = ObjectPoolInterface->SpawnFromPool<AFireBall>(ProjectileCDO->GetPooledActorType(), SpawnTransform))
+				if (AFireBall* FireBall = ObjectPoolInterface->SpawnFromPool<AFireBall>(ProjectileCDO->GetPooledActorType(), SpawnTransform, false))
 				{
 					// Projectile로 데미지를 입히기 위해 설정
-					MakeDamageEffectParams(FireBall->DamageEffectParams, nullptr);
+					FireBall->DamageEffectParams = MakeDamageEffectParams(nullptr);
 
 					// FireBall 폭발 후 EmberBolt를 Spawn하기 위해 옵션 설정
 					FireBall->SetEmberBoltOptions(GetNumEmberBoltsByLevel(GetAbilityLevel()), GetEmberBoltDamageByLevel(GetAbilityLevel()), EmberBoltClass);
+					FireBall->SetInUse(true);
 				}
 			}
 		}	

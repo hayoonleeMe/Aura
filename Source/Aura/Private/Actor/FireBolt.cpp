@@ -16,9 +16,9 @@ AFireBolt::AFireBolt()
 	PooledActorType = EPooledActorType::FireBolt;
 }
 
-void AFireBolt::SetInUse(bool bInUse)
+void AFireBolt::OnSetInUse(bool bInUse)
 {
-	Super::SetInUse(bInUse);
+	Super::OnSetInUse(bInUse);
 
 	if (bInUse)
 	{

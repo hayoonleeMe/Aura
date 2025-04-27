@@ -36,9 +36,9 @@ void ARock::Tick(float DeltaTime)
 	MeshComponent->AddLocalRotation(UKismetMathLibrary::RandomRotator(true) * DeltaTime);
 }
 
-void ARock::SetInUse(bool bInUse)
+void ARock::OnSetInUse(bool bInUse)
 {
-	Super::SetInUse(bInUse);
+	Super::OnSetInUse(bInUse);
 
 	MeshComponent->SetHiddenInGame(!bInUse);
 }

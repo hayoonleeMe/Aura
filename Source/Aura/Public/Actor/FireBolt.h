@@ -24,5 +24,5 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UNiagaraComponent> FireEffectComponent;
 
-	virtual void SetInUse(bool bInUse) override;
+	virtual void OnSetInUse(bool bInUse) override;
 };

@@ -60,20 +60,21 @@ void AFireBall::SpawnEmberBolts() const
 		{
 			if (const APooledProjectile* ProjectileCDO = EmberBoltClass->GetDefaultObject<APooledProjectile>())
 			{
-				if (AAuraProjectile* AuraProjectile = ObjectPoolInterface->SpawnFromPool<AAuraProjectile>(ProjectileCDO->GetPooledActorType(), SpawnTransform))
+				if (APooledProjectile* PooledProjectile = ObjectPoolInterface->SpawnFromPool<APooledProjectile>(ProjectileCDO->GetPooledActorType(), SpawnTransform, false))
 				{
 					// Projectile로 데미지를 입히기 위해 설정
-					AuraProjectile->DamageEffectParams = DamageEffectParams;
-					AuraProjectile->DamageEffectParams.BaseDamage = EmberBoltDamage;
+					PooledProjectile->DamageEffectParams = DamageEffectParams;
+					PooledProjectile->DamageEffectParams.BaseDamage = EmberBoltDamage;
+					PooledProjectile->SetInUse(true);
 				}
 			}
 		}	
 	}
 }
 
-void AFireBall::SetInUse(bool bInUse)
+void AFireBall::OnSetInUse(bool bInUse)
 {
-	Super::SetInUse(bInUse);
+	Super::OnSetInUse(bInUse);
 	
 	if (bInUse)
 	{
