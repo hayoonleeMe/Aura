@@ -15,7 +15,7 @@ APooledProjectile::APooledProjectile()
 {
 	PooledActorComponent = CreateDefaultSubobject<UPooledActorComponent>(TEXT("Pooled Actor Component"));
 	PooledActorComponent->bAutoActivate = true;
-	PooledActorComponent->SetInUseDelegate.BindUObject(this, &ThisClass::SetInUse);	// TODO : 되는지체크
+	PooledActorComponent->SetInUseDelegate.BindUObject(this, &ThisClass::SetInUse);
 }
 
 void APooledProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
