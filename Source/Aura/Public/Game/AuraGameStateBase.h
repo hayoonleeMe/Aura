@@ -91,4 +91,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UObjectPoolComponent> EmberBoltPoolComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UObjectPoolComponent> RockPoolComponent;
 };

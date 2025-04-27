@@ -33,6 +33,10 @@ AAuraGameStateBase::AAuraGameStateBase()
 	EmberBoltPoolComponent = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("EmberBolt Pool Component"));
 	EmberBoltPoolComponent->SetPoolSize(90);
 	EmberBoltPoolComponent->bAutoActivate = true;
+
+	RockPoolComponent = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("Rock Pool Component"));
+	RockPoolComponent->SetPoolSize(50);
+	RockPoolComponent->bAutoActivate = true;
 }
 
 void AAuraGameStateBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -55,6 +59,10 @@ AActor* AAuraGameStateBase::SpawnFromPool(EPooledActorType PooledActorType, cons
 	if (PooledActorType == EPooledActorType::EmberBolt)
 	{
 		return EmberBoltPoolComponent->SpawnFromPool(SpawnTransform);
+	}
+	if (PooledActorType == EPooledActorType::Rock)
+	{
+		return RockPoolComponent->SpawnFromPool(SpawnTransform);
 	}
 	return nullptr;
 }

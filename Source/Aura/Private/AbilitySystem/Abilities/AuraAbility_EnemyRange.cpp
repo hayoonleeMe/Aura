@@ -4,6 +4,8 @@
 #include "AbilitySystem/Abilities/AuraAbility_EnemyRange.h"
 
 #include "AuraGameplayTags.h"
+#include "Actor/AuraProjectile.h"
+#include "Actor/PooledProjectile.h"
 #include "Interface/CombatInterface.h"
 
 UAuraAbility_EnemyRange::UAuraAbility_EnemyRange()
@@ -53,7 +55,15 @@ void UAuraAbility_EnemyRange::OnEventReceived(FGameplayEventData Payload)
 	Super::OnEventReceived(Payload);
 
 	const FVector& CombatSocketLocation = CombatInterface->GetCombatSocketLocation(CachedCombatSocketName);
-	SpawnProjectile(CachedTargetLocation, CombatSocketLocation);
+
+	if (ProjectileClass->IsChildOf(APooledProjectile::StaticClass()))
+	{
+		SpawnPooledProjectile(CachedTargetLocation, CombatSocketLocation);
+	}
+	else
+	{
+		SpawnProjectile(CachedTargetLocation, CombatSocketLocation);
+	}
 
 	FinishAttack();
 }

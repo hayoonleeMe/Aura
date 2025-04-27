@@ -21,6 +21,9 @@ public:
 	
 	// CombatSocketLocation에서 TargetLocation으로 하나의 Projectile을 발사
 	virtual void SpawnProjectile(const FVector& TargetLocation, const FVector& CombatSocketLocation);
+	
+	// CombatSocketLocation에서 TargetLocation으로 하나의 Pooled Projectile을 발사
+	virtual void SpawnPooledProjectile(const FVector& TargetLocation, const FVector& CombatSocketLocation);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Projectile")

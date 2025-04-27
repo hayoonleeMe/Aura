@@ -10,5 +10,6 @@ enum class EPooledActorType : uint8
 {
     FireBolt,
 	FireBall,
-	EmberBolt
+	EmberBolt,
+	Rock
 };
