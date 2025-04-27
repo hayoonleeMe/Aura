@@ -9,8 +9,10 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AbilityTasks/AbilityTask_TargetDataUnderMouse.h"
 #include "Actor/AuraProjectile.h"
+#include "Actor/PooledProjectile.h"
 #include "Aura/Aura.h"
 #include "Interface/ObjectPoolInterface.h"
+#include "GameFramework/GameStateBase.h"
 
 UAuraAbility_FireBolt::UAuraAbility_FireBolt()
 {
@@ -178,12 +180,15 @@ void UAuraAbility_FireBolt::SpawnFireBolts() const
 		SpawnTransform.SetRotation(Rotation.Quaternion());
 
 		// Object Pooling instead of spawn actor
-		if (IObjectPoolInterface* ObjectPoolInterface = Cast<IObjectPoolInterface>(AvatarActor))
+		if (IObjectPoolInterface* ObjectPoolInterface = Cast<IObjectPoolInterface>(GetWorld() ? GetWorld()->GetGameState() : nullptr))
 		{
-			if (AAuraProjectile* AuraProjectile = ObjectPoolInterface->SpawnFromPool<AAuraProjectile>(EPooledActorType::FireBolt, SpawnTransform))
+			if (const APooledProjectile* ProjectileCDO = ProjectileClass->GetDefaultObject<APooledProjectile>())
 			{
-				// Projectile로 데미지를 입히기 위해 설정
-				MakeDamageEffectParams(AuraProjectile->DamageEffectParams, nullptr);
+				if (AAuraProjectile* AuraProjectile = ObjectPoolInterface->SpawnFromPool<AAuraProjectile>(ProjectileCDO->GetPooledActorType(), SpawnTransform))
+				{
+					// Projectile로 데미지를 입히기 위해 설정
+					MakeDamageEffectParams(AuraProjectile->DamageEffectParams, nullptr);
+				}
 			}
 		}	
 	}

@@ -56,13 +56,16 @@ void AFireBall::SpawnEmberBolts() const
 		SpawnTransform.SetRotation(Rotation.Quaternion());
 
 		// Object Pooling instead of spawn actor
-		if (IObjectPoolInterface* ObjectPoolInterface = Cast<IObjectPoolInterface>(GetOwner()))
+		if (IObjectPoolInterface* ObjectPoolInterface = Cast<IObjectPoolInterface>(GetWorld() ? GetWorld()->GetGameState() : nullptr))
 		{
-			if (AAuraProjectile* AuraProjectile = ObjectPoolInterface->SpawnFromPool<AAuraProjectile>(EPooledActorType::EmberBolt, SpawnTransform))
+			if (const APooledProjectile* ProjectileCDO = EmberBoltClass->GetDefaultObject<APooledProjectile>())
 			{
-				// Projectile로 데미지를 입히기 위해 설정
-				AuraProjectile->DamageEffectParams = DamageEffectParams;
-				AuraProjectile->DamageEffectParams.BaseDamage = EmberBoltDamage;
+				if (AAuraProjectile* AuraProjectile = ObjectPoolInterface->SpawnFromPool<AAuraProjectile>(ProjectileCDO->GetPooledActorType(), SpawnTransform))
+				{
+					// Projectile로 데미지를 입히기 위해 설정
+					AuraProjectile->DamageEffectParams = DamageEffectParams;
+					AuraProjectile->DamageEffectParams.BaseDamage = EmberBoltDamage;
+				}
 			}
 		}	
 	}

@@ -13,7 +13,6 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Component/ObjectPoolComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Interface/StageSystemInterface.h"
@@ -33,19 +32,6 @@ AAuraCharacter::AAuraCharacter()
 
 	/* Role */
 	RoleTag = AuraGameplayTags::Role_Player;
-	
-	/* Projectile Pool */
-	FireBoltPoolComponent = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("Projectile Pool Component"));
-	FireBoltPoolComponent->SetPoolSize(100);
-	FireBoltPoolComponent->bAutoActivate = true;
-
-	FireBallPoolComponent = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("FireBall Pool Component"));
-	FireBallPoolComponent->SetPoolSize(30);
-	FireBallPoolComponent->bAutoActivate = true;
-
-	EmberBoltPoolComponent = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("EmberBolt Pool Component"));
-	EmberBoltPoolComponent->SetPoolSize(90);
-	EmberBoltPoolComponent->bAutoActivate = true;
 	
 	/* Camera */
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm Component"));
@@ -209,23 +195,6 @@ void AAuraCharacter::InitializePlayerNameplateWidget() const
 			PlayerNameplateWidget->SetPlayerName(GetPlayerState()->GetPlayerName());
 		}
 	}
-}
-
-AActor* AAuraCharacter::SpawnFromPool(EPooledActorType PooledActorType, const FTransform& SpawnTransform)
-{
-	if (PooledActorType == EPooledActorType::FireBolt)
-	{
-		return FireBoltPoolComponent->SpawnFromPool(SpawnTransform);
-	}
-	if (PooledActorType == EPooledActorType::FireBall)
-	{
-		return FireBallPoolComponent->SpawnFromPool(SpawnTransform);
-	}
-	if (PooledActorType == EPooledActorType::EmberBolt)
-	{
-		return EmberBoltPoolComponent->SpawnFromPool(SpawnTransform);
-	}
-	return nullptr;
 }
 
 void AAuraCharacter::ServerAddXPForTest_Implementation(int32 XPAmount)

@@ -68,7 +68,7 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 	
 	if (ImpactCueTag.IsValid())
 	{
-		UAuraBlueprintLibrary::ExecuteGameplayCue(GetOwner(), ImpactCueTag, GetActorLocation());
+		UAuraBlueprintLibrary::ExecuteGameplayCue(DamageEffectParams.SourceAbilitySystemComponent, ImpactCueTag, GetActorLocation());
 	}
 
 	Destroy();

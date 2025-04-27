@@ -84,7 +84,7 @@ void UAuraAbility_EnemyMelee::OnEventReceived(FGameplayEventData Payload)
 					if (UAuraBlueprintLibrary::ApplyDamageEffect(DamageEffectParams))
 					{
 						// 성공적으로 데미지를 입힐 때 Impact Cue 실행
-						UAuraBlueprintLibrary::ExecuteGameplayCue(TargetActor, AuraGameplayTags::GameplayCue_EnemyMeleeImpact, TargetActor->GetActorLocation());
+						UAuraBlueprintLibrary::ExecuteGameplayCue(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor), AuraGameplayTags::GameplayCue_EnemyMeleeImpact, TargetActor->GetActorLocation());
 					}
 				}
 			}
