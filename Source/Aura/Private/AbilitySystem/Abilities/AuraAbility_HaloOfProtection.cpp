@@ -9,6 +9,7 @@ UAuraAbility_HaloOfProtection::UAuraAbility_HaloOfProtection()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	AbilityTags.AddTag(AuraGameplayTags::Abilities_Passive_HaloOfProtection);
+	ActivationOwnedTags.AddTag(AuraGameplayTags::Abilities_Passive_HaloOfProtection);
 }
 
 FText UAuraAbility_HaloOfProtection::GetDescription(int32 Level) const
