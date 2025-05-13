@@ -260,6 +260,12 @@ void USpellMenu::OnSpellGlobeButtonSelected(USpellGlobeButton* SelectedSpellGlob
 		}
 	}
 
+	// Equip 대기 중 다른 Spell 선택하면 Equip 취소
+	if (EquippedSpellRow->bWaitSelectGlobe)
+	{
+		EquippedSpellRow->FinishSpellEquip();
+	}
+
 	EnableButtons();
 	UpdateDescription();
 }
