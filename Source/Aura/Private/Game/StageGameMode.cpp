@@ -135,7 +135,7 @@ void AStageGameMode::OnPlayerReady()
 {
 	++ReadyPlayerCount;
 
-	if (GetWorld() && ReadyPlayerCount == GetWorld()->GetNumPlayerControllers())
+	if (GetWorld() && ReadyPlayerCount >= GetWorld()->GetNumPlayerControllers())
 	{
 		// 모든 플레이어 레디 완료
 		StartStage();
