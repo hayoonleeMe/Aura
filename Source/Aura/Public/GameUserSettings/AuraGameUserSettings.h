@@ -73,5 +73,5 @@ public:
 	static constexpr float MaxUIVolume = 10.f;
 
 	// 실제 적용되는 최대 사운드 볼륨
-	static constexpr float MaxAppliedVolume = 4.f;
+	static constexpr float MaxAppliedVolume = 3.f;
 };
