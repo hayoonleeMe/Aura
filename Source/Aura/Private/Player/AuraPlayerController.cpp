@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
+#include "InputMappingContext.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Aura/Aura.h"
 #include "Component/LevelSequenceManageComponent.h"
@@ -136,12 +137,12 @@ void AAuraPlayerController::DisableCinematicInput()
 
 FKey AAuraPlayerController::GetInteractKeyMappedToAction() const
 {
-	if (const UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	const TArray<FEnhancedActionKeyMapping>& Mappings = AbilityContext->GetMappings();
+	for (const FEnhancedActionKeyMapping& Mapping : Mappings)
 	{
-		const TArray<FKey> InteractKeys(Subsystem->QueryKeysMappedToAction(AuraInputConfig->GetInputActionForInputTag(AuraGameplayTags::InputTag_Interact)));
-		if (InteractKeys.Num())
+		if (Mapping.Action == AuraInputConfig->GetInputActionForInputTag(AuraGameplayTags::InputTag_Interact))
 		{
-			return InteractKeys[0];
+			return Mapping.Key;
 		}
 	}
 	return FKey();
