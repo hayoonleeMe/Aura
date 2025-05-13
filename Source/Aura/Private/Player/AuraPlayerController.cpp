@@ -318,7 +318,7 @@ void AAuraPlayerController::EnableCachingTargetHitResult(bool bEnabled)
 {
 	if (bEnabled)
 	{
-		GetWorldTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([this]()
+		GetWorldTimerManager().SetTimerForNextTick(FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			// 재생 중인 Level Sequence가 없을 때만 활성화
 			if (!LevelSequenceManageComponent->IsPlayingLevelSequence())
