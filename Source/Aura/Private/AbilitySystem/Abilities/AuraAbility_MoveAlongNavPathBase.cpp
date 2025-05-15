@@ -21,7 +21,7 @@ bool UAuraAbility_MoveAlongNavPathBase::MoveToDestination()
 	}
 
 	// 캐릭터의 바닥 지점 좌표
-	const FVector PawnLocation = Pawn->GetNavAgentLocation();
+	FVector PawnLocation = Pawn->GetNavAgentLocation();
 
 	// 캐릭터가 향해야 할 NavPaths 상의 지점을 찾음
 	for (; PathIndex < NavPaths.Num(); ++PathIndex)
@@ -39,6 +39,9 @@ bool UAuraAbility_MoveAlongNavPathBase::MoveToDestination()
 		Pawn->AddMovementInput(Direction);
 	}
 
+	// 업데이트
+	PawnLocation = Pawn->GetNavAgentLocation();
+	
 	// 목적지에 도착하면 Ability Task를 종료하도록 true 반환
 	const float SquaredDistToDest = (PawnLocation - NavPaths.Last()).SquaredLength();
 	if (SquaredDistToDest <= ArriveAcceptanceRadius * ArriveAcceptanceRadius)

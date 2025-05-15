@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/Abilities/AuraAbility_TryInteract.h"
 
+#include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
@@ -69,9 +70,12 @@ void UAuraAbility_TryInteract::ActivateAbility(const FGameplayAbilitySpecHandle 
 	{
 		ArriveAcceptanceRadius = InteractionInterface->GetOverrideArriveAcceptanceRadius();
 	}
+
+	const FVector PawnLocation = Pawn->GetNavAgentLocation();
+	const FVector TargetActorLocation = UAuraBlueprintLibrary::GetActorFeetLocation(TargetActor);
 	
 	// 충분히 가까우면 바로 상호작용
-	const float SquaredDistToDest = (Pawn->GetActorLocation() - TargetActor->GetActorLocation()).SquaredLength();
+	const float SquaredDistToDest = (PawnLocation - TargetActorLocation).SquaredLength();
 	if (SquaredDistToDest <= ArriveAcceptanceRadius * ArriveAcceptanceRadius)
 	{
 		Interact();
@@ -79,7 +83,7 @@ void UAuraAbility_TryInteract::ActivateAbility(const FGameplayAbilitySpecHandle 
 	}
 
 	// 경로 계산
-	if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(Pawn, Pawn->GetActorLocation(), TargetActor->GetActorLocation()))
+	if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(Pawn, PawnLocation, TargetActorLocation))
 	{
 		PathIndex = 0;
 		NavPaths = MoveTemp(NavPath->PathPoints);
