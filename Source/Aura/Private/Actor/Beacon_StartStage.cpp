@@ -88,6 +88,11 @@ void ABeacon_StartStage::Interact()
 	}
 }
 
+float ABeacon_StartStage::GetOverrideArriveAcceptanceRadius() const
+{
+	return 133.f;
+}
+
 void ABeacon_StartStage::OnGlowTimelineFinished()
 {
 	ServerInteract();
