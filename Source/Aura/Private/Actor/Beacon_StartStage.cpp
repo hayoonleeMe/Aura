@@ -36,7 +36,7 @@ ABeacon_StartStage::ABeacon_StartStage()
 	TooltipWidgetComponent->SetPivot(FVector2D(0.f, 0.5f));
 	TooltipWidgetComponent->SetRelativeLocation(FVector(0.f, 50.f, 0.f));
 
-	MeshComponent->SetCanEverAffectNavigation(true);
+	MeshComponent->SetCanEverAffectNavigation(false);
 	BoxComponent->SetCanEverAffectNavigation(false);
 	TooltipWidgetComponent->SetCanEverAffectNavigation(false);
 }
