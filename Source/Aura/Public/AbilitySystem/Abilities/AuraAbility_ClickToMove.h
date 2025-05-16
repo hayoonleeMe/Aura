@@ -43,6 +43,9 @@ private:
 	// 마우스 커서 위치를 NavMesh 상의 위치로 보정하기 위해 사용되는 BoxExtent
 	static const FVector ProjectBoxExtent;
 
+	// ArriveAcceptanceRadius의 기본값 캐싱 
+    float InitialArriveAcceptanceRadius = 0.f;
+
 	// ============================================================================
 	// Effect
 	// ============================================================================
