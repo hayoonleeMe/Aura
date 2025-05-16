@@ -8,7 +8,7 @@
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "NiagaraFunctionLibrary.h"
-#include "AbilitySystem/AbilityTasks/AbilityTask_ClickToMove.h"
+#include "AbilitySystem/AbilityTasks/AbilityTask_MoveAlongNavPath.h"
 #include "Aura/Aura.h"
 #include "GameFramework/PlayerController.h"
 #include "Interface/InteractionInterface.h"
@@ -105,13 +105,15 @@ void UAuraAbility_ClickToMove::InputPressed(const FGameplayAbilitySpecHandle Han
 		}
 
 		// 목적지까지 이동하는 AbilityTask 생성 및 실행
-		if (!IsValid(AbilityTask_ClickToMove))
+		if (!IsValid(AbilityTask_MoveAlongNavPath))
 		{
-			AbilityTask_ClickToMove = UAbilityTask_ClickToMove::CreateTask(this);
-			if (AbilityTask_ClickToMove)
+			if (AbilityTask_MoveAlongNavPath = UAbilityTask_MoveAlongNavPath::CreateTask(this); AbilityTask_MoveAlongNavPath)
 			{
+				// MoveToDestination 함수 등록
+				AbilityTask_MoveAlongNavPath->MoveToDestinationDelegate.BindUObject(this, &ThisClass::MoveToDestination);
+				
 				// 목적지에 도착하고 Key를 떼면 Ability 종료
-				AbilityTask_ClickToMove->OnArrivedDelegate.BindLambda([this]()
+				AbilityTask_MoveAlongNavPath->OnArrivedDelegate.BindLambda([this]()
 				{
 					if (!bShouldMove)
 					{
@@ -119,7 +121,7 @@ void UAuraAbility_ClickToMove::InputPressed(const FGameplayAbilitySpecHandle Han
 						K2_EndAbility();
 					}
 				});
-				AbilityTask_ClickToMove->ReadyForActivation();
+				AbilityTask_MoveAlongNavPath->ReadyForActivation();
 			}
 		}	
 	}
