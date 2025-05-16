@@ -7,7 +7,7 @@
 #include "AuraAbility_ClickToMove.generated.h"
 
 class UNiagaraSystem;
-class UAbilityTask_ClickToMove;
+class UAbilityTask_MoveAlongNavPath;
 
 /**
  * 클릭한 마우스 커서 위치로 Navigation System에 의한 Path를 따라 캐릭터를 이동시키는 Ability 
@@ -30,7 +30,7 @@ private:
 	TObjectPtr<APlayerController> PlayerController;
 	
 	UPROPERTY()
-	TObjectPtr<UAbilityTask_ClickToMove> AbilityTask_ClickToMove;
+	TObjectPtr<UAbilityTask_MoveAlongNavPath> AbilityTask_MoveAlongNavPath;
 
 	// 캐릭터가 계속 목적지로 이동해야 하는지를 나타내는 변수
 	uint8 bShouldMove : 1;

@@ -3,6 +3,7 @@
 
 #include "Actor/Beacon_StartStage.h"
 
+#include "NavModifierComponent.h"
 #include "Aura/Aura.h"
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
@@ -11,6 +12,7 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "GameFramework/GameModeBase.h"
 #include "Interface/PlayerInterface.h"
+#include "Navigation/NavArea_Beacon.h"
 #include "UI/Widget/ToolTip_Beacon_StartStage.h"
 
 ABeacon_StartStage::ABeacon_StartStage()
@@ -36,6 +38,12 @@ ABeacon_StartStage::ABeacon_StartStage()
 	TooltipWidgetComponent->SetPivot(FVector2D(0.f, 0.5f));
 	TooltipWidgetComponent->SetRelativeLocation(FVector(0.f, 50.f, 0.f));
 
+	/* Navigation */
+	NavModifierComponent = CreateDefaultSubobject<UNavModifierComponent>(TEXT("Nav Modifier Component"));
+	NavModifierComponent->AreaClass = UNavArea_Beacon::StaticClass();
+	NavModifierComponent->FailsafeExtent = FVector(60.f);
+
+	// 대신 NavModifierComponent 사용
 	MeshComponent->SetCanEverAffectNavigation(false);
 	BoxComponent->SetCanEverAffectNavigation(false);
 	TooltipWidgetComponent->SetCanEverAffectNavigation(false);

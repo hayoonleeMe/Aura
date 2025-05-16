@@ -7,7 +7,7 @@
 #include "AuraGameplayTags.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
-#include "AbilitySystem/AbilityTasks/AbilityTask_ClickToMove.h"
+#include "AbilitySystem/AbilityTasks/AbilityTask_MoveAlongNavPath.h"
 #include "Interface/InteractionInterface.h"
 #include "Player/AuraPlayerController.h"
 
@@ -95,8 +95,11 @@ void UAuraAbility_TryInteract::ActivateAbility(const FGameplayAbilitySpecHandle 
 	}
 
 	// AbilityTask_ClickToMove를 생성해 TargetActor까지 이동
-	if (UAbilityTask_ClickToMove* Task = UAbilityTask_ClickToMove::CreateTask(this))
+	if (UAbilityTask_MoveAlongNavPath* Task = UAbilityTask_MoveAlongNavPath::CreateTask(this))
 	{
+		// MoveToDestination 함수 등록
+		Task->MoveToDestinationDelegate.BindUObject(this, &ThisClass::MoveToDestination);
+	
 		// TargetActor에 도착하면 상호작용 후 Ability 종료
 		Task->OnArrivedDelegate.BindLambda([this]()
 		{

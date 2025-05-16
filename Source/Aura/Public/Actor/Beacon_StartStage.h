@@ -7,6 +7,7 @@
 #include "Interface/InteractionInterface.h"
 #include "Beacon_StartStage.generated.h"
 
+class UNavModifierComponent;
 class UWidgetComponent;
 class UBoxComponent;
 
@@ -73,4 +74,16 @@ private:
 
 	// ToolTip Widget의 Text가 제대로 설정됐는지
 	bool bHasSetToolTipWidgetText = false;
+
+	// ============================================================================
+	// Navigation
+	// ============================================================================
+
+	/**
+	 * Beacon은 UNavModifierComponent을 통해 NavMesh에 Affect한다.
+	 * UNavArea_Default와 동일한 UNavArea_Beacon을 사용해 항상 이동 가능하다.
+	 * 해당 Beacon을 피해가야 할 때는 UAvoidBeaconQueryFilter를 사용해 쿼리할 수 있다. (UNavArea_Beacon에 대해 Exclude하는 Query Filter)
+	 */
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UNavModifierComponent> NavModifierComponent;
 };

@@ -8,10 +8,11 @@
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "NiagaraFunctionLibrary.h"
-#include "AbilitySystem/AbilityTasks/AbilityTask_ClickToMove.h"
+#include "AbilitySystem/AbilityTasks/AbilityTask_MoveAlongNavPath.h"
 #include "Aura/Aura.h"
 #include "GameFramework/PlayerController.h"
 #include "Interface/InteractionInterface.h"
+#include "Navigation/AvoidBeaconQueryFilter.h"
 
 const FVector UAuraAbility_ClickToMove::ProjectBoxExtent(1000.f);
 
@@ -64,6 +65,9 @@ void UAuraAbility_ClickToMove::InputPressed(const FGameplayAbilitySpecHandle Han
 		{
 			// ArriveAcceptanceRadius 업데이트
 			ArriveAcceptanceRadius = InteractionInterface->GetOverrideArriveAcceptanceRadius();
+
+			// Cursor 생성 방지
+			bShouldSpawnCursorEffect = false;
 		}
 		else
 		{
@@ -73,20 +77,26 @@ void UAuraAbility_ClickToMove::InputPressed(const FGameplayAbilitySpecHandle Han
 		if (UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld()))
 		{
 			FVector PathEnd = FVector::ZeroVector;
+			TSubclassOf<UNavigationQueryFilter> QueryFilter = nullptr;
 
 			if (InteractionInterface)
 			{
+				// Interactable 액터로 이동할 때, 그 액터의 NavArea는 이동 가능해야 한다.
 				PathEnd = UAuraBlueprintLibrary::GetActorFeetLocation(CursorHit.GetActor());
 			}
 			else
 			{
 				FNavLocation ProjectedLocation;
-				NavSystem->ProjectPointToNavigation(CursorHit.ImpactPoint, ProjectedLocation, ProjectBoxExtent);
+				if (!NavSystem->ProjectPointToNavigation(CursorHit.ImpactPoint, ProjectedLocation, ProjectBoxExtent))
+				{
+					return;
+				}
 				PathEnd = ProjectedLocation;
+				// Beacon을 피해가야함
+				QueryFilter = UAvoidBeaconQueryFilter::StaticClass();
 			}
 
-			// 유효한 위치에 Project하면 경로 계산
-			if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(Pawn, Pawn->GetActorLocation(), PathEnd))
+			if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(Pawn, Pawn->GetNavAgentLocation(), PathEnd, nullptr, QueryFilter))
 			{
 				PathIndex = 0;
 				NavPaths = MoveTemp(NavPath->PathPoints);
@@ -105,13 +115,15 @@ void UAuraAbility_ClickToMove::InputPressed(const FGameplayAbilitySpecHandle Han
 		}
 
 		// 목적지까지 이동하는 AbilityTask 생성 및 실행
-		if (!IsValid(AbilityTask_ClickToMove))
+		if (!IsValid(AbilityTask_MoveAlongNavPath))
 		{
-			AbilityTask_ClickToMove = UAbilityTask_ClickToMove::CreateTask(this);
-			if (AbilityTask_ClickToMove)
+			if (AbilityTask_MoveAlongNavPath = UAbilityTask_MoveAlongNavPath::CreateTask(this); AbilityTask_MoveAlongNavPath)
 			{
+				// MoveToDestination 함수 등록
+				AbilityTask_MoveAlongNavPath->MoveToDestinationDelegate.BindUObject(this, &ThisClass::MoveToDestination);
+				
 				// 목적지에 도착하고 Key를 떼면 Ability 종료
-				AbilityTask_ClickToMove->OnArrivedDelegate.BindLambda([this]()
+				AbilityTask_MoveAlongNavPath->OnArrivedDelegate.BindLambda([this]()
 				{
 					if (!bShouldMove)
 					{
@@ -119,7 +131,7 @@ void UAuraAbility_ClickToMove::InputPressed(const FGameplayAbilitySpecHandle Han
 						K2_EndAbility();
 					}
 				});
-				AbilityTask_ClickToMove->ReadyForActivation();
+				AbilityTask_MoveAlongNavPath->ReadyForActivation();
 			}
 		}	
 	}
