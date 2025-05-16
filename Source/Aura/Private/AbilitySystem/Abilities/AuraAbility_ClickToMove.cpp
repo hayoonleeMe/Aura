@@ -12,6 +12,7 @@
 #include "Aura/Aura.h"
 #include "GameFramework/PlayerController.h"
 #include "Interface/InteractionInterface.h"
+#include "Navigation/AvoidBeaconQueryFilter.h"
 
 const FVector UAuraAbility_ClickToMove::ProjectBoxExtent(1000.f);
 
@@ -64,6 +65,9 @@ void UAuraAbility_ClickToMove::InputPressed(const FGameplayAbilitySpecHandle Han
 		{
 			// ArriveAcceptanceRadius 업데이트
 			ArriveAcceptanceRadius = InteractionInterface->GetOverrideArriveAcceptanceRadius();
+
+			// Cursor 생성 방지
+			bShouldSpawnCursorEffect = false;
 		}
 		else
 		{
@@ -73,20 +77,26 @@ void UAuraAbility_ClickToMove::InputPressed(const FGameplayAbilitySpecHandle Han
 		if (UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld()))
 		{
 			FVector PathEnd = FVector::ZeroVector;
+			TSubclassOf<UNavigationQueryFilter> QueryFilter = nullptr;
 
 			if (InteractionInterface)
 			{
+				// Interactable 액터로 이동할 때, 그 액터의 NavArea는 이동 가능해야 한다.
 				PathEnd = UAuraBlueprintLibrary::GetActorFeetLocation(CursorHit.GetActor());
 			}
 			else
 			{
 				FNavLocation ProjectedLocation;
-				NavSystem->ProjectPointToNavigation(CursorHit.ImpactPoint, ProjectedLocation, ProjectBoxExtent);
+				if (!NavSystem->ProjectPointToNavigation(CursorHit.ImpactPoint, ProjectedLocation, ProjectBoxExtent))
+				{
+					return;
+				}
 				PathEnd = ProjectedLocation;
+				// Beacon을 피해가야함
+				QueryFilter = UAvoidBeaconQueryFilter::StaticClass();
 			}
 
-			// 유효한 위치에 Project하면 경로 계산
-			if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(Pawn, Pawn->GetActorLocation(), PathEnd))
+			if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(Pawn, Pawn->GetNavAgentLocation(), PathEnd, nullptr, QueryFilter))
 			{
 				PathIndex = 0;
 				NavPaths = MoveTemp(NavPath->PathPoints);
