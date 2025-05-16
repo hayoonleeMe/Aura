@@ -3,14 +3,15 @@
 
 #include "AbilitySystem/Abilities/AuraAbility_ClickToMove.h"
 
+#include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "AbilitySystem/AbilityTasks/AbilityTask_ClickToMove.h"
 #include "Aura/Aura.h"
-#include "GameFramework/Character.h"
 #include "GameFramework/PlayerController.h"
+#include "Interface/InteractionInterface.h"
 
 const FVector UAuraAbility_ClickToMove::ProjectBoxExtent(1000.f);
 
@@ -24,6 +25,7 @@ UAuraAbility_ClickToMove::UAuraAbility_ClickToMove()
 	bShouldSpawnCursorEffect = true;
 	InputDelay = 0.03f;
 	bProcessInput = true;
+	InitialArriveAcceptanceRadius = ArriveAcceptanceRadius;
 }
 
 void UAuraAbility_ClickToMove::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -34,6 +36,7 @@ void UAuraAbility_ClickToMove::ActivateAbility(const FGameplayAbilitySpecHandle 
 
 	bShouldMove = true;
 	bShouldSpawnCursorEffect = true;	// 처음 마우스 클릭하면 커서 효과 생성
+	ArriveAcceptanceRadius = InitialArriveAcceptanceRadius;
 
 	GetWorld()->GetTimerManager().SetTimer(DelayTimer, FTimerDelegate::CreateLambda([this]()
 	{
@@ -56,25 +59,41 @@ void UAuraAbility_ClickToMove::InputPressed(const FGameplayAbilitySpecHandle Han
 			return;
 		}
 
+		const IInteractionInterface* InteractionInterface = Cast<IInteractionInterface>(CursorHit.GetActor());
+		if (InteractionInterface && InteractionInterface->GetOverrideArriveAcceptanceRadius() > 0.f)
+		{
+			// ArriveAcceptanceRadius 업데이트
+			ArriveAcceptanceRadius = InteractionInterface->GetOverrideArriveAcceptanceRadius();
+		}
+		else
+		{
+			ArriveAcceptanceRadius = InitialArriveAcceptanceRadius;
+		}
+
 		if (UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld()))
 		{
-			FNavLocation ProjectedLocation;
-			if (NavSystem->ProjectPointToNavigation(CursorHit.ImpactPoint, ProjectedLocation, ProjectBoxExtent))
+			FVector PathEnd = FVector::ZeroVector;
+
+			if (InteractionInterface)
 			{
-				// 유효한 위치에 Project하면 경로 계산
-				if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(Pawn, Pawn->GetActorLocation(), ProjectedLocation))
-				{
-					PathIndex = 0;
-					NavPaths = MoveTemp(NavPath->PathPoints);
-					if (NavPaths.IsEmpty())
-					{
-						return;
-					}
-				}
+				PathEnd = UAuraBlueprintLibrary::GetActorFeetLocation(CursorHit.GetActor());
 			}
 			else
 			{
-				return;
+				FNavLocation ProjectedLocation;
+				NavSystem->ProjectPointToNavigation(CursorHit.ImpactPoint, ProjectedLocation, ProjectBoxExtent);
+				PathEnd = ProjectedLocation;
+			}
+
+			// 유효한 위치에 Project하면 경로 계산
+			if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(Pawn, Pawn->GetActorLocation(), PathEnd))
+			{
+				PathIndex = 0;
+				NavPaths = MoveTemp(NavPath->PathPoints);
+				if (NavPaths.IsEmpty())
+				{
+					return;
+				}
 			}
 		}
 
