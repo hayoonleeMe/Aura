@@ -97,6 +97,11 @@ float ABeacon_StartStage::GetOverrideArriveAcceptanceRadius() const
 	return 135.f;
 }
 
+bool ABeacon_StartStage::CanTryInteract() const
+{
+	return !bHasInteractedWithPlayer;
+}
+
 void ABeacon_StartStage::SetMeshComponentHiddenInGame(bool bNewHidden) const
 {
 	MeshComponent->SetHiddenInGame(bNewHidden);

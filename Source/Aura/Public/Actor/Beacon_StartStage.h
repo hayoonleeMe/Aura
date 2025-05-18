@@ -30,7 +30,7 @@ public:
 	virtual void UnHighlightActor() override;
 	virtual void Interact() override;
 	virtual float GetOverrideArriveAcceptanceRadius() const override;
-	virtual bool CanTryInteract() const override { return true; }
+	virtual bool CanTryInteract() const override;
 	/* End InteractionInterface */
 
 	// 해당 액터를 숨기기 위해 MeshComponent의 HiddenInGame 변경
