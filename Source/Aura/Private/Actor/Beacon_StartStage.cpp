@@ -13,6 +13,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "Interface/PlayerInterface.h"
 #include "Navigation/NavArea_Beacon.h"
+#include "Net/UnrealNetwork.h"
 #include "UI/Widget/ToolTip_Beacon_StartStage.h"
 
 ABeacon_StartStage::ABeacon_StartStage()
@@ -49,6 +50,13 @@ ABeacon_StartStage::ABeacon_StartStage()
 	TooltipWidgetComponent->SetCanEverAffectNavigation(false);
 }
 
+void ABeacon_StartStage::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ABeacon_StartStage, bHasInteractedWithPlayer);
+}
+
 void ABeacon_StartStage::HighlightActor()
 {
 	MeshComponent->SetRenderCustomDepth(true);
@@ -81,29 +89,12 @@ void ABeacon_StartStage::UnHighlightActor()
 
 void ABeacon_StartStage::Interact()
 {
-	if (!bHasInteractedWithPlayer)
-	{
-		bHasInteractedWithPlayer = true;
-		
-		if (InteractSound)
-		{
-			UGameplayStatics::PlaySound2D(this, InteractSound);
-		}
-
-		TooltipWidgetComponent->SetVisibility(false);
-
-		StartGlowTimeline(DynamicMaterialInstance);
-	}
+	ServerInteract();
 }
 
 float ABeacon_StartStage::GetOverrideArriveAcceptanceRadius() const
 {
 	return 135.f;
-}
-
-void ABeacon_StartStage::OnGlowTimelineFinished()
-{
-	ServerInteract();
 }
 
 void ABeacon_StartStage::SetMeshComponentHiddenInGame(bool bNewHidden) const
@@ -122,10 +113,39 @@ void ABeacon_StartStage::BeginPlay()
 	SetMeshComponentHiddenInGame(true);
 }
 
+void ABeacon_StartStage::HandleInteract()
+{
+	if (InteractSound)
+	{
+		UGameplayStatics::PlaySound2D(this, InteractSound);
+	}
+
+	TooltipWidgetComponent->SetVisibility(false);
+
+	StartGlowTimeline(DynamicMaterialInstance);
+}
+
+void ABeacon_StartStage::OnGlowTimelineFinished()
+{
+	if (HasAuthority())
+	{
+		if (IStageSystemInterface* StageSystemInterface = Cast<IStageSystemInterface>(GetWorld() ? GetWorld()->GetAuthGameMode() : nullptr))
+		{
+			StageSystemInterface->OnStageBeaconInteracted();
+		}	
+	}
+}
+
+void ABeacon_StartStage::OnRep_HasInteractedWithPlayer()
+{
+	HandleInteract();
+}
+
 void ABeacon_StartStage::ServerInteract_Implementation()
 {
-	if (IStageSystemInterface* StageSystemInterface = Cast<IStageSystemInterface>(GetWorld() ? GetWorld()->GetAuthGameMode() : nullptr))
+	if (!bHasInteractedWithPlayer)
 	{
-		StageSystemInterface->OnStageBeaconInteracted();
+		bHasInteractedWithPlayer = true;
+		HandleInteract();
 	}
 }
