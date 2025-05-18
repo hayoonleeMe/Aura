@@ -27,6 +27,7 @@ public:
 protected:
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 	virtual bool IsValidOverlap(const AActor* TargetActor) const override;
+	virtual void HandleProjectileOverlap(AActor* OtherActor);
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UPooledActorComponent> PooledActorComponent;
