@@ -23,6 +23,7 @@ class AURA_API ABeacon_StartStage : public AActor, public IInteractionInterface
 
 public:
 	ABeacon_StartStage();
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/* Begin InteractionInterface */
 	virtual void HighlightActor() override;
@@ -32,18 +33,20 @@ public:
 	virtual bool CanTryInteract() const override { return true; }
 	/* End InteractionInterface */
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void StartGlowTimeline(UMaterialInstanceDynamic* MaterialInstanceDynamic);
-
-	UFUNCTION(BlueprintCallable)
-	void OnGlowTimelineFinished();
-
 	// 해당 액터를 숨기기 위해 MeshComponent의 HiddenInGame 변경
 	// Replicate되지 않음
 	void SetMeshComponentHiddenInGame(bool bNewHidden) const;
 
 protected:
 	virtual void BeginPlay() override;
+
+	void HandleInteract();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartGlowTimeline(UMaterialInstanceDynamic* MaterialInstanceDynamic);
+
+	UFUNCTION(BlueprintCallable)
+	void OnGlowTimelineFinished();
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -62,8 +65,12 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	TObjectPtr<USoundBase> InteractSound;
 
-	// 현재 기기의 플레이어와 상호작용 했는지
-	bool bHasInteractedWithPlayer = false;
+	// 플레이어와 상호작용 했는지
+	UPROPERTY(ReplicatedUsing=OnRep_HasInteractedWithPlayer)
+	uint8 bHasInteractedWithPlayer : 1;
+
+	UFUNCTION()
+	void OnRep_HasInteractedWithPlayer();
 
 	// ============================================================================
 	// Tooltip
