@@ -8,6 +8,7 @@
 #include "Types/StageStatus.h"
 #include "GameOverlay.generated.h"
 
+class UOverlay;
 class UVerticalBox;
 class UMenuShortcutAlert;
 class UTutorialMenu;
@@ -137,10 +138,10 @@ public:
 	// ============================================================================
 
 	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UNamedSlot> NamedSlot_StageWaiting;
+	TObjectPtr<UOverlay> Overlay_StageWaiting;
 	
 	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UNamedSlot> NamedSlot_StageStartAlert;
+	TObjectPtr<UOverlay> Overlay_StageStartAlert;
 
 	void OnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount);
 	void OnTotalEnemyCountChanged(int32 TotalEnemyCount) const;

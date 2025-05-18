@@ -7,7 +7,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Animation/WidgetAnimation.h"
-#include "Components/NamedSlot.h"
+#include "Components/Overlay.h"
 #include "Components/VerticalBox.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
@@ -106,8 +106,8 @@ void UGameOverlay::OnRespawnStarted(float RespawnTimerEndSeconds)
 		RespawnTimer->RespawnTimerEndSeconds = RespawnTimerEndSeconds;
 		RespawnTimer->AddToViewport();
 
-		// NamedSlot_StageStartAlert 위치에 RespawnTimer widget 표시
-		NamedSlot_StageStartAlert->AddChild(RespawnTimer);	// TODO : StageStartAlert와 겹칠 수 있으므로 처리 필요
+		// Overlay_StageStartAlert 위치에 RespawnTimer widget 표시
+		Overlay_StageStartAlert->AddChild(RespawnTimer);
 	}
 }
 
@@ -352,8 +352,8 @@ void UGameOverlay::OnStageStatusChanged(EStageStatus StageStatus, int32 StageNum
 		StageWaitingTimer->WaitingTimerEndSeconds = WaitingTimerEndSeconds;
 		StageWaitingTimer->AddToViewport();
 
-		// NamedSlot_StageWaiting 위치에 StageWaiting widget 표시 
-		NamedSlot_StageWaiting->AddChild(StageWaitingTimer);
+		// Overlay_StageWaiting 위치에 StageWaiting widget 표시 
+		Overlay_StageWaiting->AddChild(StageWaitingTimer);
 	}
 	else
 	{
@@ -374,15 +374,15 @@ void UGameOverlay::OnStageStatusChanged(EStageStatus StageStatus, int32 StageNum
 		StageStartAlert->StageNumber = StageNumber;
 		StageStartAlert->AddToViewport();
 
-		// NamedSlot_StageStartAlert 위치에 StageStartAlert widget 표시
-		NamedSlot_StageStartAlert->AddChild(StageStartAlert);
+		// Overlay_StageStartAlert 위치에 StageStartAlert widget 표시
+		Overlay_StageStartAlert->AddChild(StageStartAlert);
 
 		StageInfoHUD = CreateWidget<UStageInfoHUD>(this, StageInfoHUDClass);
 		StageInfoHUD->InitializeStageInfoHUD(StageNumber, TotalEnemyCount);
 		StageInfoHUD->AddToViewport();
 
-		// NamedSlot_StageWaiting 위치에 StageInfo widget 표시
-		NamedSlot_StageWaiting->AddChild(StageInfoHUD);
+		// Overlay_StageWaiting 위치에 StageInfo widget 표시
+		Overlay_StageWaiting->AddChild(StageInfoHUD);
 	}
 }
 
@@ -399,8 +399,8 @@ void UGameOverlay::ShowStageReadyHUD()
 	StageReadyHUD = CreateWidget(this, StageReadyHUDClass);
 	StageReadyHUD->AddToViewport();
 
-	// NamedSlot_StageWaiting 위치에 PreStageHUD widget 표시
-	NamedSlot_StageWaiting->AddChild(PreStageHUD);
+	// Overlay_StageWaiting 위치에 StageReadyHUD widget 표시
+	Overlay_StageWaiting->AddChild(StageReadyHUD);
 }
 
 void UGameOverlay::ShowAllMenuShortcutAlert(const TArray<TTuple<EGameMenuType, FKey>>& MenuKeys)
