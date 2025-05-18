@@ -23,7 +23,7 @@ public:
 	void SetEmberBoltOptions(int32 InNumEmberBolts, float InEmberBoltDamage, const TSubclassOf<AAuraProjectile>& InEmberBoltClass);
 
 protected:
-	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+	virtual void HandleProjectileOverlap(AActor* OtherActor) override;
 
 private:
 	UPROPERTY(VisibleAnywhere)

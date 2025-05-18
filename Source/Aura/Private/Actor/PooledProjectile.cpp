@@ -31,6 +31,17 @@ void APooledProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent
 		return;
 	}
 
+	HandleProjectileOverlap(OtherActor);
+}
+
+bool APooledProjectile::IsValidOverlap(const AActor* TargetActor) const
+{
+	const AActor* SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent ? DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor() : nullptr;
+	return IsValid(SourceAvatarActor) && IsValid(TargetActor) && SourceAvatarActor != TargetActor && UAuraBlueprintLibrary::IsNotFriend(SourceAvatarActor, TargetActor);
+}
+
+void APooledProjectile::HandleProjectileOverlap(AActor* OtherActor)
+{
 	// Can apply damage only in server
 	if (HasAuthority())
 	{
@@ -47,12 +58,6 @@ void APooledProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent
 	}
 
 	PooledActorComponent->SetInUse(false);
-}
-
-bool APooledProjectile::IsValidOverlap(const AActor* TargetActor) const
-{
-	const AActor* SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent ? DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor() : nullptr;
-	return IsValid(SourceAvatarActor) && IsValid(TargetActor) && SourceAvatarActor != TargetActor && UAuraBlueprintLibrary::IsNotFriend(SourceAvatarActor, TargetActor);
 }
 
 void APooledProjectile::OnSetInUse(bool bInUse)
