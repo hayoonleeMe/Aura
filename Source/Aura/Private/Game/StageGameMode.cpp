@@ -131,18 +131,6 @@ void AStageGameMode::OnRespawnTimerFinished(APlayerController* ControllerToRespa
 	}));
 }
 
-void AStageGameMode::OnPlayerReady()
-{
-	++ReadyPlayerCount;
-
-	if (GetWorld() && ReadyPlayerCount >= GetWorld()->GetNumPlayerControllers())
-	{
-		// 모든 플레이어 레디 완료
-		StartStage();
-		DestroyStartStageBeacon();
-	}
-}
-
 void AStageGameMode::SpawnStartStageBeacon() const
 {
 	if (StageGameState)
@@ -242,16 +230,8 @@ void AStageGameMode::EndStage()
 
 void AStageGameMode::OnStageBeaconInteracted()
 {
-	if (StageNumber > 1)
-	{
-		StartStage();
-		DestroyStartStageBeacon();
-	}
-	else
-	{
-		// stage 시작 전 초반
-		OnPlayerReady();
-	}
+	StartStage();
+	DestroyStartStageBeacon();
 }
 
 void AStageGameMode::InitData()
