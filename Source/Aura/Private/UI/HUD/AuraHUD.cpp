@@ -56,11 +56,11 @@ void AAuraHUD::CloseAllMenu() const
 	}
 }
 
-void AAuraHUD::ShowPreStageHUD() const
+void AAuraHUD::ShowStageReadyHUD() const
 {
 	if (GameOverlay)
 	{
-		GameOverlay->ShowPreStageHUD();
+		GameOverlay->ShowStageReadyHUD();
 	}
 }
 

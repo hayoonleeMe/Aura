@@ -8,6 +8,7 @@
 #include "Types/StageStatus.h"
 #include "GameOverlay.generated.h"
 
+class UOverlay;
 class UVerticalBox;
 class UMenuShortcutAlert;
 class UTutorialMenu;
@@ -137,10 +138,10 @@ public:
 	// ============================================================================
 
 	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UNamedSlot> NamedSlot_StageWaiting;
+	TObjectPtr<UOverlay> Overlay_StageWaiting;
 	
 	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UNamedSlot> NamedSlot_StageStartAlert;
+	TObjectPtr<UOverlay> Overlay_StageStartAlert;
 
 	void OnStageStatusChanged(EStageStatus StageStatus, int32 StageNumber, double WaitingTimerEndSeconds, int32 TotalEnemyCount);
 	void OnTotalEnemyCountChanged(int32 TotalEnemyCount) const;
@@ -164,13 +165,13 @@ public:
 	TObjectPtr<UStageStartAlert> StageStartAlert;
 
 	UPROPERTY(EditDefaultsOnly, Category="Stage")
-	TSubclassOf<UUserWidget> PreStageHUDClass;
+	TSubclassOf<UUserWidget> StageReadyHUDClass;
 	
 	UPROPERTY()
-	TObjectPtr<UUserWidget> PreStageHUD;
+	TObjectPtr<UUserWidget> StageReadyHUD;
 
-	// PreStageHUD Widget 표시
-	void ShowPreStageHUD();
+	// StageReadyHUD Widget 표시
+	void ShowStageReadyHUD();
 
 	// 모든 메뉴의 단축키를 알리는 Alert Widget을 표시
 	void ShowAllMenuShortcutAlert(const TArray<TTuple<EGameMenuType, FKey>>& MenuKeys);

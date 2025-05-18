@@ -69,8 +69,8 @@ public:
 	virtual void FlushPendingStageWaitingBroadcast() override;
 	/* End PlayerInterface */
 
-	// PreStageHUD Widget을 표시한다.
-	void ShowPreStageHUD() const;
+	// StageReadyHUD Widget을 표시한다.
+	void ShowStageReadyHUD() const;
 
 	// 모든 메뉴에 대한 MenuShortcutAlert Widget을 표시한다.
 	void ShowAllMenuShortcutAlert() const;
