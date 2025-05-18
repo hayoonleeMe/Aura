@@ -190,15 +190,15 @@ void AAuraPlayerController::HandleInitialLogic() const
 	{
 		AuraHUD->InitOverlay();
 	}
-	ShowPreStageHUD();
+	ShowStageReadyHUD();
 	ShowAllMenuShortcutAlert();
 }
 
-void AAuraPlayerController::ShowPreStageHUD() const
+void AAuraPlayerController::ShowStageReadyHUD() const
 {
 	if (const AAuraHUD* AuraHUD = GetHUD<AAuraHUD>())
 	{
-		AuraHUD->ShowPreStageHUD();
+		AuraHUD->ShowStageReadyHUD();
 	}
 }
 

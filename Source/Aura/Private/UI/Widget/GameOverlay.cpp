@@ -40,7 +40,7 @@ void UGameOverlay::NativeConstruct()
 	check(StageInfoHUDClass);
 	check(StageWaitingTimerClass);
 	check(StageStartAlertClass);
-	check(PreStageHUDClass);
+	check(StageReadyHUDClass);
 	check(MenuShortcutAlertClass);
 
 	/* Game Overlay */
@@ -357,11 +357,11 @@ void UGameOverlay::OnStageStatusChanged(EStageStatus StageStatus, int32 StageNum
 	}
 	else
 	{
-		// Remove PreStageHUD Widget
-		if (PreStageHUD)
+		// Remove StageReadyHUD Widget
+		if (StageReadyHUD)
 		{
-			PreStageHUD->RemoveFromParent();
-			PreStageHUD = nullptr;
+			StageReadyHUD->RemoveFromParent();
+			StageReadyHUD = nullptr;
 		}
 		// Remove StageWaiting widget
 		if (StageWaitingTimer)
@@ -394,10 +394,10 @@ void UGameOverlay::OnTotalEnemyCountChanged(int32 TotalEnemyCount) const
 	}
 }
 
-void UGameOverlay::ShowPreStageHUD()
+void UGameOverlay::ShowStageReadyHUD()
 {
-	PreStageHUD = CreateWidget(this, PreStageHUDClass);
-	PreStageHUD->AddToViewport();
+	StageReadyHUD = CreateWidget(this, StageReadyHUDClass);
+	StageReadyHUD->AddToViewport();
 
 	// NamedSlot_StageWaiting 위치에 PreStageHUD widget 표시
 	NamedSlot_StageWaiting->AddChild(PreStageHUD);

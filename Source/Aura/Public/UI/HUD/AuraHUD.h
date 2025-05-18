@@ -32,8 +32,8 @@ public:
 	// 현재 열린 모든 메뉴를 닫는다.
 	void CloseAllMenu() const;
 
-	// PreStageHUD Widget 표시
-	void ShowPreStageHUD() const;
+	// StageReadyHUD Widget 표시
+	void ShowStageReadyHUD() const;
 
 	// 모든 메뉴의 단축키를 알리는 Alert Widget을 표시
 	void ShowAllMenuShortcutAlert(const TArray<TTuple<EGameMenuType, FKey>>& MenuKeys) const;

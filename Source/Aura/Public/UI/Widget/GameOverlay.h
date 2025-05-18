@@ -164,13 +164,13 @@ public:
 	TObjectPtr<UStageStartAlert> StageStartAlert;
 
 	UPROPERTY(EditDefaultsOnly, Category="Stage")
-	TSubclassOf<UUserWidget> PreStageHUDClass;
+	TSubclassOf<UUserWidget> StageReadyHUDClass;
 	
 	UPROPERTY()
-	TObjectPtr<UUserWidget> PreStageHUD;
+	TObjectPtr<UUserWidget> StageReadyHUD;
 
-	// PreStageHUD Widget 표시
-	void ShowPreStageHUD();
+	// StageReadyHUD Widget 표시
+	void ShowStageReadyHUD();
 
 	// 모든 메뉴의 단축키를 알리는 Alert Widget을 표시
 	void ShowAllMenuShortcutAlert(const TArray<TTuple<EGameMenuType, FKey>>& MenuKeys);
