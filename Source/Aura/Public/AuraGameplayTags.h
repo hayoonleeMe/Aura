@@ -102,6 +102,7 @@ namespace AuraGameplayTags
 
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_FireBolt);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_FireBall);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_Firenado);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_ChainLightning);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_ArcaneSpike);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_EnemyAttack);
@@ -125,6 +126,7 @@ namespace AuraGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive_FireBolt);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive_FireBall);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive_Firenado);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive_ChainLightning);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive_ArcaneSpike);
 
