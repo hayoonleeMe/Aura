@@ -77,6 +77,7 @@ namespace AuraGameplayTags
 	/* Event */
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_FireBolt, "Event.Montage.FireBolt", "FireBolt Montage Event Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_FireBall, "Event.Montage.FireBall", "FireBall Montage Event Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_Firenado, "Event.Montage.Firenado", "Firenado Montage Event Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_ChainLightning, "Event.Montage.ChainLightning", "ChainLightning Montage Event Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_ArcaneSpike, "Event.Montage.ArcaneSpike", "ArcaneSpike Montage Event Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_EnemyAttack, "Event.Montage.EnemyAttack", "EnemyAttack Montage Event Tag");
@@ -93,6 +94,7 @@ namespace AuraGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Offensive, "Abilities.Offensive", "Offensive Ability Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Offensive_FireBolt, "Abilities.Offensive.FireBolt", "FireBolt Offensive Ability Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Offensive_FireBall, "Abilities.Offensive.FireBall", "FireBall Offensive Ability Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Offensive_Firenado, "Abilities.Offensive.Firenado", "Firenado Offensive Ability Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Offensive_ChainLightning, "Abilities.Offensive.ChainLightning", "ChainLightning Offensive Ability Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Offensive_ArcaneSpike, "Abilities.Offensive.ArcaneSpike", "ArcaneSpike Offensive Ability Tag");
 
