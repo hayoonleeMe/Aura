@@ -41,6 +41,10 @@
 // Default Response Block, Ignore ECC_Enemy
 #define ECC_Enemy ECollisionChannel::ECC_GameTraceChannel6
 
+// 레벨의 Floor만 Block하는 Trace Channel
+// Default Response Ignore, Block Floor Mesh
+#define ECC_Floor ECollisionChannel::ECC_GameTraceChannel7
+
 // ============================================================================
 // Custom Log Macro
 // ============================================================================
