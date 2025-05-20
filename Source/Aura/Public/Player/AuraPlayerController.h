@@ -159,7 +159,7 @@ private:
 	// Input
 	// ============================================================================
 
-	void AbilityInputPressed(int32 InputID);
+	void AbilityInputPressed(int32 InputID, bool bUseTriggeredEvent);
 	void AbilityInputReleased(int32 InputID);
 
 	// Input Event와 Ability 연동

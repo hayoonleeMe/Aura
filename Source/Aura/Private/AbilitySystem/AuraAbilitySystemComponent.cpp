@@ -84,9 +84,9 @@ void UAuraAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGamepla
 	}
 }
 
-void UAuraAbilitySystemComponent::AbilityInputPressed(int32 InputID)
+void UAuraAbilitySystemComponent::AbilityInputPressed(int32 InputID, bool bUseTriggeredEvent)
 {
-	if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromInputID(InputID))
+	if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromInputIDAndTriggerEvent(InputID, bUseTriggeredEvent))
 	{
 		if (!AbilitySpec->IsActive())
 		{
@@ -94,6 +94,21 @@ void UAuraAbilitySystemComponent::AbilityInputPressed(int32 InputID)
 		}
 		AbilitySpecInputPressed(*AbilitySpec);
 	}
+}
+
+FGameplayAbilitySpec* UAuraAbilitySystemComponent::FindAbilitySpecFromInputIDAndTriggerEvent(int32 InputID, bool bUseTriggeredEvent)
+{
+	if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromInputID(InputID))
+	{
+		if (const UAuraGameplayAbility* AuraAbilityCDO = Cast<UAuraGameplayAbility>(AbilitySpec->Ability))
+		{
+			if (AuraAbilityCDO->bUseTriggeredEvent == bUseTriggeredEvent)
+			{
+				return AbilitySpec;
+			}
+		}
+	}
+	return nullptr;
 }
 
 void UAuraAbilitySystemComponent::AbilityInputReleased(int32 InputID)

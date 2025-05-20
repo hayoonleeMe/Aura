@@ -7,6 +7,7 @@
 
 UAuraGameplayAbility::UAuraGameplayAbility()
 {
+	bUseTriggeredEvent = true;
 	UnlockRequiredLevel = 1;
 	MaxSpellLevel = 4;
 }

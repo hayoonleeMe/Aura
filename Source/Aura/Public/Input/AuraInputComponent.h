@@ -32,7 +32,8 @@ void UAuraInputComponent::BindAbilityActions(UAuraInputConfig* InputConfig, User
 		{
 			if (PressedFunc)
 			{
-				BindAction(Mapping.InputAction, ETriggerEvent::Triggered, Object, PressedFunc, Mapping.InputID);
+				BindAction(Mapping.InputAction, ETriggerEvent::Triggered, Object, PressedFunc, Mapping.InputID, true);
+				BindAction(Mapping.InputAction, ETriggerEvent::Started, Object, PressedFunc, Mapping.InputID, false);
 			}
 			if (ReleasedFunc)
 			{

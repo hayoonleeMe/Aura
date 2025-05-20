@@ -565,11 +565,11 @@ void AAuraPlayerController::OnCloseCinematicActionStarted()
 	}
 }
 
-void AAuraPlayerController::AbilityInputPressed(int32 InputID)
+void AAuraPlayerController::AbilityInputPressed(int32 InputID, bool bUseTriggeredEvent)
 {
 	if (GetAuraAbilitySystemComponent())
 	{
-		AuraAbilitySystemComponent->AbilityInputPressed(InputID);
+		AuraAbilitySystemComponent->AbilityInputPressed(InputID, bUseTriggeredEvent);
 	}
 }
 

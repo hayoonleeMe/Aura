@@ -43,10 +43,13 @@ public:
 	// Abilities의 Ability Class의 AbilitySpec을 생성해 GiveAbility를 수행하는 함수 
 	void AddAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities, int32 InLevel);
 
-	// InputID에 해당하는 Ability의 Press Event를 발생시키는 함수
-	void AbilityInputPressed(int32 InputID);
+	// InputID와 bUseTriggeredEvent에 해당하는 Ability를 실행하고 Pressed Event를 발생시키는 함수
+	void AbilityInputPressed(int32 InputID, bool bUseTriggeredEvent);
 
-	// InputID에 해당하는 Ability의 Release Event를 발생시키는 함수
+	// InputID와 bUseTriggeredEvent에 해당하는 어빌리티를 찾아 FGameplayAbilitySpec*을 반환한다. 
+	FGameplayAbilitySpec* FindAbilitySpecFromInputIDAndTriggerEvent(int32 InputID, bool bUseTriggeredEvent);
+
+	// InputID에 해당하는 Ability의 Released Event를 발생시키는 함수
 	void AbilityInputReleased(int32 InputID);
 
 	// HitResultUnderMouse의 Hit Actor를 저장하는 Weak Ptr
