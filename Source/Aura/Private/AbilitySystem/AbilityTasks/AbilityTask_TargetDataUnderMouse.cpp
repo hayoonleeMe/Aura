@@ -9,11 +9,23 @@
 #include "AbilitySystem/AuraGameplayAbilityTargetData_SingleTargetHit.h"
 #include "Interface/CombatInterface.h"
 #include "Interface/PlayerInterface.h"
+#include "GameFramework/PlayerController.h"
 
 UAbilityTask_TargetDataUnderMouse* UAbilityTask_TargetDataUnderMouse::CreateTask(UGameplayAbility* OwningAbility)
 {
 	UAbilityTask_TargetDataUnderMouse* Task = NewAbilityTask<UAbilityTask_TargetDataUnderMouse>(OwningAbility);
 	return Task;
+}
+
+void UAbilityTask_TargetDataUnderMouse::OnDestroy(bool AbilityIsEnding)
+{
+	if (GetWorld())
+	{
+		// Task가 종료될 때 델레게이트 정리   
+		AbilitySystemComponent->AbilityTargetDataSetDelegate(GetAbilitySpecHandle(), GetActivationPredictionKey()).RemoveAll(this);
+	}
+	
+	Super::OnDestroy(AbilityIsEnding);
 }
 
 void UAbilityTask_TargetDataUnderMouse::Activate()
@@ -52,27 +64,31 @@ void UAbilityTask_TargetDataUnderMouse::SendTargetDataToServer()
 		// Retrieve Cached Target HitResult
 		FHitResult HitResult = PlayerInterface->GetTargetHitResult();
 		
-		FAuraGameplayAbilityTargetData_SingleTargetHit* NewTargetData = new FAuraGameplayAbilityTargetData_SingleTargetHit(HitResult); 
+		FAuraGameplayAbilityTargetData_SingleTargetHit* NewTargetData = new FAuraGameplayAbilityTargetData_SingleTargetHit(HitResult);
 
-		if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+		// 어빌리티가 필요로 할 때만 Cursor Target을 설정한다.
+		if (PlayerInterface->GetNeedCursorTarget())
 		{
-			if (!AuraASC->CursorTargetWeakPtr.IsValid())
+			if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
 			{
-				// 클라이언트에서 CursorTarget이 Invalid 해졌으면 새로운 Cursor 좌표에 대해 다시 CursorTarget을 결정한다.
-				const ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(HitResult.GetActor());
-				AuraASC->CursorTargetWeakPtr = TargetCombatInterface && !TargetCombatInterface->IsDead() ? HitResult.GetActor() : nullptr;
-			}
-			else
-			{
-				// 한번 지정한 CursorTarget이 유효하더라도 죽었는지 체크
-				const ICombatInterface* CursorTargetCombatInterface = Cast<ICombatInterface>(AuraASC->CursorTargetWeakPtr.Get());
-				if (!CursorTargetCombatInterface || CursorTargetCombatInterface->IsDead())
+				if (!AuraASC->CursorTargetWeakPtr.IsValid())
 				{
-					AuraASC->CursorTargetWeakPtr = nullptr;
+					// 클라이언트에서 CursorTarget이 Invalid 해졌으면 새로운 Cursor 좌표에 대해 다시 CursorTarget을 결정한다.
+					const ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(HitResult.GetActor());
+					AuraASC->CursorTargetWeakPtr = TargetCombatInterface && !TargetCombatInterface->IsDead() ? HitResult.GetActor() : nullptr;
 				}
-			}
-			// 클라이언트에서의 CursorTarget을 전달해준다.
-			NewTargetData->CursorTarget = AuraASC->CursorTargetWeakPtr;
+				else
+				{
+					// 한번 지정한 CursorTarget이 유효하더라도 죽었는지 체크
+					const ICombatInterface* CursorTargetCombatInterface = Cast<ICombatInterface>(AuraASC->CursorTargetWeakPtr.Get());
+					if (!CursorTargetCombatInterface || CursorTargetCombatInterface->IsDead())
+					{
+						AuraASC->CursorTargetWeakPtr = nullptr;
+					}
+				}
+				// 클라이언트에서의 CursorTarget을 전달해준다.
+				NewTargetData->CursorTarget = AuraASC->CursorTargetWeakPtr;
+			}	
 		}
 
 		// FGameplayAbilityTargetData_SingleTargetHit 포인터는 FGameplayAbilityTargetDataHandle 내부에서 TSharedPtr로 괸리됨

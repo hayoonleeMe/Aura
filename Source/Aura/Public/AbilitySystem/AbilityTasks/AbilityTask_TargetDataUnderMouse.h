@@ -24,6 +24,8 @@ public:
 	// 올바른 TargetData(HitResult)를 반환할 때 실행되는 델레게이트
 	FTargetDataUnderMouseSetSignature TargetDataUnderMouseSetDelegate;
 	
+	virtual void OnDestroy(bool AbilityIsEnding) override;
+	
 protected:
 	virtual void Activate() override;
 

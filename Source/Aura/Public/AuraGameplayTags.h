@@ -117,6 +117,7 @@ namespace AuraGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_HitReact);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_EnemyAttack);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_ShamanSummonEnemy);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_NeedConfirm);
 
 	// ============================================================================
 	// Abilities.Offensive
@@ -167,6 +168,8 @@ namespace AuraGameplayTags
 
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_FireBoltImpact);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_FireBallImpact);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_Firenado);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_Firenado_Explosion);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_EnemyMeleeImpact);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_RockImpact);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_LevelUp);

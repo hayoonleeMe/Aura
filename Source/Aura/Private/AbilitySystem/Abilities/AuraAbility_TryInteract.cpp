@@ -14,9 +14,12 @@
 UAuraAbility_TryInteract::UAuraAbility_TryInteract()
 {
 	AbilityTags.AddTag(AuraGameplayTags::Abilities_TryInteract);
-	CancelAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_ClickToMove);
-	StartupInputTag = AuraGameplayTags::InputTag_Interact;
 	
+	CancelAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_ClickToMove);
+	// 어빌리티를 실행하면 현재 실행 중인 Confirmation을 기다리는 어빌리티를 취소한다.
+	CancelAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_NeedConfirm);
+	
+	StartupInputTag = AuraGameplayTags::InputTag_Interact;
 	InitialArriveAcceptanceRadius = ArriveAcceptanceRadius;
 }
 

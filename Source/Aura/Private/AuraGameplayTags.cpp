@@ -89,6 +89,7 @@ namespace AuraGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_HitReact, "Abilities.HitReact", "HitReact Ability Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_EnemyAttack, "Abilities.EnemyAttack", "EnemyAttack Ability Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_ShamanSummonEnemy, "Abilities.ShamanSummonEnemy", "Shaman's Summon Enemy Ability Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_NeedConfirm, "Abilities.NeedConfirm", "Ability Tag that need confirm");
 	
 	/* Abilities.Offensive */
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Offensive, "Abilities.Offensive", "Offensive Ability Tag");
@@ -122,6 +123,8 @@ namespace AuraGameplayTags
 	/* GameplayCue */
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_FireBoltImpact, "GameplayCue.FireBoltImpact", "FireBoltImpact GameplayCue Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_FireBallImpact, "GameplayCue.FireBallImpact", "FireBallImpact GameplayCue Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_Firenado, "GameplayCue.Firenado", "Firenado GameplayCue Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_Firenado_Explosion, "GameplayCue.Firenado.Explosion", "Firenado Final Explosion GameplayCue Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_EnemyMeleeImpact, "GameplayCue.EnemyMeleeImpact", "EnemyMeleeImpact GameplayCue Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_RockImpact, "GameplayCue.RockImpact", "RockImpact GameplayCue Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_LevelUp, "GameplayCue.LevelUp", "LevelUp GameplayCue Tag");

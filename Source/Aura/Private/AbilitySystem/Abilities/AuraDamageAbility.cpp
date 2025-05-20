@@ -4,6 +4,7 @@
 #include "AbilitySystem/Abilities/AuraDamageAbility.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AuraGameplayTags.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
@@ -13,6 +14,9 @@
 
 UAuraDamageAbility::UAuraDamageAbility()
 {
+	// 어빌리티를 실행하면 현재 실행 중인 Confirmation을 기다리는 어빌리티를 취소한다.
+	CancelAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_NeedConfirm);
+	
 	bFinishMontage = false;
 	bFinishAttack = false;
 	bShouldClearTargetActor = false;
