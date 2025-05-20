@@ -16,6 +16,10 @@ class AURA_API UAuraGameplayAbility : public UGameplayAbility
 
 public:
 	UAuraGameplayAbility();
+
+	// true면 ETriggerEvent::Triggered로 실행되고, false면 ETriggerEvent::Started로 실행된다. 
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
+	uint8 bUseTriggeredEvent : 1;
 	
 	// Ability를 활성화하는 Input Key를 나타내는 Tag
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
