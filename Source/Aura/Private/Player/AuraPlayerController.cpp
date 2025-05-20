@@ -262,6 +262,22 @@ void AAuraPlayerController::DisableAbilityInput()
 	}	
 }
 
+void AAuraPlayerController::EnableWaitingConfirmationInput(bool bEnabled) const
+{
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		if (bEnabled)
+		{
+			// Priority가 높은 Context를 추가해 항상 IA_ConfirmSpell가 입력되도록 한다.
+			Subsystem->AddMappingContext(WaitingConfirmationContext, 2);
+		}
+		else
+		{
+			Subsystem->RemoveMappingContext(WaitingConfirmationContext);
+		}
+	}
+}
+
 void AAuraPlayerController::ServerNotifyASCInitToGameMode_Implementation()
 {
 	if (IStageSystemInterface* StageSystemInterface = Cast<IStageSystemInterface>(GetWorld() ? GetWorld()->GetAuthGameMode() : nullptr))
@@ -275,7 +291,7 @@ void AAuraPlayerController::CursorTrace()
 	if (bEnableCachingTargetHitResult)
 	{
 		// Caching Target HitResult
-		GetHitResultUnderCursor(ECC_Target, false, TargetHitResult);
+		GetHitResultUnderCursor(bNeedCursorTarget ? ECC_Target : ECC_Floor, false, TargetHitResult);
 	}
 
 	if (bEnableHighlight)
@@ -334,6 +350,11 @@ void AAuraPlayerController::EnableCachingTargetHitResult(bool bEnabled)
 		bEnableCachingTargetHitResult = false;
 		TargetHitResult = FHitResult();
 	}
+}
+
+void AAuraPlayerController::SetNeedCursorTarget(bool bNeeded)
+{
+	bNeedCursorTarget = bNeeded;
 }
 
 void AAuraPlayerController::ClientIndicateDamage_Implementation(float Damage, bool bIsBlockedHit, bool bIsCriticalHit, const FVector_NetQuantize& TargetLocation) const
@@ -478,6 +499,10 @@ void AAuraPlayerController::SetupInputComponent()
 	{
 		AuraInputComponent->BindAction(IA_TutorialMenu, ETriggerEvent::Started, this, &ThisClass::OnMenuActionStarted, EGameMenuType::TutorialMenu);
 	}
+	if (IA_ConfirmSpell)
+	{
+		AuraInputComponent->BindAction(IA_ConfirmSpell, ETriggerEvent::Started, this, &ThisClass::OnConfirmSpellActionStarted);
+	}
 	
 	// Bind UI Context
 	if (IA_CloseUI)
@@ -562,6 +587,16 @@ void AAuraPlayerController::OnCloseCinematicActionStarted()
 	if (LevelSequenceManageComponent)
 	{
 		LevelSequenceManageComponent->StopCurrentPlayingLevelSequence();
+	}
+}
+
+void AAuraPlayerController::OnConfirmSpellActionStarted()
+{
+	if (GetAuraAbilitySystemComponent())
+	{
+		// GenericLocalConfirmCallbacks를 브로드캐스트한다.
+		// 이를 통해 Confirmation을 기다리고 있는 어빌리티에서 다음 작업을 수행할 수 있다.
+		AuraAbilitySystemComponent->LocalInputConfirm();
 	}
 }
 

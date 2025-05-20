@@ -50,6 +50,7 @@ public:
 
 	/* Begin PlayerInterface */
 	virtual FHitResult GetTargetHitResult() const override { return TargetHitResult; }
+	virtual bool GetNeedCursorTarget() const override { return bNeedCursorTarget; }
 	virtual void IndicateAbilityActivateCostFail() override;
 	virtual void IndicateAbilityActivateCooldownFail() override;
 	virtual void NotifyEnemyDead() override;
@@ -77,6 +78,14 @@ public:
 
 	void EnableAbilityInput();
 	void DisableAbilityInput();
+
+	// bEnabled가 true면 Priority가 높은 Waiting Confirmation Context가 추가되어 Confirm 키가 입력될 수 있도록 한다.
+	// false면 Waiting Confirmation Context를 제거한다.
+	void EnableWaitingConfirmationInput(bool bEnabled) const;
+
+	void EnableHighlight(bool bEnabled);
+	void EnableCachingTargetHitResult(bool bEnabled);
+	void SetNeedCursorTarget(bool bNeeded);
 
 	AActor* GetTargetActorFromCursor() const { return TargetFromCurrentFrame.Get(); }
 
@@ -137,11 +146,13 @@ private:
 
 	// Cursor Target에 대한 Highlight 활성화 여부
 	bool bEnableHighlight = true;
-	void EnableHighlight(bool bEnabled);
 
 	// Cursor Target에 대한 TargetHitResult Caching 활성화 여부
 	bool bEnableCachingTargetHitResult = true;
-	void EnableCachingTargetHitResult(bool bEnabled);
+
+	// 마우스 커서로 선택할 수 있는 Cursor Target Actor가 필요한 지 여부
+	// true면 ECC_Target으로 Cursor Trace를 수행하고, false면 ECC_Floor로 수행한다. 
+	bool bNeedCursorTarget = true;
 
 	// Cached Target HitResult Under Cursor
 	FHitResult TargetHitResult;
@@ -192,6 +203,9 @@ private:
 	TObjectPtr<UInputMappingContext> CinematicContext;
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
+	TObjectPtr<UInputMappingContext> WaitingConfirmationContext;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
 	TObjectPtr<UInputAction> IA_AttributeMenu;
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
@@ -217,6 +231,13 @@ private:
 
 	// CloseCinematic Input Action이 Started 될 때 호출되는 콜백 함수
 	void OnCloseCinematicActionStarted();
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
+	TObjectPtr<UInputAction> IA_ConfirmSpell;
+
+	// IA_ConfirmSpell Started Event가 발생하면 호출되는 콜백 함수
+	// Waiting Confirmation Spell을 위해 Confirm한다.
+	void OnConfirmSpellActionStarted();
 
 	// ============================================================================
 	// Data
