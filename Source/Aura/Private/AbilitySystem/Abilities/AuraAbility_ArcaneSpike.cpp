@@ -4,6 +4,7 @@
 #include "AbilitySystem/Abilities/AuraAbility_ArcaneSpike.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AbilityTasks/AbilityTask_TargetDataUnderMouse.h"
@@ -14,14 +15,17 @@ UAuraAbility_ArcaneSpike::UAuraAbility_ArcaneSpike()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	AbilityTags.AddTag(AuraGameplayTags::Abilities_Offensive_ArcaneSpike);
-	CancelAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_ClickToMove);
-	CancelAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_TryInteract);
+	AbilityTags.AddTag(AuraGameplayTags::Abilities_NeedConfirm);	// 처음 실행한 뒤 Confirm 입력을 기다리는 어빌리티를 나타내는 GameplayTag
 	BlockAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_ClickToMove);
+	BlockAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_TryInteract);
 	BlockAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_Offensive);
+
+	bNeedCursorTargetHitResult = false;
+	bUseTriggeredEvent = false;
+	
 	DamageTypeTag = AuraGameplayTags::Damage_Type_Arcane;
 	DebuffTag = AuraGameplayTags::Debuff_Enfeeble;
 	MaxCastRange = 1400.f;
-	CachedTargetLocation = FVector::ZeroVector;
 }
 
 FText UAuraAbility_ArcaneSpike::GetDescription(int32 Level) const
@@ -77,13 +81,10 @@ FText UAuraAbility_ArcaneSpike::GetDescription(int32 Level) const
 void UAuraAbility_ArcaneSpike::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                                const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	UAuraDamageAbility::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	FinalShardEffectiveRadius = ShardEffectiveRadius * GetScaleRateByLevel(GetAbilityLevel());
+	TotalEffectiveRadius = FinalShardEffectiveRadius * 2.f;
 	
-	if (UAbilityTask_TargetDataUnderMouse* AbilityTask = UAbilityTask_TargetDataUnderMouse::CreateTask(this))
-	{
-		AbilityTask->TargetDataUnderMouseSetDelegate.BindUObject(this, &ThisClass::OnTargetDataUnderMouseSet);
-		AbilityTask->ReadyForActivation();
-	}
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
 void UAuraAbility_ArcaneSpike::OnTargetDataUnderMouseSet(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
@@ -95,13 +96,9 @@ void UAuraAbility_ArcaneSpike::OnTargetDataUnderMouseSet(const FGameplayAbilityT
 	}
 
 	const FHitResult& HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
-	if (HitResult.GetActor())
+	if (HitResult.bBlockingHit)
 	{
-		CachedTargetLocation = UAuraBlueprintLibrary::GetActorFeetLocation(HitResult.GetActor()); 
-	}
-	if (CachedTargetLocation.IsZero())
-	{
-		CachedTargetLocation = HitResult.ImpactPoint;
+		CachedTargetLocation = HitResult.ImpactPoint; 
 	}
 
 	const FTaggedCombatInfo TaggedCombatInfo = CombatInterface->GetTaggedCombatInfo(AuraGameplayTags::Abilities_Offensive_ArcaneSpike);
@@ -112,68 +109,69 @@ void UAuraAbility_ArcaneSpike::OnTargetDataUnderMouseSet(const FGameplayAbilityT
 
 	PlayAttackMontage(TaggedCombatInfo.AnimMontage, true);
 	WaitGameplayEvent(AuraGameplayTags::Event_Montage_ArcaneSpike);
+
+	// 실제로 Arcane Shards를 스폰하고 나면 캐릭터 이동을 멈추도록 이동 관련 어빌리티를 취소한다.
+	BlockMoveAbilities();
 }
 
 void UAuraAbility_ArcaneSpike::OnEventReceived(FGameplayEventData Payload)
 {
 	Super::OnEventReceived(Payload);
+	
 	SpawnArcaneShard();
-	FinishAttack();
+
+	// 서버에서 Final Explosion Damage를 입힌 뒤 종료
+	// bServerRespectsRemoteAbilityCancellation = true; 이므로 서버에서 데미지를 입히기 전에 종료되지 않도록 서버에서만 종료
+	if (HasAuthority(&CurrentActivationInfo))
+	{
+		FinishAttack();
+	}
+}
+
+float UAuraAbility_ArcaneSpike::GetRangeRadius() const
+{
+	return TotalEffectiveRadius;
 }
 
 void UAuraAbility_ArcaneSpike::SpawnArcaneShard() const
 {
-	AActor* AvatarActor = GetAvatarActorFromActorInfo();
-	if (!IsValid(AvatarActor) || !AvatarActor->HasAuthority())	// Only Spawn in Server
+	UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
+	if (!ASC || !HasAuthority(&CurrentActivationInfo))	// Only Spawn in Server
 	{
 		return;
 	}
-
-	// MaxCastRange를 적용한 TargetLocation 결정
-	FVector TargetLocation = CachedTargetLocation;
-	FVector StartLocation = AvatarActor->GetActorLocation();
-	StartLocation.Z = TargetLocation.Z;
-	if (FVector::DistSquared(StartLocation, TargetLocation) > MaxCastRange * MaxCastRange)
-	{
-		const FVector Direction = (TargetLocation - StartLocation).GetSafeNormal();
-		TargetLocation = StartLocation + Direction * MaxCastRange;
-	}
-
-	// 범위 결정
-	const float ScaleRate = GetScaleRateByLevel(GetAbilityLevel());
-	const float FinalEffectiveRadius = EffectiveRadius * ScaleRate;
-
-	FCollisionQueryParams QueryParams;
-	QueryParams.AddIgnoredActor(GetAvatarActorFromActorInfo());
 	
+	const float AbilityLevel = GetAbilityLevel();
+	
+	// 범위 결정
+	const FVector TargetLocation = ComputeValidTargetLocation(CachedTargetLocation);
+	const float ScaleRate = GetScaleRateByLevel(AbilityLevel);
+
 	FGameplayCueParameters CueParameters;
 	CueParameters.RawMagnitude = ScaleRate;
-
-	// Spawn Arcane Shard
-	const int32 NumArcaneShards = GetNumArcaneShardsByLevel(GetAbilityLevel());
+	
+	const int32 NumArcaneShards = GetNumArcaneShardsByLevel(AbilityLevel);
 	TArray<FVector> TargetLocations;
+	
+	// Spawn Arcane Shard
 	if (NumArcaneShards == 1)
 	{
-		const FVector FinalTargetLocation = GetAdjustedTargetLocation(StartLocation, TargetLocation, QueryParams, true);
-		TargetLocations.Add(FinalTargetLocation);
-		CueParameters.Location = FinalTargetLocation;
-		UAuraBlueprintLibrary::ExecuteGameplayCueWithParams(AvatarActor, AuraGameplayTags::GameplayCue_ArcaneShard, CueParameters);
+		TargetLocations.Add(TargetLocation);
+		CueParameters.Location = TargetLocation;
+		ASC->ExecuteGameplayCue(AuraGameplayTags::GameplayCue_ArcaneShard, CueParameters);
 	}
 	else
 	{
-		TargetLocation = GetAdjustedTargetLocation(StartLocation, TargetLocation, QueryParams, true);
-		
-		// TargetLocation 주위의 랜덤한 지점에 Arcane Shard를 소환한다.
+		// TargetLocation을 기준으로 Shard의 중심까지 FinalShardEffectiveRadius인 원을 동일한 간격(Angle)으로 소환한다.
 		const float RandAngle = FMath::RandRange(0.f, 180.f);
 		const float Angle = 360.f / NumArcaneShards;
 		for (int32 Index = 0; Index < NumArcaneShards; ++Index)
 		{
-			FVector Offset = FVector::ForwardVector * FMath::RandRange(EffectiveRadius, FinalEffectiveRadius);
+			const FVector Offset = FVector::ForwardVector * FinalShardEffectiveRadius;
 			FVector FinalTargetLocation = TargetLocation + Offset.RotateAngleAxis(RandAngle + Angle * Index, FVector::UpVector);
-			FinalTargetLocation = GetAdjustedTargetLocation(StartLocation, FinalTargetLocation, QueryParams, false);
 			TargetLocations.Add(FinalTargetLocation);
 			CueParameters.Location = FinalTargetLocation;
-			UAuraBlueprintLibrary::ExecuteGameplayCueWithParams(AvatarActor, AuraGameplayTags::GameplayCue_ArcaneShard, CueParameters);
+			ASC->ExecuteGameplayCue(AuraGameplayTags::GameplayCue_ArcaneShard, CueParameters);
 		}
 	}
 
@@ -182,7 +180,7 @@ void UAuraAbility_ArcaneSpike::SpawnArcaneShard() const
 	for (const FVector& Location : TargetLocations)
 	{
 		TArray<AActor*> Enemies;
-		UAuraBlueprintLibrary::GetEnemiesOverlappedByChannel(GetWorld(), Enemies, Location, FQuat::Identity, ECC_Target, FCollisionShape::MakeSphere(FinalEffectiveRadius));
+		UAuraBlueprintLibrary::GetEnemiesOverlappedByChannel(GetWorld(), Enemies, Location, FQuat::Identity, ECC_Target, FCollisionShape::MakeSphere(FinalShardEffectiveRadius));
 		for (AActor* Enemy : Enemies)
 		{
 			EnemiesToApplyDamage.AddUnique(Enemy);
@@ -190,28 +188,12 @@ void UAuraAbility_ArcaneSpike::SpawnArcaneShard() const
 	}
 
 	// Apply Damage Effect
+	FDamageEffectParams Params = MakeDamageEffectParams(nullptr);
 	for (AActor* Enemy : EnemiesToApplyDamage)
 	{
-		UAuraBlueprintLibrary::ApplyDamageEffect(MakeDamageEffectParams(Enemy));
+		Params.TargetAbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Enemy);
+		UAuraBlueprintLibrary::ApplyDamageEffect(Params);
 	}
-}
-
-FVector UAuraAbility_ArcaneSpike::GetAdjustedTargetLocation(const FVector& StartLocation,  const FVector& TargetLocation, const FCollisionQueryParams& QueryParams, bool bDoLineTrace) const
-{
-	if (bDoLineTrace)
-	{
-		FHitResult LineHitResult;
-		if (GetWorld()->LineTraceSingleByChannel(LineHitResult, StartLocation, TargetLocation, ECC_OnlyWall, QueryParams))
-		{
-			return LineHitResult.ImpactPoint + LineHitResult.ImpactNormal * EffectiveRadius;
-		}
-	}
-	FHitResult SweepHitResult;
-	if (GetWorld()->SweepSingleByChannel(SweepHitResult, TargetLocation + -TargetLocation.GetSafeNormal() * EffectiveRadius, TargetLocation, FQuat::Identity, ECC_OnlyWall, FCollisionShape::MakeSphere(EffectiveRadius), QueryParams))
-	{
-		return SweepHitResult.ImpactPoint + SweepHitResult.ImpactNormal * EffectiveRadius;
-	}
-	return TargetLocation;
 }
 
 float UAuraAbility_ArcaneSpike::GetScaleRateByLevel(float Level) const

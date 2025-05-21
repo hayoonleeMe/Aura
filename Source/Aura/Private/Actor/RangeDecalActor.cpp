@@ -40,7 +40,7 @@ void ARangeDecalActor::Tick(float DeltaTime)
 	}
 }
 
-void ARangeDecalActor::Initialize(UAuraAbility_Firenado* InOwningAbility)
+void ARangeDecalActor::Initialize(UAuraAbility_CastConfirmBase* InOwningAbility)
 {
 	OwningAbility = InOwningAbility;
 	if (OwningAbility)
