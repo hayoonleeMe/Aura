@@ -4,20 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "SpawnEnemyVolume.generated.h"
+#include "BoxVolume.generated.h"
 
 class UBoxComponent;
 
 /**
- * Enemy를 소환할 범위를 Box Extent로 지정하는 Actor
+ * 레벨에서 범위를 Box Extent로 지정하는 Actor
  */
 UCLASS()
-class AURA_API ASpawnEnemyVolume : public AActor
+class AURA_API ABoxVolume : public AActor
 {
 	GENERATED_BODY()
 
 public:
-	ASpawnEnemyVolume();
+	ABoxVolume();
+	
+	// Volume의 Box가 차지하는 Bound 좌표를 Box로 반환한다.
+	FBox GetVolumeBounds() const;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UBoxComponent> BoxComponent;
