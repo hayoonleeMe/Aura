@@ -155,6 +155,7 @@ namespace AuraGameplayTags
 
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_ArcaneSpike);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_FireBall);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Firenado);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Melee_GoblinSpear);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Melee_DemonWarrior);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Melee_Ghoul);
