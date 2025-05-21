@@ -17,12 +17,7 @@
  * 추가로 5.4+ 에는 Has Pixel Animation 이라는 옵션이 추가됐다는데, 이를 사용하면 될지도 모르겠다.
  */
 
-/**
- * @todo
- * UAuraAbility_Firenado에 한정되지 않고 공용으로 사용할 수 있도록 개선
- */
-
-class UAuraAbility_Firenado;
+class UAuraAbility_CastConfirmBase;
 class AAuraPlayerController;
 
 /**
@@ -37,7 +32,7 @@ public:
 	ARangeDecalActor();
 	virtual void Tick(float DeltaTime) override;
 
-	void Initialize(UAuraAbility_Firenado* InOwningAbility);
+	void Initialize(UAuraAbility_CastConfirmBase* InOwningAbility);
 
 	// bShow가 true면 Radius만큼 범위를 표시하고, false면 화면에서 숨긴다. 
 	void ShowRangeDecal(bool bShow, float Radius = 0.f);
@@ -47,7 +42,7 @@ private:
 	TObjectPtr<UDecalComponent> RangeDecalComponent;
 
 	UPROPERTY()
-	TObjectPtr<UAuraAbility_Firenado> OwningAbility;
+	TObjectPtr<UAuraAbility_CastConfirmBase> OwningAbility;
 
 	UPROPERTY()
 	TObjectPtr<AAuraPlayerController> AuraPC;
