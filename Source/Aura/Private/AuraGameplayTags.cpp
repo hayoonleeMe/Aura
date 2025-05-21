@@ -113,6 +113,7 @@ namespace AuraGameplayTags
 	/* Cooldown */
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_ArcaneSpike, "Cooldown.ArcaneSpike", "ArcaneSpike Cooldown Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_FireBall, "Cooldown.FireBall", "FireBall Cooldown Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_Firenado, "Cooldown.Firenado", "Firenado Cooldown Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_Melee_GoblinSpear, "Cooldown.Melee.GoblinSpear", "GoblinSpear Melee Cooldown Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_Melee_DemonWarrior, "Cooldown.Melee.DemonWarrior", "DemonWarrior Melee Cooldown Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_Melee_Ghoul, "Cooldown.Melee.Ghoul", "Ghoul Melee Cooldown Tag");
