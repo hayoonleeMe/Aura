@@ -22,6 +22,7 @@ class AURA_API UAuraAbility_Firenado : public UAuraDamageAbility
 public:
 	UAuraAbility_Firenado();
 	virtual void InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
+	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 	
 	virtual FText GetDescription(int32 Level) const override;
 
@@ -66,6 +67,9 @@ private:
 	UPROPERTY()
 	TObjectPtr<ARangeDecalActor> RangeDecalActor;
 
+	// 벽을 제외한 맵의 범위를 나타내는 Box
+	FBox PlayableBounds;
+
 	// 실제 Firenado를 소환할 위치
 	// OnTargetDataUnderMouseSet()에서 저장되고, ComputeValidTargetLocation()를 통해 실제 유효한 위치로 보정해 사용한다.
 	FVector CachedTargetLocation;
@@ -81,9 +85,15 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Firenado")
 	float EffectiveRadius;
 
+	// EffectiveRadius * ScaleRate
+	float FinalEffectiveRadius = 0.f;
+
 	// 마지막 폭발 데미지를 입히는 범위
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Firenado")
 	float ExplosionEffectiveRadius;
+
+	// ExplosionEffectiveRadius * ScaleRate
+	float FinalExplosionEffectiveRadius = 0.f;
 
 	// 데미지를 입히는 범위에 곱해질 Rate
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Firenado")

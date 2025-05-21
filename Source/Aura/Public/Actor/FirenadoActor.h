@@ -21,7 +21,7 @@ public:
 	AFirenadoActor();
 
 	// 필요한 모든 데이터를 UAuraAbility_Firenado에서 주입받는다.
-	void Initialize(float InEffectiveRadius, float InExplosionEffectiveRadius, float InScaleRate, float InDamagePerInterval, float InFinalDamageRate,  float InDamageInterval, int32 InTotalDamageCount, const FVector& InTargetLocation, const FDamageEffectParams& InDamageEffectParams, UAbilitySystemComponent* InSourceASC);
+	void Initialize(float InFinalEffectiveRadius, float InFinalExplosionEffectiveRadius, float InScaleRate, float InDamagePerInterval, float InFinalDamageRate,  float InDamageInterval, int32 InTotalDamageCount, const FVector& InTargetLocation, const FDamageEffectParams& InDamageEffectParams, UAbilitySystemComponent* InSourceASC);
 
 protected:
 	virtual void BeginPlay() override;
@@ -33,8 +33,8 @@ private:
 	 * @see Initialize()
 	 */
 	
-	float EffectiveRadius;
-	float ExplosionEffectiveRadius;
+	float FinalEffectiveRadius;
+	float FinalExplosionEffectiveRadius;
 	float ScaleRate;
 	float DamagePerInterval;
 	float FinalDamageRate;

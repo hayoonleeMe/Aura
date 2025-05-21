@@ -20,12 +20,12 @@ AFirenadoActor::AFirenadoActor()
 	RepeatActionDelegate = FTimerDelegate::CreateUObject(this, &ThisClass::RepeatAction);
 }
 
-void AFirenadoActor::Initialize(float InEffectiveRadius, float InExplosionEffectiveRadius, float InScaleRate, float InDamagePerInterval, float InFinalDamageRate,
+void AFirenadoActor::Initialize(float InFinalEffectiveRadius, float InFinalExplosionEffectiveRadius, float InScaleRate, float InDamagePerInterval, float InFinalDamageRate,
 	float InDamageInterval, int32 InTotalDamageCount, const FVector& InTargetLocation, const FDamageEffectParams& InDamageEffectParams,
 	UAbilitySystemComponent* InSourceASC)
 {
-	EffectiveRadius = InEffectiveRadius;
-	ExplosionEffectiveRadius = InExplosionEffectiveRadius;
+	FinalEffectiveRadius = InFinalEffectiveRadius;
+	FinalExplosionEffectiveRadius = InFinalExplosionEffectiveRadius;
 	ScaleRate = InScaleRate;
 	DamagePerInterval = InDamagePerInterval;
 	FinalDamageRate = InFinalDamageRate;
@@ -76,8 +76,6 @@ void AFirenadoActor::RepeatAction()
 
 void AFirenadoActor::ApplyDamagePerInterval()
 {
-	const float FinalEffectiveRadius = EffectiveRadius * ScaleRate;
-	
 	TArray<AActor*> EnemiesToApplyDamage;
 	UAuraBlueprintLibrary::GetEnemiesOverlappedByChannel(GetWorld(), EnemiesToApplyDamage, TargetLocation, FQuat::Identity, ECC_Target, FCollisionShape::MakeSphere(FinalEffectiveRadius));
 
@@ -91,8 +89,6 @@ void AFirenadoActor::ApplyDamagePerInterval()
 
 void AFirenadoActor::SpawnFinalExplosion()
 {
-	const float FinalExplosionEffectiveRadius = ExplosionEffectiveRadius * ScaleRate;
-
 	FGameplayCueParameters CueParameters;
 	CueParameters.RawMagnitude = ScaleRate;
 	CueParameters.Location = TargetLocation + FVector(0.f, 0.f, FinalExplosionEffectiveRadius * 0.5f);
