@@ -20,14 +20,17 @@ UAuraAbility_Firenado::UAuraAbility_Firenado()
 	BlockAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_ClickToMove);
 	BlockAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_TryInteract);
 	BlockAbilitiesWithTag.AddTag(AuraGameplayTags::Abilities_Offensive);
-	
+
+	bNeedCursorTargetHitResult = false;
 	bUseTriggeredEvent = false;
+	UnlockRequiredLevel = 3;
+	
 	DamageTypeTag = AuraGameplayTags::Damage_Type_Fire;
 	MaxCastRange = 1400.f;
 	EffectiveRadius = 120.f;
-	ExplosionEffectiveRadius = 100.f;
-	DamageInterval = 0.7f;
-	TotalDamageCount = 7;
+	ExplosionEffectiveRadius = 120.f;
+	DamageInterval = 0.6f;
+	TotalDamageCount = 6;
 }
 
 void UAuraAbility_Firenado::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
