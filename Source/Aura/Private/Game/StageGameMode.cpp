@@ -7,9 +7,8 @@
 #include "AbilitySystemComponent.h"
 #include "AuraBlueprintLibrary.h"
 #include "MultiplayerSessionsSubsystem.h"
-#include "Actor/SpawnEnemyVolume.h"
+#include "Actor/BoxVolume.h"
 #include "Character/AuraEnemy.h"
-#include "Components/BoxComponent.h"
 #include "Game/AuraGameStateBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -247,11 +246,9 @@ void AStageGameMode::InitData()
 	check(MaxStageNumber > 0);
 
 	// Caching SpawnEnemyVolumeExtent
-	if (const ASpawnEnemyVolume* Volume = Cast<ASpawnEnemyVolume>(UGameplayStatics::GetActorOfClass(GetWorld(), ASpawnEnemyVolume::StaticClass())))
+	if (const ABoxVolume* Volume = Cast<ABoxVolume>(UGameplayStatics::GetActorOfClass(GetWorld(), ABoxVolume::StaticClass())))
 	{
-		const FVector Location = Volume->BoxComponent->GetComponentLocation();
-		const FVector BoxExtent = Volume->BoxComponent->GetScaledBoxExtent();
-		SpawnEnemyVolumeBox = FBox(Location - BoxExtent, Location + BoxExtent);
+		SpawnEnemyVolumeBox = Volume->GetVolumeBounds();
 	}
 	
 	// Actor의 Ownership 설정을 위해 SimulatedProxy PlayerController를 Owner로 설정
