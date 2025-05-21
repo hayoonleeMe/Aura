@@ -41,7 +41,7 @@ void AFirenadoActor::BeginPlay()
 	Super::BeginPlay();
 
 	FGameplayCueParameters CueParameters;
-	CueParameters.RawMagnitude = FMath::RoundToFloat(DamageInterval * TotalActionCount);
+	CueParameters.RawMagnitude = DamageInterval * TotalActionCount;
 	CueParameters.NormalizedMagnitude = ScaleRate;
 	CueParameters.Location = TargetLocation;
 	CueParameters.TargetAttachComponent = RootComponent;
