@@ -246,7 +246,7 @@ void AStageGameMode::InitData()
 	check(MaxStageNumber > 0);
 
 	// Caching SpawnEnemyVolumeExtent
-	if (const ABoxVolume* Volume = Cast<ABoxVolume>(UGameplayStatics::GetActorOfClass(GetWorld(), ABoxVolume::StaticClass())))
+	if (const ABoxVolume* Volume = UAuraBlueprintLibrary::GetActorInWorldForTag<ABoxVolume>(GetWorld(), TEXT("SpawnEnemyVolume")))
 	{
 		SpawnEnemyVolumeBox = Volume->GetVolumeBounds();
 	}

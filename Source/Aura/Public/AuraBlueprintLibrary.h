@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EngineUtils.h"
 #include "Interface/CombatInterface.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AuraBlueprintLibrary.generated.h"
@@ -97,9 +98,20 @@ public:
 	// Returns the Cursor Target for a given index if it exists
 	static TWeakObjectPtr<AActor> GetCursorTargetFromTargetData(const FGameplayAbilityTargetDataHandle& TargetData, int32 Index);
 
-	// World에서 Tag를 가지는 Level Sequence Actor를 찾아 반환한다.
+	// World에서 Tag를 가지는 T 타입 액터를 찾아 반환한다.
 	// 존재하지 않으면 nullptr를 반환한다.
-	static ALevelSequenceActor* GetLevelSequenceActorMatchingTag(const UWorld* World, const FName& Tag);
+	template <class T>
+	static T* GetActorInWorldForTag(const UWorld* World, const FName& Tag)
+	{
+		for (TActorIterator<T> It(World); It; ++It)
+		{
+			if (It && It->ActorHasTag(Tag))
+			{
+				return *It;
+			}
+		}
+		return nullptr;
+	}
 
 	// AGameStateBase::GetServerWorldTimeSeconds()를 float 형으로 반환한다.
 	// 구할 수 없으면 0.f을 반환한다.

@@ -112,7 +112,7 @@ void ULevelSequenceManageComponent::InitializeComponent()
 	// Level에 배치된 Level Sequence Actor 캐싱
 	for (const FName& Tag : LevelSequenceActorTags)
 	{
-		if (ALevelSequenceActor* LevelSequenceActor = UAuraBlueprintLibrary::GetLevelSequenceActorMatchingTag(GetWorld(), Tag))
+		if (ALevelSequenceActor* LevelSequenceActor = UAuraBlueprintLibrary::GetActorInWorldForTag<ALevelSequenceActor>(GetWorld(), Tag))
 		{
 			if (ULevelSequencePlayer* LevelSequencePlayer = LevelSequenceActor->SequencePlayer)
 			{
