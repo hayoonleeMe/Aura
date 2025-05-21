@@ -5,8 +5,10 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "AuraBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AbilityTasks/AbilityTask_TargetDataUnderMouse.h"
+#include "Actor/BoxVolume.h"
 #include "Actor/FirenadoActor.h"
 #include "Actor/RangeDecalActor.h"
 #include "Interface/CombatInterface.h"
@@ -47,6 +49,17 @@ void UAuraAbility_Firenado::InputPressed(const FGameplayAbilitySpecHandle Handle
 	bAlreadyPressed = true;
 }
 
+void UAuraAbility_Firenado::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
+{
+	Super::OnGiveAbility(ActorInfo, Spec);
+
+	// Caching
+	if (const ABoxVolume* Volume = UAuraBlueprintLibrary::GetActorInWorldForTag<ABoxVolume>(GetWorld(), TEXT("PlayableVolume")))
+	{
+		PlayableBounds = Volume->GetVolumeBounds();
+	}
+}
+
 FText UAuraAbility_Firenado::GetDescription(int32 Level) const
 {
 	// TODO
@@ -55,13 +68,9 @@ FText UAuraAbility_Firenado::GetDescription(int32 Level) const
 
 FVector UAuraAbility_Firenado::ComputeValidTargetLocation(const FVector& TargetLocation) const
 {
-	/**
-	 *	@todo
-	 *	Firenado를 소환할 수 없는 곳을 소환할 수 있는 곳으로 보정?
-	 *	또는 소환할 수 없는 곳을 다른 색으로 표시하기
-	 */
 	if (const AActor* AvatarActor = GetAvatarActorFromActorInfo())
 	{
+		// Target Location이 최대 사거리를 넘어가지 않도록 보정
 		FVector FinalTargetLocation = TargetLocation;
 		FVector StartLocation = AvatarActor->GetActorLocation();
 		StartLocation.Z = FinalTargetLocation.Z;
@@ -70,7 +79,18 @@ FVector UAuraAbility_Firenado::ComputeValidTargetLocation(const FVector& TargetL
 			const FVector Direction = (FinalTargetLocation - StartLocation).GetSafeNormal();
 			FinalTargetLocation = StartLocation + Direction * MaxCastRange;
 		}
-		return FinalTargetLocation;	
+
+		// 스펠 범위가 벽에 막히지 않도록 보정
+		const FVector SafeMin = PlayableBounds.Min + FinalEffectiveRadius;
+		const FVector SafeMax = PlayableBounds.Max - FinalEffectiveRadius;
+
+		FinalTargetLocation.X = FMath::Clamp(FinalTargetLocation.X, SafeMin.X, SafeMax.X);
+		FinalTargetLocation.Y = FMath::Clamp(FinalTargetLocation.Y, SafeMin.Y, SafeMax.Y);
+
+		// Floor와 겹침 방지
+		FinalTargetLocation.Z = 0.1f;
+		
+		return FinalTargetLocation;
 	}
 	return FVector();
 }
@@ -81,6 +101,10 @@ void UAuraAbility_Firenado::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	bAlreadyPressed = false;
+	
+	const float ScaleRate = GetScaleRateByLevel(GetAbilityLevel());
+	FinalEffectiveRadius = EffectiveRadius * ScaleRate;
+	FinalExplosionEffectiveRadius = ExplosionEffectiveRadius * ScaleRate;
 	
 	// 처음 실행 후 다른 어빌리티를 실행하면 취소되도록 Block을 해제한다. 
 	SetShouldBlockOtherAbilities(false);
@@ -142,7 +166,7 @@ void UAuraAbility_Firenado::ShowRangeDecalActor(bool bShow)
 		if (IsValid(RangeDecalActor))
 		{
 			// 스펠의 범위를 RangeDecalActor로 표시한다.
-			RangeDecalActor->ShowRangeDecal(true, EffectiveRadius * GetScaleRateByLevel(GetAbilityLevel()));
+			RangeDecalActor->ShowRangeDecal(true, FinalEffectiveRadius);
 		}
 	}
 	else
@@ -251,14 +275,13 @@ void UAuraAbility_Firenado::SpawnFirenado()
 {
 	if (GetWorld())
 	{
-		FVector FinalTargetLocation = ComputeValidTargetLocation(CachedTargetLocation);
-		FinalTargetLocation.Z = 0.1f;	// Floor와 겹침 방지
+		const FVector FinalTargetLocation = ComputeValidTargetLocation(CachedTargetLocation);
 		const FTransform SpawnTransform(FinalTargetLocation);
 		const float AbilityLevel = GetAbilityLevel();
 		
 		if (AFirenadoActor* FirenadoActor = GetWorld()->SpawnActorDeferred<AFirenadoActor>(AFirenadoActor::StaticClass(), SpawnTransform))
 		{
-			FirenadoActor->Initialize(EffectiveRadius, ExplosionEffectiveRadius, GetScaleRateByLevel(AbilityLevel), GetDamageByLevel(AbilityLevel), GetFinalDamageRateByLevel(AbilityLevel), DamageInterval, TotalDamageCount, FinalTargetLocation, MakeDamageEffectParams(nullptr), GetAbilitySystemComponentFromActorInfo());
+			FirenadoActor->Initialize(FinalEffectiveRadius, FinalExplosionEffectiveRadius, GetScaleRateByLevel(AbilityLevel), GetDamageByLevel(AbilityLevel), GetFinalDamageRateByLevel(AbilityLevel), DamageInterval, TotalDamageCount, FinalTargetLocation, MakeDamageEffectParams(nullptr), GetAbilitySystemComponentFromActorInfo());
 			FirenadoActor->FinishSpawning(SpawnTransform);
 		}
 	}
