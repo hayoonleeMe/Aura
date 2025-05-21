@@ -10,7 +10,7 @@ void UOffensiveSpellTree::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	GlobeButton_1->SpellTag = AuraGameplayTags::Abilities_Offensive;
+	GlobeButton_1->SpellTag = AuraGameplayTags::Abilities_Offensive_Firenado;
 	GlobeButton_2->SpellTag = AuraGameplayTags::Abilities_Offensive_FireBall;
 	GlobeButton_3->SpellTag = AuraGameplayTags::Abilities_Offensive_FireBolt;
 	GlobeButton_4->SpellTag = AuraGameplayTags::Abilities_Offensive;
