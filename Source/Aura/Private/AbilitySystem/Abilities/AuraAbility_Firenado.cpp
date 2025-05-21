@@ -62,8 +62,48 @@ void UAuraAbility_Firenado::OnGiveAbility(const FGameplayAbilityActorInfo* Actor
 
 FText UAuraAbility_Firenado::GetDescription(int32 Level) const
 {
-	// TODO
-	return Super::GetDescription(Level);
+    const float ManaCost = GetManaCost(Level);
+    const float Cooldown = GetCooldown(Level);
+	
+    const float DamagePerInterval = GetDamageByLevel(Level);
+    const float FinalDamageRate = GetFinalDamageRateByLevel(Level);
+    const float FinalExplosionDamage = DamagePerInterval * FinalDamageRate;
+
+    const int32 DebuffChance = GetDebuffChanceByLevel(Level);
+
+    const FString RetStr = FString::Printf(TEXT(
+        // Title
+        "<Title>FIRENADO</>\n\n"
+
+        // Level
+        "<Default>Level: </><Level>%d</>\n"
+        // ManaCost
+        "<Default>ManaCost: </><ManaCost>%.1f</>\n"
+        // Cooldown
+        "<Default>Cooldown: </><Cooldown>%.1f</>\n\n"
+
+        // Desc
+        "<Default>Summons a devastating Firenado that strikes enemies </><Damage>%d</><Default> times. "
+		"Each strike inflicts </><Damage>%.1f</><Default> fire damage every </><Time>%.1f</><Default> seconds to enemies within the vortex. "
+		"Upon dissipating, the Firenado explodes for a final </><Damage>%.1f</><Default> fire damage to enemies within the explosion.</>\n\n"
+
+        // Debuff
+		"<Default>Each strike from the Firenado has a </><Percent>%d%% </><Default>chance to ignite the target. "
+		"Ignite burns the target for </><Time>4 </><Default>seconds, dealing fire damage every second "
+		"equal to </><Percent>10%% </><Default>of eacg damage. Can stack.</>"),
+
+        // Values
+        Level,
+        ManaCost,
+        Cooldown,
+        TotalDamageCount,
+        DamagePerInterval,
+        DamageInterval,
+        FinalExplosionDamage,
+        DebuffChance
+    );
+
+    return FText::FromString(RetStr);
 }
 
 FVector UAuraAbility_Firenado::ComputeValidTargetLocation(const FVector& TargetLocation) const
