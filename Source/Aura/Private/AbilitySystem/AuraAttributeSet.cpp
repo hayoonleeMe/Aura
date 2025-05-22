@@ -178,6 +178,10 @@ void UAuraAttributeSet::HandleIncomingDamage(const FGameplayEffectSpec& EffectSp
 				{
 					ActivateIgniteDebuff(AuraEffectContext, LocalIncomingDamage);
 				}
+				else if (DebuffTag.MatchesTagExact(AuraGameplayTags::Debuff_Stun))
+				{
+					ActivateStunDebuff(AuraEffectContext);
+				}
 				else
 				{
 					ASC->TryActivateAbilitiesByTag(DebuffTag.GetSingleTagContainer());
@@ -261,6 +265,20 @@ void UAuraAttributeSet::ActivateIgniteDebuff(const FAuraGameplayEffectContext* A
 
 			// Incoming Damage를 전달하기 위해 SetByCallerTagMagnitudes 사용 
 			AbilitySpec->SetByCallerTagMagnitudes.Add(AuraGameplayTags::Damage_Type_Fire, LocalIncomingDamage);
+						
+			AuraASC->TryActivateAbility(AbilitySpec->Handle);
+		}
+	}
+}
+
+void UAuraAttributeSet::ActivateStunDebuff(const FAuraGameplayEffectContext* AuraEffectContext)
+{
+	if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetOwningAbilitySystemComponent()))
+	{
+		if (FGameplayAbilitySpec* AbilitySpec = AuraASC->GetSpellSpecForSpellTag(AuraEffectContext->GetDebuffTag()))
+		{
+			// Stun Duration을 전달하기 위해 SetByCallerTagMagnitudes 사용 
+			AbilitySpec->SetByCallerTagMagnitudes.Add(AuraGameplayTags::Debuff_Stun, AuraEffectContext->GetDebuffDuration());
 						
 			AuraASC->TryActivateAbility(AbilitySpec->Handle);
 		}

@@ -15,7 +15,7 @@ struct FAuraGameplayEffectContext : public FGameplayEffectContext
 
 public:
 	FAuraGameplayEffectContext()
-		: bIsBlockedHit(false), bCanBlockedHit(true), bIsCriticalHit(false), bCanCriticalHit(true), bShouldActivateHitReact(true), DebuffChance(0.f)
+		: bIsBlockedHit(false), bCanBlockedHit(true), bIsCriticalHit(false), bCanCriticalHit(true), bShouldActivateHitReact(true), DebuffChance(0.f), DebuffDuration(0.f)
 	{}
 	
 	bool IsBlockedHit() const { return bIsBlockedHit; }
@@ -25,6 +25,7 @@ public:
 	bool ShouldActivateHitReact() const { return bShouldActivateHitReact; }
 	FGameplayTag GetDebuffTag() const { return DebuffTag; }
 	float GetDebuffChance() const { return DebuffChance; }
+	float GetDebuffDuration() const { return DebuffDuration; }
 
 	void SetIsBlockedHit(bool bInIsBlockedHit) { bIsBlockedHit = bInIsBlockedHit; }
 	void SetCanBlockedHit(bool bInCanBlockedHit) { bCanBlockedHit = bInCanBlockedHit; }
@@ -33,6 +34,7 @@ public:
 	void SetShouldActivateHitReact(bool bShouldActivate) { bShouldActivateHitReact = bShouldActivate; }
 	void SetDebuffTag(const FGameplayTag& Tag) { DebuffTag = Tag; }
 	void SetDebuffChance(float Chance) { DebuffChance = Chance; }
+	void SetDebuffDuration(float Duration) { DebuffDuration = Duration; }
 
 	// Handle로부터 FAuraGameplayEffectContext 포인터를 반환한다.
 	// 구할 수 없으면 nullptr를 반환한다.
@@ -87,6 +89,11 @@ protected:
 	// Debuff는 서버에서만 수행하므로 Serialize 필요 X
 	UPROPERTY()
 	float DebuffChance;
+
+	// Target에 적용할 Debuff의 지속시간
+	// Debuff는 서버에서만 수행하므로 Serialize 필요 X
+	UPROPERTY()
+	float DebuffDuration;
 };
 
 template<>

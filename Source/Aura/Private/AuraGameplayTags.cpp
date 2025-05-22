@@ -79,6 +79,7 @@ namespace AuraGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_FireBall, "Event.Montage.FireBall", "FireBall Montage Event Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_Firenado, "Event.Montage.Firenado", "Firenado Montage Event Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_ChainLightning, "Event.Montage.ChainLightning", "ChainLightning Montage Event Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_LightningBind, "Event.Montage.LightningBind", "LightningBind Montage Event Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_ArcaneSpike, "Event.Montage.ArcaneSpike", "ArcaneSpike Montage Event Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_EnemyAttack, "Event.Montage.EnemyAttack", "EnemyAttack Montage Event Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Montage_ShamanSummonEnemy, "Event.Montage.ShamanSummonEnemy", "Shaman's Summon Enemy Montage Event Tag");
@@ -97,6 +98,7 @@ namespace AuraGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Offensive_FireBall, "Abilities.Offensive.FireBall", "FireBall Offensive Ability Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Offensive_Firenado, "Abilities.Offensive.Firenado", "Firenado Offensive Ability Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Offensive_ChainLightning, "Abilities.Offensive.ChainLightning", "ChainLightning Offensive Ability Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Offensive_LightningBind, "Abilities.Offensive.LightningBind", "LightningBind Offensive Ability Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Offensive_ArcaneSpike, "Abilities.Offensive.ArcaneSpike", "ArcaneSpike Offensive Ability Tag");
 
 	/* Abilities.Passive */
@@ -114,6 +116,7 @@ namespace AuraGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_ArcaneSpike, "Cooldown.ArcaneSpike", "ArcaneSpike Cooldown Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_FireBall, "Cooldown.FireBall", "FireBall Cooldown Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_Firenado, "Cooldown.Firenado", "Firenado Cooldown Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_LightningBind, "Cooldown.LightningBind", "LightningBind Cooldown Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_Melee_GoblinSpear, "Cooldown.Melee.GoblinSpear", "GoblinSpear Melee Cooldown Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_Melee_DemonWarrior, "Cooldown.Melee.DemonWarrior", "DemonWarrior Melee Cooldown Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_Melee_Ghoul, "Cooldown.Melee.Ghoul", "Ghoul Melee Cooldown Tag");
@@ -130,6 +133,7 @@ namespace AuraGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_RockImpact, "GameplayCue.RockImpact", "RockImpact GameplayCue Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_LevelUp, "GameplayCue.LevelUp", "LevelUp GameplayCue Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_LightningBeam, "GameplayCue.LightningBeam", "LightningBeam GameplayCue Tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_LightningBind, "GameplayCue.LightningBind", "LightningBind GameplayCue Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_ArcaneShard, "GameplayCue.ArcaneShard", "ArcaneShard GameplayCue Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_SummonEffect, "GameplayCue.SummonEffect", "SummonEffect GameplayCue Tag");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_ShamanSummonEffect, "GameplayCue.ShamanSummonEffect", "ShamanSummonEffect GameplayCue Tag");
