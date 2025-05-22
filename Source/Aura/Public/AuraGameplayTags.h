@@ -104,6 +104,7 @@ namespace AuraGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_FireBall);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_Firenado);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_ChainLightning);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_LightningBind);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_ArcaneSpike);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_EnemyAttack);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_ShamanSummonEnemy);
@@ -129,6 +130,7 @@ namespace AuraGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive_FireBall);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive_Firenado);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive_ChainLightning);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive_LightningBind);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Abilities_Offensive_ArcaneSpike);
 
 	// ============================================================================
@@ -156,6 +158,7 @@ namespace AuraGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_ArcaneSpike);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_FireBall);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Firenado);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_LightningBind);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Melee_GoblinSpear);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Melee_DemonWarrior);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Melee_Ghoul);
@@ -175,6 +178,7 @@ namespace AuraGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_RockImpact);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_LevelUp);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_LightningBeam);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_LightningBind);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_ArcaneShard);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_SummonEffect);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_ShamanSummonEffect);
