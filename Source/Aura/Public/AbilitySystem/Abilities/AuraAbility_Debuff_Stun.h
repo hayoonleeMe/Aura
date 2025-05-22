@@ -23,4 +23,7 @@ protected:
 private:
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Debuff Stun")
 	TSubclassOf<UGameplayEffect> DebuffEffectClass;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Debuff Stun")
+	float DefaultDuration;
 };

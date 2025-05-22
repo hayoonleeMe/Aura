@@ -87,6 +87,7 @@ bool UAuraBlueprintLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
 	{
 		AuraEffectContext->SetDebuffTag(Params.DebuffTag);
 		AuraEffectContext->SetDebuffChance(Params.DebuffChance);
+		AuraEffectContext->SetDebuffDuration(Params.DebuffDuration);
 	}
 	const FGameplayEffectSpecHandle EffectSpecHandle = Params.SourceAbilitySystemComponent->MakeOutgoingSpec(Params.DamageEffectClass, Params.AbilityLevel, EffectContextHandle);
 	
