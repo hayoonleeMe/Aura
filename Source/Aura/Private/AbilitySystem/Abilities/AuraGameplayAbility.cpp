@@ -38,7 +38,7 @@ void UAuraGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorI
 	if (bUseSpellStack)
 	{
 		// 초기화
-		CurrentStackCount = GetMaxStackCountByLevel();
+		CurrentStackCount = GetMaxStackCountByLevel(GetAbilityLevel());
 	}
 }
 
@@ -59,7 +59,7 @@ void UAuraGameplayAbility::OnCooldownTagCountChanged(const FGameplayTag Tag, int
 			UpdateSpellStack(1);
 
 			// Apply Pending Cooldown
-			if (CurrentStackCount < GetMaxStackCountByLevel())
+			if (CurrentStackCount < GetMaxStackCountByLevel(GetAbilityLevel()))
 			{
 				if (HasAuthority(&CurrentActivationInfo))
 				{
@@ -169,7 +169,7 @@ void UAuraGameplayAbility::UpdateSpellStack(int32 AmountToAdd)
 	OnSpellStackChangedDelegate.Broadcast(CurrentStackCount);
 }
 
-int32 UAuraGameplayAbility::GetMaxStackCountByLevel() const
+int32 UAuraGameplayAbility::GetMaxStackCountByLevel(float Level) const
 {
-	return MaxStackCountCurve.GetValueAtLevel(GetAbilityLevel());
+	return MaxStackCountCurve.GetValueAtLevel(Level);
 }

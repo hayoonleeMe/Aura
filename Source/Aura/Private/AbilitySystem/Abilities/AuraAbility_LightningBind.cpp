@@ -35,8 +35,48 @@ UAuraAbility_LightningBind::UAuraAbility_LightningBind()
 
 FText UAuraAbility_LightningBind::GetDescription(int32 Level) const
 {
-	// @todo
-	return Super::GetDescription(Level);
+	const float ManaCost = GetManaCost(Level);
+	const float Cooldown = GetCooldown(Level);
+	
+	const int32 TotalDamageCount = GetTotalDamageCountByLevel(Level);
+	const float DamagePerInterval = GetDamageByLevel(Level);
+	const int32 DebuffChance = DebuffChanceCurve.GetValue();
+	const int32 MaxStackCount = GetMaxStackCountByLevel(Level);
+
+	const FString RetStr = FString::Printf(TEXT(
+		// Title
+		"<Title>LIGHTNING BIND</>\n\n"
+
+		// Level
+		"<Default>Level: </><Level>%d</>\n"
+		// ManaCost
+		"<Default>ManaCost: </><ManaCost>%.1f</>\n"
+		// Cooldown
+		"<Default>Cooldown: </><Cooldown>%.1f </><Default>(per stack)</>\n\n"
+
+		// Desc
+		"<Default>Summons a binding field of lightning that pulses </><Damage>%d</><Default> times. "
+		"Each pulse, occurring every </><Time>%.1f</><Default> seconds, inflicts </><Damage>%.1f</><Default> lightning damage "
+		"and simultaneously Stuns affected enemies. </>"
+		"<Default>This ability can hold multiple stacks, up to a maximum of </><Level>%d</><Default>, allowing for successive casts.</>\n\n"
+
+		// Debuff
+		"<Default>This spell has a </><Percent>%d%% </><Default>chance to stun the target on hit. "
+		"Stun disables the target, preventing all actions for </><Time>%.1f </><Default>seconds.</>"),
+
+		// Values
+		Level,
+		ManaCost,
+		Cooldown,
+		TotalDamageCount,
+		DamageInterval,
+		DamagePerInterval,
+		MaxStackCount,
+		DebuffChance,
+		DamageInterval
+	);
+
+	return FText::FromString(RetStr);
 }
 
 void UAuraAbility_LightningBind::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

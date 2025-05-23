@@ -93,7 +93,7 @@ protected:
 	FScalableFloat MaxStackCountCurve;
 
 	// Level에 따른 MaxStackCount 값을 반환한다.
-	int32 GetMaxStackCountByLevel() const;
+	int32 GetMaxStackCountByLevel(float Level) const;
 
 	// 현재 스택 수
 	int32 CurrentStackCount = 0;
