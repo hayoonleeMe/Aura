@@ -35,6 +35,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UTextBlock> Text_StackCount;
 
+	UPROPERTY(Transient, meta=(BindWidgetAnim))
+	TObjectPtr<UWidgetAnimation> CooldownEndAnimation;
+
 	UPROPERTY(EditDefaultsOnly)
 	FLinearColor NormalColor;
 
