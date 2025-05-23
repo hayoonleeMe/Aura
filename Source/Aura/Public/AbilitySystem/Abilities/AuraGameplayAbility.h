@@ -16,6 +16,10 @@ class AURA_API UAuraGameplayAbility : public UGameplayAbility
 
 public:
 	UAuraGameplayAbility();
+	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+	
+	// 해당 어빌리티의 Cooldown Tag Change 콜백 함수
+	void OnCooldownTagCountChanged(const FGameplayTag Tag, int32 Count);
 
 	// true면 ETriggerEvent::Triggered로 실행되고, false면 ETriggerEvent::Started로 실행된다. 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
@@ -49,4 +53,32 @@ public:
 	// CooldownGameplayEffect의 Duration의 Level에 따른 Magnitude를 반환한다.
 	// 값을 구할 수 없으면 0.f를 반환한다.
 	float GetCooldown(int32 Level) const;
+
+	// ============================================================================
+	// Spell Stack
+	// ============================================================================
+
+	virtual bool CheckCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const override;
+	virtual bool CommitAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, FGameplayTagContainer* OptionalRelevantTags) override;
+
+	// 스펠이 스택을 사용하면 유효한 값을 반환하고, 아니라면 음수를 반환한다.
+	int32 GetSpellStackCount() const;
+	
+protected:
+	// CurrentStackCount를 업데이트하고, OnSpellStackChangedDelegate를 브로드캐스트한다. 
+	void UpdateSpellStack(int32 AmountToAdd);
+
+	// 스택을 사용하는지 여부
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Spell|Stack")
+	uint8 bUseSpellStack : 1;
+	
+	// 최대 스택 수
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Spell|Stack", meta=(EditCondition="bUseSpellStack"))
+	FScalableFloat MaxStackCountCurve;
+
+	// Level에 따른 MaxStackCount 값을 반환한다.
+	int32 GetMaxStackCountByLevel() const;
+
+	// 현재 스택 수
+	int32 CurrentStackCount = 0;
 };
