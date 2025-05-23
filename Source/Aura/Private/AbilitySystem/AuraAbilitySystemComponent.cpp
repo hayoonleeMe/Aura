@@ -198,8 +198,11 @@ void UAuraAbilitySystemComponent::UpgradeSpell(const FGameplayTag& SpellTag)
 		SpellSpec->Level += 1;
 		MarkAbilitySpecDirty(*SpellSpec);
 
-		// Spell의 Level 변경을 전달
+		// Spell의 변경을 전달
 		OnSpellAbilityChangedDelegate.Broadcast(SpellTag);
+
+		// SpellSpec 레벨 변경 브로드캐스트
+		OnAbilitySpecLevelChangedDelegate.Broadcast(*SpellSpec);
 	}
 }
 

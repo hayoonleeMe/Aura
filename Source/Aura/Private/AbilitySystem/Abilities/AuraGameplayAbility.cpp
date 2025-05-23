@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 
 UAuraGameplayAbility::UAuraGameplayAbility()
@@ -37,6 +38,15 @@ void UAuraGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorI
 
 	if (bUseSpellStack)
 	{
+		if (HasAuthority(&CurrentActivationInfo))
+		{
+			if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(ASC))
+			{
+				// 어빌리티 레벨 변경 시 가능하면 쿨다운 적용
+				AuraASC->OnAbilitySpecLevelChangedDelegate.AddUObject(this, &ThisClass::OnAbilitySpecLevelChanged);
+			}
+		}
+
 		// 초기화
 		CurrentStackCount = GetMaxStackCountByLevel(GetAbilityLevel());
 	}
@@ -156,6 +166,23 @@ bool UAuraGameplayAbility::CommitAbility(const FGameplayAbilitySpecHandle Handle
 	}
 	
 	return bCommitted;
+}
+
+void UAuraGameplayAbility::OnAbilitySpecLevelChanged(const FGameplayAbilitySpec& AbilitySpec)
+{
+	/* Called on server */
+	
+	if (GetCurrentAbilitySpec() == &AbilitySpec)
+	{
+		if (GetCooldownTimeRemaining(CurrentActorInfo) <= 0.f)
+		{
+			if (CurrentStackCount < GetMaxStackCountByLevel(GetAbilityLevel()))
+			{
+				// 현재 쿨다운 중이 아닐 때, 빈 스택이 있을 때, 쿨다운 적용
+				ApplyCooldown(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo());	
+			}
+		}
+	}
 }
 
 int32 UAuraGameplayAbility::GetSpellStackCount() const

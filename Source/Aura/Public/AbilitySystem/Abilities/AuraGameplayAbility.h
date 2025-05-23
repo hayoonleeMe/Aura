@@ -77,6 +77,10 @@ public:
 	virtual bool CheckCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const override;
 	virtual bool CommitAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, FGameplayTagContainer* OptionalRelevantTags) override;
 
+	// Ability Spec Level이 변경되면 호출되는 콜백 함수
+	// 쿨다운 중이 아니고 어빌리티 레벨이 변경되어 빈 스택이 있으면 쿨다운 적용
+	void OnAbilitySpecLevelChanged(const FGameplayAbilitySpec& AbilitySpec);
+
 	// 스펠이 스택을 사용하면 유효한 값을 반환하고, 아니라면 음수를 반환한다.
 	int32 GetSpellStackCount() const;
 	
