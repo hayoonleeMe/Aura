@@ -28,6 +28,9 @@ UAuraAbility_LightningBind::UAuraAbility_LightningBind()
 	EffectiveRadius = 80.f;
 	DamageInterval = 1.f;
 	MaxCastRange = 1000.f;
+
+	/* Stack */
+	bUseSpellStack = true;
 }
 
 FText UAuraAbility_LightningBind::GetDescription(int32 Level) const
@@ -75,6 +78,7 @@ void UAuraAbility_LightningBind::OnEventReceived(FGameplayEventData Payload)
 {
 	Super::OnEventReceived(Payload);
 
+	UpdateSpellStack(-1);
 	SpawnLightningBind();
 
 	// 서버에서 Final Explosion Damage를 입힌 뒤 종료

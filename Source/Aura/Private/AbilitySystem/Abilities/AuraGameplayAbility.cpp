@@ -10,6 +10,58 @@ UAuraGameplayAbility::UAuraGameplayAbility()
 	bUseTriggeredEvent = true;
 	UnlockRequiredLevel = 1;
 	MaxSpellLevel = 4;
+
+	/* Spell Stack */
+	bUseSpellStack = false;
+}
+
+void UAuraGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
+{
+	Super::OnGiveAbility(ActorInfo, Spec);
+
+	if (InstancingPolicy != EGameplayAbilityInstancingPolicy::InstancedPerActor)
+	{
+		return;
+	}
+
+	UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
+	const FGameplayTagContainer* CooldownTags = GetCooldownTags();
+	if (!ASC || !CooldownTags || CooldownTags->IsEmpty())
+	{
+		return;
+	}
+
+	// Cooldown Tag Change Event 등록
+	const FGameplayTag CooldownTag = CooldownTags->First();
+	ASC->RegisterGameplayTagEvent(CooldownTag).AddUObject(this, &ThisClass::OnCooldownTagCountChanged);
+
+	if (bUseSpellStack)
+	{
+		// 초기화
+		CurrentStackCount = GetMaxStackCountByLevel();
+	}
+}
+
+void UAuraGameplayAbility::OnCooldownTagCountChanged(const FGameplayTag Tag, int32 Count)
+{
+	if (Count <= 0)
+	{
+		/* Cooldown Ended */
+
+		if (bUseSpellStack)
+		{
+			UpdateSpellStack(1);
+
+			// Apply Pending Cooldown
+			if (CurrentStackCount < GetMaxStackCountByLevel())
+			{
+				if (HasAuthority(&CurrentActivationInfo))
+				{
+					ApplyCooldown(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo());
+				}
+			}	
+		}
+	}
 }
 
 FText UAuraGameplayAbility::GetLockedDescription() const
@@ -47,4 +99,59 @@ float UAuraGameplayAbility::GetCooldown(int32 Level) const
 		CooldownEffect->DurationMagnitude.GetStaticMagnitudeIfPossible(Level, Cooldown);
 	}
 	return Cooldown;
+}
+
+bool UAuraGameplayAbility::CheckCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+                                         FGameplayTagContainer* OptionalRelevantTags) const
+{
+	// 남은 스택이 있으면 항상 통과
+	if (bUseSpellStack && CurrentStackCount > 0)
+	{
+		return true;
+	}
+	return Super::CheckCooldown(Handle, ActorInfo, OptionalRelevantTags);
+}
+
+bool UAuraGameplayAbility::CommitAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo, FGameplayTagContainer* OptionalRelevantTags)
+{
+	if (!bUseSpellStack)
+	{
+		return Super::CommitAbility(Handle, ActorInfo, ActivationInfo, OptionalRelevantTags);
+	}
+
+	// Spell Stack을 사용하면 Cooldown 적용 중일 때도 스펠을 사용할 수 있기 때문에 Cooldown과 Cost를 따로 수행한다.
+	bool bCommitted = false;
+
+	// ThisClass::CheckCooldown()은 스택이 남아있으면 무조건 통과시키므로 CommitAbilityCooldown()으로 쿨다운을 적용하면 항상 Effect가 적용되는 문제가 있다.
+	// 따라서 직접 Super::CheckCooldown()으로 체크하고 쿨다운을 적용한다.
+	if (Super::CheckCooldown(Handle, ActorInfo, nullptr))
+	{
+		ApplyCooldown(Handle, ActorInfo, ActivationInfo);
+		bCommitted |= true;
+	}
+	bCommitted |= CommitAbilityCost(Handle, ActorInfo, ActivationInfo, OptionalRelevantTags);
+
+	if (bCommitted)
+	{
+		// Broadcast this commitment
+		ActorInfo->AbilitySystemComponent->NotifyAbilityCommit(this);
+	}
+	
+	return bCommitted;
+}
+
+int32 UAuraGameplayAbility::GetSpellStackCount() const
+{
+	return bUseSpellStack ? CurrentStackCount : -1;
+}
+
+void UAuraGameplayAbility::UpdateSpellStack(int32 AmountToAdd)
+{
+	CurrentStackCount += AmountToAdd;
+}
+
+int32 UAuraGameplayAbility::GetMaxStackCountByLevel() const
+{
+	return MaxStackCountCurve.GetValueAtLevel(GetAbilityLevel());
 }
