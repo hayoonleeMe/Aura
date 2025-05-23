@@ -17,6 +17,10 @@ DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnEquippedSpellAbilityChangedSignature, 
 // 서버에서 ActivatableAbilities가 변경되어 클라이언트에서 OnRep_ActivateAbilities이 호출될 때를 전달하는 델레게이트
 DECLARE_MULTICAST_DELEGATE(FOnActivatableAbilitiesReplicatedSignature);
 
+// Ability Spec Level 변경을 전달한다.
+// UpgradeSpell()에서 레벨이 변경된다.
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnAbilitySpecLevelChangedSignature, const FGameplayAbilitySpec& /*AbilitySpec*/);
+
 /**
  * 
  */
@@ -85,6 +89,7 @@ public:
 	FOnSpellAbilityChangedSignature OnSpellAbilityChangedDelegate;
 	FOnEquippedSpellAbilityChangedSignature OnEquippedSpellAbilityChangedDelegate;
 	FOnActivatableAbilitiesReplicatedSignature OnActivatableAbilitiesReplicatedDelegate;
+	FOnAbilitySpecLevelChangedSignature OnAbilitySpecLevelChangedDelegate;
 
 	// ============================================================================
 	// Combat
