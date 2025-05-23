@@ -67,8 +67,6 @@ public:
 	// Spell의 장착 상태 변경을 업데이트
 	void OnEquippedSpellChanged(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag);
 
-	void UpdateEquippedSpellCooldown(bool bEquipped, const FGameplayTag& SpellTag, UEquippedSpellGlobe* SpellGlobe);
-
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UXPBar> XPBar;
 };

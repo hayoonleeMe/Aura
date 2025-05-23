@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "EquippedSpellGlobe.generated.h"
 
+struct FGameplayAbilitySpec;
 class UTextBlock;
 struct FSpellInfo;
 class UImage;
@@ -31,17 +32,26 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UTextBlock> Text_Cooldown;
 
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UTextBlock> Text_StackCount;
+
 	UPROPERTY(EditDefaultsOnly)
 	FLinearColor NormalColor;
 
 	UPROPERTY(EditDefaultsOnly)
 	FLinearColor CooldownColor;
 
+	// 위젯의 색상을 변경한다.
+	// Text_StackCount는 제외한다.
+	void SetColor(const FLinearColor& Color);
+
 	FGameplayTag InputTag;
 
-	void UpdateEquippedSpellChange(bool bEquipped, const FSpellInfo& SpellInfo) const;
+	void UpdateEquippedSpellChange(bool bEquipped, const FGameplayAbilitySpec* SpellSpec, const FSpellInfo& SpellInfo);
+	void UpdateEquippedSpellCooldown(float Cooldown);
 	void UpdateEquippedSpellCooldownStart(float Cooldown);
 	void UpdateEquippedSpellCooldownEnd();
+	void UpdateEquippedSpellStackCount(int32 StackCount);
 
 	FTimerHandle CooldownTimerHandle;
 	void UpdateTextCooldown();

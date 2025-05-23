@@ -60,52 +60,10 @@ void UHealthManaSpells::BroadcastInitialValues()
 void UHealthManaSpells::OnEquippedSpellChanged(bool bEquipped, const FGameplayTag& InputTag, const FGameplayTag& SpellTag)
 {
 	UEquippedSpellGlobe* SpellGlobe = InputTagToSpellGlobeMap.FindChecked(InputTag);
-	SpellGlobe->UpdateEquippedSpellChange(bEquipped, SpellConfig->GetSpellInfoByTag(SpellTag));
-
-	UpdateEquippedSpellCooldown(bEquipped, SpellTag, SpellGlobe);
-}
-
-void UHealthManaSpells::UpdateEquippedSpellCooldown(bool bEquipped, const FGameplayTag& SpellTag, UEquippedSpellGlobe* SpellGlobe)
-{
 	UAuraAbilitySystemComponent* AuraASC = UAuraBlueprintLibrary::GetAuraAbilitySystemComponentChecked(GetOwningPlayerState());
+
 	if (const FGameplayAbilitySpec* SpellSpec = AuraASC->GetSpellSpecForSpellTag(SpellTag))
 	{
-		// Spell Cooldown Tag는 하나만 존재한다고 가정
-		const FGameplayTagContainer* CooldownTags = SpellSpec->Ability->GetCooldownTags();
-		const FGameplayTag SpellCooldownTag = CooldownTags ? CooldownTags->First() : FGameplayTag::EmptyTag;
-		
-		if (SpellCooldownTag.IsValid())
-		{
-			FOnGameplayEffectTagCountChanged& CooldownTagEvent = AuraASC->RegisterGameplayTagEvent(SpellCooldownTag, EGameplayTagEventType::NewOrRemoved);
-		
-			if (bEquipped)
-			{
-				// CooldownTag Event 등록
-				CooldownTagEvent.AddWeakLambda(this, [this, SpellGlobe, AuraASC](const FGameplayTag SpellCooldownTag, int32 Count)
-				{
-					if (Count > 0)
-					{
-						// Spell을 실행한 뒤 Cooldown이 적용되면, InputTag에 해당하는 EquippedGlobe Widget에서 Timer를 설정해 일정 시간마다 남은 Cooldown Time을 업데이트해 표시
-						SpellGlobe->UpdateEquippedSpellCooldownStart(AuraASC->GetCooldownTimeRemaining(SpellCooldownTag));
-					}
-					else
-					{
-						// Cooldown End
-						SpellGlobe->UpdateEquippedSpellCooldownEnd();
-					}
-				});
-			
-				// Spell을 장착할 때 이미 Cooldown Tag가 존재하므로 바로 UI에 업데이트
-				if (AuraASC->HasMatchingGameplayTag(SpellCooldownTag))
-				{
-					SpellGlobe->UpdateEquippedSpellCooldownStart(AuraASC->GetCooldownTimeRemaining(SpellCooldownTag));
-				}
-			}
-			else
-			{
-				// CooldownTag에 대해 등록된 Event 제거
-				CooldownTagEvent.RemoveAll(this);
-			}	
-		}
+		SpellGlobe->UpdateEquippedSpellChange(bEquipped, SpellSpec, SpellConfig->GetSpellInfoByTag(SpellTag));
 	}
 }

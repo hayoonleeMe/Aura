@@ -44,9 +44,15 @@ void UAuraGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorI
 
 void UAuraGameplayAbility::OnCooldownTagCountChanged(const FGameplayTag Tag, int32 Count)
 {
-	if (Count <= 0)
+	if (Count > 0)
+	{
+		/* Cooldown Started */
+		OnSpellCooldownDelegate.Broadcast(GetCooldown(GetAbilityLevel()));
+	}
+	else
 	{
 		/* Cooldown Ended */
+		OnSpellCooldownDelegate.Broadcast(-1.f);
 
 		if (bUseSpellStack)
 		{
@@ -62,6 +68,12 @@ void UAuraGameplayAbility::OnCooldownTagCountChanged(const FGameplayTag Tag, int
 			}	
 		}
 	}
+}
+
+FOnSpellCooldownSignature* UAuraGameplayAbility::GetOnSpellCooldownDelegate()
+{
+	const FGameplayTagContainer* CooldownTags = GetCooldownTags();
+	return (CooldownTags && CooldownTags->Num()) ? &OnSpellCooldownDelegate : nullptr;
 }
 
 FText UAuraGameplayAbility::GetLockedDescription() const
@@ -99,6 +111,11 @@ float UAuraGameplayAbility::GetCooldown(int32 Level) const
 		CooldownEffect->DurationMagnitude.GetStaticMagnitudeIfPossible(Level, Cooldown);
 	}
 	return Cooldown;
+}
+
+FOnSpellStackChangedSignature* UAuraGameplayAbility::GetOnSpellStackChangedDelegate()
+{
+	return bUseSpellStack ? &OnSpellStackChangedDelegate : nullptr;
 }
 
 bool UAuraGameplayAbility::CheckCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -149,6 +166,7 @@ int32 UAuraGameplayAbility::GetSpellStackCount() const
 void UAuraGameplayAbility::UpdateSpellStack(int32 AmountToAdd)
 {
 	CurrentStackCount += AmountToAdd;
+	OnSpellStackChangedDelegate.Broadcast(CurrentStackCount);
 }
 
 int32 UAuraGameplayAbility::GetMaxStackCountByLevel() const

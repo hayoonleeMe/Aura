@@ -6,6 +6,14 @@
 #include "Abilities/GameplayAbility.h"
 #include "AuraGameplayAbility.generated.h"
 
+// 스펠의 쿨다운 이벤트에 대한 델레게이트
+// 쿨다운이 시작되면 양수 값을 전달하고, 끝나면 음수 값을 전달한다.
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnSpellCooldownSignature, float /*Cooldown*/);
+
+// 스펠의 스택 변경 이벤트에 대한 델레게이트
+// 변경된 StackCount 값을 전달한다.
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnSpellStackChangedSignature, int32 /*StackCount*/);
+
 /**
  * 
  */
@@ -20,6 +28,10 @@ public:
 	
 	// 해당 어빌리티의 Cooldown Tag Change 콜백 함수
 	void OnCooldownTagCountChanged(const FGameplayTag Tag, int32 Count);
+
+	// 스펠이 쿨다운이 있다면 유효한 델레게이트 OnSpellCooldownDelegate를 반환하고, 아니라면 nullptr를 반환한다.
+	FOnSpellCooldownSignature* GetOnSpellCooldownDelegate();
+	FOnSpellCooldownSignature OnSpellCooldownDelegate;
 
 	// true면 ETriggerEvent::Triggered로 실행되고, false면 ETriggerEvent::Started로 실행된다. 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Input")
@@ -58,6 +70,10 @@ public:
 	// Spell Stack
 	// ============================================================================
 
+	// 스펠이 스택을 사용한다면 유효한 델레게이트 OnSpellStackChangedDelegate를 반환하고, 아니면 nullptr를 반환한다.
+	FOnSpellStackChangedSignature* GetOnSpellStackChangedDelegate();
+	FOnSpellStackChangedSignature OnSpellStackChangedDelegate;
+	
 	virtual bool CheckCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const override;
 	virtual bool CommitAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, FGameplayTagContainer* OptionalRelevantTags) override;
 
