@@ -114,6 +114,8 @@ void UEquippedSpellGlobe::UpdateEquippedSpellCooldownEnd()
 
 	Text_Cooldown->SetVisibility(ESlateVisibility::Collapsed);
 	SetColor(NormalColor);
+
+	PlayAnimationForward(CooldownEndAnimation);
 }
 
 void UEquippedSpellGlobe::UpdateEquippedSpellStackCount(int32 StackCount)
