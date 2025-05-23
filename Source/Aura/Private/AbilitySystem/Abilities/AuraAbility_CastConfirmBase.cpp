@@ -99,10 +99,14 @@ void UAuraAbility_CastConfirmBase::ActivateAbility(const FGameplayAbilitySpecHan
 
 		if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
 		{
-			// LMB 입력을 포착하기 위해 콜백 함수를 등록한다.
-			// 특정 InputAction에 의한 입력이 들어오면 브로드캐스트된다.
-			// @see AAuraPlayerController::OnConfirmSpellActionStarted()
-			ASC->GenericLocalConfirmCallbacks.AddDynamic(this, &ThisClass::OnLocalConfirmed);	
+			if (!ASC->GenericLocalConfirmCallbacks.IsAlreadyBound(this, &ThisClass::OnLocalConfirmed))
+			{
+				// LMB 입력을 포착하기 위해 콜백 함수를 등록한다.
+				// 특정 InputAction에 의한 입력이 들어와 ASC의 LocalInputConfirm()이 호출되면 브로드캐스트된다.
+				// 또한 브로드캐스트될 때 Clear하므로 여기서 따로 제거하지 않는다. 
+				// @see AAuraPlayerController::OnConfirmSpellActionStarted()
+				ASC->GenericLocalConfirmCallbacks.AddDynamic(this, &ThisClass::OnLocalConfirmed);	
+			}
 		}
 	}
 	else
@@ -175,14 +179,6 @@ void UAuraAbility_CastConfirmBase::HandleConfirmation()
 
 		// 다시 원래대로 ECC_Target으로 Cursor Trace를 수행하도록 되돌린다.
 		AuraPC->SetNeedCursorTarget(true);
-	}
-
-	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
-	{
-		if (ASC->GenericLocalConfirmCallbacks.IsAlreadyBound(this, &ThisClass::OnLocalConfirmed))
-		{
-			ASC->GenericLocalConfirmCallbacks.RemoveDynamic(this, &ThisClass::OnLocalConfirmed);	
-		}
 	}
 }
 
