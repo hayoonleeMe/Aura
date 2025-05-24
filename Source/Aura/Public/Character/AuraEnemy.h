@@ -65,6 +65,10 @@ protected:
 	// Enemy AI가 대상과의 거리를 기준으로 공격 가능 여부를 판단할 때 사용하는 거리 기준값
 	UPROPERTY(EditAnywhere, Category="Aura|Combat")
 	float AttackEffectiveRange;
+
+	// Enemy AI가 대상과의 거리를 기준으로 공격을 취소할 지 판단할 때 사용하는 거리
+	UPROPERTY(EditAnywhere, Category="Aura|Combat")
+	float AttackAbortRange;
 	
 	// 공격을 체크하는 Capsule의 Radius
 	UPROPERTY(EditAnywhere, Category="Aura|Combat")

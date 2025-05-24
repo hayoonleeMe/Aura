@@ -9,6 +9,7 @@
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Character/AuraEnemy.h"
+#include "Character/AuraEnemy_Shaman.h"
 #include "Interface/CombatInterface.h"
 #include "Interface/StageSystemInterface.h"
 #include "GameFramework/GameModeBase.h"
@@ -81,6 +82,11 @@ void UAuraAbility_ShamanSummonEnemy::EndAbility(const FGameplayAbilitySpecHandle
 	if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo()))
 	{
 		ASC->RemoveGameplayCue(AuraGameplayTags::GameplayCue_ShamanSummonEffect);
+	}
+
+	if (AAuraEnemy_Shaman* ShamanEnemy = Cast<AAuraEnemy_Shaman>(GetAvatarActorFromActorInfo()))
+	{
+		ShamanEnemy->UpdateAttackEffectiveRange();
 	}
 	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
