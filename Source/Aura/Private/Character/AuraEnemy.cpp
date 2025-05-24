@@ -88,6 +88,7 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 		AuraAIController = Cast<AAuraAIController>(NewController);
 		AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
 		AuraAIController->GetBlackboardComponent()->SetValueAsFloat(TEXT("AttackEffectiveRange"), AttackEffectiveRange);
+		AuraAIController->GetBlackboardComponent()->SetValueAsFloat(TEXT("AttackAbortRange"), AttackAbortRange);
 		AuraAIController->RunBehaviorTree(BehaviorTree);
 	}
 }
