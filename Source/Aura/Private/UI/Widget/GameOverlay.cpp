@@ -98,6 +98,12 @@ void UGameOverlay::CloseAllMenu()
 	}
 }
 
+void UGameOverlay::ShowGameOverlay(bool bShow)
+{
+	SetVisibility(bShow ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::HitTestInvisible);
+	SetRenderOpacity(bShow ? 1.f : 0.f);
+}
+
 void UGameOverlay::OnRespawnStarted(float RespawnTimerEndSeconds)
 {
 	if (RespawnTimerEndSeconds > 0.0)
@@ -275,14 +281,14 @@ void UGameOverlay::OpenPauseMenu()
 	PauseMenu->GetOnRemovedDelegate().AddUObject(this, &ThisClass::OnPauseMenuClosed);
 	PauseMenu->AddToViewport(1);
 
-	// GameOverlay 숨김
-	SetVisibility(ESlateVisibility::Collapsed);
+	ShowGameOverlay(false);
 }
 
 void UGameOverlay::OnPauseMenuClosed()
 {
 	PauseMenu = nullptr;
-	SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+
+	ShowGameOverlay(true);
 }
 
 void UGameOverlay::OpenTutorialMenu()

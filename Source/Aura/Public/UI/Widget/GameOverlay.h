@@ -49,6 +49,10 @@ public:
 	// 현재 열린 모든 메뉴를 닫는다.
 	void CloseAllMenu();
 
+	// bShow가 true면 GameOverlay를 화면에 표시하고, false면 숨긴다.
+	// 마우스 커서로 상호작용(ToolTip Widget)을 방지하고, tick 등의 로직(Respawn Timer)은 처리한다.
+	void ShowGameOverlay(bool bShow);
+
 	// ============================================================================
 	// Respawn Timer
 	// ============================================================================
